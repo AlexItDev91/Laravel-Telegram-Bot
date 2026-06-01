@@ -8,6 +8,10 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.0.1] - 2026-06-01
+
+- Improved README documentation navigation by listing available package documentation with short descriptions.
+
 ## [1.0.0] - 2026-06-01
 
 - Initial stable package release.

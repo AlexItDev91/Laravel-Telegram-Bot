@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 class ReleasePolicyTest extends TestCase
 {
-    public function test_package_has_initial_stable_version_and_release_policy(): void
+    public function test_package_has_current_stable_version_and_release_policy(): void
     {
         $version = trim((string) file_get_contents(__DIR__.'/../../VERSION'));
         $changelog = file_get_contents(__DIR__.'/../../CHANGELOG.md');
@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('1.0.0', $version);
+        $this->assertSame('1.0.1', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($releaseGuide);
         $this->assertIsString($agents);
@@ -30,7 +30,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $releaseGuide);
         }
 
-        $this->assertStringContainsString('## [1.0.0] - 2026-06-01', $changelog);
+        $this->assertStringContainsString('## [1.0.1] - 2026-06-01', $changelog);
         $this->assertStringContainsString('Every package update must include a version bump and a git tag.', $agents);
         $this->assertStringContainsString('[docs/RELEASE.md](docs/RELEASE.md)', $readme);
     }

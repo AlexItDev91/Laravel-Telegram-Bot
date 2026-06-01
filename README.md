@@ -50,6 +50,25 @@ return [
 Set at least one bot token in environment variables or in `config/telegram-bot.php`.
 Keep tokens, chat IDs, and webhook secrets outside committed files.
 
+## Laravel Boost
+
+The package ships Laravel Boost resources:
+
+- `resources/boost/guidelines/core.blade.php`
+- `resources/boost/skills/telegram-bot-package/SKILL.md`
+
+After installing this package in a Laravel application, run Boost installation or update so the package guidelines and skill are picked up:
+
+```bash
+php artisan boost:install
+```
+
+If Boost is already installed and you only need to refresh generated agent resources, run:
+
+```bash
+php artisan boost:update
+```
+
 ## Usage
 
 ```php

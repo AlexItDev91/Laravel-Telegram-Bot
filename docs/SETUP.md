@@ -1,6 +1,14 @@
-# Telegram Bot Setup Guide
+# Telegram Bot End-To-End Setup Guide
 
-This guide explains how to create a Telegram bot, create a destination chat, add the bot there, and find the identifiers needed by a Laravel application.
+This guide explains the full path from an empty Telegram account to a working Laravel integration:
+
+1. create a bot;
+2. get the bot token, bot username, and bot ID;
+3. create a channel or group;
+4. add the bot to the destination;
+5. get the channel, group, or topic identifiers;
+6. install and configure the Laravel package;
+7. send a safe test message.
 
 Primary Telegram references:
 
@@ -9,39 +17,99 @@ Primary Telegram references:
 - [Telegram Bot API](https://core.telegram.org/bots/api)
 - [BotFather](https://t.me/BotFather)
 
-## 1. Create A Bot
+## 1. Values You Will Need
+
+Keep these values separate:
+
+| Value | Example | Required by this package | Where it comes from |
+| --- | --- | --- | --- |
+| Bot token | `123456:ABC...` | Yes | BotFather |
+| Bot username | `@CompanyInboxBot` | No, but useful for adding/searching the bot | BotFather |
+| Bot ID | `123456` | Usually no | `getMe`, or the number before `:` in the token |
+| Destination chat ID | `-1001234567890` | Yes | `getUpdates` or `getChat` |
+| Topic ID | `42` | Only for forum topics | `getUpdates` |
+
+Do not commit real tokens, private chat IDs, webhook secrets, or screenshots containing them.
+
+## 2. Create The Bot In BotFather
 
 1. Open Telegram.
 2. Search for `@BotFather`.
 3. Open the verified BotFather chat.
 4. Press `Start`.
 5. Send `/newbot`.
-6. Enter a display name for the bot, for example `Company Inbox`.
-7. Enter a username for the bot. It must end with `bot`, for example `CompanyInboxBot`.
-8. BotFather will send a bot token.
-9. Copy the token and store it in a safe password manager.
+6. Enter a display name, for example `Company Inbox`.
+7. Enter a username. It must end with `bot`, for example `CompanyInboxBot`.
+8. BotFather will send the bot token.
+9. Copy the token into a password manager or secret store.
 
-Do not paste the token into public chats, screenshots, GitHub issues, commits, logs, or documentation.
+The bot token is the credential your Laravel app uses to call Telegram. Treat it like a password.
 
-## 2. Optional Bot Settings
+## 3. Save Or Regenerate The Bot Token
 
-In the BotFather chat:
+If you need the token later:
+
+1. Open `@BotFather`.
+2. Send `/mybots`.
+3. Select the bot.
+4. Open `API Token`.
+5. Copy the token.
+
+If the token was exposed in a commit, screenshot, ticket, log, or chat, revoke it in BotFather and generate a new token.
+
+## 4. Get The Bot ID And Username
+
+The bot username is the public handle, for example `@CompanyInboxBot`.
+
+The bot ID is the numeric identifier returned by `getMe`. Open this URL in a browser, replacing `<BOT_TOKEN>`:
+
+```text
+https://api.telegram.org/bot<BOT_TOKEN>/getMe
+```
+
+Example response:
+
+```json
+{
+  "ok": true,
+  "result": {
+    "id": 123456,
+    "is_bot": true,
+    "first_name": "Company Inbox",
+    "username": "CompanyInboxBot"
+  }
+}
+```
+
+Use:
+
+- `result.id` as the bot ID;
+- `result.username` as the bot username;
+- the full token as `TELEGRAM_BOT_TOKEN`.
+
+This package usually does not need the bot ID in config, but it is useful for audits, access checks, and external operations.
+
+## 5. Optional Bot Settings
+
+In BotFather:
 
 1. Send `/mybots`.
 2. Select the bot.
 3. Open `Edit Bot`.
 4. Set the bot picture, description, about text, and commands if needed.
 
-Useful commands for a simple inbox notification bot:
+Useful commands for a simple notification bot:
 
 ```text
 status - Show bot status
 help - Show available commands
 ```
 
-## 3. Create A Destination Channel
+For notification-only posting into a channel, group privacy settings usually do not matter. If the bot must read group messages, review BotFather privacy settings.
 
-Use a channel when the bot only needs to post notifications and people do not need to chat there.
+## 6. Create A Channel
+
+Use a channel when the bot only needs to post notifications and people do not need threaded discussion.
 
 1. Open Telegram.
 2. Press the new message button.
@@ -51,7 +119,7 @@ Use a channel when the bot only needs to post notifications and people do not ne
 6. Choose `Private Channel` unless the channel must be public.
 7. Finish channel creation.
 
-## 4. Add The Bot To The Channel
+## 7. Add The Bot To The Channel
 
 1. Open the channel.
 2. Open the channel profile.
@@ -59,11 +127,11 @@ Use a channel when the bot only needs to post notifications and people do not ne
 4. Press `Add Admin`.
 5. Search for the bot username, for example `@CompanyInboxBot`.
 6. Add the bot.
-7. Give it the minimum permission needed to post messages.
+7. Give it the minimum permissions it needs.
 
-For notification-only usage, the bot usually needs permission to post messages. Avoid giving broad admin rights unless the bot needs them.
+For notification-only usage, the bot usually needs permission to post messages. Avoid broad admin permissions unless the bot actually needs them.
 
-## 5. Create A Group Instead Of A Channel
+## 8. Create A Group Instead Of A Channel
 
 Use a group when people need to reply, discuss, or work around the notification.
 
@@ -74,88 +142,98 @@ Use a group when people need to reply, discuss, or work around the notification.
 5. Enter a group name, for example `Company Inbox`.
 6. Open the group profile.
 7. Add the bot if it was not added during creation.
-8. Open bot permissions and allow only what is needed.
+8. Configure bot permissions.
 
 If the group has forum topics enabled, each topic has its own `message_thread_id`.
 
-## 6. Send A Test Message
+## 9. Trigger A Telegram Update
 
-Before looking for identifiers:
+Before looking for chat IDs:
 
-1. Send a normal message into the channel or group.
-2. If using a group topic, send the message inside the exact topic.
-3. If the bot has privacy restrictions in groups and must read messages, adjust BotFather privacy settings. For notification-only posting, this is usually not needed.
+1. Make sure the bot is in the channel or group.
+2. Send a fresh test message in the exact destination.
+3. If using a forum group, send the message inside the exact topic.
 
-## 7. Find The Bot Token
+For channels, the bot normally needs to be an administrator to receive channel post updates and post messages.
 
-If the token was lost:
+## 10. Get The Channel Or Group ID With getUpdates
 
-1. Open `@BotFather`.
-2. Send `/mybots`.
-3. Select the bot.
-4. Open `API Token`.
-5. Copy the token.
-
-If the token may be exposed, use BotFather to revoke it and generate a new one.
-
-## 8. Find The Chat ID With getUpdates
-
-This is the simplest manual method for private groups and many channel setups.
-
-1. Make sure the bot is added to the group or channel.
-2. Send a fresh test message in the group or channel.
-3. Open this URL in a browser, replacing `<BOT_TOKEN>` with the real token:
+Open this URL in a browser:
 
 ```text
 https://api.telegram.org/bot<BOT_TOKEN>/getUpdates
 ```
 
-4. Look for `chat`.
-5. Copy the `id` value.
+Look for one of these objects:
 
-Example shape:
+- `message.chat` for group/private messages;
+- `channel_post.chat` for channel posts.
+
+Example channel response:
 
 ```json
 {
-  "message": {
-    "chat": {
-      "id": -1001234567890,
-      "title": "Company Inbox Alerts",
-      "type": "channel"
+  "ok": true,
+  "result": [
+    {
+      "update_id": 100000001,
+      "channel_post": {
+        "message_id": 5,
+        "chat": {
+          "id": -1001234567890,
+          "title": "Company Inbox Alerts",
+          "type": "channel"
+        },
+        "text": "Setup test"
+      }
     }
-  }
+  ]
 }
 ```
 
-Use the full value, including the minus sign.
+Use the full `chat.id` value as `TELEGRAM_INBOX_CHAT_ID`, including the minus sign.
 
-## 9. Find A Channel ID When getUpdates Is Empty
+## 11. Get A Channel ID With getChat
 
-Sometimes `getUpdates` is empty because the bot did not receive a recent update.
+If `getUpdates` is empty, use `getChat`.
 
-Try this:
+For a public channel:
 
-1. Remove the bot from the channel.
-2. Add the bot again as an administrator.
-3. Send a new post in the channel.
-4. Open `https://api.telegram.org/bot<BOT_TOKEN>/getUpdates` again.
+```text
+https://api.telegram.org/bot<BOT_TOKEN>/getChat?chat_id=@company_inbox_alerts
+```
 
-If it is still empty, use a temporary public channel username:
+For a private channel:
 
 1. Open channel settings.
 2. Set a temporary public username, for example `company_inbox_alerts_temp`.
-3. Open this URL:
+3. Open:
 
 ```text
 https://api.telegram.org/bot<BOT_TOKEN>/getChat?chat_id=@company_inbox_alerts_temp
 ```
 
-4. Copy the `result.id` value.
+4. Copy `result.id`.
 5. Remove the temporary public username if the channel should stay private.
 
-## 10. Find A Topic ID
+Example response:
 
-For forum groups, Telegram uses `message_thread_id` to identify topics.
+```json
+{
+  "ok": true,
+  "result": {
+    "id": -1001234567890,
+    "title": "Company Inbox Alerts",
+    "type": "channel"
+  }
+}
+```
+
+Use `result.id` as `TELEGRAM_INBOX_CHAT_ID`.
+
+## 12. Get A Topic ID
+
+Forum groups use `message_thread_id` to identify topics.
 
 1. Enable topics in the group if needed.
 2. Open the exact topic.
@@ -167,13 +245,29 @@ https://api.telegram.org/bot<BOT_TOKEN>/getUpdates
 ```
 
 5. Find `message_thread_id` in the message object.
-6. Use that value as the channel `message_thread_id`.
+6. Use that value as `TELEGRAM_INBOX_MESSAGE_THREAD_ID`.
+
+Example:
+
+```json
+{
+  "message": {
+    "message_id": 10,
+    "message_thread_id": 42,
+    "chat": {
+      "id": -1001234567890,
+      "type": "supergroup"
+    },
+    "text": "Topic setup test"
+  }
+}
+```
 
 If `message_thread_id` is absent, the message was not sent inside a forum topic.
 
-## 11. Install The Package In Laravel
+## 13. Install The Laravel Package
 
-Install the package:
+Install the package in the host Laravel application:
 
 ```bash
 composer require alexitdev91/laravel-telegram-bot
@@ -181,13 +275,17 @@ composer require alexitdev91/laravel-telegram-bot
 
 Laravel 12 and 13 discover the service provider and facade automatically.
 
-Publish the package configuration with the provider-qualified command:
+Publish the package configuration:
 
 ```bash
 php artisan vendor:publish --provider="AlexItDev91\\LaravelTelegramBot\\Laravel\\TelegramBotServiceProvider" --tag=telegram-bot-config
 ```
 
-This creates `config/telegram-bot.php`.
+This creates:
+
+```text
+config/telegram-bot.php
+```
 
 If package discovery is disabled, register the provider manually in `bootstrap/providers.php`:
 
@@ -198,9 +296,9 @@ return [
 ];
 ```
 
-## 12. Configure Laravel Environment Values
+## 14. Configure Environment Values
 
-In your Laravel application's `.env`, add values like:
+Add values like these to the Laravel application's `.env`:
 
 ```dotenv
 TELEGRAM_BOT=default
@@ -212,11 +310,31 @@ TELEGRAM_INBOX_CHAT_ID=-1001234567890
 TELEGRAM_INBOX_MESSAGE_THREAD_ID=
 ```
 
+For a topic, set:
+
+```dotenv
+TELEGRAM_INBOX_MESSAGE_THREAD_ID=42
+```
+
 Do not commit `.env`.
 
-## 13. Configure A Package Channel
+## 15. Configure config/telegram-bot.php
 
-In `config/telegram-bot.php`, configure channels like this:
+The published config already contains a default bot:
+
+```php
+'default' => env('TELEGRAM_BOT', 'default'),
+
+'bots' => [
+    'default' => [
+        'token' => env('TELEGRAM_BOT_TOKEN'),
+        'api_url' => env('TELEGRAM_BOT_API_URL', 'https://api.telegram.org'),
+        'timeout' => env('TELEGRAM_BOT_TIMEOUT', 10),
+    ],
+],
+```
+
+Add a channel mapping:
 
 ```php
 'channels' => [
@@ -228,38 +346,113 @@ In `config/telegram-bot.php`, configure channels like this:
 ],
 ```
 
-Then application code can send through the configured channel:
+For multiple bots:
 
 ```php
-TelegramBot::channel('inbox')->sendMessage([
-    'text' => 'New inbound email',
-]);
+'bots' => [
+    'support' => [
+        'token' => env('TELEGRAM_SUPPORT_BOT_TOKEN'),
+        'api_url' => env('TELEGRAM_BOT_API_URL', 'https://api.telegram.org'),
+        'timeout' => env('TELEGRAM_BOT_TIMEOUT', 10),
+    ],
+    'ops' => [
+        'token' => env('TELEGRAM_OPS_BOT_TOKEN'),
+        'api_url' => env('TELEGRAM_BOT_API_URL', 'https://api.telegram.org'),
+        'timeout' => env('TELEGRAM_BOT_TIMEOUT', 10),
+    ],
+],
+
+'channels' => [
+    'inbox' => [
+        'bot' => 'support',
+        'chat_id' => env('TELEGRAM_INBOX_CHAT_ID'),
+        'message_thread_id' => env('TELEGRAM_INBOX_MESSAGE_THREAD_ID'),
+    ],
+    'deployments' => [
+        'bot' => 'ops',
+        'chat_id' => env('TELEGRAM_DEPLOYMENTS_CHAT_ID'),
+        'message_thread_id' => env('TELEGRAM_DEPLOYMENTS_MESSAGE_THREAD_ID'),
+    ],
+],
 ```
 
-## 14. Test Sending A Message
+## 16. Send A Test Message From Laravel
 
-Use a safe test message first:
+Use the facade:
 
 ```php
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
 TelegramBot::channel('inbox')->sendMessage([
     'text' => 'Telegram setup test',
 ]);
 ```
 
-If the message does not appear:
+Or select a bot directly:
 
-1. Check the bot token.
-2. Check that the bot is still in the channel or group.
-3. Check that the bot can post messages.
-4. Check that `chat_id` includes the minus sign.
-5. If using a topic, check `message_thread_id`.
-6. Check Laravel logs for Telegram API errors.
+```php
+TelegramBot::bot('support')->sendMessage([
+    'chat_id' => env('TELEGRAM_INBOX_CHAT_ID'),
+    'text' => 'Telegram setup test',
+]);
+```
 
-## 15. Production Safety Checklist
+Use `channel('inbox')` when the destination is configured in `config/telegram-bot.php`. Use `bot('support')` when the code should provide `chat_id` directly.
 
-- Store the token only in secret storage or `.env`.
-- Do not commit tokens or chat IDs if the chat is private.
+## 17. Test With Tinker
+
+Run:
+
+```bash
+php artisan tinker
+```
+
+Then:
+
+```php
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+TelegramBot::channel('inbox')->sendMessage([
+    'text' => 'Telegram setup test from Tinker',
+]);
+```
+
+If the message appears in Telegram, the bot, channel, identifiers, package config, and Laravel integration are connected correctly.
+
+## 18. Troubleshooting
+
+If `getUpdates` is empty:
+
+1. Send a fresh message after adding the bot.
+2. Remove and re-add the bot as an administrator.
+3. Use `getChat` with a public or temporary public channel username.
+4. Check whether a webhook is consuming updates. If needed, inspect `getWebhookInfo`.
+
+If Laravel cannot send a message:
+
+1. Check `TELEGRAM_BOT_TOKEN`.
+2. Check that config cache was refreshed after changing `.env`:
+
+```bash
+php artisan config:clear
+```
+
+3. Check that `TELEGRAM_INBOX_CHAT_ID` includes the full negative value.
+4. Check that the bot is still a channel administrator or group member.
+5. Check that the bot has permission to post messages.
+6. Check `TELEGRAM_INBOX_MESSAGE_THREAD_ID` when using topics.
+7. Check Laravel logs for Telegram API errors.
+
+If Telegram returns `chat not found`, the bot usually cannot access that chat or the chat ID is wrong.
+
+If Telegram returns `Forbidden`, the bot may have been removed, blocked, or denied permission to post.
+
+## 19. Production Safety Checklist
+
+- Store bot tokens only in `.env`, secret storage, or deployment platform secrets.
+- Do not commit real bot tokens, private chat IDs, webhook secrets, logs, or screenshots.
 - Give the bot only the permissions it needs.
 - Use a private channel or private group for operational notifications.
-- Rotate the token if it appears in a screenshot, commit, log, or public message.
-- Test with a harmless message before sending real customer or inbox content.
+- Rotate the token if it appears anywhere public.
+- Send a harmless test message before sending real customer, inbox, or operational content.
+- Keep a record of bot username, bot ID, destination chat ID, and topic ID in a private operations document.

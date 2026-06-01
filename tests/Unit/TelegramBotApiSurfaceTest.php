@@ -77,6 +77,10 @@ class TelegramBotApiSurfaceTest extends TestCase
 
         foreach (TelegramBotApiMethod::cases() as $method) {
             $this->assertStringContainsString("### `{$method->value}`", $documentation);
+            $this->assertStringContainsString(
+                sprintf('| `%s` | `%s(array\|TelegramBotRequestData $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#%s) |', $method->value, $method->value, strtolower($method->value)),
+                $documentation,
+            );
             $this->assertStringContainsString("`{$method->value}(array|TelegramBotRequestData \$parameters = [])`", $documentation);
             $this->assertStringContainsString("`POST /bot<TOKEN>/{$method->value}`", $documentation);
             $this->assertStringContainsString("https://core.telegram.org/bots/api#".strtolower($method->value), $documentation);

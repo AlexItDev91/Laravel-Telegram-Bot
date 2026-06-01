@@ -8,6 +8,11 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.5.3] - 2026-06-01
+
+- Shortened the method reference index source links and made method names link to their local reference sections.
+- Moved release automation instructions out of public package documentation and into `AGENTS.md`.
+
 ## [1.5.2] - 2026-06-01
 
 - Fixed the method reference Markdown table so PHP union type pipes render inside the SDK call column instead of splitting table cells.

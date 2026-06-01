@@ -45,7 +45,7 @@ If Telegram changed the Bot API, update methods, enum values, docs, tests, and i
 - Every package update must bump `VERSION`, update `CHANGELOG.md`, and create a git tag.
 - Patch bump for small compatible changes, fixes, docs, tests, and cleanup.
 - Minor bump for significant compatible changes, new features, or Telegram API surface expansions.
-- Follow `docs/RELEASE.md`.
+- Follow the release workflow in `AGENTS.md`.
 
 ## Testing
 

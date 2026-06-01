@@ -30,15 +30,43 @@ The SDK must always keep a raw `call(method, parameters)` API so newly released 
 - Every package update must include a version bump and a git tag.
 - The current version is stored in `VERSION`.
 - Release notes are stored in `CHANGELOG.md`.
-- Release commands and rules are documented in `docs/RELEASE.md`.
 - If a task changes package code, public documentation, tests, release notes, or package behavior, the agent must complete the release workflow automatically unless the user explicitly says not to commit, tag, or push.
 - Automatic release completion means: run the required checks, stage only task-related files, commit the full task diff, create an annotated `v<VERSION>` tag, push the current branch, and push the tag.
 - Do not leave a version bump, changelog entry, or completed package change uncommitted at the end of the task unless commit, tag, or push fails. If any git step fails, report the exact failed step and reason.
 - Never stage or commit unrelated user changes. If unrelated dirty files exist, leave them unstaged and commit only the task-related files.
-- Use patch bumps for small compatible changes, bug fixes, documentation, tests, and internal cleanup.
-- Use minor bumps for significant compatible changes, new public features, new SDK behavior, or Telegram Bot API surface expansions.
-- Use major bumps for breaking public API, config, behavior, namespace, dependency, or Laravel compatibility changes.
+- Patch bump: small compatible changes, bug fixes, documentation, tests, dependency constraint cleanup, internal refactoring, and non-breaking maintenance.
+- Minor bump: significant compatible changes, new public features, new SDK behavior, new Laravel integration behavior, or Telegram Bot API surface expansions.
+- Major bump: breaking public API, config, behavior, namespace, dependency, or Laravel compatibility changes.
 - Packagist reads versions from git tags, so do not add a hardcoded `version` field to `composer.json`.
+
+Release workflow for agents:
+
+1. Run the required checks:
+
+```bash
+composer validate --no-check-publish --no-interaction
+composer analyse
+composer check:telegram-api-surface
+composer test
+composer test:coverage-surface
+```
+
+2. Stage only task-related files.
+3. Commit the full task diff.
+4. Create an annotated tag from `VERSION`:
+
+```bash
+git tag -a v1.0.1 -m "Release v1.0.1"
+```
+
+5. Push the current branch.
+6. Push the tag:
+
+```bash
+git push origin v1.0.1
+```
+
+When the release changes Laravel integration, also run focused integration tests in the host Laravel application.
 
 ## Development
 

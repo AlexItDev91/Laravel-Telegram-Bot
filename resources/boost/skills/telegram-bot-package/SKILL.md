@@ -128,7 +128,7 @@ Every package update must bump `VERSION`, update `CHANGELOG.md`, and create a gi
 - Minor bump: significant compatible changes, new features, Telegram API surface expansions.
 - Major bump: breaking public API, config, behavior, namespace, dependency, or Laravel compatibility changes.
 
-Follow `docs/RELEASE.md`.
+Follow the release workflow in `AGENTS.md`.
 
 ## Test
 

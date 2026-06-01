@@ -10,15 +10,14 @@ class ReleasePolicyTest extends TestCase
     {
         $version = trim((string) file_get_contents(__DIR__.'/../../VERSION'));
         $changelog = file_get_contents(__DIR__.'/../../CHANGELOG.md');
-        $releaseGuide = file_get_contents(__DIR__.'/../../docs/RELEASE.md');
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('1.5.2', $version);
+        $this->assertSame('1.5.3', $version);
         $this->assertIsString($changelog);
-        $this->assertIsString($releaseGuide);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
+        $this->assertFileDoesNotExist(__DIR__.'/../../docs/RELEASE.md');
 
         foreach ([
             'Every package update must include a version bump and a git tag',
@@ -32,9 +31,10 @@ class ReleasePolicyTest extends TestCase
             'git tag -a v1.0.1 -m "Release v1.0.1"',
             'git push origin v1.0.1',
         ] as $requiredReleaseInstruction) {
-            $this->assertStringContainsString($requiredReleaseInstruction, $releaseGuide);
+            $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [1.5.3] - 2026-06-01', $changelog);
         $this->assertStringContainsString('## [1.5.2] - 2026-06-01', $changelog);
         $this->assertStringContainsString('## [1.5.1] - 2026-06-01', $changelog);
         $this->assertStringContainsString('## [1.5.0] - 2026-06-01', $changelog);
@@ -47,7 +47,7 @@ class ReleasePolicyTest extends TestCase
         $this->assertStringContainsString('## [1.0.1] - 2026-06-01', $changelog);
         $this->assertStringContainsString('Every package update must include a version bump and a git tag.', $agents);
         $this->assertStringContainsString('complete the release workflow automatically unless the user explicitly says not to commit, tag, or push', $agents);
-        $this->assertStringContainsString('[docs/RELEASE.md](docs/RELEASE.md)', $readme);
+        $this->assertStringNotContainsString('docs/RELEASE.md', $readme);
     }
 
     public function test_composer_does_not_hardcode_package_version(): void

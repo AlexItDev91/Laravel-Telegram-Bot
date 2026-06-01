@@ -23,6 +23,10 @@
             "Aptenova\\TelegramBot\\Tests\\": "tests/"
         }
     },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test:coverage-surface": "vendor/bin/phpunit --filter=TelegramBotApiSurfaceTest"
+    },
     "extra": {
         "laravel": {
             "providers": [
@@ -34,9 +38,6 @@
         }
     },
     "config": {
-        "allow-plugins": {
-            "pestphp/pest-plugin": true
-        },
         "sort-packages": true
     },
     "minimum-stability": "stable",

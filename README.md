@@ -36,3 +36,13 @@ TelegramBot::channel('inbox')->sendMessage([
 ```
 
 The raw `call(method, parameters)` API remains available for newly released Telegram methods before the typed SDK surface is updated.
+
+## Testing
+
+```bash
+composer install
+composer test
+composer test:coverage-surface
+```
+
+`test:coverage-surface` verifies that every registered Telegram Bot API method is exposed as a native SDK method and calls the matching Telegram endpoint path.

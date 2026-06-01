@@ -9,6 +9,7 @@ use Aptenova\TelegramBot\DTO\TelegramChannelConfigData;
 use Aptenova\TelegramBot\Exceptions\TelegramBotChannelNotConfiguredException;
 use Aptenova\TelegramBot\Exceptions\TelegramBotNotConfiguredException;
 use BadMethodCallException;
+use Closure;
 
 class TelegramBotManager implements TelegramBotManagerContract
 {
@@ -18,14 +19,19 @@ class TelegramBotManager implements TelegramBotManagerContract
     private array $clients = [];
 
     /**
+     * @var Closure(TelegramBotConfigData): TelegramBotClientContract
+     */
+    private readonly Closure $clientFactory;
+
+    /**
      * @param  array<string, mixed>  $config
      * @param  callable(TelegramBotConfigData): TelegramBotClientContract  $clientFactory
      */
     public function __construct(
         private readonly array $config,
-        private readonly mixed $clientFactory,
+        callable $clientFactory,
     ) {
-        //
+        $this->clientFactory = Closure::fromCallable($clientFactory);
     }
 
     public function bot(?string $name = null): TelegramBotClientContract

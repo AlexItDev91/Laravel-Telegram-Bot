@@ -83,11 +83,16 @@ class TelegramBotClient implements TelegramBotClientContract
      */
     private function buildRequestOptions(TelegramBotRequestData $request): array
     {
+        $options = [
+            'timeout' => $this->config->timeout,
+            'http_errors' => false,
+        ];
+
         if (! $request->containsFiles()) {
-            return ['json' => $request->json()];
+            return array_merge($options, ['json' => $request->json()]);
         }
 
-        return ['multipart' => $request->multipart()];
+        return array_merge($options, ['multipart' => $request->multipart()]);
     }
 
     private function httpClient(): ClientInterface
@@ -128,6 +133,10 @@ class TelegramBotClient implements TelegramBotClientContract
 
         if ($payload['ok'] && ! array_key_exists('result', $payload)) {
             throw new TelegramBotTransportException('Telegram Bot API successful response did not contain a result field.');
+        }
+
+        if (! $payload['ok'] && ! is_string($payload['description'] ?? null)) {
+            throw new TelegramBotTransportException('Telegram Bot API failed response did not contain a string description field.');
         }
     }
 }

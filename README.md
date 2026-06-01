@@ -169,8 +169,10 @@ $this->app->bind(ClientInterface::class, fn (): ClientInterface => new Client([
 
 ```bash
 composer install
+composer check:telegram-api-surface
 composer test
 composer test:coverage-surface
 ```
 
+`check:telegram-api-surface` compares the local SDK method and update-type surface with the current official Telegram Bot API documentation and changelog.
 `test:coverage-surface` verifies that every registered Telegram Bot API method is exposed as a native SDK method and calls the matching Telegram endpoint path.

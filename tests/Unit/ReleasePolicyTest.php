@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('1.3.1', $version);
+        $this->assertSame('1.3.2', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($releaseGuide);
         $this->assertIsString($agents);
@@ -25,6 +25,7 @@ class ReleasePolicyTest extends TestCase
             'complete the release workflow automatically unless the user explicitly says not to commit, tag, or push',
             'Stage only task-related files',
             'Push the current branch',
+            'composer check:telegram-api-surface',
             'Patch bump',
             'Minor bump',
             'git tag -a v1.0.1 -m "Release v1.0.1"',
@@ -33,6 +34,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $releaseGuide);
         }
 
+        $this->assertStringContainsString('## [1.3.2] - 2026-06-01', $changelog);
         $this->assertStringContainsString('## [1.3.1] - 2026-06-01', $changelog);
         $this->assertStringContainsString('## [1.3.0] - 2026-06-01', $changelog);
         $this->assertStringContainsString('## [1.2.0] - 2026-06-01', $changelog);

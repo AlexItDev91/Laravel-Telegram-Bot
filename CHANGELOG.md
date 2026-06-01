@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.3.2] - 2026-06-01
+
+- Forced Telegram client requests to disable Guzzle HTTP exceptions per request so Telegram `ok: false` responses keep their API error metadata.
+- Added validation that failed Telegram API responses include the required `description` field.
+- Added a local Telegram Bot API surface check script and Composer command for release-time verification against the official Telegram documentation and changelog.
+
 ## [1.3.1] - 2026-06-01
 
 - Added a package cover image to the README documentation.

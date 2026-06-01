@@ -117,6 +117,46 @@ class TelegramBotClientTest extends TestCase
         $client->getMe();
     }
 
+    public function test_throws_api_exception_for_failed_responses_when_http_client_enables_http_errors(): void
+    {
+        $client = TelegramBotClient::make(
+            token: '123456:test-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new Response(429, [], json_encode([
+                    'ok' => false,
+                    'error_code' => 429,
+                    'description' => 'Too Many Requests',
+                    'parameters' => ['retry_after' => 30],
+                ], JSON_THROW_ON_ERROR)),
+            ], httpErrors: true),
+        );
+
+        try {
+            $client->getMe();
+            $this->fail('Expected Telegram Bot API exception was not thrown.');
+        } catch (TelegramBotApiException $exception) {
+            $this->assertSame(429, $exception->telegramErrorCode());
+            $this->assertSame(['retry_after' => 30], $exception->parameters());
+        }
+    }
+
+    public function test_throws_transport_exception_for_failed_response_without_description(): void
+    {
+        $client = TelegramBotClient::make(
+            token: '123456:test-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new Response(400, [], json_encode(['ok' => false, 'error_code' => 400], JSON_THROW_ON_ERROR)),
+            ]),
+        );
+
+        $this->expectException(TelegramBotTransportException::class);
+        $this->expectExceptionMessage('Telegram Bot API failed response did not contain a string description field.');
+
+        $client->getMe();
+    }
+
     public function test_throws_transport_exception_for_success_response_without_result(): void
     {
         $client = TelegramBotClient::make(
@@ -137,14 +177,14 @@ class TelegramBotClientTest extends TestCase
      * @param  list<Response>  $responses
      * @param  array<int, array{request: RequestInterface}>  $history
      */
-    private function fakeHttpClient(array $responses, array &$history = []): Client
+    private function fakeHttpClient(array $responses, array &$history = [], bool $httpErrors = false): Client
     {
         $handler = HandlerStack::create(new MockHandler($responses));
         $handler->push(Middleware::history($history));
 
         return new Client([
             'handler' => $handler,
-            'http_errors' => false,
+            'http_errors' => $httpErrors,
         ]);
     }
 }

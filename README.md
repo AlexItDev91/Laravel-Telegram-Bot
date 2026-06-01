@@ -52,12 +52,12 @@ Keep tokens, chat IDs, and webhook secrets outside committed files.
 
 ## Laravel Boost
 
-The package ships Laravel Boost resources:
+The package ships Laravel Boost resources that are discovered from the host Laravel application when this package is installed as a dependency:
 
 - `resources/boost/guidelines/core.blade.php`
 - `resources/boost/skills/telegram-bot-package/SKILL.md`
 
-After installing this package in a Laravel application, run Boost installation or update so the package guidelines and skill are picked up:
+Do not run Boost inside this package. Install the package in a Laravel application, then run Boost in that Laravel application so it scans installed packages and adds these resources to the generated agent instructions:
 
 ```bash
 php artisan boost:install

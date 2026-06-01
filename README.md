@@ -22,6 +22,23 @@ Primary sources:
 - [Telegram Bot API](https://core.telegram.org/bots/api)
 - [Telegram Bot API changelog](https://core.telegram.org/bots/api-changelog)
 
+## Installation
+
+```bash
+composer require alexitdev91/laravel-telegram-bot
+```
+
+Laravel discovers the service provider and facade automatically.
+
+Publish the configuration when you need to customize bot and channel mappings:
+
+```bash
+php artisan vendor:publish --tag=telegram-bot-config
+```
+
+Set at least one bot token in environment variables or in `config/telegram-bot.php`.
+Keep tokens, chat IDs, and webhook secrets outside committed files.
+
 ## Usage
 
 ```php

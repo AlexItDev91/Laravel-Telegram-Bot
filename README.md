@@ -28,12 +28,23 @@ Primary sources:
 composer require alexitdev91/laravel-telegram-bot
 ```
 
-Laravel discovers the service provider and facade automatically.
+Laravel 12 and 13 discover the service provider and facade automatically through package discovery.
 
-Publish the configuration when you need to customize bot and channel mappings:
+Publish the Laravel package configuration with the provider-qualified command:
 
 ```bash
-php artisan vendor:publish --tag=telegram-bot-config
+php artisan vendor:publish --provider="AlexItDev91\\LaravelTelegramBot\\Laravel\\TelegramBotServiceProvider" --tag=telegram-bot-config
+```
+
+This creates `config/telegram-bot.php`.
+
+If package discovery is disabled in your application, register the provider manually in `bootstrap/providers.php`:
+
+```php
+return [
+    App\Providers\AppServiceProvider::class,
+    AlexItDev91\LaravelTelegramBot\Laravel\TelegramBotServiceProvider::class,
+];
 ```
 
 Set at least one bot token in environment variables or in `config/telegram-bot.php`.

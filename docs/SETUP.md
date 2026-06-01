@@ -171,7 +171,34 @@ https://api.telegram.org/bot<BOT_TOKEN>/getUpdates
 
 If `message_thread_id` is absent, the message was not sent inside a forum topic.
 
-## 11. Configure Laravel Environment Values
+## 11. Install The Package In Laravel
+
+Install the package:
+
+```bash
+composer require alexitdev91/laravel-telegram-bot
+```
+
+Laravel 12 and 13 discover the service provider and facade automatically.
+
+Publish the package configuration with the provider-qualified command:
+
+```bash
+php artisan vendor:publish --provider="AlexItDev91\\LaravelTelegramBot\\Laravel\\TelegramBotServiceProvider" --tag=telegram-bot-config
+```
+
+This creates `config/telegram-bot.php`.
+
+If package discovery is disabled, register the provider manually in `bootstrap/providers.php`:
+
+```php
+return [
+    App\Providers\AppServiceProvider::class,
+    AlexItDev91\LaravelTelegramBot\Laravel\TelegramBotServiceProvider::class,
+];
+```
+
+## 12. Configure Laravel Environment Values
 
 In your Laravel application's `.env`, add values like:
 
@@ -187,7 +214,7 @@ TELEGRAM_INBOX_MESSAGE_THREAD_ID=
 
 Do not commit `.env`.
 
-## 12. Configure A Package Channel
+## 13. Configure A Package Channel
 
 In `config/telegram-bot.php`, configure channels like this:
 
@@ -209,7 +236,7 @@ TelegramBot::channel('inbox')->sendMessage([
 ]);
 ```
 
-## 13. Test Sending A Message
+## 14. Test Sending A Message
 
 Use a safe test message first:
 
@@ -228,7 +255,7 @@ If the message does not appear:
 5. If using a topic, check `message_thread_id`.
 6. Check Laravel logs for Telegram API errors.
 
-## 14. Production Safety Checklist
+## 15. Production Safety Checklist
 
 - Store the token only in secret storage or `.env`.
 - Do not commit tokens or chat IDs if the chat is private.

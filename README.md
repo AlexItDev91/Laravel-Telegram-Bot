@@ -19,6 +19,7 @@ Available documentation:
 - [docs/API.md](docs/API.md) - supported Telegram Bot API method matrix with links to the official Telegram documentation for every method.
 - [docs/METHODS.md](docs/METHODS.md) - full SDK method reference with call signatures, endpoints, and official parameter names/types.
 - [docs/SETUP.md](docs/SETUP.md) - setup guide from creating a bot and a channel or group to adding the bot and finding Telegram identifiers.
+- [docs/WEBHOOKS.md](docs/WEBHOOKS.md) - Laravel webhook receiver setup, secret-token validation, handlers, events, and route configuration.
 - [docs/RELEASE.md](docs/RELEASE.md) - release process for version bumps, changelog updates, and git tags.
 
 Primary sources:
@@ -115,6 +116,22 @@ TelegramBot::channel('inbox')->sendMessage([
 ```
 
 The raw `call(method, parameters)` API remains available for newly released Telegram methods before the typed SDK surface is updated.
+
+## Webhooks
+
+The package includes a Laravel webhook receiver at `POST /telegram-bot/webhook` by default. It validates `X-Telegram-Bot-Api-Secret-Token` when `TELEGRAM_WEBHOOK_SECRET_TOKEN` is configured, dispatches a `TelegramWebhookReceived` event, and can call a configured `TelegramWebhookHandler`.
+
+```php
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+TelegramBot::bot('default')->setWebhook([
+    'url' => route('telegram-bot.webhook'),
+    'secret_token' => config('telegram-bot.webhook.secret_token'),
+    'allowed_updates' => ['message', 'callback_query'],
+]);
+```
+
+See [docs/WEBHOOKS.md](docs/WEBHOOKS.md) for the full setup and handler examples.
 
 ## Files And HTTP Client
 

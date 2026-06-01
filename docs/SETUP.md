@@ -308,6 +308,9 @@ TELEGRAM_BOT_TIMEOUT=10
 
 TELEGRAM_INBOX_CHAT_ID=-1001234567890
 TELEGRAM_INBOX_MESSAGE_THREAD_ID=
+
+TELEGRAM_WEBHOOK_SECRET_TOKEN=change-this-secret
+TELEGRAM_WEBHOOK_ROUTE_URI=telegram-bot/webhook
 ```
 
 For a topic, set:
@@ -342,6 +345,19 @@ Add a channel mapping:
         'bot' => 'default',
         'chat_id' => env('TELEGRAM_INBOX_CHAT_ID'),
         'message_thread_id' => env('TELEGRAM_INBOX_MESSAGE_THREAD_ID'),
+    ],
+],
+
+'webhook' => [
+    'bot' => env('TELEGRAM_WEBHOOK_BOT', env('TELEGRAM_BOT', 'default')),
+    'secret_token' => env('TELEGRAM_WEBHOOK_SECRET_TOKEN'),
+    'handler' => null,
+    'dispatch_event' => true,
+    'route' => [
+        'enabled' => env('TELEGRAM_WEBHOOK_ROUTE_ENABLED', true),
+        'uri' => env('TELEGRAM_WEBHOOK_ROUTE_URI', 'telegram-bot/webhook'),
+        'name' => env('TELEGRAM_WEBHOOK_ROUTE_NAME', 'telegram-bot.webhook'),
+        'middleware' => [],
     ],
 ],
 ```
@@ -451,7 +467,29 @@ $this->app->bind(ClientInterface::class, fn (): ClientInterface => new Client([
 ]));
 ```
 
-## 17. Test With Tinker
+## 17. Receive Telegram Webhooks
+
+The package registers `POST /telegram-bot/webhook` by default. Configure a secret token and pass the same value to Telegram:
+
+```dotenv
+TELEGRAM_WEBHOOK_SECRET_TOKEN=change-this-secret
+```
+
+```php
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+TelegramBot::bot('default')->setWebhook([
+    'url' => route('telegram-bot.webhook'),
+    'secret_token' => config('telegram-bot.webhook.secret_token'),
+    'allowed_updates' => ['message', 'callback_query'],
+]);
+```
+
+Incoming updates can be handled with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler` or by listening for `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived`.
+
+See [docs/WEBHOOKS.md](WEBHOOKS.md) for route configuration, handler examples, event usage, secret validation, and production safety notes.
+
+## 18. Test With Tinker
 
 Run:
 
@@ -471,7 +509,7 @@ TelegramBot::channel('inbox')->sendMessage([
 
 If the message appears in Telegram, the bot, channel, identifiers, package config, and Laravel integration are connected correctly.
 
-## 18. Troubleshooting
+## 19. Troubleshooting
 
 If `getUpdates` is empty:
 
@@ -499,10 +537,18 @@ If Telegram returns `chat not found`, the bot usually cannot access that chat or
 
 If Telegram returns `Forbidden`, the bot may have been removed, blocked, or denied permission to post.
 
-## 19. Production Safety Checklist
+If Telegram webhook delivery fails:
+
+1. Check `getWebhookInfo` for the last delivery error.
+2. Check that `TELEGRAM_WEBHOOK_SECRET_TOKEN` matches the `secret_token` passed to `setWebhook`.
+3. Check that the route URL is public HTTPS and points to `route('telegram-bot.webhook')` or your configured route.
+4. Check that the handler returns quickly or dispatches slow work to a queue.
+
+## 20. Production Safety Checklist
 
 - Store bot tokens only in `.env`, secret storage, or deployment platform secrets.
 - Do not commit real bot tokens, private chat IDs, webhook secrets, logs, or screenshots.
+- Set a webhook secret token and pass it to Telegram with `setWebhook`.
 - Give the bot only the permissions it needs.
 - Use a private channel or private group for operational notifications.
 - Rotate the token if it appears anywhere public.

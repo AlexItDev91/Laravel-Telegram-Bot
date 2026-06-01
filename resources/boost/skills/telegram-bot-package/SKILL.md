@@ -29,6 +29,8 @@ TELEGRAM_BOT_API_URL=https://api.telegram.org
 TELEGRAM_BOT_TIMEOUT=10
 TELEGRAM_INBOX_CHAT_ID=-1001234567890
 TELEGRAM_INBOX_MESSAGE_THREAD_ID=
+TELEGRAM_WEBHOOK_SECRET_TOKEN=change-this-secret
+TELEGRAM_WEBHOOK_ROUTE_URI=telegram-bot/webhook
 ```
 
 `config/telegram-bot.php`:
@@ -86,6 +88,22 @@ Prefer constructor injection with `AlexItDev91\LaravelTelegramBot\TelegramBot` o
 Use `InputFile::fromPath()` for top-level and nested file uploads. Nested media files are converted to Telegram `attach://` multipart references automatically.
 
 Bind `GuzzleHttp\ClientInterface` in the host app when custom transport, retries, proxy, tracing, or HTTP fakes are needed. Keep `http_errors` disabled so Telegram API error payloads remain available to the SDK.
+
+## Webhooks
+
+The package registers `POST /telegram-bot/webhook` when `telegram-bot.webhook.route.enabled` is true. Protect it with `TELEGRAM_WEBHOOK_SECRET_TOKEN`; the package validates `X-Telegram-Bot-Api-Secret-Token`.
+
+```php
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+TelegramBot::bot('default')->setWebhook([
+    'url' => route('telegram-bot.webhook'),
+    'secret_token' => config('telegram-bot.webhook.secret_token'),
+    'allowed_updates' => ['message', 'callback_query'],
+]);
+```
+
+Handle incoming updates with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler` or listen for `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived`. See `docs/WEBHOOKS.md` for the full receiver setup.
 
 Use `TelegramBot::call('methodName', [...])` for Telegram methods that do not have a typed helper yet. Keep Telegram IDs as strings or 64-bit safe values.
 

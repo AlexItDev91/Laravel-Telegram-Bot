@@ -8,6 +8,14 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.3.0] - 2026-06-01
+
+- Added a configurable Laravel webhook receiver route for incoming Telegram updates.
+- Added webhook secret-token validation for `X-Telegram-Bot-Api-Secret-Token`.
+- Added `TelegramWebhookUpdate`, `TelegramWebhookHandler`, and `TelegramWebhookReceived` event support.
+- Added webhook handler response normalization for JSON arrays, strings, and Symfony/Laravel responses.
+- Added detailed webhook setup, security, handler, event, and route documentation.
+
 ## [1.2.0] - 2026-06-01
 
 - Added recursive multipart serialization for nested `InputFile` values using Telegram `attach://` references.

@@ -5,11 +5,14 @@ namespace AlexItDev91\LaravelTelegramBot\Laravel;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
+use AlexItDev91\LaravelTelegramBot\Laravel\Http\Controllers\TelegramWebhookController;
+use AlexItDev91\LaravelTelegramBot\Laravel\Http\Middleware\VerifyTelegramWebhookSecret;
 use AlexItDev91\LaravelTelegramBot\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\TelegramBotManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class TelegramBotServiceProvider extends ServiceProvider
@@ -56,5 +59,24 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../../config/telegram-bot.php' => config_path('telegram-bot.php'),
         ], 'telegram-bot-config');
+
+        $this->registerWebhookRoute();
+    }
+
+    private function registerWebhookRoute(): void
+    {
+        if (! (bool) config('telegram-bot.webhook.route.enabled', true)) {
+            return;
+        }
+
+        $middleware = config('telegram-bot.webhook.route.middleware', []);
+        $middleware = is_array($middleware) ? $middleware : [$middleware];
+        $middleware[] = VerifyTelegramWebhookSecret::class;
+
+        Route::post(
+            trim((string) config('telegram-bot.webhook.route.uri', 'telegram-bot/webhook'), '/'),
+            TelegramWebhookController::class,
+        )->name((string) config('telegram-bot.webhook.route.name', 'telegram-bot.webhook'))
+            ->middleware($middleware);
     }
 }

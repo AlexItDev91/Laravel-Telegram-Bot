@@ -15,6 +15,7 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('vendor:publish --provider="AlexItDev91\\\\LaravelTelegramBot\\\\Laravel\\\\TelegramBotServiceProvider" --tag=telegram-bot-config', $guidelines);
         $this->assertStringContainsString('https://core.telegram.org/bots/api', $guidelines);
         $this->assertStringContainsString('https://core.telegram.org/bots/api-changelog', $guidelines);
+        $this->assertStringContainsString('TelegramWebhookReceived', $guidelines);
     }
 
     public function test_package_ships_laravel_boost_skill(): void
@@ -26,5 +27,6 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('composer require alexitdev91/laravel-telegram-bot', $skill);
         $this->assertStringContainsString('vendor:publish --provider="AlexItDev91\\\\LaravelTelegramBot\\\\Laravel\\\\TelegramBotServiceProvider" --tag=telegram-bot-config', $skill);
         $this->assertStringContainsString('TelegramBot::channel', $skill);
+        $this->assertStringContainsString('TELEGRAM_WEBHOOK_SECRET_TOKEN', $skill);
     }
 }

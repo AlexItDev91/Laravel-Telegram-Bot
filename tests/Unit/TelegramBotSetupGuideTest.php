@@ -27,6 +27,7 @@ class TelegramBotSetupGuideTest extends TestCase
             'Configure Environment Values',
             'Configure config/telegram-bot.php',
             'Send A Test Message From Laravel',
+            'Receive Telegram Webhooks',
             'Test With Tinker',
             'Troubleshooting',
             'Production Safety Checklist',
@@ -41,9 +42,11 @@ class TelegramBotSetupGuideTest extends TestCase
             'TELEGRAM_BOT_TOKEN',
             'TELEGRAM_INBOX_CHAT_ID',
             'TELEGRAM_INBOX_MESSAGE_THREAD_ID',
+            'TELEGRAM_WEBHOOK_SECRET_TOKEN',
             'php artisan vendor:publish --provider="AlexItDev91\\\\LaravelTelegramBot\\\\Laravel\\\\TelegramBotServiceProvider" --tag=telegram-bot-config',
             'TelegramBot::channel(\'inbox\')->sendMessage',
             'TelegramBot::bot(\'support\')->sendMessage',
+            'TelegramWebhookReceived',
         ] as $requiredInstruction) {
             $this->assertStringContainsString($requiredInstruction, $guide);
         }

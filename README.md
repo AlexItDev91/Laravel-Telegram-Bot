@@ -1,0 +1,37 @@
+# Aptenova Telegram Bot
+
+Laravel-friendly PHP SDK for the official Telegram Bot API.
+
+## Requirements
+
+- PHP `^8.2`
+- Laravel `^12.0|^13.0`
+- Guzzle `^7.8`
+
+## API Coverage
+
+The package targets Telegram Bot API `10.0`, released on `2026-05-08`.
+
+See [docs/API.md](docs/API.md) for the supported method matrix with links to the official Telegram documentation for every method.
+
+Primary sources:
+
+- [Telegram Bot API](https://core.telegram.org/bots/api)
+- [Telegram Bot API changelog](https://core.telegram.org/bots/api-changelog)
+
+## Usage
+
+```php
+use Aptenova\TelegramBot\Facades\TelegramBot;
+
+TelegramBot::bot('support')->sendMessage([
+    'chat_id' => '-1001234567890',
+    'text' => 'New message',
+]);
+
+TelegramBot::channel('inbox')->sendMessage([
+    'text' => 'New inbound email',
+]);
+```
+
+The raw `call(method, parameters)` API remains available for newly released Telegram methods before the typed SDK surface is updated.

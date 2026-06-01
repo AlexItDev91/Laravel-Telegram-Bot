@@ -1,0 +1,35 @@
+# Telegram Bot SDK Agent Rules
+
+## Output
+
+- Keep package documentation and public code comments in English unless a task explicitly asks otherwise.
+- Keep code, commands, file paths, identifiers, API names, logs, errors, and quotes in their original language.
+
+## Scope
+
+- This package provides a Laravel-friendly PHP SDK for the official Telegram Bot API.
+- Keep the core client framework-agnostic where practical.
+- Laravel integration belongs in the `Aptenova\TelegramBot\Laravel` and `Aptenova\TelegramBot\Facades` namespaces.
+- Do not store bot tokens, chat IDs, webhook secrets, or other credentials in committed files.
+
+## API Currency
+
+Before any implementation, bugfix, release preparation, or API-surface change, check the current official Telegram Bot API documentation and changelog:
+
+- https://core.telegram.org/bots/api
+- https://core.telegram.org/bots/api-changelog
+
+Do not assume the local SDK is current.
+
+When Telegram adds, changes, renames, or deprecates methods, objects, fields, parameters, webhook behavior, file behavior, payments, Mini Apps, or update types, update the SDK surface, tests, docs, and release notes as part of the task.
+
+The SDK must always keep a raw `call(method, parameters)` API so newly released Telegram methods are usable before typed helpers are added.
+
+## Development
+
+- Prefer minimal production-ready changes.
+- Do not add dependencies unless the task requires them and the reason is documented.
+- Use the official Telegram Bot API response contract: successful responses contain `ok: true` and `result`; failed responses contain `ok: false`, `description`, and may contain `error_code` and `parameters`.
+- Keep Telegram user, chat, and message identifiers 64-bit safe. Do not store them as 32-bit integers.
+- Cover new SDK behavior with tests before or alongside implementation.
+- Run focused package/application tests after changes.

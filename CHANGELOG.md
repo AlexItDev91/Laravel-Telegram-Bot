@@ -8,6 +8,14 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.4.0] - 2026-06-01
+
+- Added typed request DTOs and value objects for Telegram Payments, Stars, subscriptions, and paid media.
+- Added typed Telegram Passport helpers for authorization scopes, passport element errors, `setPassportDataErrors`, and Passport payload decryption.
+- Added typed Games helpers for `sendGame`, `setGameScore`, `getGameHighScores`, `CallbackGame`, and `InlineQueryResultGame`.
+- Added payment, Passport, and game convenience accessors to `TelegramWebhookUpdate`.
+- Added dedicated Payments, Telegram Passport, paid media, and Games documentation with examples.
+
 ## [1.3.2] - 2026-06-01
 
 - Forced Telegram client requests to disable Guzzle HTTP exceptions per request so Telegram `ok: false` responses keep their API error metadata.

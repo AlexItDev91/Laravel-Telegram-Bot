@@ -39,4 +39,44 @@ class TelegramWebhookUpdateTest extends TestCase
         $this->assertSame('future', $update->get('future_update_type.id'));
         $this->assertSame(['id' => 'future'], $update->payload()['future_update_type']);
     }
+
+    public function test_exposes_payment_passport_and_game_helpers(): void
+    {
+        $paymentUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 125,
+            'message' => [
+                'invoice' => ['payload' => 'order-100'],
+                'successful_payment' => ['telegram_payment_charge_id' => 'payment-charge'],
+                'refunded_payment' => ['telegram_payment_charge_id' => 'refund-charge'],
+                'passport_data' => ['credentials' => ['data' => 'encrypted']],
+                'game' => ['title' => 'Space Race'],
+            ],
+        ]);
+        $preCheckoutUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 126,
+            'pre_checkout_query' => ['id' => 'pre-checkout'],
+        ]);
+        $shippingUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 127,
+            'shipping_query' => ['id' => 'shipping-query'],
+        ]);
+        $paidMediaUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 128,
+            'purchased_paid_media' => ['paid_media_payload' => 'paid-media-order'],
+        ]);
+        $gameCallbackUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 129,
+            'callback_query' => ['game_short_name' => 'space_race'],
+        ]);
+
+        $this->assertSame(['telegram_payment_charge_id' => 'payment-charge'], $paymentUpdate->successfulPayment());
+        $this->assertSame(['payload' => 'order-100'], $paymentUpdate->invoice());
+        $this->assertSame(['telegram_payment_charge_id' => 'refund-charge'], $paymentUpdate->refundedPayment());
+        $this->assertSame(['credentials' => ['data' => 'encrypted']], $paymentUpdate->passportData());
+        $this->assertSame(['title' => 'Space Race'], $paymentUpdate->game());
+        $this->assertSame(['id' => 'shipping-query'], $shippingUpdate->shippingQuery());
+        $this->assertSame(['id' => 'pre-checkout'], $preCheckoutUpdate->preCheckoutQuery());
+        $this->assertSame(['paid_media_payload' => 'paid-media-order'], $paidMediaUpdate->purchasedPaidMedia());
+        $this->assertSame('space_race', $gameCallbackUpdate->gameShortName());
+    }
 }

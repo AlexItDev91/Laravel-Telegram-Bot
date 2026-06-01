@@ -20,6 +20,7 @@ Available documentation:
 
 - [docs/API.md](docs/API.md) - supported Telegram Bot API method matrix with links to the official Telegram documentation for every method.
 - [docs/METHODS.md](docs/METHODS.md) - full SDK method reference with call signatures, endpoints, and official parameter names/types.
+- [docs/PAYMENTS_PASSPORT_GAMES.md](docs/PAYMENTS_PASSPORT_GAMES.md) - typed helpers, webhook accessors, and examples for Payments, Telegram Passport, paid media, and Games.
 - [docs/SETUP.md](docs/SETUP.md) - setup guide from creating a bot and a channel or group to adding the bot and finding Telegram identifiers.
 - [docs/WEBHOOKS.md](docs/WEBHOOKS.md) - Laravel webhook receiver setup, secret-token validation, handlers, events, and route configuration.
 - [docs/RELEASE.md](docs/RELEASE.md) - release process for version bumps, changelog updates, and git tags.

@@ -4,7 +4,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO;
 
 use AlexItDev91\LaravelTelegramBot\InputFile;
 
-final readonly class TelegramBotRequestData
+readonly class TelegramBotRequestData implements TelegramBotData
 {
     /**
      * @param  array<string, mixed>  $parameters
@@ -32,7 +32,47 @@ final readonly class TelegramBotRequestData
      */
     public function json(): array
     {
-        return $this->parameters;
+        return self::normalizeValue($this->parameters);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return $this->json();
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     * @return array<string, mixed>
+     */
+    public static function withoutNullValues(array $parameters): array
+    {
+        return array_filter($parameters, static fn (mixed $value): bool => $value !== null);
+    }
+
+    public static function normalizeValue(mixed $value): mixed
+    {
+        if ($value instanceof InputFile) {
+            return $value;
+        }
+
+        if ($value instanceof TelegramBotData) {
+            return $value->toArray();
+        }
+
+        if (! is_array($value)) {
+            return $value;
+        }
+
+        $normalized = [];
+
+        foreach ($value as $key => $nestedValue) {
+            $normalized[$key] = self::normalizeValue($nestedValue);
+        }
+
+        return $normalized;
     }
 
     /**
@@ -71,6 +111,10 @@ final readonly class TelegramBotRequestData
                 return true;
             }
 
+            if ($value instanceof TelegramBotData) {
+                return $this->containsInputFile($value->toArray());
+            }
+
             if (is_array($value) && $this->containsInputFile($value)) {
                 return true;
             }
@@ -100,6 +144,10 @@ final readonly class TelegramBotRequestData
             $fileParts[] = $value->toMultipartPart($attachmentName);
 
             return "attach://{$attachmentName}";
+        }
+
+        if ($value instanceof TelegramBotData) {
+            return $this->normalizeMultipartValue($value->toArray(), $fileParts, $attachmentIndex, $reservedNames);
         }
 
         if (! is_array($value)) {

@@ -104,4 +104,85 @@ final readonly class TelegramWebhookUpdate
 
         return $value;
     }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function shippingQuery(): ?array
+    {
+        return $this->arrayAt('shipping_query');
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function preCheckoutQuery(): ?array
+    {
+        return $this->arrayAt('pre_checkout_query');
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function purchasedPaidMedia(): ?array
+    {
+        return $this->arrayAt('purchased_paid_media');
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function successfulPayment(): ?array
+    {
+        return $this->arrayAt('message.successful_payment');
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function invoice(): ?array
+    {
+        return $this->arrayAt('message.invoice');
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function refundedPayment(): ?array
+    {
+        return $this->arrayAt('message.refunded_payment');
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function passportData(): ?array
+    {
+        return $this->arrayAt('message.passport_data');
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function game(): ?array
+    {
+        return $this->arrayAt('message.game');
+    }
+
+    public function gameShortName(): ?string
+    {
+        $gameShortName = $this->get('callback_query.game_short_name');
+
+        return is_string($gameShortName) ? $gameShortName : null;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function arrayAt(string $key): ?array
+    {
+        $value = $this->get($key);
+
+        return is_array($value) ? $value : null;
+    }
 }

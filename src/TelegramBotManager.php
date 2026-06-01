@@ -77,7 +77,7 @@ class TelegramBotManager implements TelegramBotManagerContract
         $bots = $this->config['bots'] ?? [];
 
         if (is_array($bots) && is_array($bots[$name] ?? null)) {
-            return array_merge($this->sharedBotConfig(), $bots[$name]);
+            return array_merge($this->sharedBotConfig(), $this->configuredBotValues($bots[$name]));
         }
 
         if ($name === 'default') {
@@ -97,5 +97,14 @@ class TelegramBotManager implements TelegramBotManagerContract
             'api_url' => $this->config['api_url'] ?? 'https://api.telegram.org',
             'timeout' => $this->config['timeout'] ?? 10,
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $config
+     * @return array<string, mixed>
+     */
+    private function configuredBotValues(array $config): array
+    {
+        return array_filter($config, static fn (mixed $value): bool => $value !== null && $value !== '');
     }
 }

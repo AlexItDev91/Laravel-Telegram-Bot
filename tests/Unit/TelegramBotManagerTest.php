@@ -45,6 +45,26 @@ class TelegramBotManagerTest extends TestCase
         $this->assertSame('42', $body['message_thread_id']);
     }
 
+    public function test_named_bot_config_falls_back_to_shared_values_when_values_are_empty(): void
+    {
+        $history = [];
+        $http = $this->fakeHttpClient([
+            new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+        ], $history);
+
+        $manager = new TelegramBotManager([
+            'token' => '111:shared',
+            'api_url' => 'https://api.telegram.test',
+            'bots' => [
+                'default' => ['token' => null, 'api_url' => '', 'timeout' => null],
+            ],
+        ], static fn (TelegramBotConfigData $config): TelegramBotClient => new TelegramBotClient($config, $http));
+
+        $manager->bot()->getMe();
+
+        $this->assertSame('/bot111:shared/getMe', $history[0]['request']->getUri()->getPath());
+    }
+
     /**
      * @param  list<Response>  $responses
      * @param  array<int, array{request: RequestInterface}>  $history

@@ -8,6 +8,14 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.2.0] - 2026-06-01
+
+- Added recursive multipart serialization for nested `InputFile` values using Telegram `attach://` references.
+- Added validation for malformed successful Telegram API responses that omit the required `result` field.
+- Added support for Laravel container-bound `GuzzleHttp\ClientInterface` transport customization.
+- Improved bot config fallback so empty per-bot values inherit shared config values.
+- Expanded docs for file uploads, Laravel transport customization, and concrete-vs-contract DI usage.
+
 ## [1.1.0] - 2026-06-01
 
 - Added `AlexItDev91\LaravelTelegramBot\TelegramBot` as the primary injectable Laravel service for constructor DI.

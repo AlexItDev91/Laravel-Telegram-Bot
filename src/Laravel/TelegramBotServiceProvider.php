@@ -9,6 +9,7 @@ use AlexItDev91\LaravelTelegramBot\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\TelegramBotManager;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Illuminate\Support\ServiceProvider;
 
 class TelegramBotServiceProvider extends ServiceProvider
@@ -17,12 +18,12 @@ class TelegramBotServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../../config/telegram-bot.php', 'telegram-bot');
 
-        $this->app->singleton(TelegramBotManager::class, function (): TelegramBotManager {
+        $this->app->singleton(TelegramBotManager::class, function ($app): TelegramBotManager {
             return new TelegramBotManager(
                 config: config('telegram-bot', []),
-                clientFactory: static fn (TelegramBotConfigData $config): TelegramBotClientContract => new TelegramBotClient(
+                clientFactory: fn (TelegramBotConfigData $config): TelegramBotClientContract => new TelegramBotClient(
                     config: $config,
-                    httpClient: new Client([
+                    httpClient: $app->bound(ClientInterface::class) ? $app->make(ClientInterface::class) : new Client([
                         'timeout' => $config->timeout,
                         'http_errors' => false,
                     ]),

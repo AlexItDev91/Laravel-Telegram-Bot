@@ -24,7 +24,7 @@ final readonly class TelegramApiResponseData
     {
         return new self(
             ok: ($payload['ok'] ?? false) === true,
-            result: $payload['result'] ?? true,
+            result: $payload['result'] ?? null,
             description: isset($payload['description']) ? (string) $payload['description'] : null,
             errorCode: isset($payload['error_code']) ? (int) $payload['error_code'] : null,
             parameters: is_array($payload['parameters'] ?? null) ? $payload['parameters'] : null,

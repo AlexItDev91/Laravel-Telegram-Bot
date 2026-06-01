@@ -50,6 +50,7 @@ Keep real tokens, webhook secrets, and private identifiers out of git.
 ```php
 use AlexItDev91\LaravelTelegramBot\TelegramBot as TelegramBotService;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+use AlexItDev91\LaravelTelegramBot\InputFile;
 
 public function __construct(
     private TelegramBotService $telegram,
@@ -68,9 +69,23 @@ TelegramBot::bot('support')->sendMessage([
     'chat_id' => '-1001234567890',
     'text' => 'New message',
 ]);
+
+$this->telegram->bot('support')->sendMediaGroup([
+    'chat_id' => '-1001234567890',
+    'media' => [
+        [
+            'type' => 'photo',
+            'media' => InputFile::fromPath(storage_path('app/photo.jpg')),
+        ],
+    ],
+]);
 ```
 
-Prefer constructor injection with `AlexItDev91\LaravelTelegramBot\TelegramBot` or `AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager` in Laravel services, controllers, jobs, listeners, and commands. Use the facade where a facade fits the host app style.
+Prefer constructor injection with `AlexItDev91\LaravelTelegramBot\TelegramBot` or `AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager` in Laravel services, controllers, jobs, listeners, and commands. Use concrete `TelegramBot` or `TelegramBotClient` when IDE autocomplete for every native Telegram helper is important. Use the facade where a facade fits the host app style.
+
+Use `InputFile::fromPath()` for top-level and nested file uploads. Nested media files are converted to Telegram `attach://` multipart references automatically.
+
+Bind `GuzzleHttp\ClientInterface` in the host app when custom transport, retries, proxy, tracing, or HTTP fakes are needed. Keep `http_errors` disabled so Telegram API error payloads remain available to the SDK.
 
 Use `TelegramBot::call('methodName', [...])` for Telegram methods that do not have a typed helper yet. Keep Telegram IDs as strings or 64-bit safe values.
 

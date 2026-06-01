@@ -5,6 +5,7 @@ namespace AlexItDev91\LaravelTelegramBot\Tests\Unit;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotApiException;
+use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotTransportException;
 use AlexItDev91\LaravelTelegramBot\InputFile;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use GuzzleHttp\Client;
@@ -58,6 +59,44 @@ class TelegramBotClientTest extends TestCase
         unlink($path);
     }
 
+    public function test_sends_multipart_requests_for_nested_input_files(): void
+    {
+        $history = [];
+        $path = tempnam(sys_get_temp_dir(), 'telegram-test-');
+        file_put_contents($path, 'photo-content');
+
+        $client = TelegramBotClient::make(
+            token: '123456:test-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+            ], $history),
+        );
+
+        try {
+            $client->sendMediaGroup([
+                'chat_id' => '100',
+                'media' => [
+                    [
+                        'type' => 'photo',
+                        'media' => InputFile::fromPath($path, 'photo.jpg', 'image/jpeg'),
+                    ],
+                ],
+            ]);
+
+            $body = (string) $history[0]['request']->getBody();
+
+            $this->assertStringStartsWith('multipart/form-data;', $history[0]['request']->getHeaderLine('Content-Type'));
+            $this->assertStringContainsString('name="media"', $body);
+            $this->assertStringContainsString('"media":"attach:\/\/file_0"', $body);
+            $this->assertStringContainsString('name="file_0"', $body);
+            $this->assertStringContainsString('filename="photo.jpg"', $body);
+            $this->assertStringContainsString('Content-Type: image/jpeg', $body);
+        } finally {
+            unlink($path);
+        }
+    }
+
     public function test_throws_api_exception_for_failed_responses(): void
     {
         $client = TelegramBotClient::make(
@@ -74,6 +113,22 @@ class TelegramBotClientTest extends TestCase
         );
 
         $this->expectException(TelegramBotApiException::class);
+
+        $client->getMe();
+    }
+
+    public function test_throws_transport_exception_for_success_response_without_result(): void
+    {
+        $client = TelegramBotClient::make(
+            token: '123456:test-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new Response(200, [], json_encode(['ok' => true], JSON_THROW_ON_ERROR)),
+            ]),
+        );
+
+        $this->expectException(TelegramBotTransportException::class);
+        $this->expectExceptionMessage('Telegram Bot API successful response did not contain a result field.');
 
         $client->getMe();
     }

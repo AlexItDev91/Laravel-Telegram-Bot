@@ -19,8 +19,11 @@ php artisan vendor:publish --provider="AlexItDev91\\LaravelTelegramBot\\Laravel\
 
 - Prefer constructor injection with `AlexItDev91\LaravelTelegramBot\TelegramBot` or `AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager` in Laravel services, controllers, jobs, listeners, and commands.
 - Use `AlexItDev91\LaravelTelegramBot\Facades\TelegramBot` when a facade is appropriate.
+- Use concrete `TelegramBot` or `TelegramBotClient` when IDE autocomplete for every native Telegram helper is important; contracts expose the stable core surface.
 - Use `TelegramBot::bot('name')` for a named bot.
 - Use `TelegramBot::channel('name')` for a configured destination with `chat_id` and optional `message_thread_id`.
+- Use `InputFile::fromPath()` for top-level and nested file uploads; nested media files are converted to Telegram `attach://` multipart references.
+- Bind `GuzzleHttp\ClientInterface` in the host app when custom transport, retries, proxy, tracing, or HTTP fakes are needed.
 - Use `TelegramBot::call('methodName', [...])` for new Telegram methods before typed helpers are updated.
 - Keep Telegram IDs as strings or 64-bit safe values.
 

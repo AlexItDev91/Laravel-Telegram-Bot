@@ -13,9 +13,10 @@ Primary sources:
 
 - Every Telegram method is exposed as a native PHP method on the client, manager, and facade forwarding surface.
 - Every native method accepts `array|TelegramBotRequestData $parameters = []` and returns the decoded Telegram `result` value.
-- The package sends JSON for normal requests and multipart form data when `InputFile` values are present.
+- The package sends JSON for normal requests and multipart form data when `InputFile` values are present, including nested media arrays that need Telegram `attach://` file references.
 - The raw `call(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = [])` method is always available for newly released Telegram methods.
 - Telegram identifiers can exceed 32-bit integer range. Keep chat, user, message, and topic IDs as strings or 64-bit safe values.
+- Type-hint concrete `TelegramBot` or `TelegramBotClient` when you want IDE autocomplete for every native helper method. The contracts expose the stable core manager/client surface.
 
 ## Common Call Shapes
 
@@ -41,6 +42,16 @@ TelegramBot::bot('support')->sendMessage([
 TelegramBot::channel('inbox')->sendDocument([
     'document' => InputFile::fromPath(storage_path('app/report.pdf')),
     'caption' => 'Report',
+]);
+
+$this->telegram->bot('support')->sendMediaGroup([
+    'chat_id' => '-1001234567890',
+    'media' => [
+        [
+            'type' => 'photo',
+            'media' => InputFile::fromPath(storage_path('app/photo.jpg')),
+        ],
+    ],
 ]);
 
 TelegramBot::call('newTelegramMethod', [

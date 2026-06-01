@@ -97,6 +97,7 @@ final class SendTelegramAlert
 ```
 
 You may also depend on `AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager` when you prefer a contract type hint.
+Use the concrete `TelegramBot` or `TelegramBotClient` type when you want IDE autocomplete for every native Telegram helper method; the contracts expose the stable core `bot()`, `channel()`, and `call()` surface.
 
 The facade remains available:
 
@@ -114,6 +115,36 @@ TelegramBot::channel('inbox')->sendMessage([
 ```
 
 The raw `call(method, parameters)` API remains available for newly released Telegram methods before the typed SDK surface is updated.
+
+## Files And HTTP Client
+
+Use `InputFile::fromPath()` for uploads. Nested media arrays are converted to Telegram `attach://` multipart references automatically:
+
+```php
+use AlexItDev91\LaravelTelegramBot\InputFile;
+
+$telegram->bot('support')->sendMediaGroup([
+    'chat_id' => '-1001234567890',
+    'media' => [
+        [
+            'type' => 'photo',
+            'media' => InputFile::fromPath(storage_path('app/photo.jpg')),
+        ],
+    ],
+]);
+```
+
+To customize transport in Laravel, bind `GuzzleHttp\ClientInterface` before the bot client is resolved:
+
+```php
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+
+$this->app->bind(ClientInterface::class, fn (): ClientInterface => new Client([
+    'timeout' => 5,
+    'http_errors' => false,
+]));
+```
 
 ## Testing
 

@@ -63,6 +63,8 @@ class TelegramBotClient implements TelegramBotClientContract
             throw new TelegramBotTransportException('Telegram Bot API returned a non-JSON response.');
         }
 
+        $this->assertValidResponsePayload($payload);
+
         $apiResponse = TelegramApiResponseData::fromPayload($payload);
 
         if (! $apiResponse->ok) {
@@ -112,6 +114,20 @@ class TelegramBotClient implements TelegramBotClientContract
     {
         if (preg_match('/^[A-Za-z0-9_]+$/', $method) !== 1) {
             throw new InvalidArgumentException('Telegram Bot API method names may contain only letters, numbers, and underscores.');
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function assertValidResponsePayload(array $payload): void
+    {
+        if (! array_key_exists('ok', $payload) || ! is_bool($payload['ok'])) {
+            throw new TelegramBotTransportException('Telegram Bot API response did not contain a boolean ok field.');
+        }
+
+        if ($payload['ok'] && ! array_key_exists('result', $payload)) {
+            throw new TelegramBotTransportException('Telegram Bot API successful response did not contain a result field.');
         }
     }
 }

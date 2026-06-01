@@ -25,6 +25,17 @@ When Telegram adds, changes, renames, or deprecates methods, objects, fields, pa
 
 The SDK must always keep a raw `call(method, parameters)` API so newly released Telegram methods are usable before typed helpers are added.
 
+## Versioning
+
+- Every package update must include a version bump and a git tag.
+- The current version is stored in `VERSION`.
+- Release notes are stored in `CHANGELOG.md`.
+- Release commands and rules are documented in `docs/RELEASE.md`.
+- Use patch bumps for small compatible changes, bug fixes, documentation, tests, and internal cleanup.
+- Use minor bumps for significant compatible changes, new public features, new SDK behavior, or Telegram Bot API surface expansions.
+- Use major bumps for breaking public API, config, behavior, namespace, dependency, or Laravel compatibility changes.
+- Packagist reads versions from git tags, so do not add a hardcoded `version` field to `composer.json`.
+
 ## Development
 
 - Prefer minimal production-ready changes.

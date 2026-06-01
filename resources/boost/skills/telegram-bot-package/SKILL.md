@@ -71,6 +71,16 @@ Before changing Telegram API behavior, check both official sources:
 
 When Telegram changes the Bot API, update methods, enum values, docs, tests, and Laravel integration examples together.
 
+## Version
+
+Every package update must bump `VERSION`, update `CHANGELOG.md`, and create a git tag.
+
+- Patch bump: small compatible changes, fixes, docs, tests, cleanup.
+- Minor bump: significant compatible changes, new features, Telegram API surface expansions.
+- Major bump: breaking public API, config, behavior, namespace, dependency, or Laravel compatibility changes.
+
+Follow `docs/RELEASE.md`.
+
 ## Test
 
 ```bash

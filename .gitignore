@@ -2,3 +2,24 @@
 /.phpunit.result.cache
 /vendor
 composer.lock
+
+# IDEs and editors
+/.idea
+/.vscode
+/.fleet
+/.zed
+/.nova
+/.history
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs and local environment
+*.log
+.env
+.env.*
+!.env.example

@@ -20,8 +20,18 @@ Primary sources:
 ## Common Call Shapes
 
 ```php
+use AlexItDev91\LaravelTelegramBot\TelegramBot as TelegramBotService;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\InputFile;
+
+public function __construct(
+    private TelegramBotService $telegram,
+) {
+}
+
+$this->telegram->channel('inbox')->sendMessage([
+    'text' => 'New inbound email',
+]);
 
 TelegramBot::bot('support')->sendMessage([
     'chat_id' => '-1001234567890',

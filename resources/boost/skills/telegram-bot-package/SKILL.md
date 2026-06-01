@@ -48,7 +48,17 @@ Keep real tokens, webhook secrets, and private identifiers out of git.
 ## Use
 
 ```php
+use AlexItDev91\LaravelTelegramBot\TelegramBot as TelegramBotService;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+public function __construct(
+    private TelegramBotService $telegram,
+) {
+}
+
+$this->telegram->channel('inbox')->sendMessage([
+    'text' => 'New inbound email',
+]);
 
 TelegramBot::channel('inbox')->sendMessage([
     'text' => 'New inbound email',
@@ -59,6 +69,8 @@ TelegramBot::bot('support')->sendMessage([
     'text' => 'New message',
 ]);
 ```
+
+Prefer constructor injection with `AlexItDev91\LaravelTelegramBot\TelegramBot` or `AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager` in Laravel services, controllers, jobs, listeners, and commands. Use the facade where a facade fits the host app style.
 
 Use `TelegramBot::call('methodName', [...])` for Telegram methods that do not have a typed helper yet. Keep Telegram IDs as strings or 64-bit safe values.
 

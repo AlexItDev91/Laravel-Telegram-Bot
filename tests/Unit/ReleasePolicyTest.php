@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('1.0.1', $version);
+        $this->assertSame('1.1.0', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($releaseGuide);
         $this->assertIsString($agents);
@@ -22,6 +22,9 @@ class ReleasePolicyTest extends TestCase
 
         foreach ([
             'Every package update must include a version bump and a git tag',
+            'complete the release workflow automatically unless the user explicitly says not to commit, tag, or push',
+            'Stage only task-related files',
+            'Push the current branch',
             'Patch bump',
             'Minor bump',
             'git tag -a v1.0.1 -m "Release v1.0.1"',
@@ -30,8 +33,10 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $releaseGuide);
         }
 
+        $this->assertStringContainsString('## [1.1.0] - 2026-06-01', $changelog);
         $this->assertStringContainsString('## [1.0.1] - 2026-06-01', $changelog);
         $this->assertStringContainsString('Every package update must include a version bump and a git tag.', $agents);
+        $this->assertStringContainsString('complete the release workflow automatically unless the user explicitly says not to commit, tag, or push', $agents);
         $this->assertStringContainsString('[docs/RELEASE.md](docs/RELEASE.md)', $readme);
     }
 

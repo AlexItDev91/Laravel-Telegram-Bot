@@ -17,7 +17,8 @@ php artisan vendor:publish --provider="AlexItDev91\\LaravelTelegramBot\\Laravel\
 
 ## Usage
 
-- Use `AlexItDev91\LaravelTelegramBot\Facades\TelegramBot`.
+- Prefer constructor injection with `AlexItDev91\LaravelTelegramBot\TelegramBot` or `AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager` in Laravel services, controllers, jobs, listeners, and commands.
+- Use `AlexItDev91\LaravelTelegramBot\Facades\TelegramBot` when a facade is appropriate.
 - Use `TelegramBot::bot('name')` for a named bot.
 - Use `TelegramBot::channel('name')` for a configured destination with `chat_id` and optional `message_thread_id`.
 - Use `TelegramBot::call('methodName', [...])` for new Telegram methods before typed helpers are updated.

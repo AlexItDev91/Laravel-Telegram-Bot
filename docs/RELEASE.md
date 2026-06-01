@@ -26,6 +26,21 @@ For every release commit:
 4. Create a git tag.
 5. Push the commit and tag.
 
+## Agent Automation Rules
+
+When an agent makes any package update, it must complete the release workflow automatically unless the user explicitly says not to commit, tag, or push.
+
+The agent must:
+
+1. Run the required checks.
+2. Stage only task-related files.
+3. Commit the full task diff.
+4. Create an annotated `v<VERSION>` tag from the committed version in `VERSION`.
+5. Push the current branch.
+6. Push the tag.
+
+The agent must not leave a completed package update, version bump, or changelog entry uncommitted. If commit, tag, or push fails, the agent must report the exact failed step and reason. Unrelated dirty files must remain unstaged.
+
 ## Commands
 
 Patch release:

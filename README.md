@@ -75,6 +75,31 @@ php artisan boost:update
 
 ## Usage
 
+Use constructor injection in Laravel services, controllers, jobs, listeners, and commands:
+
+```php
+use AlexItDev91\LaravelTelegramBot\TelegramBot;
+
+final class SendTelegramAlert
+{
+    public function __construct(
+        private TelegramBot $telegram,
+    ) {
+    }
+
+    public function __invoke(): void
+    {
+        $this->telegram->channel('inbox')->sendMessage([
+            'text' => 'New inbound email',
+        ]);
+    }
+}
+```
+
+You may also depend on `AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager` when you prefer a contract type hint.
+
+The facade remains available:
+
 ```php
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 

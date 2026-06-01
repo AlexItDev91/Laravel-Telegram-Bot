@@ -378,7 +378,30 @@ For multiple bots:
 
 ## 16. Send A Test Message From Laravel
 
-Use the facade:
+Use Laravel constructor injection in controllers, jobs, listeners, commands, or services:
+
+```php
+use AlexItDev91\LaravelTelegramBot\TelegramBot;
+
+final class SendTelegramSetupMessage
+{
+    public function __construct(
+        private TelegramBot $telegram,
+    ) {
+    }
+
+    public function __invoke(): void
+    {
+        $this->telegram->channel('inbox')->sendMessage([
+            'text' => 'Telegram setup test',
+        ]);
+    }
+}
+```
+
+You may also type-hint `AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager`.
+
+The facade remains available:
 
 ```php
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;

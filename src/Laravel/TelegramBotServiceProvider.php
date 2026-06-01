@@ -5,6 +5,7 @@ namespace AlexItDev91\LaravelTelegramBot\Laravel;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
+use AlexItDev91\LaravelTelegramBot\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\TelegramBotManager;
 use GuzzleHttp\Client;
@@ -31,6 +32,10 @@ class TelegramBotServiceProvider extends ServiceProvider
 
         $this->app->alias(TelegramBotManager::class, 'telegram-bot');
         $this->app->alias(TelegramBotManager::class, TelegramBotManagerContract::class);
+
+        $this->app->singleton(TelegramBot::class, static function ($app): TelegramBot {
+            return new TelegramBot($app->make(TelegramBotManagerContract::class));
+        });
 
         $this->app->singleton(TelegramBotClientContract::class, static function ($app): TelegramBotClientContract {
             return $app->make(TelegramBotManager::class)->bot();

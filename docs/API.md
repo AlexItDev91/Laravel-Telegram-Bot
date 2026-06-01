@@ -10,6 +10,18 @@ Primary sources:
 Every method below is exposed as:
 
 ```php
+use AlexItDev91\LaravelTelegramBot\TelegramBot as TelegramBotService;
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+public function __construct(
+    private TelegramBotService $telegram,
+) {
+}
+
+$result = $this->telegram->channel('inbox')->sendMessage([
+    'text' => 'New inbound email',
+]);
+
 $result = TelegramBot::bot('default')->sendMessage([
     'chat_id' => '-1001234567890',
     'text' => 'Hello',

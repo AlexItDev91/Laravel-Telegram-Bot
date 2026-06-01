@@ -1,5 +1,7 @@
 # Laravel Telegram Bot
 
+![Laravel Telegram Bot package cover](docs/assets/package-cover.png)
+
 Laravel-friendly PHP SDK for the official Telegram Bot API.
 
 Developed by Aptenova as an independent open-source package. The package is not tied to any Aptenova application and can be used in any compatible Laravel 12 or 13 project.

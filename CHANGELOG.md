@@ -8,6 +8,10 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.3.1] - 2026-06-01
+
+- Added a package cover image to the README documentation.
+
 ## [1.3.0] - 2026-06-01
 
 - Added a configurable Laravel webhook receiver route for incoming Telegram updates.

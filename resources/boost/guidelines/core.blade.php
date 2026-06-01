@@ -25,7 +25,7 @@ php artisan vendor:publish --provider="AlexItDev91\\LaravelTelegramBot\\Laravel\
 - Use `InputFile::fromPath()` for top-level and nested file uploads; nested media files are converted to Telegram `attach://` multipart references.
 - Bind `GuzzleHttp\ClientInterface` in the host app when custom transport, retries, proxy, tracing, or HTTP fakes are needed.
 - Use the built-in `POST /telegram-bot/webhook` Laravel receiver for incoming updates when `telegram-bot.webhook.route.enabled` is true.
-- Protect webhooks with `TELEGRAM_WEBHOOK_SECRET_TOKEN`; the package validates `X-Telegram-Bot-Api-Secret-Token`.
+- Protect webhooks with `TELEGRAM_WEBHOOK_SECRET_TOKEN`; the package validates `X-Telegram-Bot-Api-Secret-Token` and fails closed when `TELEGRAM_WEBHOOK_REQUIRE_SECRET=true`.
 - Handle incoming updates with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler` or listen for `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived`.
 - Use `TelegramBot::call('methodName', [...])` for new Telegram methods before typed helpers are updated.
 - Keep Telegram IDs as strings or 64-bit safe values.
@@ -48,5 +48,5 @@ If Telegram changed the Bot API, update methods, enum values, docs, tests, and i
 
 ## Testing
 
-- Package: `composer test` and `composer test:coverage-surface`.
+- Package: `composer analyse`, `composer test`, and `composer test:coverage-surface`.
 - Laravel app: test provider/facade/config/channel behavior with focused tests.

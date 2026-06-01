@@ -81,6 +81,7 @@ Run before tagging:
 
 ```bash
 composer validate --no-check-publish --no-interaction
+composer analyse
 composer check:telegram-api-surface
 composer test
 composer test:coverage-surface

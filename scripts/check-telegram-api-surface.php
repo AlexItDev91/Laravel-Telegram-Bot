@@ -20,6 +20,8 @@ $localMethods = array_map(
     static fn (TelegramBotApiMethod $method): string => $method->value,
     TelegramBotApiMethod::cases(),
 );
+$officialMethodParameters = officialMethodParameters($html, $officialMethods);
+$documentedMethodParameters = documentedMethodParameters(__DIR__.'/../docs/METHODS.md', $localMethods);
 $officialUpdateTypes = officialUpdateTypes($html);
 $localUpdateTypes = localUpdateTypes();
 
@@ -55,6 +57,10 @@ foreach (diffLists('method', $officialMethods, $localMethods) as $failure) {
     $failures[] = $failure;
 }
 
+foreach (diffMethodParameters($officialMethodParameters, $documentedMethodParameters) as $failure) {
+    $failures[] = $failure;
+}
+
 foreach (diffLists('update type', $officialUpdateTypes, $localUpdateTypes) as $failure) {
     $failures[] = $failure;
 }
@@ -68,10 +74,11 @@ if ($failures !== []) {
 }
 
 printf(
-    "Telegram Bot API surface is current: version %s released on %s, %d methods, %d update types.\n",
+    "Telegram Bot API surface is current: version %s released on %s, %d methods, %d documented parameters, %d update types.\n",
     $officialVersion,
     $officialReleaseDate,
     count($localMethods),
+    countMethodParameters($documentedMethodParameters),
     count($localUpdateTypes),
 );
 
@@ -136,6 +143,120 @@ function officialMethodNames(string $html): array
 }
 
 /**
+ * @param  list<string>  $methods
+ * @return array<string, list<array{name: string, type: string, required: string}>>
+ */
+function officialMethodParameters(string $html, array $methods): array
+{
+    preg_match_all(
+        '/<h4><a class="anchor" name="([^"]+)"[^>]*>.*?<\/a>(.*?)<\/h4>(.*?)(?=<h4><a class="anchor" name="[^"]+"|$)/s',
+        $html,
+        $matches,
+        PREG_SET_ORDER,
+    );
+
+    $methodSet = array_fill_keys($methods, true);
+    $parameters = [];
+
+    foreach ($matches as $match) {
+        $method = trim(strip_tags($match[2]));
+
+        if (! isset($methodSet[$method])) {
+            continue;
+        }
+
+        $parameters[$method] = officialParametersFromBlock($match[3]);
+    }
+
+    foreach ($methods as $method) {
+        if (! array_key_exists($method, $parameters)) {
+            fwrite(STDERR, "Failed to find official Telegram Bot API method section [{$method}].\n");
+            exit(1);
+        }
+    }
+
+    ksort($parameters);
+
+    return $parameters;
+}
+
+/**
+ * @return list<array{name: string, type: string, required: string}>
+ */
+function officialParametersFromBlock(string $html): array
+{
+    if (! preg_match('/<table class="table">\s*<thead>.*?<th>Parameter<\/th>.*?<th>Type<\/th>.*?<th>Required<\/th>.*?<\/thead>\s*<tbody>(.*?)<\/tbody>\s*<\/table>/s', $html, $table)) {
+        return [];
+    }
+
+    preg_match_all('/<tr>\s*<td>(.*?)<\/td>\s*<td>(.*?)<\/td>\s*<td>(.*?)<\/td>/s', $table[1], $rows, PREG_SET_ORDER);
+
+    return array_map(
+        static fn (array $row): array => [
+            'name' => htmlCellText($row[1]),
+            'type' => htmlCellText($row[2]),
+            'required' => htmlCellText($row[3]),
+        ],
+        $rows,
+    );
+}
+
+/**
+ * @param  list<string>  $methods
+ * @return array<string, list<array{name: string, type: string, required: string}>>
+ */
+function documentedMethodParameters(string $path, array $methods): array
+{
+    $markdown = file_get_contents($path);
+
+    if ($markdown === false) {
+        fwrite(STDERR, "Failed to read local method documentation [{$path}].\n");
+        exit(1);
+    }
+
+    $parameters = [];
+
+    foreach ($methods as $method) {
+        if (! preg_match('/^### `'.preg_quote($method, '/').'`\R(.*?)(?=^### `|\z)/ms', $markdown, $section)) {
+            fwrite(STDERR, "Failed to find documented Telegram Bot API method section [{$method}].\n");
+            exit(1);
+        }
+
+        $parameters[$method] = documentedParametersFromSection($section[1], $method);
+    }
+
+    ksort($parameters);
+
+    return $parameters;
+}
+
+/**
+ * @return list<array{name: string, type: string, required: string}>
+ */
+function documentedParametersFromSection(string $markdown, string $method): array
+{
+    preg_match_all('/^\| `([^`]+)` \| `([^`]+)` \| `(Yes|Optional)` \|$/m', $markdown, $rows, PREG_SET_ORDER);
+
+    if ($rows === []) {
+        if (str_contains($markdown, 'Parameters: none.')) {
+            return [];
+        }
+
+        fwrite(STDERR, "Failed to find documented parameter table for method [{$method}].\n");
+        exit(1);
+    }
+
+    return array_map(
+        static fn (array $row): array => [
+            'name' => $row[1],
+            'type' => normalizeWhitespace($row[2]),
+            'required' => $row[3],
+        ],
+        $rows,
+    );
+}
+
+/**
  * @return list<string>
  */
 function officialUpdateTypes(string $html): array
@@ -195,6 +316,79 @@ function diffLists(string $label, array $official, array $local): array
 }
 
 /**
+ * @param  array<string, list<array{name: string, type: string, required: string}>>  $official
+ * @param  array<string, list<array{name: string, type: string, required: string}>>  $documented
+ * @return list<string>
+ */
+function diffMethodParameters(array $official, array $documented): array
+{
+    $failures = [];
+
+    foreach ($official as $method => $officialParameters) {
+        if (! array_key_exists($method, $documented)) {
+            $failures[] = "Missing documented Telegram Bot API parameter matrix for method [{$method}].";
+
+            continue;
+        }
+
+        $officialByName = parameterMap($officialParameters);
+        $documentedByName = parameterMap($documented[$method]);
+        $missing = array_values(array_diff(array_keys($officialByName), array_keys($documentedByName)));
+        $extra = array_values(array_diff(array_keys($documentedByName), array_keys($officialByName)));
+
+        if ($missing !== []) {
+            $failures[] = sprintf('Missing documented parameters for [%s]: %s.', $method, implode(', ', $missing));
+        }
+
+        if ($extra !== []) {
+            $failures[] = sprintf('Local unknown documented parameters for [%s]: %s.', $method, implode(', ', $extra));
+        }
+
+        foreach (array_intersect(array_keys($officialByName), array_keys($documentedByName)) as $parameter) {
+            $officialParameter = $officialByName[$parameter];
+            $documentedParameter = $documentedByName[$parameter];
+
+            if ($officialParameter['type'] !== $documentedParameter['type'] || $officialParameter['required'] !== $documentedParameter['required']) {
+                $failures[] = sprintf(
+                    'Documented parameter mismatch for [%s.%s]: official [%s, %s], local [%s, %s].',
+                    $method,
+                    $parameter,
+                    $officialParameter['type'],
+                    $officialParameter['required'],
+                    $documentedParameter['type'],
+                    $documentedParameter['required'],
+                );
+            }
+        }
+    }
+
+    return $failures;
+}
+
+/**
+ * @param  list<array{name: string, type: string, required: string}>  $parameters
+ * @return array<string, array{name: string, type: string, required: string}>
+ */
+function parameterMap(array $parameters): array
+{
+    $mapped = [];
+
+    foreach ($parameters as $parameter) {
+        $mapped[$parameter['name']] = $parameter;
+    }
+
+    return $mapped;
+}
+
+/**
+ * @param  array<string, list<array{name: string, type: string, required: string}>>  $methods
+ */
+function countMethodParameters(array $methods): int
+{
+    return array_sum(array_map('count', $methods));
+}
+
+/**
  * @param  list<string>  $values
  * @return list<string>
  */
@@ -204,4 +398,14 @@ function sortedUnique(array $values): array
     sort($values);
 
     return $values;
+}
+
+function htmlCellText(string $html): string
+{
+    return normalizeWhitespace(html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5));
+}
+
+function normalizeWhitespace(string $value): string
+{
+    return trim((string) preg_replace('/\s+/', ' ', $value));
 }

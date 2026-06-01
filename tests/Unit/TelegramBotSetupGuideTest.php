@@ -43,6 +43,7 @@ class TelegramBotSetupGuideTest extends TestCase
             'TELEGRAM_INBOX_CHAT_ID',
             'TELEGRAM_INBOX_MESSAGE_THREAD_ID',
             'TELEGRAM_WEBHOOK_SECRET_TOKEN',
+            'TELEGRAM_WEBHOOK_REQUIRE_SECRET',
             'php artisan vendor:publish --provider="AlexItDev91\\\\LaravelTelegramBot\\\\Laravel\\\\TelegramBotServiceProvider" --tag=telegram-bot-config',
             'TelegramBot::channel(\'inbox\')->sendMessage',
             'TelegramBot::bot(\'support\')->sendMessage',

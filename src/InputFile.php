@@ -2,7 +2,9 @@
 
 namespace AlexItDev91\LaravelTelegramBot;
 
+use GuzzleHttp\Psr7\LazyOpenStream;
 use InvalidArgumentException;
+use Psr\Http\Message\StreamInterface;
 
 final readonly class InputFile
 {
@@ -20,19 +22,21 @@ final readonly class InputFile
     }
 
     /**
-     * @return array{name: string, contents: resource, filename?: string, headers?: array<string, string>}
+     * @return array{name: string, contents: StreamInterface, filename?: string, headers?: array<string, string>}
      */
     public function toMultipartPart(string $name): array
     {
-        $contents = fopen($this->path, 'r');
+        $contents = @fopen($this->path, 'r');
 
         if ($contents === false) {
             throw new InvalidArgumentException("Telegram input file [{$this->path}] cannot be opened for reading.");
         }
 
+        fclose($contents);
+
         $part = [
             'name' => $name,
-            'contents' => $contents,
+            'contents' => new LazyOpenStream($this->path, 'r'),
         ];
 
         if ($this->filename !== null) {

@@ -18,6 +18,7 @@ Publish the package config and set the webhook values:
 ```dotenv
 TELEGRAM_WEBHOOK_BOT=default
 TELEGRAM_WEBHOOK_SECRET_TOKEN=change-this-secret
+TELEGRAM_WEBHOOK_REQUIRE_SECRET=true
 TELEGRAM_WEBHOOK_ROUTE_ENABLED=true
 TELEGRAM_WEBHOOK_ROUTE_URI=telegram-bot/webhook
 TELEGRAM_WEBHOOK_ROUTE_NAME=telegram-bot.webhook
@@ -29,6 +30,7 @@ TELEGRAM_WEBHOOK_ROUTE_NAME=telegram-bot.webhook
 'webhook' => [
     'bot' => env('TELEGRAM_WEBHOOK_BOT', env('TELEGRAM_BOT', 'default')),
     'secret_token' => env('TELEGRAM_WEBHOOK_SECRET_TOKEN'),
+    'require_secret' => env('TELEGRAM_WEBHOOK_REQUIRE_SECRET', env('APP_ENV') === 'production'),
     'handler' => App\Telegram\TelegramWebhookHandler::class,
     'dispatch_event' => true,
     'route' => [
@@ -40,7 +42,7 @@ TELEGRAM_WEBHOOK_ROUTE_NAME=telegram-bot.webhook
 ],
 ```
 
-The route defaults to `POST /telegram-bot/webhook` and is protected by `X-Telegram-Bot-Api-Secret-Token` when `secret_token` is configured.
+The route defaults to `POST /telegram-bot/webhook` and is protected by `X-Telegram-Bot-Api-Secret-Token` when `secret_token` is configured. When `require_secret` is true, the middleware rejects webhook requests if no secret is configured; this defaults to true when `APP_ENV=production`.
 
 ## Register The Webhook With Telegram
 
@@ -186,12 +188,13 @@ Customize it in config:
 ],
 ```
 
-Package middleware always validates `X-Telegram-Bot-Api-Secret-Token` when `secret_token` is configured. Add rate limiting, IP filtering, or observability middleware in the `middleware` array when the host application needs it.
+Package middleware always validates `X-Telegram-Bot-Api-Secret-Token` when `secret_token` is configured. It also fails closed when `require_secret` is true and the secret is missing. Add rate limiting, IP filtering, or observability middleware in the `middleware` array when the host application needs it.
 
 ## Security Checklist
 
 - Use HTTPS for public Telegram webhooks.
 - Set `TELEGRAM_WEBHOOK_SECRET_TOKEN` and pass the same value to `setWebhook`.
+- Keep `TELEGRAM_WEBHOOK_REQUIRE_SECRET=true` in production so a missing secret does not silently expose the route.
 - Do not commit real bot tokens, webhook secrets, chat IDs, logs, or payload dumps.
 - Avoid long-running work in the webhook request; queue it.
 - Use `allowed_updates` in `setWebhook` to reduce unnecessary traffic.

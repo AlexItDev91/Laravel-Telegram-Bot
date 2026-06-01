@@ -11,8 +11,14 @@ class VerifyTelegramWebhookSecret
     public function handle(Request $request, Closure $next): Response
     {
         $expected = config('telegram-bot.webhook.secret_token');
+        $requireSecret = config('telegram-bot.webhook.require_secret');
+        $requireSecret ??= config('app.env') === 'production';
 
         if ($expected === null || $expected === '') {
+            if ((bool) $requireSecret) {
+                abort(403, 'Telegram webhook secret token is required.');
+            }
+
             return $next($request);
         }
 

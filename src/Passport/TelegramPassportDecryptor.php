@@ -4,7 +4,6 @@ namespace AlexItDev91\LaravelTelegramBot\Passport;
 
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramPassportDecryptionException;
 use JsonException;
-use Throwable;
 
 final class TelegramPassportDecryptor
 {
@@ -214,8 +213,6 @@ final class TelegramPassportDecryptor
             $decoded = json_decode($json, true, flags: JSON_THROW_ON_ERROR);
         } catch (JsonException $exception) {
             throw new TelegramPassportDecryptionException('Telegram Passport decrypted JSON is invalid.', previous: $exception);
-        } catch (Throwable $exception) {
-            throw new TelegramPassportDecryptionException('Telegram Passport decrypted data could not be decoded.', previous: $exception);
         }
 
         if (! is_array($decoded)) {

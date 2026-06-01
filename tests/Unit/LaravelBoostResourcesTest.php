@@ -28,5 +28,6 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('vendor:publish --provider="AlexItDev91\\\\LaravelTelegramBot\\\\Laravel\\\\TelegramBotServiceProvider" --tag=telegram-bot-config', $skill);
         $this->assertStringContainsString('TelegramBot::channel', $skill);
         $this->assertStringContainsString('TELEGRAM_WEBHOOK_SECRET_TOKEN', $skill);
+        $this->assertStringContainsString('TELEGRAM_WEBHOOK_REQUIRE_SECRET', $skill);
     }
 }

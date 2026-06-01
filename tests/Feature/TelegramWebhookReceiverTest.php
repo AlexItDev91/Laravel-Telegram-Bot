@@ -51,6 +51,16 @@ class TelegramWebhookReceiverTest extends TestCase
             ->assertExactJson(['ok' => true]);
     }
 
+    public function test_webhook_secret_token_is_required_by_default_in_production(): void
+    {
+        config()->set('app.env', 'production');
+        config()->set('telegram-bot.webhook.secret_token', null);
+        config()->set('telegram-bot.webhook.require_secret', null);
+
+        $this->postJson('/telegram-bot/webhook', ['update_id' => 1001])
+            ->assertForbidden();
+    }
+
     public function test_webhook_handler_receives_update_and_may_return_response_payload(): void
     {
         config()->set('telegram-bot.webhook.handler', TelegramWebhookTestHandler::class);

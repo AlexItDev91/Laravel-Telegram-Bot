@@ -30,6 +30,7 @@ TELEGRAM_BOT_TIMEOUT=10
 TELEGRAM_INBOX_CHAT_ID=-1001234567890
 TELEGRAM_INBOX_MESSAGE_THREAD_ID=
 TELEGRAM_WEBHOOK_SECRET_TOKEN=change-this-secret
+TELEGRAM_WEBHOOK_REQUIRE_SECRET=true
 TELEGRAM_WEBHOOK_ROUTE_URI=telegram-bot/webhook
 ```
 
@@ -91,7 +92,7 @@ Bind `GuzzleHttp\ClientInterface` in the host app when custom transport, retries
 
 ## Webhooks
 
-The package registers `POST /telegram-bot/webhook` when `telegram-bot.webhook.route.enabled` is true. Protect it with `TELEGRAM_WEBHOOK_SECRET_TOKEN`; the package validates `X-Telegram-Bot-Api-Secret-Token`.
+The package registers `POST /telegram-bot/webhook` when `telegram-bot.webhook.route.enabled` is true. Protect it with `TELEGRAM_WEBHOOK_SECRET_TOKEN`; the package validates `X-Telegram-Bot-Api-Secret-Token` and fails closed when `TELEGRAM_WEBHOOK_REQUIRE_SECRET=true`.
 
 ```php
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
@@ -129,6 +130,7 @@ Follow `docs/RELEASE.md`.
 ## Test
 
 ```bash
+composer analyse
 composer test
 composer test:coverage-surface
 ```

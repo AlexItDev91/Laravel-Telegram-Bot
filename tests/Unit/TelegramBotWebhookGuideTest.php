@@ -21,6 +21,7 @@ class TelegramBotWebhookGuideTest extends TestCase
             'TelegramWebhookUpdate',
             'X-Telegram-Bot-Api-Secret-Token',
             'TELEGRAM_WEBHOOK_SECRET_TOKEN',
+            'TELEGRAM_WEBHOOK_REQUIRE_SECRET',
             'route(\'telegram-bot.webhook\')',
             'setWebhook',
             'getWebhookInfo',

@@ -8,6 +8,14 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.5.0] - 2026-06-01
+
+- Added production fail-closed webhook secret enforcement with `TELEGRAM_WEBHOOK_REQUIRE_SECRET`.
+- Switched file upload multipart parts to lazy PSR-7 streams so files are not opened during payload construction.
+- Expanded the Telegram Bot API surface check to verify documented method parameter names, types, and required flags against the official Telegram documentation.
+- Added PHPStan static analysis and a Composer `analyse` command.
+- Declared `illuminate/routing` as a runtime dependency for the Laravel webhook route integration.
+
 ## [1.4.0] - 2026-06-01
 
 - Added typed request DTOs and value objects for Telegram Payments, Stars, subscriptions, and paid media.

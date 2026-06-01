@@ -59,6 +59,23 @@ class TelegramBotClientTest extends TestCase
         unlink($path);
     }
 
+    public function test_uses_lazy_streams_for_input_file_multipart_parts(): void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'telegram-test-');
+        file_put_contents($path, 'content');
+
+        try {
+            $multipart = TelegramBotRequestData::fromArray([
+                'document' => InputFile::fromPath($path, 'file.txt', 'text/plain'),
+            ])->multipart();
+
+            $this->assertInstanceOf(\GuzzleHttp\Psr7\LazyOpenStream::class, $multipart[0]['contents']);
+            $this->assertSame(0, $this->openStreamsForPath($path));
+        } finally {
+            unlink($path);
+        }
+    }
+
     public function test_sends_multipart_requests_for_nested_input_files(): void
     {
         $history = [];
@@ -186,5 +203,20 @@ class TelegramBotClientTest extends TestCase
             'handler' => $handler,
             'http_errors' => $httpErrors,
         ]);
+    }
+
+    private function openStreamsForPath(string $path): int
+    {
+        $streams = 0;
+
+        foreach (get_resources('stream') as $resource) {
+            $metadata = @stream_get_meta_data($resource);
+
+            if (($metadata['uri'] ?? null) === $path) {
+                $streams++;
+            }
+        }
+
+        return $streams;
     }
 }

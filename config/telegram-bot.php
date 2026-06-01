@@ -30,6 +30,8 @@ return [
 
         'secret_token' => env('TELEGRAM_WEBHOOK_SECRET_TOKEN'),
 
+        'require_secret' => env('TELEGRAM_WEBHOOK_REQUIRE_SECRET', env('APP_ENV') === 'production'),
+
         'handler' => null,
 
         'dispatch_event' => true,

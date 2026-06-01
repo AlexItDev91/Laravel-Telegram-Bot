@@ -310,6 +310,7 @@ TELEGRAM_INBOX_CHAT_ID=-1001234567890
 TELEGRAM_INBOX_MESSAGE_THREAD_ID=
 
 TELEGRAM_WEBHOOK_SECRET_TOKEN=change-this-secret
+TELEGRAM_WEBHOOK_REQUIRE_SECRET=true
 TELEGRAM_WEBHOOK_ROUTE_URI=telegram-bot/webhook
 ```
 
@@ -351,6 +352,7 @@ Add a channel mapping:
 'webhook' => [
     'bot' => env('TELEGRAM_WEBHOOK_BOT', env('TELEGRAM_BOT', 'default')),
     'secret_token' => env('TELEGRAM_WEBHOOK_SECRET_TOKEN'),
+    'require_secret' => env('TELEGRAM_WEBHOOK_REQUIRE_SECRET', env('APP_ENV') === 'production'),
     'handler' => null,
     'dispatch_event' => true,
     'route' => [
@@ -473,6 +475,7 @@ The package registers `POST /telegram-bot/webhook` by default. Configure a secre
 
 ```dotenv
 TELEGRAM_WEBHOOK_SECRET_TOKEN=change-this-secret
+TELEGRAM_WEBHOOK_REQUIRE_SECRET=true
 ```
 
 ```php
@@ -549,6 +552,7 @@ If Telegram webhook delivery fails:
 - Store bot tokens only in `.env`, secret storage, or deployment platform secrets.
 - Do not commit real bot tokens, private chat IDs, webhook secrets, logs, or screenshots.
 - Set a webhook secret token and pass it to Telegram with `setWebhook`.
+- Keep webhook secret enforcement enabled in production with `TELEGRAM_WEBHOOK_REQUIRE_SECRET=true`.
 - Give the bot only the permissions it needs.
 - Use a private channel or private group for operational notifications.
 - Rotate the token if it appears anywhere public.

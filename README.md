@@ -122,7 +122,7 @@ The raw `call(method, parameters)` API remains available for newly released Tele
 
 ## Webhooks
 
-The package includes a Laravel webhook receiver at `POST /telegram-bot/webhook` by default. It validates `X-Telegram-Bot-Api-Secret-Token` when `TELEGRAM_WEBHOOK_SECRET_TOKEN` is configured, dispatches a `TelegramWebhookReceived` event, and can call a configured `TelegramWebhookHandler`.
+The package includes a Laravel webhook receiver at `POST /telegram-bot/webhook` by default. It validates `X-Telegram-Bot-Api-Secret-Token` when `TELEGRAM_WEBHOOK_SECRET_TOKEN` is configured, dispatches a `TelegramWebhookReceived` event, and can call a configured `TelegramWebhookHandler`. In production, `TELEGRAM_WEBHOOK_REQUIRE_SECRET` defaults to `true`, so missing webhook secrets fail closed.
 
 ```php
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
@@ -170,10 +170,12 @@ $this->app->bind(ClientInterface::class, fn (): ClientInterface => new Client([
 
 ```bash
 composer install
+composer analyse
 composer check:telegram-api-surface
 composer test
 composer test:coverage-surface
 ```
 
-`check:telegram-api-surface` compares the local SDK method and update-type surface with the current official Telegram Bot API documentation and changelog.
+`analyse` runs PHPStan over package source and release scripts.
+`check:telegram-api-surface` compares the local SDK method surface, documented method parameters, and update-type surface with the current official Telegram Bot API documentation and changelog.
 `test:coverage-surface` verifies that every registered Telegram Bot API method is exposed as a native SDK method and calls the matching Telegram endpoint path.

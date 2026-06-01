@@ -40,6 +40,7 @@ class TelegramBotSetupGuideTest extends TestCase
             'https://api.telegram.org/bot<BOT_TOKEN>/getUpdates',
             'https://api.telegram.org/bot<BOT_TOKEN>/getChat?chat_id=@company_inbox_alerts',
             'TELEGRAM_BOT_TOKEN',
+            'TELEGRAM_BOT_LOGGING_ENABLED',
             'TELEGRAM_INBOX_CHAT_ID',
             'TELEGRAM_INBOX_MESSAGE_THREAD_ID',
             'TELEGRAM_WEBHOOK_SECRET_TOKEN',

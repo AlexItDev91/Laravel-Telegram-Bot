@@ -14,6 +14,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Psr\Log\LoggerInterface;
 
 class TelegramBotServiceProvider extends ServiceProvider
 {
@@ -30,6 +31,9 @@ class TelegramBotServiceProvider extends ServiceProvider
                         'timeout' => $config->timeout,
                         'http_errors' => false,
                     ]),
+                    logger: (bool) config('telegram-bot.logging.enabled', true) && $app->bound(LoggerInterface::class)
+                        ? $app->make(LoggerInterface::class)
+                        : null,
                 ),
             );
         });

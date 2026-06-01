@@ -27,6 +27,7 @@ TELEGRAM_BOT=default
 TELEGRAM_BOT_TOKEN=123456:replace-with-real-token
 TELEGRAM_BOT_API_URL=https://api.telegram.org
 TELEGRAM_BOT_TIMEOUT=10
+TELEGRAM_BOT_LOGGING_ENABLED=true
 TELEGRAM_INBOX_CHAT_ID=-1001234567890
 TELEGRAM_INBOX_MESSAGE_THREAD_ID=
 TELEGRAM_WEBHOOK_SECRET_TOKEN=change-this-secret
@@ -93,6 +94,8 @@ Bind `GuzzleHttp\ClientInterface` in the host app when custom transport, retries
 ## Webhooks
 
 The package registers `POST /telegram-bot/webhook` when `telegram-bot.webhook.route.enabled` is true. Protect it with `TELEGRAM_WEBHOOK_SECRET_TOKEN`; the package validates `X-Telegram-Bot-Api-Secret-Token` and fails closed when `TELEGRAM_WEBHOOK_REQUIRE_SECRET=true`.
+
+Keep `TELEGRAM_BOT_LOGGING_ENABLED=true` for safe operational warning/error logs. Logs must not include bot tokens, secret headers, request payloads, response bodies, chat IDs, or message text.
 
 ```php
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;

@@ -22,10 +22,12 @@ class TelegramBotWebhookGuideTest extends TestCase
             'X-Telegram-Bot-Api-Secret-Token',
             'TELEGRAM_WEBHOOK_SECRET_TOKEN',
             'TELEGRAM_WEBHOOK_REQUIRE_SECRET',
+            'TELEGRAM_BOT_LOGGING_ENABLED',
             'route(\'telegram-bot.webhook\')',
             'setWebhook',
             'getWebhookInfo',
             'deleteWebhook',
+            'Logging',
             'Security Checklist',
         ] as $requiredInstruction) {
             $this->assertStringContainsString($requiredInstruction, $guide);

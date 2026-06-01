@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.5.1] - 2026-06-01
+
+- Added safe warning/error logging for webhook security rejections, invalid webhook payloads, invalid handler configuration, and handler failures.
+- Added safe Telegram Bot API failure and transport response logging for Laravel-resolved bot clients and manually supplied PSR loggers.
+- Added `TELEGRAM_BOT_LOGGING_ENABLED` to control package logging without logging tokens, secret headers, request payloads, response bodies, chat IDs, or message text.
+
 ## [1.5.0] - 2026-06-01
 
 - Added production fail-closed webhook secret enforcement with `TELEGRAM_WEBHOOK_REQUIRE_SECRET`.

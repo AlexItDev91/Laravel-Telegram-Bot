@@ -17,6 +17,7 @@ Publish the package config and set the webhook values:
 
 ```dotenv
 TELEGRAM_WEBHOOK_BOT=default
+TELEGRAM_BOT_LOGGING_ENABLED=true
 TELEGRAM_WEBHOOK_SECRET_TOKEN=change-this-secret
 TELEGRAM_WEBHOOK_REQUIRE_SECRET=true
 TELEGRAM_WEBHOOK_ROUTE_ENABLED=true
@@ -27,6 +28,10 @@ TELEGRAM_WEBHOOK_ROUTE_NAME=telegram-bot.webhook
 `config/telegram-bot.php` contains:
 
 ```php
+'logging' => [
+    'enabled' => env('TELEGRAM_BOT_LOGGING_ENABLED', true),
+],
+
 'webhook' => [
     'bot' => env('TELEGRAM_WEBHOOK_BOT', env('TELEGRAM_BOT', 'default')),
     'secret_token' => env('TELEGRAM_WEBHOOK_SECRET_TOKEN'),
@@ -190,11 +195,24 @@ Customize it in config:
 
 Package middleware always validates `X-Telegram-Bot-Api-Secret-Token` when `secret_token` is configured. It also fails closed when `require_secret` is true and the secret is missing. Add rate limiting, IP filtering, or observability middleware in the `middleware` array when the host application needs it.
 
+## Logging
+
+When `telegram-bot.logging.enabled` is true, the Laravel integration writes warning/error logs for:
+
+- rejected webhook secret tokens and missing required secret configuration;
+- invalid webhook update payloads;
+- invalid webhook handler configuration;
+- webhook handler failures before the exception is rethrown;
+- Telegram Bot API `ok: false` responses and transport response failures from Laravel-resolved bot clients.
+
+Log context is intentionally limited to operational metadata such as method names, HTTP status codes, Telegram error codes, update IDs, update types, bot names, and exception classes. The package does not log bot tokens, webhook secret header values, request payloads, response bodies, chat IDs, or message text.
+
 ## Security Checklist
 
 - Use HTTPS for public Telegram webhooks.
 - Set `TELEGRAM_WEBHOOK_SECRET_TOKEN` and pass the same value to `setWebhook`.
 - Keep `TELEGRAM_WEBHOOK_REQUIRE_SECRET=true` in production so a missing secret does not silently expose the route.
+- Keep `TELEGRAM_BOT_LOGGING_ENABLED=true` unless the host application has equivalent monitoring.
 - Do not commit real bot tokens, webhook secrets, chat IDs, logs, or payload dumps.
 - Avoid long-running work in the webhook request; queue it.
 - Use `allowed_updates` in `setWebhook` to reduce unnecessary traffic.

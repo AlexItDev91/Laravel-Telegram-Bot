@@ -7,6 +7,9 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
 use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived;
 use AlexItDev91\LaravelTelegramBot\Tests\TestCase;
 use Illuminate\Support\Facades\Event;
+use Psr\Log\AbstractLogger;
+use Psr\Log\LoggerInterface;
+use Stringable;
 
 class TelegramWebhookReceiverTest extends TestCase
 {
@@ -40,10 +43,17 @@ class TelegramWebhookReceiverTest extends TestCase
 
     public function test_webhook_secret_token_is_required_when_configured(): void
     {
+        $logger = new TelegramWebhookTestLogger();
+        $this->app->instance(LoggerInterface::class, $logger);
+
         config()->set('telegram-bot.webhook.secret_token', 'secret-token');
 
         $this->postJson('/telegram-bot/webhook', ['update_id' => 1001])
             ->assertForbidden();
+
+        $this->assertSame('warning', $logger->records[0]['level']);
+        $this->assertSame('Telegram webhook rejected because the secret token is invalid.', $logger->records[0]['message']);
+        $this->assertStringNotContainsString('secret-token', json_encode($logger->records[0], JSON_THROW_ON_ERROR));
 
         $this->withHeader('X-Telegram-Bot-Api-Secret-Token', 'secret-token')
             ->postJson('/telegram-bot/webhook', ['update_id' => 1001])
@@ -85,8 +95,60 @@ class TelegramWebhookReceiverTest extends TestCase
 
     public function test_webhook_route_rejects_non_json_payloads(): void
     {
+        $logger = new TelegramWebhookTestLogger();
+        $this->app->instance(LoggerInterface::class, $logger);
+
         $this->call('POST', '/telegram-bot/webhook', [], [], [], [], 'not-json')
             ->assertUnprocessable();
+
+        $this->assertSame('warning', $logger->records[0]['level']);
+        $this->assertSame('Telegram webhook rejected because the update payload is invalid.', $logger->records[0]['message']);
+        $this->assertStringNotContainsString('not-json', json_encode($logger->records[0], JSON_THROW_ON_ERROR));
+    }
+
+    public function test_webhook_logs_invalid_handler_configuration_without_failing_telegram_response(): void
+    {
+        $logger = new TelegramWebhookTestLogger();
+        $this->app->instance(LoggerInterface::class, $logger);
+
+        config()->set('telegram-bot.webhook.handler', ['not-callable']);
+
+        $this->postJson('/telegram-bot/webhook', ['update_id' => 1003])
+            ->assertOk()
+            ->assertExactJson(['ok' => true]);
+
+        $this->assertSame('warning', $logger->records[0]['level']);
+        $this->assertSame('Telegram webhook handler is configured but is not resolvable or callable.', $logger->records[0]['message']);
+    }
+
+    public function test_webhook_logs_handler_failures_without_payload_values(): void
+    {
+        $logger = new TelegramWebhookTestLogger();
+        $this->app->instance(LoggerInterface::class, $logger);
+
+        config()->set('telegram-bot.webhook.handler', TelegramWebhookFailingHandler::class);
+
+        $this->withoutExceptionHandling();
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Handler failed.');
+
+        try {
+            $this->postJson('/telegram-bot/webhook', [
+                'update_id' => 1004,
+                'message' => [
+                    'text' => 'Private inbound text',
+                ],
+            ]);
+        } finally {
+            $record = $logger->records[0] ?? null;
+
+            $this->assertNotNull($record);
+            $this->assertSame('error', $record['level']);
+            $this->assertSame('Telegram webhook handler failed.', $record['message']);
+            $this->assertSame(1004, $record['context']['update_id']);
+            $this->assertSame('message', $record['context']['update_type']);
+            $this->assertStringNotContainsString('Private inbound text', json_encode($record, JSON_THROW_ON_ERROR));
+        }
     }
 }
 
@@ -110,6 +172,34 @@ final class TelegramWebhookTestHandler implements TelegramWebhookHandler
         return [
             'handled' => true,
             'type' => $update->type(),
+        ];
+    }
+}
+
+final class TelegramWebhookFailingHandler implements TelegramWebhookHandler
+{
+    public function handle(TelegramWebhookUpdate $update, string $botName): mixed
+    {
+        throw new \RuntimeException('Handler failed.');
+    }
+}
+
+final class TelegramWebhookTestLogger extends AbstractLogger
+{
+    /**
+     * @var list<array{level: string, message: string, context: array<string, mixed>}>
+     */
+    public array $records = [];
+
+    /**
+     * @param  array<string, mixed>  $context
+     */
+    public function log($level, string|Stringable $message, array $context = []): void
+    {
+        $this->records[] = [
+            'level' => (string) $level,
+            'message' => (string) $message,
+            'context' => $context,
         ];
     }
 }

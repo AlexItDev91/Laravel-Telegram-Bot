@@ -9,33 +9,55 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class TelegramWebhookReceiver
 {
     public function __construct(
         private readonly Container $container,
         private readonly Dispatcher $events,
+        private readonly ?LoggerInterface $logger = null,
     ) {
         //
     }
 
     public function handle(Request $request): Response
     {
+        $botName = (string) config('telegram-bot.webhook.bot', config('telegram-bot.default', 'default'));
         $payload = $this->payload($request);
 
         if ($payload === null || ! array_key_exists('update_id', $payload)) {
+            $this->warning('Telegram webhook rejected because the update payload is invalid.', [
+                'bot' => $botName,
+                'content_type' => $request->headers->get('content-type'),
+                'content_length' => $request->headers->get('content-length'),
+            ]);
+
             return new JsonResponse(['ok' => false, 'description' => 'Invalid Telegram webhook update payload.'], 422);
         }
 
-        $botName = (string) config('telegram-bot.webhook.bot', config('telegram-bot.default', 'default'));
         $update = TelegramWebhookUpdate::fromPayload($payload);
 
         if ((bool) config('telegram-bot.webhook.dispatch_event', true)) {
             $this->events->dispatch(new TelegramWebhookReceived($update, $botName));
         }
 
-        return $this->response($this->handleWithConfiguredHandler($update, $botName));
+        try {
+            $handlerResult = $this->handleWithConfiguredHandler($update, $botName);
+        } catch (Throwable $exception) {
+            $this->error('Telegram webhook handler failed.', [
+                'bot' => $botName,
+                'update_id' => $update->updateId(),
+                'update_type' => $update->type(),
+                'exception' => $exception::class,
+            ]);
+
+            throw $exception;
+        }
+
+        return $this->response($handlerResult);
     }
 
     /**
@@ -71,6 +93,13 @@ class TelegramWebhookReceiver
             ]);
         }
 
+        $this->warning('Telegram webhook handler is configured but is not resolvable or callable.', [
+            'bot' => $botName,
+            'update_id' => $update->updateId(),
+            'update_type' => $update->type(),
+            'handler_type' => get_debug_type($handler),
+        ]);
+
         return null;
     }
 
@@ -89,5 +118,29 @@ class TelegramWebhookReceiver
         }
 
         return new JsonResponse(['ok' => true]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     */
+    private function warning(string $message, array $context): void
+    {
+        if (! (bool) config('telegram-bot.logging.enabled', true)) {
+            return;
+        }
+
+        $this->logger?->warning($message, $context);
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     */
+    private function error(string $message, array $context): void
+    {
+        if (! (bool) config('telegram-bot.logging.enabled', true)) {
+            return;
+        }
+
+        $this->logger?->error($message, $context);
     }
 }

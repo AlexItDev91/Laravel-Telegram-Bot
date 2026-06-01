@@ -9,6 +9,10 @@ return [
 
     'timeout' => env('TELEGRAM_BOT_TIMEOUT', 10),
 
+    'logging' => [
+        'enabled' => env('TELEGRAM_BOT_LOGGING_ENABLED', true),
+    ],
+
     'bots' => [
         'default' => [
             'token' => env('TELEGRAM_BOT_TOKEN'),

@@ -14,7 +14,9 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\AbstractLogger;
 use Psr\Http\Message\RequestInterface;
+use Stringable;
 
 class TelegramBotClientTest extends TestCase
 {
@@ -134,6 +136,70 @@ class TelegramBotClientTest extends TestCase
         $client->getMe();
     }
 
+    public function test_logs_failed_api_responses_without_token_or_payload_values(): void
+    {
+        $logger = new TelegramBotTestLogger();
+        $client = TelegramBotClient::make(
+            token: '123456:secret-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new Response(200, [], json_encode([
+                    'ok' => false,
+                    'error_code' => 400,
+                    'description' => 'Bad Request: chat not found',
+                ], JSON_THROW_ON_ERROR)),
+            ]),
+            logger: $logger,
+        );
+
+        try {
+            $client->sendMessage([
+                'chat_id' => '-1001234567890',
+                'text' => 'Private alert body',
+            ]);
+            $this->fail('Expected Telegram Bot API exception was not thrown.');
+        } catch (TelegramBotApiException) {
+            $record = $logger->records[0] ?? null;
+
+            $this->assertNotNull($record);
+            $this->assertSame('warning', $record['level']);
+            $this->assertSame('Telegram Bot API request failed.', $record['message']);
+            $this->assertSame('sendMessage', $record['context']['method']);
+            $this->assertSame(400, $record['context']['telegram_error_code']);
+            $this->assertStringNotContainsString('123456:secret-token', json_encode($record, JSON_THROW_ON_ERROR));
+            $this->assertStringNotContainsString('-1001234567890', json_encode($record, JSON_THROW_ON_ERROR));
+            $this->assertStringNotContainsString('Private alert body', json_encode($record, JSON_THROW_ON_ERROR));
+        }
+    }
+
+    public function test_logs_transport_response_errors_without_body_or_token(): void
+    {
+        $logger = new TelegramBotTestLogger();
+        $client = TelegramBotClient::make(
+            token: '123456:secret-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new Response(502, [], 'proxy leaked token 123456:secret-token'),
+            ]),
+            logger: $logger,
+        );
+
+        try {
+            $client->getMe();
+            $this->fail('Expected Telegram Bot transport exception was not thrown.');
+        } catch (TelegramBotTransportException) {
+            $record = $logger->records[0] ?? null;
+
+            $this->assertNotNull($record);
+            $this->assertSame('error', $record['level']);
+            $this->assertSame('Telegram Bot API returned a non-JSON response.', $record['message']);
+            $this->assertSame('getMe', $record['context']['method']);
+            $this->assertSame(502, $record['context']['status_code']);
+            $this->assertStringNotContainsString('123456:secret-token', json_encode($record, JSON_THROW_ON_ERROR));
+            $this->assertStringNotContainsString('proxy leaked token', json_encode($record, JSON_THROW_ON_ERROR));
+        }
+    }
+
     public function test_throws_api_exception_for_failed_responses_when_http_client_enables_http_errors(): void
     {
         $client = TelegramBotClient::make(
@@ -218,5 +284,25 @@ class TelegramBotClientTest extends TestCase
         }
 
         return $streams;
+    }
+}
+
+final class TelegramBotTestLogger extends AbstractLogger
+{
+    /**
+     * @var list<array{level: string, message: string, context: array<string, mixed>}>
+     */
+    public array $records = [];
+
+    /**
+     * @param  array<string, mixed>  $context
+     */
+    public function log($level, string|Stringable $message, array $context = []): void
+    {
+        $this->records[] = [
+            'level' => (string) $level,
+            'message' => (string) $message,
+            'context' => $context,
+        ];
     }
 }

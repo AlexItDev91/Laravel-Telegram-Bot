@@ -14,6 +14,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 
 class TelegramBotClient implements TelegramBotClientContract
 {
@@ -22,15 +23,23 @@ class TelegramBotClient implements TelegramBotClientContract
     public function __construct(
         private readonly TelegramBotConfigData $config,
         private ?ClientInterface $httpClient = null,
+        private readonly ?LoggerInterface $logger = null,
     ) {
         //
     }
 
-    public static function make(?string $token, string $apiUrl = 'https://api.telegram.org', float $timeout = 10.0, ?ClientInterface $httpClient = null): self
+    public static function make(
+        ?string $token,
+        string $apiUrl = 'https://api.telegram.org',
+        float $timeout = 10.0,
+        ?ClientInterface $httpClient = null,
+        ?LoggerInterface $logger = null,
+    ): self
     {
         return new self(
             config: new TelegramBotConfigData($token, $apiUrl, $timeout),
             httpClient: $httpClient,
+            logger: $logger,
         );
     }
 
@@ -54,20 +63,35 @@ class TelegramBotClient implements TelegramBotClientContract
                 $this->buildRequestOptions($request),
             );
         } catch (GuzzleException $exception) {
+            $this->logger?->error('Telegram Bot API transport request failed.', [
+                'method' => $method,
+                'exception' => $exception::class,
+            ]);
+
             throw new TelegramBotTransportException($exception->getMessage(), previous: $exception);
         }
 
         $payload = json_decode((string) $response->getBody(), true);
 
         if (! is_array($payload)) {
+            $this->logger?->error('Telegram Bot API returned a non-JSON response.', [
+                'method' => $method,
+                'status_code' => $response->getStatusCode(),
+            ]);
+
             throw new TelegramBotTransportException('Telegram Bot API returned a non-JSON response.');
         }
 
-        $this->assertValidResponsePayload($payload);
+        $this->assertValidResponsePayload($payload, $method);
 
         $apiResponse = TelegramApiResponseData::fromPayload($payload);
 
         if (! $apiResponse->ok) {
+            $this->logger?->warning('Telegram Bot API request failed.', [
+                'method' => $method,
+                'telegram_error_code' => $apiResponse->errorCode,
+            ]);
+
             throw new TelegramBotApiException(
                 $apiResponse->description ?? 'Telegram Bot API request failed.',
                 $apiResponse->errorCode,
@@ -125,17 +149,29 @@ class TelegramBotClient implements TelegramBotClientContract
     /**
      * @param  array<string, mixed>  $payload
      */
-    private function assertValidResponsePayload(array $payload): void
+    private function assertValidResponsePayload(array $payload, string $method): void
     {
         if (! array_key_exists('ok', $payload) || ! is_bool($payload['ok'])) {
+            $this->logger?->error('Telegram Bot API response did not contain a boolean ok field.', [
+                'method' => $method,
+            ]);
+
             throw new TelegramBotTransportException('Telegram Bot API response did not contain a boolean ok field.');
         }
 
         if ($payload['ok'] && ! array_key_exists('result', $payload)) {
+            $this->logger?->error('Telegram Bot API successful response did not contain a result field.', [
+                'method' => $method,
+            ]);
+
             throw new TelegramBotTransportException('Telegram Bot API successful response did not contain a result field.');
         }
 
         if (! $payload['ok'] && ! is_string($payload['description'] ?? null)) {
+            $this->logger?->error('Telegram Bot API failed response did not contain a string description field.', [
+                'method' => $method,
+            ]);
+
             throw new TelegramBotTransportException('Telegram Bot API failed response did not contain a string description field.');
         }
     }

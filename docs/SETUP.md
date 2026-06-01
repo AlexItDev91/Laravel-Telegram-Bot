@@ -305,6 +305,7 @@ TELEGRAM_BOT=default
 TELEGRAM_BOT_TOKEN=123456:replace-with-real-token
 TELEGRAM_BOT_API_URL=https://api.telegram.org
 TELEGRAM_BOT_TIMEOUT=10
+TELEGRAM_BOT_LOGGING_ENABLED=true
 
 TELEGRAM_INBOX_CHAT_ID=-1001234567890
 TELEGRAM_INBOX_MESSAGE_THREAD_ID=
@@ -347,6 +348,10 @@ Add a channel mapping:
         'chat_id' => env('TELEGRAM_INBOX_CHAT_ID'),
         'message_thread_id' => env('TELEGRAM_INBOX_MESSAGE_THREAD_ID'),
     ],
+],
+
+'logging' => [
+    'enabled' => env('TELEGRAM_BOT_LOGGING_ENABLED', true),
 ],
 
 'webhook' => [
@@ -546,6 +551,7 @@ If Telegram webhook delivery fails:
 2. Check that `TELEGRAM_WEBHOOK_SECRET_TOKEN` matches the `secret_token` passed to `setWebhook`.
 3. Check that the route URL is public HTTPS and points to `route('telegram-bot.webhook')` or your configured route.
 4. Check that the handler returns quickly or dispatches slow work to a queue.
+5. Check Laravel warning/error logs for rejected secrets, invalid payloads, invalid handler configuration, and handler failures.
 
 ## 20. Production Safety Checklist
 
@@ -553,6 +559,7 @@ If Telegram webhook delivery fails:
 - Do not commit real bot tokens, private chat IDs, webhook secrets, logs, or screenshots.
 - Set a webhook secret token and pass it to Telegram with `setWebhook`.
 - Keep webhook secret enforcement enabled in production with `TELEGRAM_WEBHOOK_REQUIRE_SECRET=true`.
+- Keep safe operational logging enabled with `TELEGRAM_BOT_LOGGING_ENABLED=true`.
 - Give the bot only the permissions it needs.
 - Use a private channel or private group for operational notifications.
 - Rotate the token if it appears anywhere public.

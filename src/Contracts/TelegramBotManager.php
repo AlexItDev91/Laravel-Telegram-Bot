@@ -1,8 +1,8 @@
 <?php
 
-namespace Aptenova\TelegramBot\Contracts;
+namespace AlexItDev91\LaravelTelegramBot\Contracts;
 
-use Aptenova\TelegramBot\TelegramBotChannel;
+use AlexItDev91\LaravelTelegramBot\TelegramBotChannel;
 
 interface TelegramBotManager
 {

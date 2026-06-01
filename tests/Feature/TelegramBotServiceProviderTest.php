@@ -1,11 +1,11 @@
 <?php
 
-namespace Aptenova\TelegramBot\Tests\Feature;
+namespace AlexItDev91\LaravelTelegramBot\Tests\Feature;
 
-use Aptenova\TelegramBot\Contracts\TelegramBotClient;
-use Aptenova\TelegramBot\Contracts\TelegramBotManager;
-use Aptenova\TelegramBot\Facades\TelegramBot;
-use Aptenova\TelegramBot\Tests\TestCase;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager;
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+use AlexItDev91\LaravelTelegramBot\Tests\TestCase;
 
 class TelegramBotServiceProviderTest extends TestCase
 {

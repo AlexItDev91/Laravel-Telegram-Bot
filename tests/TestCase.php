@@ -1,8 +1,8 @@
 <?php
 
-namespace Aptenova\TelegramBot\Tests;
+namespace AlexItDev91\LaravelTelegramBot\Tests;
 
-use Aptenova\TelegramBot\Laravel\TelegramBotServiceProvider;
+use AlexItDev91\LaravelTelegramBot\Laravel\TelegramBotServiceProvider;
 use Illuminate\Foundation\Application;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 

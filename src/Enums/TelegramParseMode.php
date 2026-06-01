@@ -1,6 +1,6 @@
 <?php
 
-namespace Aptenova\TelegramBot\Enums;
+namespace AlexItDev91\LaravelTelegramBot\Enums;
 
 enum TelegramParseMode: string
 {

@@ -16,8 +16,8 @@ Primary Telegram references:
 3. Open the verified BotFather chat.
 4. Press `Start`.
 5. Send `/newbot`.
-6. Enter a display name for the bot, for example `Aptenova Inbox`.
-7. Enter a username for the bot. It must end with `bot`, for example `AptenovaInboxBot`.
+6. Enter a display name for the bot, for example `Company Inbox`.
+7. Enter a username for the bot. It must end with `bot`, for example `CompanyInboxBot`.
 8. BotFather will send a bot token.
 9. Copy the token and store it in a safe password manager.
 
@@ -46,7 +46,7 @@ Use a channel when the bot only needs to post notifications and people do not ne
 1. Open Telegram.
 2. Press the new message button.
 3. Select `New Channel`.
-4. Enter a channel name, for example `Aptenova Inbox Alerts`.
+4. Enter a channel name, for example `Company Inbox Alerts`.
 5. Add an optional description.
 6. Choose `Private Channel` unless the channel must be public.
 7. Finish channel creation.
@@ -57,7 +57,7 @@ Use a channel when the bot only needs to post notifications and people do not ne
 2. Open the channel profile.
 3. Open `Administrators`.
 4. Press `Add Admin`.
-5. Search for the bot username, for example `@AptenovaInboxBot`.
+5. Search for the bot username, for example `@CompanyInboxBot`.
 6. Add the bot.
 7. Give it the minimum permission needed to post messages.
 
@@ -71,7 +71,7 @@ Use a group when people need to reply, discuss, or work around the notification.
 2. Press the new message button.
 3. Select `New Group`.
 4. Add at least one person or the bot.
-5. Enter a group name, for example `Aptenova Inbox`.
+5. Enter a group name, for example `Company Inbox`.
 6. Open the group profile.
 7. Add the bot if it was not added during creation.
 8. Open bot permissions and allow only what is needed.
@@ -120,7 +120,7 @@ Example shape:
   "message": {
     "chat": {
       "id": -1001234567890,
-      "title": "Aptenova Inbox Alerts",
+      "title": "Company Inbox Alerts",
       "type": "channel"
     }
   }
@@ -143,11 +143,11 @@ Try this:
 If it is still empty, use a temporary public channel username:
 
 1. Open channel settings.
-2. Set a temporary public username, for example `aptenova_inbox_alerts_temp`.
+2. Set a temporary public username, for example `company_inbox_alerts_temp`.
 3. Open this URL:
 
 ```text
-https://api.telegram.org/bot<BOT_TOKEN>/getChat?chat_id=@aptenova_inbox_alerts_temp
+https://api.telegram.org/bot<BOT_TOKEN>/getChat?chat_id=@company_inbox_alerts_temp
 ```
 
 4. Copy the `result.id` value.

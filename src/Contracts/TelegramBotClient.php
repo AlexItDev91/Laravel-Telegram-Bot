@@ -1,9 +1,9 @@
 <?php
 
-namespace Aptenova\TelegramBot\Contracts;
+namespace AlexItDev91\LaravelTelegramBot\Contracts;
 
-use Aptenova\TelegramBot\DTO\TelegramBotRequestData;
-use Aptenova\TelegramBot\Enums\TelegramBotApiMethod;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 
 interface TelegramBotClient
 {

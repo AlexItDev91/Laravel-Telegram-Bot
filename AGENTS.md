@@ -9,7 +9,7 @@
 
 - This package provides a Laravel-friendly PHP SDK for the official Telegram Bot API.
 - Keep the core client framework-agnostic where practical.
-- Laravel integration belongs in the `Aptenova\TelegramBot\Laravel` and `Aptenova\TelegramBot\Facades` namespaces.
+- Laravel integration belongs in the `AlexItDev91\LaravelTelegramBot\Laravel` and `AlexItDev91\LaravelTelegramBot\Facades` namespaces.
 - Do not store bot tokens, chat IDs, webhook secrets, or other credentials in committed files.
 
 ## API Currency

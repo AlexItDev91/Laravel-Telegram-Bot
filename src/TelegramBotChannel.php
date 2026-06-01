@@ -1,11 +1,11 @@
 <?php
 
-namespace Aptenova\TelegramBot;
+namespace AlexItDev91\LaravelTelegramBot;
 
-use Aptenova\TelegramBot\Contracts\TelegramBotClient;
-use Aptenova\TelegramBot\DTO\TelegramBotRequestData;
-use Aptenova\TelegramBot\DTO\TelegramChannelConfigData;
-use Aptenova\TelegramBot\Enums\TelegramBotApiMethod;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChannelConfigData;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 
 class TelegramBotChannel implements TelegramBotClient
 {

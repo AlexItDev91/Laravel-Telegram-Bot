@@ -1,15 +1,15 @@
 <?php
 
-namespace Aptenova\TelegramBot;
+namespace AlexItDev91\LaravelTelegramBot;
 
-use Aptenova\TelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
-use Aptenova\TelegramBot\DTO\TelegramApiResponseData;
-use Aptenova\TelegramBot\DTO\TelegramBotConfigData;
-use Aptenova\TelegramBot\DTO\TelegramBotRequestData;
-use Aptenova\TelegramBot\Enums\TelegramBotApiMethod;
-use Aptenova\TelegramBot\Exceptions\TelegramBotApiException;
-use Aptenova\TelegramBot\Exceptions\TelegramBotConfigurationException;
-use Aptenova\TelegramBot\Exceptions\TelegramBotTransportException;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramApiResponseData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
+use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotApiException;
+use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotConfigurationException;
+use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotTransportException;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;

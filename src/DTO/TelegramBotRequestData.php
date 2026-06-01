@@ -1,8 +1,8 @@
 <?php
 
-namespace Aptenova\TelegramBot\DTO;
+namespace AlexItDev91\LaravelTelegramBot\DTO;
 
-use Aptenova\TelegramBot\InputFile;
+use AlexItDev91\LaravelTelegramBot\InputFile;
 
 final readonly class TelegramBotRequestData
 {

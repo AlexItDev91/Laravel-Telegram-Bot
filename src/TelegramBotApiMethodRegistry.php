@@ -1,8 +1,8 @@
 <?php
 
-namespace Aptenova\TelegramBot;
+namespace AlexItDev91\LaravelTelegramBot;
 
-use Aptenova\TelegramBot\Enums\TelegramBotApiMethod;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 
 final class TelegramBotApiMethodRegistry
 {

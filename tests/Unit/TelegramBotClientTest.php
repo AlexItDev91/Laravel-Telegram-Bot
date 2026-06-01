@@ -1,12 +1,12 @@
 <?php
 
-namespace Aptenova\TelegramBot\Tests\Unit;
+namespace AlexItDev91\LaravelTelegramBot\Tests\Unit;
 
-use Aptenova\TelegramBot\DTO\TelegramBotRequestData;
-use Aptenova\TelegramBot\Enums\TelegramBotApiMethod;
-use Aptenova\TelegramBot\Exceptions\TelegramBotApiException;
-use Aptenova\TelegramBot\InputFile;
-use Aptenova\TelegramBot\TelegramBotClient;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
+use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotApiException;
+use AlexItDev91\LaravelTelegramBot\InputFile;
+use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;

@@ -1,12 +1,12 @@
 <?php
 
-namespace Aptenova\TelegramBot\Laravel;
+namespace AlexItDev91\LaravelTelegramBot\Laravel;
 
-use Aptenova\TelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
-use Aptenova\TelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
-use Aptenova\TelegramBot\DTO\TelegramBotConfigData;
-use Aptenova\TelegramBot\TelegramBotClient;
-use Aptenova\TelegramBot\TelegramBotManager;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
+use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
+use AlexItDev91\LaravelTelegramBot\TelegramBotManager;
 use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
 

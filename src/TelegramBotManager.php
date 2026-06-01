@@ -1,13 +1,13 @@
 <?php
 
-namespace Aptenova\TelegramBot;
+namespace AlexItDev91\LaravelTelegramBot;
 
-use Aptenova\TelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
-use Aptenova\TelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
-use Aptenova\TelegramBot\DTO\TelegramBotConfigData;
-use Aptenova\TelegramBot\DTO\TelegramChannelConfigData;
-use Aptenova\TelegramBot\Exceptions\TelegramBotChannelNotConfiguredException;
-use Aptenova\TelegramBot\Exceptions\TelegramBotNotConfiguredException;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChannelConfigData;
+use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotChannelNotConfiguredException;
+use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotNotConfiguredException;
 use BadMethodCallException;
 use Closure;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Aptenova\TelegramBot\Exceptions;
+namespace AlexItDev91\LaravelTelegramBot\Exceptions;
 
 use RuntimeException;
 

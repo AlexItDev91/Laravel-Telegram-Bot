@@ -1,6 +1,8 @@
-# Aptenova Telegram Bot
+# Laravel Telegram Bot
 
 Laravel-friendly PHP SDK for the official Telegram Bot API.
+
+Developed by Aptenova as an independent open-source package. The package is not tied to any Aptenova application and can be used in any compatible Laravel 12 or 13 project.
 
 ## Requirements
 
@@ -23,7 +25,7 @@ Primary sources:
 ## Usage
 
 ```php
-use Aptenova\TelegramBot\Facades\TelegramBot;
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 
 TelegramBot::bot('support')->sendMessage([
     'chat_id' => '-1001234567890',

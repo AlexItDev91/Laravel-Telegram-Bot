@@ -1,5 +1,5 @@
 {
-    "name": "aptenova/telegram-bot",
+    "name": "alexitdev91/laravel-telegram-bot",
     "type": "library",
     "description": "Laravel-friendly PHP SDK for the official Telegram Bot API.",
     "keywords": ["telegram", "telegram-bot", "laravel", "notifications"],
@@ -15,12 +15,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Aptenova\\TelegramBot\\": "src/"
+            "AlexItDev91\\LaravelTelegramBot\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Aptenova\\TelegramBot\\Tests\\": "tests/"
+            "AlexItDev91\\LaravelTelegramBot\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -30,10 +30,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Aptenova\\TelegramBot\\Laravel\\TelegramBotServiceProvider"
+                "AlexItDev91\\LaravelTelegramBot\\Laravel\\TelegramBotServiceProvider"
             ],
             "aliases": {
-                "TelegramBot": "Aptenova\\TelegramBot\\Facades\\TelegramBot"
+                "TelegramBot": "AlexItDev91\\LaravelTelegramBot\\Facades\\TelegramBot"
             }
         }
     },

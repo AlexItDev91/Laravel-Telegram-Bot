@@ -1,6 +1,6 @@
 <?php
 
-namespace Aptenova\TelegramBot;
+namespace AlexItDev91\LaravelTelegramBot;
 
 use InvalidArgumentException;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace Aptenova\TelegramBot\Tests\Unit;
+namespace AlexItDev91\LaravelTelegramBot\Tests\Unit;
 
-use Aptenova\TelegramBot\Enums\TelegramBotApiMethod;
-use Aptenova\TelegramBot\TelegramBotApiMethodRegistry;
-use Aptenova\TelegramBot\TelegramBotClient;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
+use AlexItDev91\LaravelTelegramBot\TelegramBotApiMethodRegistry;
+use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;

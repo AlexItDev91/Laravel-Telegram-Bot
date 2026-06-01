@@ -1,6 +1,6 @@
 <?php
 
-namespace Aptenova\TelegramBot\DTO;
+namespace AlexItDev91\LaravelTelegramBot\DTO;
 
 final readonly class TelegramChannelConfigData
 {

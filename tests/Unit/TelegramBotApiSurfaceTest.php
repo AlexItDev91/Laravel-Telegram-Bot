@@ -63,6 +63,26 @@ class TelegramBotApiSurfaceTest extends TestCase
         }
     }
 
+    public function test_method_reference_documents_every_sdk_method(): void
+    {
+        $documentation = file_get_contents(__DIR__.'/../../docs/METHODS.md');
+        $readme = file_get_contents(__DIR__.'/../../README.md');
+
+        $this->assertIsString($documentation);
+        $this->assertIsString($readme);
+        $this->assertStringContainsString('[docs/METHODS.md](docs/METHODS.md)', $readme);
+        $this->assertStringContainsString('array|TelegramBotRequestData $parameters = []', $documentation);
+        $this->assertStringContainsString('https://core.telegram.org/bots/api', $documentation);
+        $this->assertStringContainsString('https://core.telegram.org/bots/api-changelog', $documentation);
+
+        foreach (TelegramBotApiMethod::cases() as $method) {
+            $this->assertStringContainsString("### `{$method->value}`", $documentation);
+            $this->assertStringContainsString("`{$method->value}(array|TelegramBotRequestData \$parameters = [])`", $documentation);
+            $this->assertStringContainsString("`POST /bot<TOKEN>/{$method->value}`", $documentation);
+            $this->assertStringContainsString("https://core.telegram.org/bots/api#".strtolower($method->value), $documentation);
+        }
+    }
+
     /**
      * @return array<string, array{method: TelegramBotApiMethod}>
      */

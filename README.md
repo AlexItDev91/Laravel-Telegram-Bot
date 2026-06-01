@@ -15,6 +15,7 @@ Developed by Aptenova as an independent open-source package. The package is not 
 The package targets Telegram Bot API `10.0`, released on `2026-05-08`.
 
 See [docs/API.md](docs/API.md) for the supported method matrix with links to the official Telegram documentation for every method.
+See [docs/METHODS.md](docs/METHODS.md) for the full SDK method reference with call signatures, endpoints, and official parameter names/types.
 See [docs/SETUP.md](docs/SETUP.md) for a step-by-step guide to creating a bot, creating a channel or group, adding the bot, and finding Telegram identifiers.
 
 Primary sources:

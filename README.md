@@ -148,7 +148,7 @@ TelegramBot::bot('default')->setWebhook([
 
 See [docs/WEBHOOKS.md](docs/WEBHOOKS.md) for the full setup and handler examples.
 
-The package also provides Artisan commands for webhook registration, deletion, status checks, and parsed `chat_id` / `message_thread_id` discovery. See [docs/CONSOLE_COMMANDS.md](docs/CONSOLE_COMMANDS.md).
+The package also provides Artisan commands for bot identity checks, delivery test messages, webhook registration, deletion, status checks, and parsed `chat_id` / `message_thread_id` discovery. See [docs/CONSOLE_COMMANDS.md](docs/CONSOLE_COMMANDS.md).
 
 ## Logging
 

@@ -27,8 +27,10 @@ php artisan telegram-bot:install
 - Use `AlexItDev91\LaravelTelegramBot\Facades\TelegramBot` when a facade is appropriate.
 - Use concrete `TelegramBot` or `TelegramBotClient` when IDE autocomplete for every native Telegram helper is important; contracts expose the stable core surface.
 - Use `TelegramBot::bot('name')` for a named bot.
-- Use `TelegramBot::channel('name')` for a configured destination with `chat_id` and optional `message_thread_id`.
+- Use `TelegramBot::channel('name')` for a configured destination with `chat_id` and optional `message_thread_id` or `direct_messages_topic_id`.
+- Use `php artisan telegram-bot:me --bot=default` to verify the configured bot token and Telegram identity.
 - Use `php artisan telegram-bot:updates` to discover parsed `chat_id`, `message_thread_id`, and `direct_messages_topic_id` values from Telegram updates.
+- Use `php artisan telegram-bot:send-test --channel=name` to verify Laravel can send to the configured chat or topic.
 - Use `php artisan telegram-bot:webhook:set`, `telegram-bot:webhook:info`, and `telegram-bot:webhook:delete` for webhook management.
 - Use `InputFile::fromPath()` for top-level and nested file uploads; nested media files are converted to Telegram `attach://` multipart references.
 - Bind `GuzzleHttp\ClientInterface` in the host app when custom transport, retries, proxy, tracing, or HTTP fakes are needed.

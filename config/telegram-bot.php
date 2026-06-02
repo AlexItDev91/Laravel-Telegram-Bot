@@ -26,6 +26,7 @@ return [
         //     'bot' => 'default',
         //     'chat_id' => env('TELEGRAM_INBOX_CHAT_ID'),
         //     'message_thread_id' => env('TELEGRAM_INBOX_MESSAGE_THREAD_ID'),
+        //     'direct_messages_topic_id' => env('TELEGRAM_INBOX_DIRECT_MESSAGES_TOPIC_ID'),
         // ],
     ],
 

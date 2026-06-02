@@ -323,6 +323,7 @@ TELEGRAM_BOT_LOGGING_ENABLED=true
 
 TELEGRAM_INBOX_CHAT_ID=-1001234567890
 TELEGRAM_INBOX_MESSAGE_THREAD_ID=
+TELEGRAM_INBOX_DIRECT_MESSAGES_TOPIC_ID=
 
 TELEGRAM_WEBHOOK_SECRET_TOKEN=change-this-secret
 TELEGRAM_WEBHOOK_REQUIRE_SECRET=true
@@ -333,6 +334,12 @@ For a topic, set:
 
 ```dotenv
 TELEGRAM_INBOX_MESSAGE_THREAD_ID=42
+```
+
+For a direct messages topic, set:
+
+```dotenv
+TELEGRAM_INBOX_DIRECT_MESSAGES_TOPIC_ID=77
 ```
 
 Do not commit `.env`.
@@ -361,6 +368,7 @@ Add a channel mapping:
         'bot' => 'default',
         'chat_id' => env('TELEGRAM_INBOX_CHAT_ID'),
         'message_thread_id' => env('TELEGRAM_INBOX_MESSAGE_THREAD_ID'),
+        'direct_messages_topic_id' => env('TELEGRAM_INBOX_DIRECT_MESSAGES_TOPIC_ID'),
     ],
 ],
 
@@ -406,6 +414,7 @@ For multiple bots:
         'bot' => 'support',
         'chat_id' => env('TELEGRAM_INBOX_CHAT_ID'),
         'message_thread_id' => env('TELEGRAM_INBOX_MESSAGE_THREAD_ID'),
+        'direct_messages_topic_id' => env('TELEGRAM_INBOX_DIRECT_MESSAGES_TOPIC_ID'),
     ],
     'deployments' => [
         'bot' => 'ops',
@@ -416,6 +425,27 @@ For multiple bots:
 ```
 
 ## 16. Send A Test Message From Laravel
+
+First verify that Laravel loads the expected bot token:
+
+```bash
+php artisan telegram-bot:me --bot=default
+```
+
+Then send an end-to-end delivery test through a configured channel:
+
+```bash
+php artisan telegram-bot:send-test --channel=inbox
+```
+
+For an explicit chat or topic:
+
+```bash
+php artisan telegram-bot:send-test \
+  --bot=default \
+  --chat-id=-1001234567890 \
+  --message-thread-id=42
+```
 
 Use Laravel constructor injection in controllers, jobs, listeners, commands, or services:
 

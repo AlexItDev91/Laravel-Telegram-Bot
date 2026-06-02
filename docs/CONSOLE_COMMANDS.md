@@ -7,6 +7,8 @@ This package ships interactive Artisan commands for Laravel applications. They u
 | Command | Purpose |
 | --- | --- |
 | `telegram-bot:install` | Publish package config and print copy-ready Laravel env/config snippets. |
+| `telegram-bot:me` | Verify a configured bot token and print Telegram bot identity fields. |
+| `telegram-bot:send-test` | Send a delivery test message to a configured channel, chat, forum topic, or direct messages topic. |
 | `telegram-bot:webhook:set` | Register a Telegram webhook with optional secret token and allowed update types. |
 | `telegram-bot:webhook:delete` | Delete the Telegram webhook, optionally dropping pending updates. |
 | `telegram-bot:webhook:info` | Show Telegram webhook delivery status. |
@@ -33,6 +35,7 @@ TELEGRAM_WEBHOOK_SECRET_TOKEN=<letters-numbers-underscore-or-dash>
 TELEGRAM_WEBHOOK_REQUIRE_SECRET=true
 TELEGRAM_INBOX_CHAT_ID=<chat-id>
 TELEGRAM_INBOX_MESSAGE_THREAD_ID=<message-thread-id-if-topic>
+TELEGRAM_INBOX_DIRECT_MESSAGES_TOPIC_ID=<direct-messages-topic-id-if-needed>
 ```
 
 Non-interactive example:
@@ -42,6 +45,22 @@ php artisan telegram-bot:install --bot=support --channel=inbox --skip-token-chec
 ```
 
 The command does not write secrets into `.env`. Store real bot tokens and webhook secrets in the host application's environment or secret manager.
+
+## Bot Identity
+
+Use `telegram-bot:me` when you want a standalone token/config check without running the installer:
+
+```bash
+php artisan telegram-bot:me --bot=default
+```
+
+The command calls Telegram `getMe` and prints fields such as `id`, `username`, `can_join_groups`, `supports_inline_queries`, `can_connect_to_business`, and `supports_guest_queries`.
+
+For raw Telegram JSON:
+
+```bash
+php artisan telegram-bot:me --bot=default --raw
+```
 
 ## Set Webhook
 
@@ -160,13 +179,89 @@ Raw JSON remains available for debugging:
 php artisan telegram-bot:updates --bot=default --raw
 ```
 
+## Send A Test Message
+
+Use `telegram-bot:send-test` after configuring a channel or after discovering IDs. This verifies the full Laravel path from configured bot token to Telegram delivery.
+
+Interactive:
+
+```bash
+php artisan telegram-bot:send-test
+```
+
+Send to a configured channel:
+
+```bash
+php artisan telegram-bot:send-test --channel=inbox
+```
+
+Send to a configured forum topic channel:
+
+```php
+'channels' => [
+    'deployments' => [
+        'bot' => 'default',
+        'chat_id' => env('TELEGRAM_DEPLOYMENTS_CHAT_ID'),
+        'message_thread_id' => env('TELEGRAM_DEPLOYMENTS_MESSAGE_THREAD_ID'),
+    ],
+],
+```
+
+```bash
+php artisan telegram-bot:send-test --channel=deployments --text="Deployment topic test"
+```
+
+Send to an explicit chat or channel ID:
+
+```bash
+php artisan telegram-bot:send-test \
+  --bot=default \
+  --chat-id=-1009007199254740991 \
+  --text="Telegram delivery test"
+```
+
+Send to an explicit forum topic:
+
+```bash
+php artisan telegram-bot:send-test \
+  --bot=default \
+  --chat-id=-1009007199254740991 \
+  --message-thread-id=42 \
+  --text="Forum topic delivery test"
+```
+
+Send to an explicit direct messages topic:
+
+```bash
+php artisan telegram-bot:send-test \
+  --bot=default \
+  --chat-id=123456789 \
+  --direct-messages-topic-id=77 \
+  --text="Direct messages topic delivery test"
+```
+
+Useful options:
+
+| Option | Description |
+| --- | --- |
+| `--channel=` | Configured Laravel channel name from `config/telegram-bot.php`. |
+| `--chat-id=` | Explicit Telegram chat ID or target channel username. |
+| `--message-thread-id=` | Forum topic ID for explicit chat targets. |
+| `--direct-messages-topic-id=` | Direct messages topic ID for explicit chat targets. |
+| `--text=` | Test message text. Defaults to `Telegram Bot test message from Laravel.` |
+| `--parse-mode=` | Optional parse mode: `MarkdownV2`, `HTML`, or `Markdown`. |
+| `--disable-notification` | Send the test message silently. |
+| `--protect-content` | Protect the message content from forwarding and saving. |
+
 ## Multi-Bot Usage
 
 For a named bot:
 
 ```bash
+php artisan telegram-bot:me --bot=support
 php artisan telegram-bot:webhook:info --bot=support
 php artisan telegram-bot:updates --bot=support
+php artisan telegram-bot:send-test --bot=support --chat-id=-1001234567890
 ```
 
 Configure named bots in `config/telegram-bot.php`:
@@ -184,6 +279,8 @@ Configure named bots in `config/telegram-bot.php`:
 ## Safety Notes
 
 - Do not paste real tokens or secrets into committed files.
+- Use `telegram-bot:me` before webhook setup when you need to verify which bot token is loaded.
+- Use `telegram-bot:send-test` after `telegram-bot:updates` to confirm the bot can write to the selected chat or topic.
 - Use `telegram-bot:webhook:info` after deployment to verify Telegram sees the expected URL.
 - Use `telegram-bot:updates` only for discovery or polling workflows; if a webhook is active, Telegram will not also deliver the same updates through `getUpdates`.
 - Keep `TELEGRAM_WEBHOOK_REQUIRE_SECRET=true` in production.

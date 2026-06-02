@@ -36,6 +36,7 @@ TELEGRAM_BOT_TIMEOUT=10
 TELEGRAM_BOT_LOGGING_ENABLED=true
 TELEGRAM_INBOX_CHAT_ID=-1001234567890
 TELEGRAM_INBOX_MESSAGE_THREAD_ID=
+TELEGRAM_INBOX_DIRECT_MESSAGES_TOPIC_ID=
 TELEGRAM_WEBHOOK_SECRET_TOKEN=change-this-secret
 TELEGRAM_WEBHOOK_REQUIRE_SECRET=true
 TELEGRAM_WEBHOOK_ROUTE_URI=telegram-bot/webhook
@@ -49,6 +50,7 @@ TELEGRAM_WEBHOOK_ROUTE_URI=telegram-bot/webhook
         'bot' => 'default',
         'chat_id' => env('TELEGRAM_INBOX_CHAT_ID'),
         'message_thread_id' => env('TELEGRAM_INBOX_MESSAGE_THREAD_ID'),
+        'direct_messages_topic_id' => env('TELEGRAM_INBOX_DIRECT_MESSAGES_TOPIC_ID'),
     ],
 ],
 ```
@@ -56,6 +58,8 @@ TELEGRAM_WEBHOOK_ROUTE_URI=telegram-bot/webhook
 Keep real tokens, webhook secrets, and private identifiers out of git.
 
 Use `php artisan telegram-bot:updates --bot=default` after sending a test message in the target chat or topic to discover parsed `chat_id`, `message_thread_id`, and `direct_messages_topic_id` values.
+Use `php artisan telegram-bot:me --bot=default` to verify the configured bot identity.
+Use `php artisan telegram-bot:send-test --channel=inbox` to verify delivery to a configured Laravel channel.
 
 ## Use
 

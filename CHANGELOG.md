@@ -8,6 +8,13 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.7.0] - 2026-06-02
+
+- Added `telegram-bot:me` for standalone configured bot identity and token checks through Telegram `getMe`.
+- Added `telegram-bot:send-test` for end-to-end Laravel delivery checks to configured channels, explicit chats, forum topics, and direct messages topics.
+- Documented the full console workflow from install and identity checks through ID discovery, delivery testing, and webhook management.
+- Added direct messages topic snippets to the installer output, package config comments, setup guide, and Laravel Boost resources.
+
 ## [1.6.0] - 2026-06-02
 
 - Added interactive Laravel Prompts Artisan commands for package installation, webhook registration, webhook deletion, webhook status inspection, and Telegram update discovery.

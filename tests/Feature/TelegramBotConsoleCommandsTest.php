@@ -3,6 +3,8 @@
 namespace AlexItDev91\LaravelTelegramBot\Tests\Feature;
 
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotInstallCommand;
+use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotMeCommand;
+use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotSendTestCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotUpdatesCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotWebhookDeleteCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotWebhookInfoCommand;
@@ -25,6 +27,8 @@ class TelegramBotConsoleCommandsTest extends TestCase
 
         foreach ([
             'telegram-bot:install' => TelegramBotInstallCommand::class,
+            'telegram-bot:me' => TelegramBotMeCommand::class,
+            'telegram-bot:send-test' => TelegramBotSendTestCommand::class,
             'telegram-bot:webhook:set' => TelegramBotWebhookSetCommand::class,
             'telegram-bot:webhook:delete' => TelegramBotWebhookDeleteCommand::class,
             'telegram-bot:webhook:info' => TelegramBotWebhookInfoCommand::class,
@@ -45,9 +49,115 @@ class TelegramBotConsoleCommandsTest extends TestCase
         ])
             ->expectsOutputToContain('TELEGRAM_BOT=support')
             ->expectsOutputToContain('TELEGRAM_ALERTS_CHAT_ID=<chat-id>')
+            ->expectsOutputToContain('TELEGRAM_ALERTS_DIRECT_MESSAGES_TOPIC_ID=<direct-messages-topic-id-if-needed>')
             ->expectsOutputToContain("'alerts' => [")
             ->doesntExpectOutputToContain('123456:test-token')
             ->assertSuccessful();
+    }
+
+    public function test_me_command_prints_bot_identity(): void
+    {
+        $history = [];
+        $this->configureBotHttpClient($history, [
+            new Response(200, [], json_encode([
+                'ok' => true,
+                'result' => [
+                    'id' => 123456,
+                    'is_bot' => true,
+                    'first_name' => 'Support Bot',
+                    'username' => 'support_bot',
+                    'can_join_groups' => true,
+                    'supports_guest_queries' => true,
+                ],
+            ], JSON_THROW_ON_ERROR)),
+        ]);
+
+        $this->artisan('telegram-bot:me', ['--bot' => 'default'])
+            ->expectsOutputToContain('Telegram bot identity for bot [default]')
+            ->expectsOutputToContain('123456')
+            ->expectsOutputToContain('@support_bot')
+            ->assertSuccessful();
+
+        $this->assertSame('/bot123456:test-token/getMe', $history[0]['request']->getUri()->getPath());
+        $this->assertSame([], $this->jsonRequestPayload($history[0]['request']));
+    }
+
+    public function test_send_test_command_sends_message_to_configured_channel_topic(): void
+    {
+        config()->set('telegram-bot.channels.alerts', [
+            'bot' => 'default',
+            'chat_id' => '-1009007199254740991',
+            'message_thread_id' => '42',
+        ]);
+
+        $history = [];
+        $this->configureBotHttpClient($history, [
+            new Response(200, [], json_encode([
+                'ok' => true,
+                'result' => [
+                    'message_id' => 77,
+                    'message_thread_id' => 42,
+                    'chat' => ['id' => -1009007199254740991],
+                ],
+            ], JSON_THROW_ON_ERROR)),
+        ]);
+
+        $this->artisan('telegram-bot:send-test', [
+            '--channel' => 'alerts',
+            '--text' => 'Laravel delivery test',
+            '--parse-mode' => 'HTML',
+            '--disable-notification' => true,
+            '--protect-content' => true,
+        ])
+            ->expectsOutputToContain('Telegram test message sent.')
+            ->expectsOutputToContain('channel [alerts]')
+            ->assertSuccessful();
+
+        $payload = $this->jsonRequestPayload($history[0]['request']);
+
+        $this->assertSame('/bot123456:test-token/sendMessage', $history[0]['request']->getUri()->getPath());
+        $this->assertSame([
+            'chat_id' => '-1009007199254740991',
+            'message_thread_id' => '42',
+            'text' => 'Laravel delivery test',
+            'parse_mode' => 'HTML',
+            'disable_notification' => true,
+            'protect_content' => true,
+        ], $payload);
+    }
+
+    public function test_send_test_command_sends_message_to_explicit_direct_messages_topic(): void
+    {
+        $history = [];
+        $this->configureBotHttpClient($history, [
+            new Response(200, [], json_encode([
+                'ok' => true,
+                'result' => [
+                    'message_id' => 88,
+                    'direct_messages_topic_id' => 77,
+                    'chat' => ['id' => 123456789],
+                ],
+            ], JSON_THROW_ON_ERROR)),
+        ]);
+
+        $this->artisan('telegram-bot:send-test', [
+            '--bot' => 'default',
+            '--chat-id' => '123456789',
+            '--direct-messages-topic-id' => '77',
+            '--text' => 'Direct messages delivery test',
+        ])
+            ->expectsOutputToContain('Telegram test message sent.')
+            ->expectsOutputToContain('chat_id [123456789]')
+            ->assertSuccessful();
+
+        $payload = $this->jsonRequestPayload($history[0]['request']);
+
+        $this->assertSame('/bot123456:test-token/sendMessage', $history[0]['request']->getUri()->getPath());
+        $this->assertSame([
+            'chat_id' => '123456789',
+            'direct_messages_topic_id' => 77,
+            'text' => 'Direct messages delivery test',
+        ], $payload);
     }
 
     public function test_webhook_set_command_registers_webhook_with_secret_and_allowed_updates(): void

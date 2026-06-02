@@ -53,6 +53,20 @@ trait ResolvesTelegramBotConsoleInput
     }
 
     /**
+     * @return array<string, string>
+     */
+    private function configuredChannelOptions(): array
+    {
+        $options = [];
+
+        foreach ($this->configuredChannelNames() as $channel) {
+            $options[$channel] = $channel;
+        }
+
+        return $options;
+    }
+
+    /**
      * @return list<string>
      */
     private function configuredBotNames(): array
@@ -76,6 +90,23 @@ trait ResolvesTelegramBotConsoleInput
         return is_string($default) && trim($default) !== ''
             ? trim($default)
             : 'default';
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function configuredChannelNames(): array
+    {
+        $channels = config('telegram-bot.channels', []);
+
+        if (! is_array($channels)) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            array_map('strval', array_keys($channels)),
+            static fn (string $channel): bool => trim($channel) !== '',
+        ));
     }
 
     /**

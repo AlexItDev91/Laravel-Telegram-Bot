@@ -17,6 +17,8 @@ class TelegramBotConsoleCommandsGuideTest extends TestCase
 
         foreach ([
             'telegram-bot:install',
+            'telegram-bot:me',
+            'telegram-bot:send-test',
             'telegram-bot:webhook:set',
             'telegram-bot:webhook:delete',
             'telegram-bot:webhook:info',
@@ -27,6 +29,9 @@ class TelegramBotConsoleCommandsGuideTest extends TestCase
             'direct_messages_topic_id',
             'TELEGRAM_CHAT_ID=-1009007199254740991',
             'TELEGRAM_MESSAGE_THREAD_ID=42',
+            'TELEGRAM_INBOX_DIRECT_MESSAGES_TOPIC_ID=<direct-messages-topic-id-if-needed>',
+            '--message-thread-id=42',
+            '--direct-messages-topic-id=77',
             '--delete-webhook',
             '--raw',
         ] as $requiredInstruction) {

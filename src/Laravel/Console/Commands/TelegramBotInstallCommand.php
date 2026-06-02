@@ -49,6 +49,7 @@ class TelegramBotInstallCommand extends Command
         $this->line('TELEGRAM_WEBHOOK_REQUIRE_SECRET=true');
         $this->line('TELEGRAM_'.$this->envKey($channel).'_CHAT_ID=<chat-id>');
         $this->line('TELEGRAM_'.$this->envKey($channel).'_MESSAGE_THREAD_ID=<message-thread-id-if-topic>');
+        $this->line('TELEGRAM_'.$this->envKey($channel).'_DIRECT_MESSAGES_TOPIC_ID=<direct-messages-topic-id-if-needed>');
         $this->line('');
 
         info('Add or adjust this channel mapping in config/telegram-bot.php:');
@@ -58,6 +59,7 @@ class TelegramBotInstallCommand extends Command
         $this->line("        'bot' => '{$bot}',");
         $this->line("        'chat_id' => env('TELEGRAM_".$this->envKey($channel)."_CHAT_ID'),");
         $this->line("        'message_thread_id' => env('TELEGRAM_".$this->envKey($channel)."_MESSAGE_THREAD_ID'),");
+        $this->line("        'direct_messages_topic_id' => env('TELEGRAM_".$this->envKey($channel)."_DIRECT_MESSAGES_TOPIC_ID'),");
         $this->line('    ],');
         $this->line('],');
         $this->line('');

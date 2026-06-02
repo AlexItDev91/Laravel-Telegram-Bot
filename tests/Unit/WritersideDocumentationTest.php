@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="1.7.3"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="1.8.0"/>', $config);
 
         foreach ([
             'overview.md',
@@ -94,6 +94,9 @@ class WritersideDocumentationTest extends TestCase
             'X-Telegram-Bot-Api-Secret-Token',
             'TELEGRAM_WEBHOOK_REQUIRE_SECRET',
             'TelegramWebhookUpdate',
+            'effectiveMessage()',
+            'effectiveChat()',
+            'effectiveUser()',
         ] as $requiredWebhookText) {
             $this->assertStringContainsString($requiredWebhookText, $webhooks);
         }

@@ -98,6 +98,120 @@ final readonly class TelegramWebhookUpdate
         return $this->payload;
     }
 
+    public function message(): ?TelegramMessageData
+    {
+        return $this->messageAt('message');
+    }
+
+    public function editedMessage(): ?TelegramMessageData
+    {
+        return $this->messageAt('edited_message');
+    }
+
+    public function channelPost(): ?TelegramMessageData
+    {
+        return $this->messageAt('channel_post');
+    }
+
+    public function editedChannelPost(): ?TelegramMessageData
+    {
+        return $this->messageAt('edited_channel_post');
+    }
+
+    public function businessMessage(): ?TelegramMessageData
+    {
+        return $this->messageAt('business_message');
+    }
+
+    public function editedBusinessMessage(): ?TelegramMessageData
+    {
+        return $this->messageAt('edited_business_message');
+    }
+
+    public function guestMessage(): ?TelegramMessageData
+    {
+        return $this->messageAt('guest_message');
+    }
+
+    public function effectiveMessage(): ?TelegramMessageData
+    {
+        foreach ([
+            'message',
+            'edited_message',
+            'channel_post',
+            'edited_channel_post',
+            'business_message',
+            'edited_business_message',
+            'guest_message',
+            'callback_query.message',
+        ] as $key) {
+            $message = $this->messageAt($key);
+
+            if ($message !== null) {
+                return $message;
+            }
+        }
+
+        return null;
+    }
+
+    public function effectiveChat(): ?TelegramChatData
+    {
+        $messageChat = $this->effectiveMessage()?->chat();
+
+        if ($messageChat !== null) {
+            return $messageChat;
+        }
+
+        foreach ([
+            'my_chat_member.chat',
+            'chat_member.chat',
+            'chat_join_request.chat',
+            'message_reaction.chat',
+            'message_reaction_count.chat',
+            'chat_boost.chat',
+            'removed_chat_boost.chat',
+        ] as $key) {
+            $chat = $this->chatAt($key);
+
+            if ($chat !== null) {
+                return $chat;
+            }
+        }
+
+        return null;
+    }
+
+    public function effectiveUser(): ?TelegramUserData
+    {
+        foreach ([
+            'message.from',
+            'edited_message.from',
+            'business_message.from',
+            'edited_business_message.from',
+            'guest_message.from',
+            'callback_query.from',
+            'inline_query.from',
+            'chosen_inline_result.from',
+            'shipping_query.from',
+            'pre_checkout_query.from',
+            'purchased_paid_media.from',
+            'poll_answer.user',
+            'my_chat_member.from',
+            'chat_member.from',
+            'chat_join_request.from',
+            'message_reaction.user',
+        ] as $key) {
+            $user = $this->userAt($key);
+
+            if ($user !== null) {
+                return $user;
+            }
+        }
+
+        return null;
+    }
+
     public function get(string $key, mixed $default = null): mixed
     {
         $value = $this->payload;
@@ -192,5 +306,26 @@ final readonly class TelegramWebhookUpdate
         $value = $this->get($key);
 
         return is_array($value) ? $value : null;
+    }
+
+    private function messageAt(string $key): ?TelegramMessageData
+    {
+        $value = $this->arrayAt($key);
+
+        return $value !== null ? TelegramMessageData::fromPayload($value) : null;
+    }
+
+    private function chatAt(string $key): ?TelegramChatData
+    {
+        $value = $this->arrayAt($key);
+
+        return $value !== null ? TelegramChatData::fromPayload($value) : null;
+    }
+
+    private function userAt(string $key): ?TelegramUserData
+    {
+        $value = $this->arrayAt($key);
+
+        return $value !== null ? TelegramUserData::fromPayload($value) : null;
     }
 }

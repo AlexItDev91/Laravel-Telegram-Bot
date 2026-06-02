@@ -205,6 +205,25 @@ $update->get('message.text'); // nested access with dot notation
 $update->payload();           // full raw update payload
 ```
 
+For common Telegram objects, use typed accessors when you want IDE-friendly webhook code while keeping the raw payload available:
+
+```php
+$message = $update->effectiveMessage();
+$chat = $update->effectiveChat();
+$user = $update->effectiveUser();
+
+$message?->messageId();       // int|null
+$message?->messageThreadId(); // int|null
+$message?->text();            // string|null
+$message?->caption();         // string|null
+$chat?->id();                 // int|string|null
+$chat?->type();               // private, group, supergroup, channel, ...
+$user?->id();                 // int|string|null
+$user?->username();           // string|null
+```
+
+Direct message-like accessors are also available: `message()`, `editedMessage()`, `channelPost()`, `editedChannelPost()`, `businessMessage()`, `editedBusinessMessage()`, and `guestMessage()`.
+
 Unknown future update fields remain available through `payload()` and `get()` even before the SDK adds first-class awareness.
 
 ## Route And Middleware

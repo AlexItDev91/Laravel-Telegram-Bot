@@ -1,5 +1,7 @@
 # Laravel Telegram Bot
 
+[![Latest Stable Version](https://img.shields.io/packagist/v/alexitdev91/laravel-telegram-bot.svg)](https://packagist.org/packages/alexitdev91/laravel-telegram-bot)
+
 ![Laravel Telegram Bot package cover](docs/assets/package-cover.png)
 
 Laravel-friendly PHP SDK for the official Telegram Bot API.
@@ -142,6 +144,15 @@ Typed DTOs validate required fields, empty lists, selected numeric constraints, 
 ## Webhooks
 
 The package includes a Laravel webhook receiver at `POST /telegram-bot/webhook` by default. It validates `X-Telegram-Bot-Api-Secret-Token` when `TELEGRAM_WEBHOOK_SECRET_TOKEN` is configured, dispatches a `TelegramWebhookReceived` event, and can call a configured `TelegramWebhookHandler`. In production, `TELEGRAM_WEBHOOK_REQUIRE_SECRET` defaults to `true`, so missing webhook secrets fail closed.
+
+Webhook handlers receive `TelegramWebhookUpdate`, which keeps the raw payload and exposes typed convenience accessors for common Telegram objects:
+
+```php
+$message = $update->effectiveMessage();
+$chatId = $update->effectiveChat()?->id();
+$user = $update->effectiveUser();
+$text = $message?->text();
+```
 
 ```php
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;

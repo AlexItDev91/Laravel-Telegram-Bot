@@ -8,6 +8,11 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.8.0] - 2026-06-02
+
+- Added typed webhook update DTO accessors for common Telegram `Message`, `Chat`, and `User` objects, including effective message, chat, and user helpers for Laravel handlers.
+- Added a Packagist latest-version badge to the README.
+
 ## [1.7.4] - 2026-06-02
 
 - Redacted bot tokens from propagated Telegram transport exception messages while preserving the original exception as the previous throwable.

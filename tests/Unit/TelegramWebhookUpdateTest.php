@@ -79,4 +79,89 @@ class TelegramWebhookUpdateTest extends TestCase
         $this->assertSame(['paid_media_payload' => 'paid-media-order'], $paidMediaUpdate->purchasedPaidMedia());
         $this->assertSame('space_race', $gameCallbackUpdate->gameShortName());
     }
+
+    public function test_exposes_typed_message_chat_and_user_accessors(): void
+    {
+        $update = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 130,
+            'message' => [
+                'message_id' => 77,
+                'message_thread_id' => 12,
+                'date' => 1_780_000_000,
+                'text' => '/start',
+                'is_topic_message' => true,
+                'from' => [
+                    'id' => '9007199254740991',
+                    'is_bot' => false,
+                    'first_name' => 'Alex',
+                    'username' => 'alex',
+                    'language_code' => 'en',
+                    'supports_guest_queries' => true,
+                ],
+                'chat' => [
+                    'id' => -1001234567890,
+                    'type' => 'supergroup',
+                    'title' => 'Support',
+                    'is_forum' => true,
+                ],
+            ],
+        ]);
+
+        $message = $update->message();
+        $chat = $update->effectiveChat();
+        $user = $update->effectiveUser();
+
+        $this->assertSame($message?->toArray(), $update->effectiveMessage()?->toArray());
+        $this->assertSame(77, $message?->messageId());
+        $this->assertSame(12, $message?->messageThreadId());
+        $this->assertSame(1_780_000_000, $message?->date());
+        $this->assertSame('/start', $message?->text());
+        $this->assertTrue($message?->isTopicMessage());
+        $this->assertSame(-1001234567890, $chat?->id());
+        $this->assertSame('supergroup', $chat?->type());
+        $this->assertSame('Support', $chat?->title());
+        $this->assertTrue($chat?->isForum());
+        $this->assertSame('9007199254740991', $user?->id());
+        $this->assertFalse($user?->isBot());
+        $this->assertSame('Alex', $user?->firstName());
+        $this->assertSame('alex', $user?->username());
+        $this->assertSame('en', $user?->languageCode());
+        $this->assertTrue($user?->supportsGuestQueries());
+    }
+
+    public function test_effective_accessors_fall_back_to_callback_query_context(): void
+    {
+        $update = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 131,
+            'callback_query' => [
+                'id' => 'callback-id',
+                'from' => [
+                    'id' => 42,
+                    'is_bot' => false,
+                    'first_name' => 'Taylor',
+                ],
+                'message' => [
+                    'message_id' => 88,
+                    'caption' => 'Choose an option',
+                    'from' => [
+                        'id' => 777000,
+                        'is_bot' => true,
+                        'first_name' => 'Button Bot',
+                    ],
+                    'chat' => [
+                        'id' => '9007199254740992',
+                        'type' => 'private',
+                        'first_name' => 'Taylor',
+                    ],
+                ],
+            ],
+        ]);
+
+        $this->assertSame(88, $update->effectiveMessage()?->messageId());
+        $this->assertSame('Choose an option', $update->effectiveMessage()?->caption());
+        $this->assertSame('9007199254740992', $update->effectiveChat()?->id());
+        $this->assertSame('private', $update->effectiveChat()?->type());
+        $this->assertSame(42, $update->effectiveUser()?->id());
+        $this->assertSame('Taylor', $update->effectiveUser()?->firstName());
+    }
 }

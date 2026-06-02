@@ -22,6 +22,9 @@ final readonly class SetGameScoreData extends TelegramBotRequestData
         ?string $inlineMessageId = null,
         array $extra = [],
     ) {
+        self::assertNonNegativeInteger('score', $score);
+        self::assertGameMessageReference($chatId, $messageId, $inlineMessageId);
+
         parent::__construct(self::payload([
             'user_id' => $userId,
             'score' => $score,
@@ -30,6 +33,6 @@ final readonly class SetGameScoreData extends TelegramBotRequestData
             'chat_id' => $chatId,
             'message_id' => $messageId,
             'inline_message_id' => $inlineMessageId,
-        ], $extra));
+        ], $extra, ['user_id']));
     }
 }

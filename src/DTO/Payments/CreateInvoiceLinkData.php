@@ -62,6 +62,6 @@ final readonly class CreateInvoiceLinkData extends TelegramBotRequestData
             'send_phone_number_to_provider' => $sendPhoneNumberToProvider,
             'send_email_to_provider' => $sendEmailToProvider,
             'is_flexible' => $isFlexible,
-        ], $extra));
+        ], $extra, ['title', 'description', 'payload', 'currency', 'prices']));
     }
 }

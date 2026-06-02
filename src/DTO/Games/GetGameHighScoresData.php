@@ -19,11 +19,13 @@ final readonly class GetGameHighScoresData extends TelegramBotRequestData
         ?string $inlineMessageId = null,
         array $extra = [],
     ) {
+        self::assertGameMessageReference($chatId, $messageId, $inlineMessageId);
+
         parent::__construct(self::payload([
             'user_id' => $userId,
             'chat_id' => $chatId,
             'message_id' => $messageId,
             'inline_message_id' => $inlineMessageId,
-        ], $extra));
+        ], $extra, ['user_id']));
     }
 }

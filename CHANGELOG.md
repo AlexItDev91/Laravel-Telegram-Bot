@@ -8,6 +8,13 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.5.4] - 2026-06-02
+
+- Added early validation for typed Payments, Stars, paid media, Telegram Passport, and Games DTO payloads.
+- Added Laravel configuration validation for bot API URLs, timeouts, channel chat IDs, webhook update IDs, and webhook secret token format.
+- Prevented typed DTO `extra` payloads from overriding constructor-backed fields.
+- Documented the package validation model and the intentional raw `call()` escape hatch for newly released Telegram Bot API methods.
+
 ## [1.5.3] - 2026-06-01
 
 - Shortened the method reference index source links and made method names link to their local reference sections.

@@ -106,6 +106,29 @@ class TelegramWebhookReceiverTest extends TestCase
         $this->assertStringNotContainsString('not-json', json_encode($logger->records[0], JSON_THROW_ON_ERROR));
     }
 
+    public function test_webhook_route_rejects_payloads_without_integer_update_id(): void
+    {
+        $this->postJson('/telegram-bot/webhook', ['update_id' => '1001'])
+            ->assertUnprocessable()
+            ->assertExactJson(['ok' => false, 'description' => 'Invalid Telegram webhook update payload.']);
+    }
+
+    public function test_webhook_secret_token_configuration_must_match_telegram_contract(): void
+    {
+        $logger = new TelegramWebhookTestLogger();
+        $this->app->instance(LoggerInterface::class, $logger);
+
+        config()->set('telegram-bot.webhook.secret_token', 'invalid secret');
+
+        $this->withHeader('X-Telegram-Bot-Api-Secret-Token', 'invalid secret')
+            ->postJson('/telegram-bot/webhook', ['update_id' => 1001])
+            ->assertForbidden();
+
+        $this->assertSame('warning', $logger->records[0]['level']);
+        $this->assertSame('Telegram webhook rejected because the configured secret token is invalid.', $logger->records[0]['message']);
+        $this->assertStringNotContainsString('invalid secret', json_encode($logger->records[0], JSON_THROW_ON_ERROR));
+    }
+
     public function test_webhook_logs_invalid_handler_configuration_without_failing_telegram_response(): void
     {
         $logger = new TelegramWebhookTestLogger();

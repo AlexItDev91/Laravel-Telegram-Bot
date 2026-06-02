@@ -32,6 +32,6 @@ final readonly class InlineQueryResultGame implements TelegramBotData
             'id' => $this->id,
             'game_short_name' => $this->gameShortName,
             'reply_markup' => $this->replyMarkup,
-        ], $this->extra);
+        ], $this->extra, ['type', 'id', 'game_short_name']);
     }
 }

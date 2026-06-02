@@ -30,6 +30,6 @@ final readonly class InputPaidMediaLivePhoto implements TelegramBotData
             'type' => 'live_photo',
             'media' => $this->media,
             'photo' => $this->photo,
-        ], $this->extra);
+        ], $this->extra, ['type', 'media', 'photo']);
     }
 }

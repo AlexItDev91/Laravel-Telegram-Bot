@@ -18,11 +18,15 @@ final readonly class AnswerPreCheckoutQueryData extends TelegramBotRequestData
         ?string $errorMessage = null,
         array $extra = [],
     ) {
+        $required = $ok
+            ? ['pre_checkout_query_id']
+            : ['pre_checkout_query_id', 'error_message'];
+
         parent::__construct(self::payload([
             'pre_checkout_query_id' => $preCheckoutQueryId,
             'ok' => $ok,
             'error_message' => $errorMessage,
-        ], $extra));
+        ], $extra, $required));
     }
 
     public static function accept(string $preCheckoutQueryId): self

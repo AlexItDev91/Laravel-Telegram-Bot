@@ -21,6 +21,6 @@ final readonly class SetPassportDataErrorsData extends TelegramBotRequestData
         parent::__construct(self::payload([
             'user_id' => $userId,
             'errors' => $errors,
-        ], $extra));
+        ], $extra, ['user_id', 'errors']));
     }
 }

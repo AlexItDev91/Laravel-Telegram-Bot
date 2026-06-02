@@ -32,6 +32,17 @@ final readonly class InputPaidMediaVideo implements TelegramBotData
      */
     public function toArray(): array
     {
+        foreach ([
+            'start_timestamp' => $this->startTimestamp,
+            'width' => $this->width,
+            'height' => $this->height,
+            'duration' => $this->duration,
+        ] as $field => $value) {
+            if ($value !== null) {
+                self::assertNonNegativeInteger($field, $value);
+            }
+        }
+
         return self::payload([
             'type' => 'video',
             'media' => $this->media,
@@ -42,6 +53,6 @@ final readonly class InputPaidMediaVideo implements TelegramBotData
             'height' => $this->height,
             'duration' => $this->duration,
             'supports_streaming' => $this->supportsStreaming,
-        ], $this->extra);
+        ], $this->extra, ['type', 'media']);
     }
 }

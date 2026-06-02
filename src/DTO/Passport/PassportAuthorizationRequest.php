@@ -33,6 +33,6 @@ final readonly class PassportAuthorizationRequest implements TelegramBotData
             'scope' => $this->scope,
             'public_key' => $this->publicKey,
             'nonce' => $this->nonce,
-        ], $this->extra);
+        ], $this->extra, ['bot_id', 'scope', 'public_key', 'nonce']);
     }
 }

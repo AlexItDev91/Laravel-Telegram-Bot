@@ -369,6 +369,8 @@ Add a channel mapping:
 ],
 ```
 
+Each configured channel must have a non-empty `chat_id`. The package validates channel mappings when `channel('name')` is resolved so a missing Laravel environment value fails with a configuration exception instead of a delayed Telegram API error.
+
 For multiple bots:
 
 ```php
@@ -482,6 +484,8 @@ The package registers `POST /telegram-bot/webhook` by default. Configure a secre
 TELEGRAM_WEBHOOK_SECRET_TOKEN=change-this-secret
 TELEGRAM_WEBHOOK_REQUIRE_SECRET=true
 ```
+
+The webhook secret must follow Telegram's allowed format: 1-256 characters using only letters, numbers, `_`, and `-`.
 
 ```php
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;

@@ -28,6 +28,8 @@ $telegram->bot('shop')->sendInvoice(new SendInvoiceData(
 
 Nested DTOs are recursively serialized to arrays. Nested `InputFile` values still use the existing multipart `attach://` behavior.
 
+Typed payload objects validate required fields, empty arrays, selected numeric constraints, and documented Telegram alternatives before the HTTP request is sent. For example, rejected shipping and pre-checkout answers require `error_message`, accepted shipping answers require `shipping_options`, and game score requests require either `inline_message_id` or both `chat_id` and `message_id`. Use `extra` only for additional Telegram fields; it may not duplicate constructor-backed typed fields.
+
 ## Payments
 
 ### Methods And DTOs

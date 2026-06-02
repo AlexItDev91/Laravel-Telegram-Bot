@@ -119,6 +119,12 @@ TelegramBot::channel('inbox')->sendMessage([
 
 The raw `call(method, parameters)` API remains available for newly released Telegram methods before the typed SDK surface is updated.
 
+## Validation And DTOs
+
+The package keeps the full Telegram Bot API available through native methods and the raw `call()` API. Typed DTOs are provided for the higher-risk Laravel workflows where structured payloads improve correctness: Payments, Stars, paid media, Telegram Passport, Games, package config, channels, and webhook updates.
+
+Typed DTOs validate required fields, empty lists, selected numeric constraints, and documented Telegram conditions before the HTTP request is sent. DTO `extra` arrays are reserved for additional Telegram fields and may not duplicate typed constructor fields. Laravel channel config requires a non-empty `chat_id`; bot config requires a valid `api_url` and positive `timeout`. Generic array calls remain intentionally flexible for newly released Telegram methods and less common API objects.
+
 ## Webhooks
 
 The package includes a Laravel webhook receiver at `POST /telegram-bot/webhook` by default. It validates `X-Telegram-Bot-Api-Secret-Token` when `TELEGRAM_WEBHOOK_SECRET_TOKEN` is configured, dispatches a `TelegramWebhookReceived` event, and can call a configured `TelegramWebhookHandler`. In production, `TELEGRAM_WEBHOOK_REQUIRE_SECRET` defaults to `true`, so missing webhook secrets fail closed.

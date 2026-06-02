@@ -28,7 +28,7 @@ class TelegramWebhookReceiver
         $botName = (string) config('telegram-bot.webhook.bot', config('telegram-bot.default', 'default'));
         $payload = $this->payload($request);
 
-        if ($payload === null || ! array_key_exists('update_id', $payload)) {
+        if ($payload === null || ! array_key_exists('update_id', $payload) || ! is_int($payload['update_id'])) {
             $this->warning('Telegram webhook rejected because the update payload is invalid.', [
                 'bot' => $botName,
                 'content_type' => $request->headers->get('content-type'),

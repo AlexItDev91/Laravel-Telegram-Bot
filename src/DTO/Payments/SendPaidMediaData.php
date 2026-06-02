@@ -38,6 +38,8 @@ final readonly class SendPaidMediaData extends TelegramBotRequestData
         TelegramBotData|array|null $replyMarkup = null,
         array $extra = [],
     ) {
+        self::assertPositiveInteger('star_count', $starCount);
+
         parent::__construct(self::payload([
             'business_connection_id' => $businessConnectionId,
             'chat_id' => $chatId,
@@ -56,6 +58,6 @@ final readonly class SendPaidMediaData extends TelegramBotRequestData
             'suggested_post_parameters' => $suggestedPostParameters,
             'reply_parameters' => $replyParameters,
             'reply_markup' => $replyMarkup,
-        ], $extra));
+        ], $extra, ['chat_id', 'media']));
     }
 }

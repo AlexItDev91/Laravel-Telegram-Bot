@@ -2,6 +2,8 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO;
 
+use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotConfigurationException;
+
 final readonly class TelegramChannelConfigData
 {
     public function __construct(
@@ -10,7 +12,9 @@ final readonly class TelegramChannelConfigData
         public string|int|null $messageThreadId = null,
         public string|int|null $directMessagesTopicId = null,
     ) {
-        //
+        if ($this->chatId === null || (is_string($this->chatId) && trim($this->chatId) === '')) {
+            throw new TelegramBotConfigurationException('Telegram Bot channel chat_id must not be empty.');
+        }
     }
 
     /**

@@ -20,6 +20,6 @@ final readonly class RefundStarPaymentData extends TelegramBotRequestData
         parent::__construct(self::payload([
             'user_id' => $userId,
             'telegram_payment_charge_id' => $telegramPaymentChargeId,
-        ], $extra));
+        ], $extra, ['user_id', 'telegram_payment_charge_id']));
     }
 }

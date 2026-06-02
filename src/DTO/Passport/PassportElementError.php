@@ -15,7 +15,7 @@ final readonly class PassportElementError implements TelegramBotData
     private function __construct(
         private array $parameters,
     ) {
-        //
+        self::assertRequiredPayloadFields($parameters, self::requiredFields($parameters));
     }
 
     public static function dataField(string $type, string $fieldName, string $dataHash, string $message): self
@@ -106,5 +106,19 @@ final readonly class PassportElementError implements TelegramBotData
             'file_hash' => $fileHash,
             'message' => $message,
         ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     * @return list<string>
+     */
+    private static function requiredFields(array $parameters): array
+    {
+        return match ($parameters['source'] ?? null) {
+            'data' => ['source', 'type', 'field_name', 'data_hash', 'message'],
+            'files', 'translation_files' => ['source', 'type', 'file_hashes', 'message'],
+            'unspecified' => ['source', 'type', 'element_hash', 'message'],
+            default => ['source', 'type', 'file_hash', 'message'],
+        };
     }
 }

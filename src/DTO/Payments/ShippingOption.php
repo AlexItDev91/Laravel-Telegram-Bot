@@ -31,6 +31,6 @@ final readonly class ShippingOption implements TelegramBotData
             'id' => $this->id,
             'title' => $this->title,
             'prices' => $this->prices,
-        ], $this->extra);
+        ], $this->extra, ['id', 'title', 'prices']);
     }
 }

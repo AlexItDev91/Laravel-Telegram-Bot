@@ -49,6 +49,8 @@ TELEGRAM_WEBHOOK_ROUTE_NAME=telegram-bot.webhook
 
 The route defaults to `POST /telegram-bot/webhook` and is protected by `X-Telegram-Bot-Api-Secret-Token` when `secret_token` is configured. When `require_secret` is true, the middleware rejects webhook requests if no secret is configured; this defaults to true when `APP_ENV=production`.
 
+The configured secret token is validated against Telegram's contract before it is accepted: 1-256 characters, using only `A-Z`, `a-z`, `0-9`, `_`, and `-`. Invalid configured secrets fail closed and are not logged.
+
 ## Register The Webhook With Telegram
 
 Call `setWebhook` from a deployment command, Tinker, or your own release automation:
@@ -194,6 +196,8 @@ Customize it in config:
 ```
 
 Package middleware always validates `X-Telegram-Bot-Api-Secret-Token` when `secret_token` is configured. It also fails closed when `require_secret` is true and the secret is missing. Add rate limiting, IP filtering, or observability middleware in the `middleware` array when the host application needs it.
+
+The receiver rejects malformed updates before dispatching events or handlers. A valid incoming payload must be JSON and include an integer `update_id`, matching Telegram's `Update` object contract.
 
 ## Logging
 

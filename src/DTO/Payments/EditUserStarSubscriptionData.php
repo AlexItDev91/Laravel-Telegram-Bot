@@ -22,6 +22,6 @@ final readonly class EditUserStarSubscriptionData extends TelegramBotRequestData
             'user_id' => $userId,
             'telegram_payment_charge_id' => $telegramPaymentChargeId,
             'is_canceled' => $isCanceled,
-        ], $extra));
+        ], $extra, ['user_id', 'telegram_payment_charge_id']));
     }
 }

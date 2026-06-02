@@ -39,6 +39,6 @@ final readonly class SendGameData extends TelegramBotRequestData
             'message_effect_id' => $messageEffectId,
             'reply_parameters' => $replyParameters,
             'reply_markup' => $replyMarkup,
-        ], $extra));
+        ], $extra, ['chat_id', 'game_short_name']));
     }
 }

@@ -17,6 +17,14 @@ final readonly class GetStarTransactionsData extends TelegramBotRequestData
         ?int $limit = null,
         array $extra = [],
     ) {
+        if ($offset !== null) {
+            self::assertNonNegativeInteger('offset', $offset);
+        }
+
+        if ($limit !== null) {
+            self::assertPositiveInteger('limit', $limit);
+        }
+
         parent::__construct(self::payload([
             'offset' => $offset,
             'limit' => $limit,

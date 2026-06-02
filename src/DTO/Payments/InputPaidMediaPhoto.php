@@ -28,6 +28,6 @@ final readonly class InputPaidMediaPhoto implements TelegramBotData
         return self::payload([
             'type' => 'photo',
             'media' => $this->media,
-        ], $this->extra);
+        ], $this->extra, ['type', 'media']);
     }
 }

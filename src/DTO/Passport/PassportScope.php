@@ -26,9 +26,11 @@ final readonly class PassportScope implements TelegramBotData
      */
     public function toArray(): array
     {
+        self::assertPositiveInteger('v', $this->version);
+
         return self::payload([
             'v' => $this->version,
             'data' => $this->data,
-        ], $this->extra);
+        ], $this->extra, ['v', 'data']);
     }
 }

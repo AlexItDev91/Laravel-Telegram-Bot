@@ -28,6 +28,6 @@ final readonly class LabeledPrice implements TelegramBotData
         return self::payload([
             'label' => $this->label,
             'amount' => $this->amount,
-        ], $this->extra);
+        ], $this->extra, ['label']);
     }
 }

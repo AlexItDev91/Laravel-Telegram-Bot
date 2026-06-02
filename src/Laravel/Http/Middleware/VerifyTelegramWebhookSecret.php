@@ -31,6 +31,12 @@ class VerifyTelegramWebhookSecret
             return $next($request);
         }
 
+        if (! is_string($expected) || preg_match('/^[A-Za-z0-9_-]{1,256}$/', $expected) !== 1) {
+            $this->warning('Telegram webhook rejected because the configured secret token is invalid.', $request);
+
+            abort(403, 'Invalid Telegram webhook secret token configuration.');
+        }
+
         $actual = $request->header('X-Telegram-Bot-Api-Secret-Token', '');
 
         if (! is_string($actual) || ! hash_equals((string) $expected, $actual)) {

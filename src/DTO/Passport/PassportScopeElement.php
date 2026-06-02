@@ -56,12 +56,23 @@ final readonly class PassportScopeElement implements TelegramBotData
      */
     public function toArray(): array
     {
-        return self::payload([
+        $payload = [
             'type' => $this->type,
             'one_of' => $this->oneOf,
             'selfie' => $this->selfie,
             'translation' => $this->translation,
             'native_names' => $this->nativeNames,
-        ], $this->extra);
+        ];
+
+        $required = $this->oneOf === null ? ['type'] : ['one_of'];
+        self::assertRequiredPayloadFields($payload, $required);
+
+        if ($this->oneOf !== null) {
+            foreach ($this->oneOf as $type) {
+                self::assertRequiredPayloadFields(['one_of' => $type], ['one_of']);
+            }
+        }
+
+        return self::payload($payload, $this->extra, $required);
     }
 }

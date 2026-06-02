@@ -20,12 +20,16 @@ final readonly class AnswerShippingQueryData extends TelegramBotRequestData
         ?string $errorMessage = null,
         array $extra = [],
     ) {
+        $required = $ok
+            ? ['shipping_query_id', 'shipping_options']
+            : ['shipping_query_id', 'error_message'];
+
         parent::__construct(self::payload([
             'shipping_query_id' => $shippingQueryId,
             'ok' => $ok,
             'shipping_options' => $shippingOptions,
             'error_message' => $errorMessage,
-        ], $extra));
+        ], $extra, $required));
     }
 
     /**

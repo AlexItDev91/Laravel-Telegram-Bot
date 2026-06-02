@@ -84,6 +84,6 @@ final readonly class SendInvoiceData extends TelegramBotRequestData
             'suggested_post_parameters' => $suggestedPostParameters,
             'reply_parameters' => $replyParameters,
             'reply_markup' => $replyMarkup,
-        ], $extra));
+        ], $extra, ['chat_id', 'title', 'description', 'payload', 'currency', 'prices']));
     }
 }

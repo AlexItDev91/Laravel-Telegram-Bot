@@ -87,13 +87,13 @@ readonly class TelegramBotRequestData implements TelegramBotData
 
         foreach ($this->parameters as $key => $value) {
             if ($value instanceof InputFile) {
-                $parts[] = $value->toMultipartPart((string) $key);
+                $parts[] = $value->toMultipartPart($key);
 
                 continue;
             }
 
             $parts[] = [
-                'name' => (string) $key,
+                'name' => $key,
                 'contents' => $this->stringifyMultipartValue($this->normalizeMultipartValue($value, $fileParts, $attachmentIndex, $reservedNames)),
             ];
         }

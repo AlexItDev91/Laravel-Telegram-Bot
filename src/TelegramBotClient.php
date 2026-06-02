@@ -14,6 +14,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
+use JsonException;
 use Psr\Log\LoggerInterface;
 
 class TelegramBotClient implements TelegramBotClientContract
@@ -71,7 +72,11 @@ class TelegramBotClient implements TelegramBotClientContract
             throw new TelegramBotTransportException($this->sanitizeTransportMessage($exception->getMessage()), previous: $exception);
         }
 
-        $payload = json_decode((string) $response->getBody(), true);
+        try {
+            $payload = json_decode((string) $response->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
+            $payload = null;
+        }
 
         if (! is_array($payload)) {
             $this->logger?->error('Telegram Bot API returned a non-JSON response.', [
@@ -141,7 +146,7 @@ class TelegramBotClient implements TelegramBotClientContract
 
     private function assertMethodName(string $method): void
     {
-        if (preg_match('/^[A-Za-z0-9_]+$/', $method) !== 1) {
+        if (preg_match('/^\w+$/', $method) !== 1) {
             throw new InvalidArgumentException('Telegram Bot API method names may contain only letters, numbers, and underscores.');
         }
     }

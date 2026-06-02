@@ -22,7 +22,7 @@ class VerifyTelegramWebhookSecret
         $requireSecret ??= config('app.env') === 'production';
 
         if ($expected === null || $expected === '') {
-            if ((bool) $requireSecret) {
+            if ($requireSecret) {
                 $this->warning('Telegram webhook rejected because secret token enforcement is enabled but no secret is configured.', $request);
 
                 abort(403, 'Telegram webhook secret token is required.');

@@ -18,7 +18,7 @@ trait ResolvesTelegramBotConsoleInput
             return trim($option);
         }
 
-        if ($this->input->isInteractive() && $configured !== []) {
+        if ($configured !== [] && $this->input->isInteractive()) {
             return (string) select(
                 label: 'Which configured bot should be used?',
                 options: $this->configuredBotOptions($configured),

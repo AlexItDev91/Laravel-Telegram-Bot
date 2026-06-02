@@ -75,7 +75,7 @@ trait BuildsTelegramBotPayload
             return;
         }
 
-        if (! self::isBlankPayloadValue($chatId) && $messageId !== null) {
+        if ($messageId !== null && ! self::isBlankPayloadValue($chatId)) {
             return;
         }
 

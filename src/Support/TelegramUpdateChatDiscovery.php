@@ -162,7 +162,7 @@ final class TelegramUpdateChatDiscovery
     {
         foreach ($update as $key => $value) {
             if ($key !== 'update_id' && is_array($value)) {
-                return (string) $key;
+                return $key;
             }
         }
 

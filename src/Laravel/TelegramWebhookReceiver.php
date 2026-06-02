@@ -9,6 +9,7 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use JsonException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
@@ -65,7 +66,11 @@ class TelegramWebhookReceiver
      */
     private function payload(Request $request): ?array
     {
-        $payload = json_decode($request->getContent(), true);
+        try {
+            $payload = json_decode($request->getContent(), true, flags: JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
+            return null;
+        }
 
         return is_array($payload) ? $payload : null;
     }

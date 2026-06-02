@@ -26,7 +26,7 @@ final readonly class InputFile
      */
     public function toMultipartPart(string $name): array
     {
-        $contents = @fopen($this->path, 'r');
+        $contents = @fopen($this->path, 'rb');
 
         if ($contents === false) {
             throw new InvalidArgumentException("Telegram input file [{$this->path}] cannot be opened for reading.");
@@ -36,7 +36,7 @@ final readonly class InputFile
 
         $part = [
             'name' => $name,
-            'contents' => new LazyOpenStream($this->path, 'r'),
+            'contents' => new LazyOpenStream($this->path, 'rb'),
         ];
 
         if ($this->filename !== null) {

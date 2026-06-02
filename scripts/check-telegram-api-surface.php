@@ -407,5 +407,5 @@ function htmlCellText(string $html): string
 
 function normalizeWhitespace(string $value): string
 {
-    return trim((string) preg_replace('/\s+/', ' ', $value));
+    return trim(preg_replace('/\s+/', ' ', $value));
 }

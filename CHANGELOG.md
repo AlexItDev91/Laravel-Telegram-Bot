@@ -8,6 +8,10 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.12.1] - 2026-06-02
+
+- Addressed Qodana inspection findings for binary-safe file streams, JSON decoding with `JSON_THROW_ON_ERROR`, class constants, condition ordering, and redundant casts without changing public behavior.
+
 ## [1.12.0] - 2026-06-02
 
 - Added typed inbound webhook DTO accessors for the remaining official Telegram update families: business connections, deleted business messages, purchased paid media, polls, poll answers, message reactions, chat boosts, removed chat boosts, and managed bot updates.

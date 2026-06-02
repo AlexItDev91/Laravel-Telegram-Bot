@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands;
 
+use AlexItDev91\LaravelTelegramBot\Laravel\TelegramBotServiceProvider;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use Illuminate\Console\Command;
 use Throwable;
@@ -72,7 +73,7 @@ class TelegramBotInstallCommand extends Command
     private function publishConfig(): void
     {
         $this->callSilent('vendor:publish', array_filter([
-            '--provider' => 'AlexItDev91\\LaravelTelegramBot\\Laravel\\TelegramBotServiceProvider',
+            '--provider' => TelegramBotServiceProvider::class,
             '--tag' => 'telegram-bot-config',
             '--force' => (bool) $this->option('force') ? true : null,
         ], static fn (mixed $value): bool => $value !== null));
@@ -177,7 +178,7 @@ class TelegramBotInstallCommand extends Command
 
     private function envKey(string $value): string
     {
-        $key = strtoupper((string) preg_replace('/[^A-Za-z0-9]+/', '_', $value));
+        $key = strtoupper(preg_replace('/[^A-Za-z0-9]+/', '_', $value));
         $key = trim($key, '_');
 
         return $key !== '' ? $key : 'INBOX';

@@ -19,6 +19,7 @@ class TelegramWebhookReceiverTest extends TestCase
 
         TelegramWebhookTestHandler::reset();
         TelegramWebhookTypedAccessorHandler::reset();
+        TelegramWebhookCallbackQueryHandler::reset();
     }
 
     public function test_default_webhook_route_accepts_updates_and_dispatches_event(): void
@@ -131,6 +132,47 @@ class TelegramWebhookReceiverTest extends TestCase
         ]);
 
         $this->assertSame(1005, TelegramWebhookTypedAccessorHandler::$update?->updateId());
+    }
+
+    public function test_webhook_handler_can_use_typed_callback_query_accessor(): void
+    {
+        config()->set('telegram-bot.webhook.handler', TelegramWebhookCallbackQueryHandler::class);
+        config()->set('telegram-bot.webhook.bot', 'support');
+
+        $response = $this->postJson('/telegram-bot/webhook', [
+            'update_id' => 1006,
+            'callback_query' => [
+                'id' => 'callback-id',
+                'from' => [
+                    'id' => 987654321,
+                    'is_bot' => false,
+                    'first_name' => 'Alex',
+                    'username' => 'alex',
+                ],
+                'message' => [
+                    'message_id' => 56,
+                    'text' => 'Choose',
+                    'chat' => [
+                        'id' => -1001234567890,
+                        'type' => 'supergroup',
+                    ],
+                ],
+                'chat_instance' => 'chat-instance',
+                'data' => 'menu:settings',
+            ],
+        ]);
+
+        $response->assertOk()->assertExactJson([
+            'bot' => 'support',
+            'callback_id' => 'callback-id',
+            'chat_id' => '-1001234567890',
+            'chat_instance' => 'chat-instance',
+            'data' => 'menu:settings',
+            'message_id' => 56,
+            'user_id' => '987654321',
+        ]);
+
+        $this->assertSame(1006, TelegramWebhookCallbackQueryHandler::$update?->updateId());
     }
 
     public function test_webhook_route_rejects_non_json_payloads(): void
@@ -276,6 +318,36 @@ final class TelegramWebhookTypedAccessorHandler implements TelegramWebhookHandle
             'chat_type' => $chat?->type(),
             'user_id' => (string) $user?->id(),
             'username' => $user?->username(),
+        ];
+    }
+}
+
+final class TelegramWebhookCallbackQueryHandler implements TelegramWebhookHandler
+{
+    public static ?TelegramWebhookUpdate $update = null;
+
+    public static function reset(): void
+    {
+        self::$update = null;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function handle(TelegramWebhookUpdate $update, string $botName): array
+    {
+        self::$update = $update;
+
+        $callbackQuery = $update->callbackQuery();
+
+        return [
+            'bot' => $botName,
+            'callback_id' => $callbackQuery?->id(),
+            'data' => $callbackQuery?->data(),
+            'chat_instance' => $callbackQuery?->chatInstance(),
+            'message_id' => $callbackQuery?->message()?->messageId(),
+            'chat_id' => (string) $callbackQuery?->message()?->chat()?->id(),
+            'user_id' => (string) $callbackQuery?->from()?->id(),
         ];
     }
 }

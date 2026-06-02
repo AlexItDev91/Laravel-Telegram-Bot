@@ -211,6 +211,7 @@ For common Telegram objects, use typed accessors when you want IDE-friendly webh
 $message = $update->effectiveMessage();
 $chat = $update->effectiveChat();
 $user = $update->effectiveUser();
+$callbackQuery = $update->callbackQuery();
 
 $message?->messageId();       // int|null
 $message?->messageThreadId(); // int|null
@@ -220,9 +221,13 @@ $chat?->id();                 // int|string|null
 $chat?->type();               // private, group, supergroup, channel, ...
 $user?->id();                 // int|string|null
 $user?->username();           // string|null
+$callbackQuery?->id();        // string|null
+$callbackQuery?->data();      // string|null
+$callbackQuery?->message();   // TelegramMessageData|null
 ```
 
 Direct message-like accessors are also available: `message()`, `editedMessage()`, `channelPost()`, `editedChannelPost()`, `businessMessage()`, `editedBusinessMessage()`, and `guestMessage()`.
+Callback query updates are available through `callbackQuery()`, including typed `from()` and `message()` accessors.
 
 Unknown future update fields remain available through `payload()` and `get()` even before the SDK adds first-class awareness.
 

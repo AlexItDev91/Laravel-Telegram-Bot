@@ -22,6 +22,7 @@ class TelegramBotWebhookGuideTest extends TestCase
             'effectiveMessage()',
             'effectiveChat()',
             'effectiveUser()',
+            'callbackQuery()',
             'X-Telegram-Bot-Api-Secret-Token',
             'TELEGRAM_WEBHOOK_SECRET_TOKEN',
             'TELEGRAM_WEBHOOK_REQUIRE_SECRET',

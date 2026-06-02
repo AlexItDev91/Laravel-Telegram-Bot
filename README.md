@@ -155,6 +155,7 @@ Webhook handlers receive `TelegramWebhookUpdate`, which keeps the raw payload an
 $message = $update->effectiveMessage();
 $chatId = $update->effectiveChat()?->id();
 $user = $update->effectiveUser();
+$callbackData = $update->callbackQuery()?->data();
 $text = $message?->text();
 ```
 

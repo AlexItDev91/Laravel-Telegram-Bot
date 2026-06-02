@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="1.8.3"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="1.9.0"/>', $config);
 
         foreach ([
             'overview.md',
@@ -97,6 +97,7 @@ class WritersideDocumentationTest extends TestCase
             'effectiveMessage()',
             'effectiveChat()',
             'effectiveUser()',
+            'callbackQuery()',
         ] as $requiredWebhookText) {
             $this->assertStringContainsString($requiredWebhookText, $webhooks);
         }

@@ -133,6 +133,13 @@ final readonly class TelegramWebhookUpdate
         return $this->messageAt('guest_message');
     }
 
+    public function callbackQuery(): ?TelegramCallbackQueryData
+    {
+        $callbackQuery = $this->arrayAt('callback_query');
+
+        return $callbackQuery !== null ? TelegramCallbackQueryData::fromPayload($callbackQuery) : null;
+    }
+
     public function effectiveMessage(): ?TelegramMessageData
     {
         foreach ([
@@ -293,9 +300,7 @@ final readonly class TelegramWebhookUpdate
 
     public function gameShortName(): ?string
     {
-        $gameShortName = $this->get('callback_query.game_short_name');
-
-        return is_string($gameShortName) ? $gameShortName : null;
+        return $this->callbackQuery()?->gameShortName();
     }
 
     /**

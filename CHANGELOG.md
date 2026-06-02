@@ -8,6 +8,11 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.9.0] - 2026-06-02
+
+- Added `TelegramCallbackQueryData` and `TelegramWebhookUpdate::callbackQuery()` for typed inline keyboard callback handling in webhook handlers.
+- Added unit and Laravel webhook receiver coverage for typed callback query accessors.
+
 ## [1.8.3] - 2026-06-02
 
 - Updated the Composer checks workflow to `actions/checkout@v5` to avoid the Node.js 20 action runtime deprecation warning.

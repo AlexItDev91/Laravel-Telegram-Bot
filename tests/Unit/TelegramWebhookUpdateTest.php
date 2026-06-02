@@ -161,7 +161,53 @@ class TelegramWebhookUpdateTest extends TestCase
         $this->assertSame('Choose an option', $update->effectiveMessage()?->caption());
         $this->assertSame('9007199254740992', $update->effectiveChat()?->id());
         $this->assertSame('private', $update->effectiveChat()?->type());
+        $this->assertSame('callback-id', $update->callbackQuery()?->id());
+        $this->assertSame(42, $update->callbackQuery()?->from()?->id());
+        $this->assertSame(88, $update->callbackQuery()?->message()?->messageId());
         $this->assertSame(42, $update->effectiveUser()?->id());
         $this->assertSame('Taylor', $update->effectiveUser()?->firstName());
+    }
+
+    public function test_exposes_typed_callback_query_payload(): void
+    {
+        $update = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 132,
+            'callback_query' => [
+                'id' => 'callback-id',
+                'from' => [
+                    'id' => '9007199254740991',
+                    'is_bot' => false,
+                    'first_name' => 'Alex',
+                    'username' => 'alex',
+                ],
+                'message' => [
+                    'message_id' => 90,
+                    'text' => 'Pick one',
+                    'chat' => [
+                        'id' => -1001234567890,
+                        'type' => 'supergroup',
+                    ],
+                ],
+                'inline_message_id' => 'inline-message-id',
+                'chat_instance' => 'chat-instance',
+                'data' => 'menu:settings',
+                'game_short_name' => 'space_race',
+            ],
+        ]);
+
+        $callbackQuery = $update->callbackQuery();
+
+        $this->assertSame('callback-id', $callbackQuery?->id());
+        $this->assertSame('9007199254740991', $callbackQuery?->from()?->id());
+        $this->assertSame('alex', $callbackQuery?->from()?->username());
+        $this->assertSame(90, $callbackQuery?->message()?->messageId());
+        $this->assertSame('Pick one', $callbackQuery?->message()?->text());
+        $this->assertSame(-1001234567890, $callbackQuery?->message()?->chat()?->id());
+        $this->assertSame('inline-message-id', $callbackQuery?->inlineMessageId());
+        $this->assertSame('chat-instance', $callbackQuery?->chatInstance());
+        $this->assertSame('menu:settings', $callbackQuery?->data());
+        $this->assertSame('space_race', $callbackQuery?->gameShortName());
+        $this->assertSame('space_race', $update->gameShortName());
+        $this->assertSame($update->get('callback_query'), $callbackQuery?->toArray());
     }
 }

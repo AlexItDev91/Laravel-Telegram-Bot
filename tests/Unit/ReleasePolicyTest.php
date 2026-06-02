@@ -13,7 +13,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('1.11.2', $version);
+        $this->assertSame('1.11.3', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -34,6 +34,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [1.11.3] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.11.2] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.11.1] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.11.0] - 2026-06-02', $changelog);
@@ -98,6 +99,10 @@ class ReleasePolicyTest extends TestCase
 
         $this->assertStringNotContainsString('actions/checkout@v4', $workflow);
         $this->assertStringNotContainsString('actions/checkout@v5', $workflow);
+        $this->assertStringNotContainsString('"docs/**"', $workflow);
+        $this->assertStringNotContainsString('"README.md"', $workflow);
+        $this->assertStringNotContainsString('"CHANGELOG.md"', $workflow);
+        $this->assertStringNotContainsString('"VERSION"', $workflow);
     }
 
     public function test_composer_does_not_hardcode_package_version(): void

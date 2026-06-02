@@ -11,10 +11,6 @@ on:
       - "scripts/**"
       - "src/**"
       - "tests/**"
-      - "docs/**"
-      - "README.md"
-      - "CHANGELOG.md"
-      - "VERSION"
   pull_request:
     paths:
       - ".github/workflows/tests.yml"
@@ -24,10 +20,6 @@ on:
       - "scripts/**"
       - "src/**"
       - "tests/**"
-      - "docs/**"
-      - "README.md"
-      - "CHANGELOG.md"
-      - "VERSION"
   workflow_dispatch:
 
 permissions:

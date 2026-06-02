@@ -8,6 +8,10 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.11.3] - 2026-06-02
+
+- Reduced GitHub Actions usage by keeping Composer checks off documentation-only pushes and simplifying the Writerside workflow to a single documentation generation and Pages deploy job.
+
 ## [1.11.2] - 2026-06-02
 
 - Opted the Writerside documentation workflow into GitHub Actions Node.js 24 execution for the remaining JetBrains action while keeping the current published JetBrains action major.

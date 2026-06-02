@@ -11,15 +11,15 @@ This page is for package maintainers who update the SDK, release notes, and docu
 | `Writerside/writerside.cfg` | Writerside module configuration. |
 | `Writerside/tg.tree` | Writerside table of contents. |
 | `Writerside/topics/*.md` | Published documentation website topics. |
-| `.github/workflows/writerside.yml` | GitHub Actions build, check, and GitHub Pages deploy workflow. |
+| `.github/workflows/writerside.yml` | GitHub Actions documentation generation and GitHub Pages deploy workflow. |
 
 Keep `docs/*.md` and `Writerside/topics/*.md` synchronized when changing public documentation.
 Large reference topics can be re-imported from the matching `docs/*.md` file when the content is intentionally identical.
 
 ## Writerside Deployment
 
-The GitHub Actions workflow builds the `Writerside/tg` instance with JetBrains Writerside Docker builder `2026.04.8711`.
-It uploads the generated website archive, checks the Writerside build report, and deploys the unpacked static site to GitHub Pages.
+The GitHub Actions workflow generates the `Writerside/tg` instance with JetBrains Writerside Docker builder `2026.04.8711`.
+It unpacks the generated website archive in the same job and deploys the static site to GitHub Pages.
 
 GitHub repository settings must use:
 

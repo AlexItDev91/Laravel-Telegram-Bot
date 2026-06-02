@@ -13,7 +13,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('1.8.0', $version);
+        $this->assertSame('1.8.1', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -34,6 +34,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [1.8.1] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.8.0] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.7.4] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.7.3] - 2026-06-02', $changelog);
@@ -55,7 +56,7 @@ class ReleasePolicyTest extends TestCase
         $this->assertStringContainsString('## [1.0.1] - 2026-06-01', $changelog);
         $this->assertStringContainsString('Every package update must include a version bump and a git tag.', $agents);
         $this->assertStringContainsString('complete the release workflow automatically unless the user explicitly says not to commit, tag, or push', $agents);
-        $this->assertStringContainsString('[![Latest Stable Version](https://img.shields.io/packagist/v/alexitdev91/laravel-telegram-bot.svg)](https://packagist.org/packages/alexitdev91/laravel-telegram-bot)', $readme);
+        $this->assertStringContainsString('[![Latest Stable Version](https://poser.pugx.org/alexitdev91/laravel-telegram-bot/v/stable)](https://packagist.org/packages/alexitdev91/laravel-telegram-bot)', $readme);
         $this->assertStringNotContainsString('docs/RELEASE.md', $readme);
     }
 

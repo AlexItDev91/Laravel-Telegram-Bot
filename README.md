@@ -1,6 +1,6 @@
 # Laravel Telegram Bot
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/alexitdev91/laravel-telegram-bot.svg)](https://packagist.org/packages/alexitdev91/laravel-telegram-bot)
+[![Latest Stable Version](https://poser.pugx.org/alexitdev91/laravel-telegram-bot/v/stable)](https://packagist.org/packages/alexitdev91/laravel-telegram-bot)
 
 ![Laravel Telegram Bot package cover](docs/assets/package-cover.png)
 

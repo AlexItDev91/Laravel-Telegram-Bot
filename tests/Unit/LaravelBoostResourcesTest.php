@@ -21,6 +21,14 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('https://core.telegram.org/bots/api', $guidelines);
         $this->assertStringContainsString('https://core.telegram.org/bots/api-changelog', $guidelines);
         $this->assertStringContainsString('TelegramWebhookReceived', $guidelines);
+        $this->assertStringContainsString('effectiveMessage()', $guidelines);
+        $this->assertStringContainsString('callbackQuery()', $guidelines);
+        $this->assertStringContainsString('preCheckoutQueryData()', $guidelines);
+        $this->assertStringContainsString('documentData()', $guidelines);
+        $this->assertStringContainsString('successfulPaymentData()', $guidelines);
+        $this->assertStringContainsString('newChatMemberData()', $guidelines);
+        $this->assertStringContainsString('retryAfter()', $guidelines);
+        $this->assertStringContainsString('migrateToChatId()', $guidelines);
     }
 
     public function test_package_ships_laravel_boost_skill(): void
@@ -41,5 +49,14 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TELEGRAM_WEBHOOK_SECRET_TOKEN', $skill);
         $this->assertStringContainsString('TELEGRAM_WEBHOOK_REQUIRE_SECRET', $skill);
         $this->assertStringContainsString('TELEGRAM_BOT_LOGGING_ENABLED', $skill);
+        $this->assertStringContainsString('effectiveMessage()', $skill);
+        $this->assertStringContainsString('callbackQuery()', $skill);
+        $this->assertStringContainsString('preCheckoutQueryData()', $skill);
+        $this->assertStringContainsString('orderInfoData()', $skill);
+        $this->assertStringContainsString('documentData()', $skill);
+        $this->assertStringContainsString('successfulPaymentData()', $skill);
+        $this->assertStringContainsString('newChatMemberData()', $skill);
+        $this->assertStringContainsString('retryAfter()', $skill);
+        $this->assertStringContainsString('migrateToChatId()', $skill);
     }
 }

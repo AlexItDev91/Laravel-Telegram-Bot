@@ -13,7 +13,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('1.11.0', $version);
+        $this->assertSame('1.11.1', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -34,6 +34,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [1.11.1] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.11.0] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.10.0] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.9.0] - 2026-06-02', $changelog);
@@ -89,12 +90,13 @@ class ReleasePolicyTest extends TestCase
             'composer test',
             'composer test:coverage-surface',
             'php: ["8.2", "8.3", "8.4"]',
-            'actions/checkout@v5',
+            'actions/checkout@v6',
         ] as $requiredWorkflowText) {
             $this->assertStringContainsString($requiredWorkflowText, $workflow);
         }
 
         $this->assertStringNotContainsString('actions/checkout@v4', $workflow);
+        $this->assertStringNotContainsString('actions/checkout@v5', $workflow);
     }
 
     public function test_composer_does_not_hardcode_package_version(): void

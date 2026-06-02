@@ -8,6 +8,11 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.11.1] - 2026-06-02
+
+- Updated Laravel Boost package guidelines and the package skill with the current typed webhook DTO accessors and Telegram API exception helpers.
+- Updated GitHub Actions workflow action majors used by Composer checks and Writerside documentation deployment to current Node.js 24-compatible releases where available.
+
 ## [1.11.0] - 2026-06-02
 
 - Added typed DTOs for common nested Telegram objects: message entities, photo sizes, documents, successful payments, order info, and chat members.

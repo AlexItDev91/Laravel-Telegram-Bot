@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="1.11.0"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="1.11.1"/>', $config);
 
         foreach ([
             'overview.md',
@@ -50,9 +50,17 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString("INSTANCE: 'Writerside/tg'", $workflow);
         $this->assertStringContainsString("DOCKER_VERSION: '2026.04.8711'", $workflow);
+        $this->assertStringContainsString('actions/checkout@v6', $workflow);
+        $this->assertStringContainsString('actions/upload-artifact@v7', $workflow);
+        $this->assertStringContainsString('actions/download-artifact@v7', $workflow);
+        $this->assertStringContainsString('actions/configure-pages@v6', $workflow);
+        $this->assertStringContainsString('actions/upload-pages-artifact@v4', $workflow);
+        $this->assertStringContainsString('actions/deploy-pages@v5', $workflow);
         $this->assertStringContainsString('JetBrains/writerside-github-action@v4', $workflow);
         $this->assertStringContainsString('JetBrains/writerside-checker-action@v1', $workflow);
-        $this->assertStringContainsString('actions/deploy-pages@v4', $workflow);
+        $this->assertStringNotContainsString('actions/checkout@v4', $workflow);
+        $this->assertStringNotContainsString('actions/upload-artifact@v4', $workflow);
+        $this->assertStringNotContainsString('actions/download-artifact@v4', $workflow);
     }
 
     public function test_writerside_documentation_covers_key_package_workflows(): void

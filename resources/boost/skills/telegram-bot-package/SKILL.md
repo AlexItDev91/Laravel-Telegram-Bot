@@ -129,7 +129,34 @@ php artisan telegram-bot:webhook:delete --bot=default --yes
 
 Handle incoming updates with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler` or listen for `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived`. See `docs/WEBHOOKS.md` for the full receiver setup.
 
+Use typed update accessors instead of ad hoc nested arrays when the object is covered:
+
+```php
+$message = $update->effectiveMessage();
+$chatId = $update->effectiveChat()?->id();
+$userId = $update->effectiveUser()?->id();
+$callbackData = $update->callbackQuery()?->data();
+$preCheckoutId = $update->preCheckoutQueryData()?->id();
+$orderEmail = $update->preCheckoutQueryData()?->orderInfoData()?->email();
+$documentName = $message?->documentData()?->fileName();
+$paymentCharge = $message?->successfulPaymentData()?->telegramPaymentChargeId();
+$newMemberStatus = $update->chatMember()?->newChatMemberData()?->status();
+```
+
+Useful typed inbound helpers include:
+
+- `message()`, `editedMessage()`, `channelPost()`, `editedChannelPost()`, `businessMessage()`, `editedBusinessMessage()`, `guestMessage()`
+- `effectiveMessage()`, `effectiveChat()`, `effectiveUser()`
+- `callbackQuery()`, `inlineQuery()`, `chosenInlineResult()`
+- `shippingQueryData()`, `preCheckoutQueryData()`
+- `myChatMember()`, `chatMember()`, `chatJoinRequest()`
+- `photoData()`, `documentData()`, `entitiesData()`, `captionEntitiesData()`, `successfulPaymentData()`, `orderInfoData()`, `oldChatMemberData()`, `newChatMemberData()`
+
+Keep the raw payload available through `payload()`, `get()`, and backward-compatible array helpers when Telegram sends fields before the SDK adds typed DTO coverage.
+
 Use `TelegramBot::call('methodName', [...])` for Telegram methods that do not have a typed helper yet. Keep Telegram IDs as strings or 64-bit safe values.
+
+When catching `AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotApiException`, use `retryAfter()` for rate-limit recovery and `migrateToChatId()` for group-to-supergroup migration handling.
 
 ## Keep Current
 

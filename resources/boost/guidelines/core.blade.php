@@ -38,7 +38,11 @@ php artisan telegram-bot:install
 - Protect webhooks with `TELEGRAM_WEBHOOK_SECRET_TOKEN`; the package validates `X-Telegram-Bot-Api-Secret-Token` and fails closed when `TELEGRAM_WEBHOOK_REQUIRE_SECRET=true`.
 - Keep `TELEGRAM_BOT_LOGGING_ENABLED=true` for safe operational warning/error logs without tokens, secret headers, request payloads, response bodies, chat IDs, or message text.
 - Handle incoming updates with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler` or listen for `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived`.
+- Prefer typed webhook accessors for common inbound objects: `effectiveMessage()`, `effectiveChat()`, `effectiveUser()`, `callbackQuery()`, `inlineQuery()`, `shippingQueryData()`, `preCheckoutQueryData()`, `chatMember()`, and `chatJoinRequest()`.
+- Prefer nested typed object accessors where available: `photoData()`, `documentData()`, `entitiesData()`, `captionEntitiesData()`, `successfulPaymentData()`, `orderInfoData()`, `oldChatMemberData()`, and `newChatMemberData()`.
+- Keep raw update access available through `payload()`, `get()`, and the backward-compatible array helpers when Telegram adds fields before typed DTOs exist.
 - Use `TelegramBot::call('methodName', [...])` for new Telegram methods before typed helpers are updated.
+- For failed Telegram API responses, use `retryAfter()` and `migrateToChatId()` on `TelegramBotApiException` when handling rate limits or migrated groups.
 - Keep Telegram IDs as strings or 64-bit safe values.
 
 ## API Currency

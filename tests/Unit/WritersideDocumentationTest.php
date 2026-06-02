@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="1.7.2"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="1.7.3"/>', $config);
 
         foreach ([
             'overview.md',
@@ -144,5 +144,8 @@ class WritersideDocumentationTest extends TestCase
         ] as $sourceLink) {
             $this->assertStringNotContainsString($sourceLink, $readme);
         }
+
+        $this->assertStringNotContainsString('| Page | What it covers |', $readme);
+        $this->assertStringNotContainsString('| --- | --- |', $readme);
     }
 }

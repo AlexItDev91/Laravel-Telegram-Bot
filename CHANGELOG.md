@@ -8,6 +8,10 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.7.3] - 2026-06-02
+
+- Simplified the README documentation section from a table into a compact unordered table of contents.
+
 ## [1.7.2] - 2026-06-02
 
 - Reworked the README documentation section to link to the published GitHub Pages documentation with readable page names.

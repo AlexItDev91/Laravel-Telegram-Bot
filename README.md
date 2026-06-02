@@ -18,23 +18,19 @@ The package targets Telegram Bot API `10.0`, released on `2026-05-08`.
 
 Read the published documentation:
 
-| Page | What it covers |
-| --- | --- |
-| [Overview](https://alexitdev91.github.io/Laravel-Telegram-Bot/overview.html) | Package capabilities, compatibility, integration path, and recommended calling styles. |
-| [Installation](https://alexitdev91.github.io/Laravel-Telegram-Bot/installation.html) | Composer installation, config publishing, manual provider registration, and install verification. |
-| [Configuration](https://alexitdev91.github.io/Laravel-Telegram-Bot/configuration.html) | Environment values, single-bot and multi-bot setup, channels, webhooks, logging, and validation. |
-| [Usage](https://alexitdev91.github.io/Laravel-Telegram-Bot/usage.html) | Constructor injection, facade calls, configured channels, raw calls, files, and error handling. |
-| [End-To-End Setup Guide](https://alexitdev91.github.io/Laravel-Telegram-Bot/telegram-setup.html) | BotFather, bot tokens, channel/group setup, chat IDs, topic IDs, and safe test delivery. |
-| [Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html) | Artisan install, identity checks, webhook management, update discovery, and test messages. |
-| [Webhooks](https://alexitdev91.github.io/Laravel-Telegram-Bot/webhooks.html) | Laravel webhook receiver, secret-token validation, handlers, events, routes, logging, and security. |
-| [Files And HTTP](https://alexitdev91.github.io/Laravel-Telegram-Bot/files-and-http.html) | `InputFile` uploads, multipart media groups, custom Guzzle clients, and response handling. |
-| [Payments, Passport, And Games](https://alexitdev91.github.io/Laravel-Telegram-Bot/payments-passport-games.html) | Typed DTOs and examples for Payments, Stars, paid media, Telegram Passport, and Games. |
-| [API Method Support](https://alexitdev91.github.io/Laravel-Telegram-Bot/api-surface.html) | Supported Telegram Bot API method matrix with official source links. |
-| [API Method Reference](https://alexitdev91.github.io/Laravel-Telegram-Bot/method-reference.html) | Full SDK method reference with call signatures, endpoints, and parameter tables. |
-| [Troubleshooting](https://alexitdev91.github.io/Laravel-Telegram-Bot/troubleshooting.html) | Common failures, webhook/polling conflicts, safe logs, and debug checklist. |
-| [Maintenance](https://alexitdev91.github.io/Laravel-Telegram-Bot/maintenance.html) | Writerside deployment, documentation maintenance, API currency, checks, and versioning. |
-
-Documentation source lives in `Writerside/` and `docs/`. The GitHub Actions workflow builds, checks, and deploys it to GitHub Pages.
+- [Overview](https://alexitdev91.github.io/Laravel-Telegram-Bot/overview.html)
+- [Installation](https://alexitdev91.github.io/Laravel-Telegram-Bot/installation.html)
+- [Configuration](https://alexitdev91.github.io/Laravel-Telegram-Bot/configuration.html)
+- [Usage](https://alexitdev91.github.io/Laravel-Telegram-Bot/usage.html)
+- [End-To-End Setup Guide](https://alexitdev91.github.io/Laravel-Telegram-Bot/telegram-setup.html)
+- [Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html)
+- [Webhooks](https://alexitdev91.github.io/Laravel-Telegram-Bot/webhooks.html)
+- [Files And HTTP](https://alexitdev91.github.io/Laravel-Telegram-Bot/files-and-http.html)
+- [Payments, Passport, And Games](https://alexitdev91.github.io/Laravel-Telegram-Bot/payments-passport-games.html)
+- [API Method Support](https://alexitdev91.github.io/Laravel-Telegram-Bot/api-surface.html)
+- [API Method Reference](https://alexitdev91.github.io/Laravel-Telegram-Bot/method-reference.html)
+- [Troubleshooting](https://alexitdev91.github.io/Laravel-Telegram-Bot/troubleshooting.html)
+- [Maintenance](https://alexitdev91.github.io/Laravel-Telegram-Bot/maintenance.html)
 
 Primary sources:
 

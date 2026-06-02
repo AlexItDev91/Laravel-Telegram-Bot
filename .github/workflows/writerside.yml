@@ -1,0 +1,107 @@
+name: Build and deploy Writerside docs
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "Writerside/**"
+      - "docs/**"
+      - "README.md"
+      - "CHANGELOG.md"
+      - "VERSION"
+      - ".github/workflows/writerside.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  pages: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+env:
+  INSTANCE: 'Writerside/tg'
+  DOCKER_VERSION: '2026.04.8711'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact: ${{ steps.define-ids.outputs.artifact }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Define Writerside artifact id
+        id: define-ids
+        run: |
+          INSTANCE_ID="${INSTANCE#*/}"
+          INSTANCE_ID_UPPER=$(echo "$INSTANCE_ID" | tr '[:lower:]' '[:upper:]')
+          ARTIFACT="webHelp${INSTANCE_ID_UPPER}2-all.zip"
+
+          echo "INSTANCE_ID_UPPER=$INSTANCE_ID_UPPER" >> "$GITHUB_ENV"
+          echo "ARTIFACT=$ARTIFACT" >> "$GITHUB_ENV"
+          echo "artifact=$ARTIFACT" >> "$GITHUB_OUTPUT"
+
+      - name: Build docs using Writerside Docker builder
+        uses: JetBrains/writerside-github-action@v4
+        with:
+          instance: ${{ env.INSTANCE }}
+          docker-version: ${{ env.DOCKER_VERSION }}
+
+      - name: Save Writerside artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: writerside-docs
+          path: |
+            artifacts/${{ steps.define-ids.outputs.artifact }}
+            artifacts/report.json
+          retention-days: 7
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Writerside artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: writerside-docs
+          path: artifacts
+
+      - name: Check Writerside build report
+        uses: JetBrains/writerside-checker-action@v1
+        with:
+          instance: ${{ env.INSTANCE }}
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download Writerside artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: writerside-docs
+          path: artifacts
+
+      - name: Unpack Writerside website
+        run: unzip -O UTF-8 -qq "artifacts/${{ needs.build.outputs.artifact }}" -d site
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

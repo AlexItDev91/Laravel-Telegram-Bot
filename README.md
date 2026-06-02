@@ -18,12 +18,15 @@ The package targets Telegram Bot API `10.0`, released on `2026-05-08`.
 
 Available documentation:
 
+- [Writerside/topics/overview.md](Writerside/topics/overview.md) - Writerside documentation website source with structured navigation, examples, tables, troubleshooting, and maintenance notes.
 - [docs/API.md](docs/API.md) - supported Telegram Bot API method matrix with links to the official Telegram documentation for every method.
 - [docs/CONSOLE_COMMANDS.md](docs/CONSOLE_COMMANDS.md) - interactive Artisan commands for install, webhook management, and parsed chat/thread discovery.
 - [docs/METHODS.md](docs/METHODS.md) - full SDK method reference with call signatures, endpoints, and official parameter names/types.
 - [docs/PAYMENTS_PASSPORT_GAMES.md](docs/PAYMENTS_PASSPORT_GAMES.md) - typed helpers, webhook accessors, and examples for Payments, Telegram Passport, paid media, and Games.
 - [docs/SETUP.md](docs/SETUP.md) - setup guide from creating a bot and a channel or group to adding the bot and finding Telegram identifiers.
 - [docs/WEBHOOKS.md](docs/WEBHOOKS.md) - Laravel webhook receiver setup, secret-token validation, handlers, events, and route configuration.
+
+The repository includes a Writerside module in [Writerside](Writerside) and a GitHub Actions workflow in [.github/workflows/writerside.yml](.github/workflows/writerside.yml) that builds, checks, and deploys the documentation to GitHub Pages.
 
 Primary sources:
 

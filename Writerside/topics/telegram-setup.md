@@ -271,7 +271,7 @@ The package can also fetch updates and print parsed identifiers for you:
 php artisan telegram-bot:updates --bot=default
 ```
 
-See [docs/CONSOLE_COMMANDS.md](CONSOLE_COMMANDS.md) for parsed `chat_id`, `message_thread_id`, and webhook command examples.
+See [Console commands](console-commands.md) for parsed `chat_id`, `message_thread_id`, and webhook command examples.
 
 ## 13. Install The Laravel Package
 
@@ -543,7 +543,7 @@ TelegramBot::bot('default')->setWebhook([
 
 Incoming updates can be handled with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler` or by listening for `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived`.
 
-See [docs/WEBHOOKS.md](WEBHOOKS.md) for route configuration, handler examples, event usage, secret validation, and production safety notes.
+See [Webhooks](webhooks.md) for route configuration, handler examples, event usage, secret validation, and production safety notes.
 
 ## 18. Test With Tinker
 

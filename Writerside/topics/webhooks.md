@@ -114,7 +114,7 @@ Or:
 php artisan telegram-bot:webhook:delete --bot=default --yes
 ```
 
-See [docs/CONSOLE_COMMANDS.md](CONSOLE_COMMANDS.md) for all command options.
+See [Console commands](console-commands.md) for all command options.
 
 ## Handle Incoming Updates
 

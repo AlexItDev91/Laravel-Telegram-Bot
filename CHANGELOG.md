@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.7.1] - 2026-06-02
+
+- Added a Writerside documentation module with structured package documentation, examples, tables, troubleshooting, maintenance notes, and imported full method/API reference topics.
+- Added a GitHub Actions workflow that builds Writerside docs, checks the build report, and deploys the generated site to GitHub Pages.
+- Documented the Writerside source and GitHub Pages workflow in the README.
+
 ## [1.7.0] - 2026-06-02
 
 - Added `telegram-bot:me` for standalone configured bot identity and token checks through Telegram `getMe`.

@@ -13,7 +13,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('1.8.1', $version);
+        $this->assertSame('1.8.2', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -34,6 +34,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [1.8.2] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.8.1] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.8.0] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.7.4] - 2026-06-02', $changelog);
@@ -56,8 +57,37 @@ class ReleasePolicyTest extends TestCase
         $this->assertStringContainsString('## [1.0.1] - 2026-06-01', $changelog);
         $this->assertStringContainsString('Every package update must include a version bump and a git tag.', $agents);
         $this->assertStringContainsString('complete the release workflow automatically unless the user explicitly says not to commit, tag, or push', $agents);
-        $this->assertStringContainsString('[![Latest Stable Version](https://poser.pugx.org/alexitdev91/laravel-telegram-bot/v/stable)](https://packagist.org/packages/alexitdev91/laravel-telegram-bot)', $readme);
+        foreach ([
+            '[![Tests](https://github.com/AlexItDev91/Laravel-Telegram-Bot/actions/workflows/tests.yml/badge.svg)](https://github.com/AlexItDev91/Laravel-Telegram-Bot/actions/workflows/tests.yml)',
+            '[![Latest Stable Version](https://img.shields.io/packagist/v/alexitdev91/laravel-telegram-bot?label=stable)](https://packagist.org/packages/alexitdev91/laravel-telegram-bot)',
+            '[![Total Downloads](https://img.shields.io/packagist/dt/alexitdev91/laravel-telegram-bot)](https://packagist.org/packages/alexitdev91/laravel-telegram-bot)',
+            '[![License](https://img.shields.io/packagist/l/alexitdev91/laravel-telegram-bot)](LICENSE)',
+            '[![PHP Version Require](https://img.shields.io/packagist/php-v/alexitdev91/laravel-telegram-bot)](composer.json)',
+        ] as $badge) {
+            $this->assertStringContainsString($badge, $readme);
+        }
+
+        $this->assertStringNotContainsString('https://poser.pugx.org/alexitdev91/laravel-telegram-bot/v/stable', $readme);
         $this->assertStringNotContainsString('docs/RELEASE.md', $readme);
+    }
+
+    public function test_github_actions_composer_checks_workflow_covers_release_checks(): void
+    {
+        $workflow = file_get_contents(__DIR__.'/../../.github/workflows/tests.yml');
+
+        $this->assertIsString($workflow);
+
+        foreach ([
+            'name: Composer checks',
+            'composer validate --no-check-publish --no-interaction',
+            'composer analyse',
+            'composer check:telegram-api-surface',
+            'composer test',
+            'composer test:coverage-surface',
+            'php: ["8.2", "8.3", "8.4"]',
+        ] as $requiredWorkflowText) {
+            $this->assertStringContainsString($requiredWorkflowText, $workflow);
+        }
     }
 
     public function test_composer_does_not_hardcode_package_version(): void

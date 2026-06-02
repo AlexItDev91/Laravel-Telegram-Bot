@@ -8,6 +8,11 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.8.2] - 2026-06-02
+
+- Added a GitHub Actions Composer checks workflow for package validation, static analysis, Telegram API surface checks, and PHPUnit coverage.
+- Expanded the README badge row with tests, current Packagist stable version, total downloads, license, and required PHP version badges.
+
 ## [1.8.1] - 2026-06-02
 
 - Switched the README Packagist badge to the Packagist `poser.pugx.org` latest-stable badge.

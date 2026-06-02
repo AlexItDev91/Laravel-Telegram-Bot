@@ -1,6 +1,10 @@
 # Laravel Telegram Bot
 
-[![Latest Stable Version](https://poser.pugx.org/alexitdev91/laravel-telegram-bot/v/stable)](https://packagist.org/packages/alexitdev91/laravel-telegram-bot)
+[![Tests](https://github.com/AlexItDev91/Laravel-Telegram-Bot/actions/workflows/tests.yml/badge.svg)](https://github.com/AlexItDev91/Laravel-Telegram-Bot/actions/workflows/tests.yml)
+[![Latest Stable Version](https://img.shields.io/packagist/v/alexitdev91/laravel-telegram-bot?label=stable)](https://packagist.org/packages/alexitdev91/laravel-telegram-bot)
+[![Total Downloads](https://img.shields.io/packagist/dt/alexitdev91/laravel-telegram-bot)](https://packagist.org/packages/alexitdev91/laravel-telegram-bot)
+[![License](https://img.shields.io/packagist/l/alexitdev91/laravel-telegram-bot)](LICENSE)
+[![PHP Version Require](https://img.shields.io/packagist/php-v/alexitdev91/laravel-telegram-bot)](composer.json)
 
 ![Laravel Telegram Bot package cover](docs/assets/package-cover.png)
 

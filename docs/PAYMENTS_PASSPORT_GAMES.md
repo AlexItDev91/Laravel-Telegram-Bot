@@ -166,6 +166,7 @@ $telegram->bot('shop')->sendPaidMedia(new SendPaidMediaData(
 - `purchasedPaidMedia()`
 - `invoice()`
 - `successfulPayment()`
+- `successfulPaymentData()`
 - `refundedPayment()`
 
 ```php
@@ -174,10 +175,14 @@ $typedShippingQuery = $update->shippingQueryData();
 $typedPreCheckoutQuery = $update->preCheckoutQueryData();
 $invoice = $update->invoice();
 $payment = $update->successfulPayment();
+$typedPayment = $update->successfulPaymentData();
 $refund = $update->refundedPayment();
 
 $typedShippingQuery?->invoicePayload();
 $typedPreCheckoutQuery?->totalAmount();
+$typedPreCheckoutQuery?->orderInfoData()?->email();
+$typedPayment?->telegramPaymentChargeId();
+$typedPayment?->orderInfoData()?->name();
 ```
 
 ## Telegram Passport

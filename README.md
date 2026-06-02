@@ -159,6 +159,8 @@ $callbackData = $update->callbackQuery()?->data();
 $preCheckoutId = $update->preCheckoutQueryData()?->id();
 $inlineQuery = $update->inlineQuery()?->query();
 $text = $message?->text();
+$documentName = $message?->documentData()?->fileName();
+$paymentCharge = $message?->successfulPaymentData()?->telegramPaymentChargeId();
 ```
 
 ```php

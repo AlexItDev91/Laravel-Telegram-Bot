@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="1.10.0"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="1.11.0"/>', $config);
 
         foreach ([
             'overview.md',
@@ -104,6 +104,12 @@ class WritersideDocumentationTest extends TestCase
             'shippingQueryData()',
             'preCheckoutQueryData()',
             'chatMember()',
+            'photoData()',
+            'documentData()',
+            'entitiesData()',
+            'successfulPaymentData()',
+            'orderInfoData()',
+            'newChatMemberData()',
             'Common Handler Patterns',
         ] as $requiredWebhookText) {
             $this->assertStringContainsString($requiredWebhookText, $webhooks);

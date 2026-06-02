@@ -289,6 +289,12 @@ class TelegramWebhookUpdateTest extends TestCase
                 'shipping_option_id' => 'express',
                 'order_info' => [
                     'name' => 'Taylor',
+                    'phone_number' => '+12025550100',
+                    'email' => 'taylor@example.com',
+                    'shipping_address' => [
+                        'country_code' => 'US',
+                        'city' => 'New York',
+                    ],
                 ],
             ],
         ]);
@@ -304,7 +310,19 @@ class TelegramWebhookUpdateTest extends TestCase
         $this->assertSame(150, $preCheckoutUpdate->preCheckoutQueryData()?->totalAmount());
         $this->assertSame('order-101', $preCheckoutUpdate->preCheckoutQueryData()?->invoicePayload());
         $this->assertSame('express', $preCheckoutUpdate->preCheckoutQueryData()?->shippingOptionId());
-        $this->assertSame(['name' => 'Taylor'], $preCheckoutUpdate->preCheckoutQueryData()?->orderInfo());
+        $this->assertSame([
+            'name' => 'Taylor',
+            'phone_number' => '+12025550100',
+            'email' => 'taylor@example.com',
+            'shipping_address' => [
+                'country_code' => 'US',
+                'city' => 'New York',
+            ],
+        ], $preCheckoutUpdate->preCheckoutQueryData()?->orderInfo());
+        $this->assertSame('Taylor', $preCheckoutUpdate->preCheckoutQueryData()?->orderInfoData()?->name());
+        $this->assertSame('+12025550100', $preCheckoutUpdate->preCheckoutQueryData()?->orderInfoData()?->phoneNumber());
+        $this->assertSame('taylor@example.com', $preCheckoutUpdate->preCheckoutQueryData()?->orderInfoData()?->email());
+        $this->assertSame(['country_code' => 'US', 'city' => 'New York'], $preCheckoutUpdate->preCheckoutQueryData()?->orderInfoData()?->shippingAddress());
     }
 
     public function test_exposes_typed_chat_member_and_join_request_payloads(): void
@@ -315,8 +333,18 @@ class TelegramWebhookUpdateTest extends TestCase
                 'chat' => ['id' => -1001234567890, 'type' => 'supergroup'],
                 'from' => ['id' => 123, 'is_bot' => false, 'first_name' => 'Alex'],
                 'date' => 1_780_000_000,
-                'old_chat_member' => ['status' => 'member'],
-                'new_chat_member' => ['status' => 'administrator'],
+                'old_chat_member' => [
+                    'status' => 'member',
+                    'user' => ['id' => 321, 'is_bot' => false, 'first_name' => 'Member'],
+                ],
+                'new_chat_member' => [
+                    'status' => 'administrator',
+                    'user' => ['id' => 321, 'is_bot' => false, 'first_name' => 'Member'],
+                    'can_manage_chat' => true,
+                    'can_delete_messages' => true,
+                    'can_manage_tags' => true,
+                    'custom_title' => 'Ops',
+                ],
                 'invite_link' => ['invite_link' => 'https://t.me/+invite'],
                 'via_join_request' => true,
                 'via_chat_folder_invite_link' => false,
@@ -337,8 +365,23 @@ class TelegramWebhookUpdateTest extends TestCase
         $this->assertSame(-1001234567890, $memberUpdate->myChatMember()?->chat()?->id());
         $this->assertSame(123, $memberUpdate->myChatMember()?->from()?->id());
         $this->assertSame(1_780_000_000, $memberUpdate->myChatMember()?->date());
-        $this->assertSame(['status' => 'member'], $memberUpdate->myChatMember()?->oldChatMember());
-        $this->assertSame(['status' => 'administrator'], $memberUpdate->myChatMember()?->newChatMember());
+        $this->assertSame(['status' => 'member', 'user' => ['id' => 321, 'is_bot' => false, 'first_name' => 'Member']], $memberUpdate->myChatMember()?->oldChatMember());
+        $this->assertSame([
+            'status' => 'administrator',
+            'user' => ['id' => 321, 'is_bot' => false, 'first_name' => 'Member'],
+            'can_manage_chat' => true,
+            'can_delete_messages' => true,
+            'can_manage_tags' => true,
+            'custom_title' => 'Ops',
+        ], $memberUpdate->myChatMember()?->newChatMember());
+        $this->assertSame('member', $memberUpdate->myChatMember()?->oldChatMemberData()?->status());
+        $this->assertSame(321, $memberUpdate->myChatMember()?->oldChatMemberData()?->user()?->id());
+        $this->assertSame('administrator', $memberUpdate->myChatMember()?->newChatMemberData()?->status());
+        $this->assertSame(321, $memberUpdate->myChatMember()?->newChatMemberData()?->user()?->id());
+        $this->assertTrue($memberUpdate->myChatMember()?->newChatMemberData()?->canManageChat());
+        $this->assertTrue($memberUpdate->myChatMember()?->newChatMemberData()?->canDeleteMessages());
+        $this->assertTrue($memberUpdate->myChatMember()?->newChatMemberData()?->canManageTags());
+        $this->assertSame('Ops', $memberUpdate->myChatMember()?->newChatMemberData()?->customTitle());
         $this->assertSame(['invite_link' => 'https://t.me/+invite'], $memberUpdate->myChatMember()?->inviteLink());
         $this->assertTrue($memberUpdate->myChatMember()?->viaJoinRequest());
         $this->assertFalse($memberUpdate->myChatMember()?->viaChatFolderInviteLink());
@@ -362,13 +405,59 @@ class TelegramWebhookUpdateTest extends TestCase
                 'guest_bot_caller_user' => ['id' => 123, 'is_bot' => false, 'first_name' => 'Alex'],
                 'guest_bot_caller_chat' => ['id' => -1001234567890, 'type' => 'supergroup'],
                 'photo' => [
-                    ['file_id' => 'small-photo'],
-                    ['file_id' => 'large-photo'],
+                    [
+                        'file_id' => 'small-photo',
+                        'file_unique_id' => 'small-unique',
+                        'width' => 90,
+                        'height' => 90,
+                        'file_size' => 1024,
+                    ],
+                    [
+                        'file_id' => 'large-photo',
+                        'file_unique_id' => 'large-unique',
+                        'width' => 1280,
+                        'height' => 720,
+                        'file_size' => 2048,
+                    ],
                 ],
-                'document' => ['file_id' => 'document-id'],
-                'entities' => [['type' => 'bot_command', 'offset' => 0, 'length' => 6]],
-                'caption_entities' => [['type' => 'bold', 'offset' => 0, 'length' => 4]],
-                'successful_payment' => ['telegram_payment_charge_id' => 'payment-charge'],
+                'document' => [
+                    'file_id' => 'document-id',
+                    'file_unique_id' => 'document-unique',
+                    'thumbnail' => [
+                        'file_id' => 'thumbnail-id',
+                        'file_unique_id' => 'thumbnail-unique',
+                        'width' => 320,
+                        'height' => 180,
+                    ],
+                    'file_name' => 'receipt.pdf',
+                    'mime_type' => 'application/pdf',
+                    'file_size' => 4096,
+                ],
+                'entities' => [
+                    ['type' => 'bot_command', 'offset' => 0, 'length' => 6],
+                    [
+                        'type' => 'text_mention',
+                        'offset' => 8,
+                        'length' => 5,
+                        'user' => ['id' => 456, 'is_bot' => false, 'first_name' => 'Taylor'],
+                    ],
+                ],
+                'caption_entities' => [
+                    ['type' => 'bold', 'offset' => 0, 'length' => 4],
+                    ['type' => 'custom_emoji', 'offset' => 5, 'length' => 2, 'custom_emoji_id' => 'emoji-id'],
+                ],
+                'successful_payment' => [
+                    'currency' => 'XTR',
+                    'total_amount' => 150,
+                    'invoice_payload' => 'order-100',
+                    'shipping_option_id' => 'express',
+                    'order_info' => ['name' => 'Taylor'],
+                    'telegram_payment_charge_id' => 'payment-charge',
+                    'provider_payment_charge_id' => 'provider-charge',
+                    'subscription_expiration_date' => 1_790_000_000,
+                    'is_recurring' => true,
+                    'is_first_recurring' => false,
+                ],
                 'passport_data' => ['credentials' => ['data' => 'encrypted']],
                 'game' => ['title' => 'Space Race'],
                 'live_photo' => ['width' => 1024, 'height' => 768],
@@ -382,11 +471,47 @@ class TelegramWebhookUpdateTest extends TestCase
         $this->assertSame('Previous', $message?->replyToMessage()?->text());
         $this->assertSame(123, $message?->guestBotCallerUser()?->id());
         $this->assertSame(-1001234567890, $message?->guestBotCallerChat()?->id());
-        $this->assertSame([['file_id' => 'small-photo'], ['file_id' => 'large-photo']], $message?->photo());
-        $this->assertSame(['file_id' => 'document-id'], $message?->document());
-        $this->assertSame([['type' => 'bot_command', 'offset' => 0, 'length' => 6]], $message?->entities());
-        $this->assertSame([['type' => 'bold', 'offset' => 0, 'length' => 4]], $message?->captionEntities());
-        $this->assertSame(['telegram_payment_charge_id' => 'payment-charge'], $message?->successfulPayment());
+        $this->assertSame('small-photo', $message?->photo()[0]['file_id']);
+        $this->assertSame('large-photo', $message?->photo()[1]['file_id']);
+        $this->assertSame('small-photo', $message?->photoData()[0]->fileId());
+        $this->assertSame('small-unique', $message?->photoData()[0]->fileUniqueId());
+        $this->assertSame(90, $message?->photoData()[0]->width());
+        $this->assertSame(90, $message?->photoData()[0]->height());
+        $this->assertSame(1024, $message?->photoData()[0]->fileSize());
+        $this->assertSame('large-photo', $message?->photoData()[1]->fileId());
+        $this->assertSame('document-id', $message?->document()['file_id']);
+        $this->assertSame('document-id', $message?->documentData()?->fileId());
+        $this->assertSame('document-unique', $message?->documentData()?->fileUniqueId());
+        $this->assertSame('receipt.pdf', $message?->documentData()?->fileName());
+        $this->assertSame('application/pdf', $message?->documentData()?->mimeType());
+        $this->assertSame(4096, $message?->documentData()?->fileSize());
+        $this->assertSame('thumbnail-id', $message?->documentData()?->thumbnail()?->fileId());
+        $this->assertSame(320, $message?->documentData()?->thumbnail()?->width());
+        $this->assertSame('bot_command', $message?->entities()[0]['type']);
+        $this->assertSame('text_mention', $message?->entities()[1]['type']);
+        $this->assertSame('bot_command', $message?->entitiesData()[0]->type());
+        $this->assertSame(0, $message?->entitiesData()[0]->offset());
+        $this->assertSame(6, $message?->entitiesData()[0]->length());
+        $this->assertSame('text_mention', $message?->entitiesData()[1]->type());
+        $this->assertSame(456, $message?->entitiesData()[1]->user()?->id());
+        $this->assertSame('bold', $message?->captionEntities()[0]['type']);
+        $this->assertSame('custom_emoji', $message?->captionEntities()[1]['type']);
+        $this->assertSame('bold', $message?->captionEntitiesData()[0]->type());
+        $this->assertSame('custom_emoji', $message?->captionEntitiesData()[1]->type());
+        $this->assertSame('emoji-id', $message?->captionEntitiesData()[1]->customEmojiId());
+        $this->assertSame('payment-charge', $message?->successfulPayment()['telegram_payment_charge_id']);
+        $this->assertSame('XTR', $message?->successfulPaymentData()?->currency());
+        $this->assertSame(150, $message?->successfulPaymentData()?->totalAmount());
+        $this->assertSame('order-100', $message?->successfulPaymentData()?->invoicePayload());
+        $this->assertSame('express', $message?->successfulPaymentData()?->shippingOptionId());
+        $this->assertSame(['name' => 'Taylor'], $message?->successfulPaymentData()?->orderInfo());
+        $this->assertSame('Taylor', $message?->successfulPaymentData()?->orderInfoData()?->name());
+        $this->assertSame('payment-charge', $message?->successfulPaymentData()?->telegramPaymentChargeId());
+        $this->assertSame('provider-charge', $message?->successfulPaymentData()?->providerPaymentChargeId());
+        $this->assertSame(1_790_000_000, $message?->successfulPaymentData()?->subscriptionExpirationDate());
+        $this->assertTrue($message?->successfulPaymentData()?->isRecurring());
+        $this->assertFalse($message?->successfulPaymentData()?->isFirstRecurring());
+        $this->assertSame('payment-charge', $update->successfulPaymentData()?->telegramPaymentChargeId());
         $this->assertSame(['credentials' => ['data' => 'encrypted']], $message?->passportData());
         $this->assertSame(['title' => 'Space Race'], $message?->game());
         $this->assertSame(['width' => 1024, 'height' => 768], $message?->livePhoto());

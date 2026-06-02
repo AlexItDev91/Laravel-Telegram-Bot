@@ -102,11 +102,29 @@ final readonly class TelegramMessageData implements TelegramBotData
     }
 
     /**
+     * @return list<TelegramPhotoSizeData>
+     */
+    public function photoData(): array
+    {
+        return array_map(
+            static fn (array $photo): TelegramPhotoSizeData => TelegramPhotoSizeData::fromPayload($photo),
+            $this->photo(),
+        );
+    }
+
+    /**
      * @return array<string, mixed>|null
      */
     public function document(): ?array
     {
         return $this->arrayAt('document');
+    }
+
+    public function documentData(): ?TelegramDocumentData
+    {
+        $document = $this->document();
+
+        return $document !== null ? TelegramDocumentData::fromPayload($document) : null;
     }
 
     /**
@@ -118,6 +136,17 @@ final readonly class TelegramMessageData implements TelegramBotData
     }
 
     /**
+     * @return list<TelegramMessageEntityData>
+     */
+    public function entitiesData(): array
+    {
+        return array_map(
+            static fn (array $entity): TelegramMessageEntityData => TelegramMessageEntityData::fromPayload($entity),
+            $this->entities(),
+        );
+    }
+
+    /**
      * @return list<array<string, mixed>>
      */
     public function captionEntities(): array
@@ -126,11 +155,29 @@ final readonly class TelegramMessageData implements TelegramBotData
     }
 
     /**
+     * @return list<TelegramMessageEntityData>
+     */
+    public function captionEntitiesData(): array
+    {
+        return array_map(
+            static fn (array $entity): TelegramMessageEntityData => TelegramMessageEntityData::fromPayload($entity),
+            $this->captionEntities(),
+        );
+    }
+
+    /**
      * @return array<string, mixed>|null
      */
     public function successfulPayment(): ?array
     {
         return $this->arrayAt('successful_payment');
+    }
+
+    public function successfulPaymentData(): ?TelegramSuccessfulPaymentData
+    {
+        $successfulPayment = $this->successfulPayment();
+
+        return $successfulPayment !== null ? TelegramSuccessfulPaymentData::fromPayload($successfulPayment) : null;
     }
 
     /**

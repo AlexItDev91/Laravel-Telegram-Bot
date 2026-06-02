@@ -38,6 +38,8 @@ class TelegramBotPaymentsPassportGamesGuideTest extends TestCase
             'TelegramWebhookUpdate',
             'shippingQueryData()',
             'preCheckoutQueryData()',
+            'successfulPaymentData()',
+            'orderInfoData()',
             'https://core.telegram.org/bots/api',
             'https://core.telegram.org/bots/api-changelog',
             'https://core.telegram.org/passport',

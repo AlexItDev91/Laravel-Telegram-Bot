@@ -50,12 +50,26 @@ final readonly class TelegramChatMemberUpdatedData implements TelegramBotData
         return $this->arrayAt('old_chat_member');
     }
 
+    public function oldChatMemberData(): ?TelegramChatMemberData
+    {
+        $oldChatMember = $this->oldChatMember();
+
+        return $oldChatMember !== null ? TelegramChatMemberData::fromPayload($oldChatMember) : null;
+    }
+
     /**
      * @return array<string, mixed>|null
      */
     public function newChatMember(): ?array
     {
         return $this->arrayAt('new_chat_member');
+    }
+
+    public function newChatMemberData(): ?TelegramChatMemberData
+    {
+        $newChatMember = $this->newChatMember();
+
+        return $newChatMember !== null ? TelegramChatMemberData::fromPayload($newChatMember) : null;
     }
 
     /**

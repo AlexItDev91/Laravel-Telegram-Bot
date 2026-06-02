@@ -194,6 +194,10 @@ class TelegramWebhookReceiverTest extends TestCase
                 'currency' => 'XTR',
                 'total_amount' => 150,
                 'invoice_payload' => 'order-100',
+                'order_info' => [
+                    'name' => 'Alex',
+                    'email' => 'alex@example.com',
+                ],
             ],
         ]);
 
@@ -201,6 +205,8 @@ class TelegramWebhookReceiverTest extends TestCase
             'bot' => 'shop',
             'currency' => 'XTR',
             'invoice_payload' => 'order-100',
+            'order_email' => 'alex@example.com',
+            'order_name' => 'Alex',
             'pre_checkout_id' => 'pre-checkout-id',
             'total_amount' => 150,
             'user_id' => '987654321',
@@ -227,8 +233,15 @@ class TelegramWebhookReceiverTest extends TestCase
                     'first_name' => 'Alex',
                 ],
                 'date' => 1_780_000_000,
-                'old_chat_member' => ['status' => 'member'],
-                'new_chat_member' => ['status' => 'administrator'],
+                'old_chat_member' => [
+                    'status' => 'member',
+                    'user' => ['id' => 123, 'is_bot' => false, 'first_name' => 'Member'],
+                ],
+                'new_chat_member' => [
+                    'status' => 'administrator',
+                    'user' => ['id' => 123, 'is_bot' => false, 'first_name' => 'Member'],
+                    'can_delete_messages' => true,
+                ],
             ],
         ]);
 
@@ -236,6 +249,8 @@ class TelegramWebhookReceiverTest extends TestCase
             'bot' => 'moderation',
             'chat_id' => '-1001234567890',
             'date' => 1_780_000_000,
+            'member_user_id' => '123',
+            'moderates_messages' => true,
             'from_user_id' => '987654321',
             'new_status' => 'administrator',
             'old_status' => 'member',
@@ -446,6 +461,8 @@ final class TelegramWebhookPaymentQueryHandler implements TelegramWebhookHandler
             'currency' => $preCheckoutQuery?->currency(),
             'total_amount' => $preCheckoutQuery?->totalAmount(),
             'invoice_payload' => $preCheckoutQuery?->invoicePayload(),
+            'order_name' => $preCheckoutQuery?->orderInfoData()?->name(),
+            'order_email' => $preCheckoutQuery?->orderInfoData()?->email(),
         ];
     }
 }
@@ -473,8 +490,10 @@ final class TelegramWebhookMembershipHandler implements TelegramWebhookHandler
             'chat_id' => (string) $chatMember?->chat()?->id(),
             'from_user_id' => (string) $chatMember?->from()?->id(),
             'date' => $chatMember?->date(),
-            'old_status' => $chatMember?->oldChatMember()['status'] ?? null,
-            'new_status' => $chatMember?->newChatMember()['status'] ?? null,
+            'old_status' => $chatMember?->oldChatMemberData()?->status(),
+            'new_status' => $chatMember?->newChatMemberData()?->status(),
+            'member_user_id' => (string) $chatMember?->newChatMemberData()?->user()?->id(),
+            'moderates_messages' => $chatMember?->newChatMemberData()?->canDeleteMessages(),
         ];
     }
 }

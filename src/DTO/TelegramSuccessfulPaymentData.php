@@ -2,7 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO;
 
-final readonly class TelegramPreCheckoutQueryData implements TelegramBotData
+final readonly class TelegramSuccessfulPaymentData implements TelegramBotData
 {
     /**
      * @param  array<string, mixed>  $payload
@@ -21,18 +21,6 @@ final readonly class TelegramPreCheckoutQueryData implements TelegramBotData
         return new self($payload);
     }
 
-    public function id(): ?string
-    {
-        return $this->stringAt('id');
-    }
-
-    public function from(): ?TelegramUserData
-    {
-        $from = $this->payload['from'] ?? null;
-
-        return is_array($from) ? TelegramUserData::fromPayload($from) : null;
-    }
-
     public function currency(): ?string
     {
         return $this->stringAt('currency');
@@ -40,9 +28,7 @@ final readonly class TelegramPreCheckoutQueryData implements TelegramBotData
 
     public function totalAmount(): ?int
     {
-        $amount = $this->payload['total_amount'] ?? null;
-
-        return is_int($amount) ? $amount : null;
+        return $this->intAt('total_amount');
     }
 
     public function invoicePayload(): ?string
@@ -60,9 +46,7 @@ final readonly class TelegramPreCheckoutQueryData implements TelegramBotData
      */
     public function orderInfo(): ?array
     {
-        $orderInfo = $this->payload['order_info'] ?? null;
-
-        return is_array($orderInfo) ? $orderInfo : null;
+        return $this->arrayAt('order_info');
     }
 
     public function orderInfoData(): ?TelegramOrderInfoData
@@ -72,12 +56,61 @@ final readonly class TelegramPreCheckoutQueryData implements TelegramBotData
         return $orderInfo !== null ? TelegramOrderInfoData::fromPayload($orderInfo) : null;
     }
 
+    public function telegramPaymentChargeId(): ?string
+    {
+        return $this->stringAt('telegram_payment_charge_id');
+    }
+
+    public function providerPaymentChargeId(): ?string
+    {
+        return $this->stringAt('provider_payment_charge_id');
+    }
+
+    public function subscriptionExpirationDate(): ?int
+    {
+        return $this->intAt('subscription_expiration_date');
+    }
+
+    public function isRecurring(): ?bool
+    {
+        return $this->boolAt('is_recurring');
+    }
+
+    public function isFirstRecurring(): ?bool
+    {
+        return $this->boolAt('is_first_recurring');
+    }
+
     /**
      * @return array<string, mixed>
      */
     public function toArray(): array
     {
         return $this->payload;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function arrayAt(string $key): ?array
+    {
+        $value = $this->payload[$key] ?? null;
+
+        return is_array($value) ? $value : null;
+    }
+
+    private function boolAt(string $key): ?bool
+    {
+        $value = $this->payload[$key] ?? null;
+
+        return is_bool($value) ? $value : null;
+    }
+
+    private function intAt(string $key): ?int
+    {
+        $value = $this->payload[$key] ?? null;
+
+        return is_int($value) ? $value : null;
     }
 
     private function stringAt(string $key): ?string

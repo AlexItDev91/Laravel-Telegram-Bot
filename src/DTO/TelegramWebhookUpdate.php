@@ -311,6 +311,13 @@ final readonly class TelegramWebhookUpdate
         return $this->arrayAt('message.successful_payment');
     }
 
+    public function successfulPaymentData(): ?TelegramSuccessfulPaymentData
+    {
+        $successfulPayment = $this->successfulPayment();
+
+        return $successfulPayment !== null ? TelegramSuccessfulPaymentData::fromPayload($successfulPayment) : null;
+    }
+
     /**
      * @return array<string, mixed>|null
      */

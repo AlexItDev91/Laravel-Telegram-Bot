@@ -222,7 +222,10 @@ $message?->messageThreadId(); // int|null
 $message?->text();            // string|null
 $message?->caption();         // string|null
 $message?->replyToMessage();  // TelegramMessageData|null
-$message?->successfulPayment(); // array<string, mixed>|null
+$message?->photoData();       // list<TelegramPhotoSizeData>
+$message?->documentData();    // TelegramDocumentData|null
+$message?->entitiesData();    // list<TelegramMessageEntityData>
+$message?->successfulPaymentData(); // TelegramSuccessfulPaymentData|null
 $chat?->id();                 // int|string|null
 $chat?->type();               // private, group, supergroup, channel, ...
 $user?->id();                 // int|string|null
@@ -233,13 +236,15 @@ $callbackQuery?->message();   // TelegramMessageData|null
 $inlineQuery?->query();       // string|null
 $shippingQuery?->invoicePayload(); // string|null
 $preCheckoutQuery?->totalAmount(); // int|null
-$chatMember?->newChatMember(); // array<string, mixed>|null
+$preCheckoutQuery?->orderInfoData(); // TelegramOrderInfoData|null
+$chatMember?->newChatMemberData(); // TelegramChatMemberData|null
 ```
 
 Direct message-like accessors are also available: `message()`, `editedMessage()`, `channelPost()`, `editedChannelPost()`, `businessMessage()`, `editedBusinessMessage()`, and `guestMessage()`.
 Callback query updates are available through `callbackQuery()`, including typed `from()` and `message()` accessors.
 Inline mode is covered by `inlineQuery()` and `chosenInlineResult()`.
 Payment queries keep their backward-compatible array accessors and add typed `shippingQueryData()` and `preCheckoutQueryData()`.
+Common message media, entities, successful payments, order info, and chat member payloads also have typed object accessors such as `photoData()`, `documentData()`, `entitiesData()`, `successfulPaymentData()`, `orderInfoData()`, and `newChatMemberData()`.
 Membership updates are available through `myChatMember()`, `chatMember()`, and `chatJoinRequest()`.
 
 Unknown future update fields remain available through `payload()` and `get()` even before the SDK adds first-class awareness.
@@ -289,7 +294,7 @@ Chat member update:
 ```php
 $member = $update->chatMember();
 
-if (($member?->newChatMember()['status'] ?? null) === 'administrator') {
+if ($member?->newChatMemberData()?->status() === 'administrator') {
     // Grant app-side moderation permissions.
 }
 ```

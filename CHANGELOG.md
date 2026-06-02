@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.11.0] - 2026-06-02
+
+- Added typed DTOs for common nested Telegram objects: message entities, photo sizes, documents, successful payments, order info, and chat members.
+- Added non-breaking typed accessors for message media, message entities, successful payments, pre-checkout order info, and chat member status payloads while preserving the existing raw array helpers.
+- Updated webhook, payments, and README examples to show the deeper typed object accessors.
+
 ## [1.10.0] - 2026-06-02
 
 - Added typed inbound webhook DTO accessors for inline queries, chosen inline results, shipping queries, pre-checkout queries, chat member updates, and chat join requests.

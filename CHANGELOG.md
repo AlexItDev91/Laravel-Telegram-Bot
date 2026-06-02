@@ -8,6 +8,13 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.10.0] - 2026-06-02
+
+- Added typed inbound webhook DTO accessors for inline queries, chosen inline results, shipping queries, pre-checkout queries, chat member updates, and chat join requests.
+- Expanded `TelegramMessageData` with common message sub-object accessors for replies, media, entities, successful payments, Passport data, games, live photos, and guest metadata.
+- Added `retryAfter()` and `migrateToChatId()` helpers to `TelegramBotApiException`.
+- Added common webhook handler documentation for message commands, callback buttons, pre-checkout handling, and chat member updates.
+
 ## [1.9.0] - 2026-06-02
 
 - Added `TelegramCallbackQueryData` and `TelegramWebhookUpdate::callbackQuery()` for typed inline keyboard callback handling in webhook handlers.

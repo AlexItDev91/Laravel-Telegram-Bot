@@ -20,6 +20,8 @@ class TelegramWebhookReceiverTest extends TestCase
         TelegramWebhookTestHandler::reset();
         TelegramWebhookTypedAccessorHandler::reset();
         TelegramWebhookCallbackQueryHandler::reset();
+        TelegramWebhookPaymentQueryHandler::reset();
+        TelegramWebhookMembershipHandler::reset();
     }
 
     public function test_default_webhook_route_accepts_updates_and_dispatches_event(): void
@@ -173,6 +175,73 @@ class TelegramWebhookReceiverTest extends TestCase
         ]);
 
         $this->assertSame(1006, TelegramWebhookCallbackQueryHandler::$update?->updateId());
+    }
+
+    public function test_webhook_handler_can_use_typed_payment_query_accessors(): void
+    {
+        config()->set('telegram-bot.webhook.handler', TelegramWebhookPaymentQueryHandler::class);
+        config()->set('telegram-bot.webhook.bot', 'shop');
+
+        $response = $this->postJson('/telegram-bot/webhook', [
+            'update_id' => 1007,
+            'pre_checkout_query' => [
+                'id' => 'pre-checkout-id',
+                'from' => [
+                    'id' => 987654321,
+                    'is_bot' => false,
+                    'first_name' => 'Alex',
+                ],
+                'currency' => 'XTR',
+                'total_amount' => 150,
+                'invoice_payload' => 'order-100',
+            ],
+        ]);
+
+        $response->assertOk()->assertExactJson([
+            'bot' => 'shop',
+            'currency' => 'XTR',
+            'invoice_payload' => 'order-100',
+            'pre_checkout_id' => 'pre-checkout-id',
+            'total_amount' => 150,
+            'user_id' => '987654321',
+        ]);
+
+        $this->assertSame(1007, TelegramWebhookPaymentQueryHandler::$update?->updateId());
+    }
+
+    public function test_webhook_handler_can_use_typed_membership_accessors(): void
+    {
+        config()->set('telegram-bot.webhook.handler', TelegramWebhookMembershipHandler::class);
+        config()->set('telegram-bot.webhook.bot', 'moderation');
+
+        $response = $this->postJson('/telegram-bot/webhook', [
+            'update_id' => 1008,
+            'chat_member' => [
+                'chat' => [
+                    'id' => -1001234567890,
+                    'type' => 'supergroup',
+                ],
+                'from' => [
+                    'id' => 987654321,
+                    'is_bot' => false,
+                    'first_name' => 'Alex',
+                ],
+                'date' => 1_780_000_000,
+                'old_chat_member' => ['status' => 'member'],
+                'new_chat_member' => ['status' => 'administrator'],
+            ],
+        ]);
+
+        $response->assertOk()->assertExactJson([
+            'bot' => 'moderation',
+            'chat_id' => '-1001234567890',
+            'date' => 1_780_000_000,
+            'from_user_id' => '987654321',
+            'new_status' => 'administrator',
+            'old_status' => 'member',
+        ]);
+
+        $this->assertSame(1008, TelegramWebhookMembershipHandler::$update?->updateId());
     }
 
     public function test_webhook_route_rejects_non_json_payloads(): void
@@ -348,6 +417,64 @@ final class TelegramWebhookCallbackQueryHandler implements TelegramWebhookHandle
             'message_id' => $callbackQuery?->message()?->messageId(),
             'chat_id' => (string) $callbackQuery?->message()?->chat()?->id(),
             'user_id' => (string) $callbackQuery?->from()?->id(),
+        ];
+    }
+}
+
+final class TelegramWebhookPaymentQueryHandler implements TelegramWebhookHandler
+{
+    public static ?TelegramWebhookUpdate $update = null;
+
+    public static function reset(): void
+    {
+        self::$update = null;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function handle(TelegramWebhookUpdate $update, string $botName): array
+    {
+        self::$update = $update;
+
+        $preCheckoutQuery = $update->preCheckoutQueryData();
+
+        return [
+            'bot' => $botName,
+            'pre_checkout_id' => $preCheckoutQuery?->id(),
+            'user_id' => (string) $preCheckoutQuery?->from()?->id(),
+            'currency' => $preCheckoutQuery?->currency(),
+            'total_amount' => $preCheckoutQuery?->totalAmount(),
+            'invoice_payload' => $preCheckoutQuery?->invoicePayload(),
+        ];
+    }
+}
+
+final class TelegramWebhookMembershipHandler implements TelegramWebhookHandler
+{
+    public static ?TelegramWebhookUpdate $update = null;
+
+    public static function reset(): void
+    {
+        self::$update = null;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function handle(TelegramWebhookUpdate $update, string $botName): array
+    {
+        self::$update = $update;
+
+        $chatMember = $update->chatMember();
+
+        return [
+            'bot' => $botName,
+            'chat_id' => (string) $chatMember?->chat()?->id(),
+            'from_user_id' => (string) $chatMember?->from()?->id(),
+            'date' => $chatMember?->date(),
+            'old_status' => $chatMember?->oldChatMember()['status'] ?? null,
+            'new_status' => $chatMember?->newChatMember()['status'] ?? null,
         ];
     }
 }

@@ -247,6 +247,37 @@ class TelegramBotClientTest extends TestCase
         } catch (TelegramBotApiException $exception) {
             $this->assertSame(429, $exception->telegramErrorCode());
             $this->assertSame(['retry_after' => 30], $exception->parameters());
+            $this->assertSame(30, $exception->retryAfter());
+            $this->assertNull($exception->migrateToChatId());
+        }
+    }
+
+    public function test_api_exception_exposes_response_parameter_helpers(): void
+    {
+        $client = TelegramBotClient::make(
+            token: '123456:test-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new Response(400, [], json_encode([
+                    'ok' => false,
+                    'error_code' => 400,
+                    'description' => 'Bad Request: group chat was upgraded to a supergroup chat',
+                    'parameters' => [
+                        'migrate_to_chat_id' => '-1001234567890',
+                    ],
+                ], JSON_THROW_ON_ERROR)),
+            ]),
+        );
+
+        try {
+            $client->sendMessage([
+                'chat_id' => '-1234567890',
+                'text' => 'Hello',
+            ]);
+            $this->fail('Expected Telegram Bot API exception was not thrown.');
+        } catch (TelegramBotApiException $exception) {
+            $this->assertSame('-1001234567890', $exception->migrateToChatId());
+            $this->assertNull($exception->retryAfter());
         }
     }
 

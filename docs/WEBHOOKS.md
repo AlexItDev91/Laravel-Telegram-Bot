@@ -212,11 +212,17 @@ $message = $update->effectiveMessage();
 $chat = $update->effectiveChat();
 $user = $update->effectiveUser();
 $callbackQuery = $update->callbackQuery();
+$inlineQuery = $update->inlineQuery();
+$shippingQuery = $update->shippingQueryData();
+$preCheckoutQuery = $update->preCheckoutQueryData();
+$chatMember = $update->chatMember();
 
 $message?->messageId();       // int|null
 $message?->messageThreadId(); // int|null
 $message?->text();            // string|null
 $message?->caption();         // string|null
+$message?->replyToMessage();  // TelegramMessageData|null
+$message?->successfulPayment(); // array<string, mixed>|null
 $chat?->id();                 // int|string|null
 $chat?->type();               // private, group, supergroup, channel, ...
 $user?->id();                 // int|string|null
@@ -224,12 +230,69 @@ $user?->username();           // string|null
 $callbackQuery?->id();        // string|null
 $callbackQuery?->data();      // string|null
 $callbackQuery?->message();   // TelegramMessageData|null
+$inlineQuery?->query();       // string|null
+$shippingQuery?->invoicePayload(); // string|null
+$preCheckoutQuery?->totalAmount(); // int|null
+$chatMember?->newChatMember(); // array<string, mixed>|null
 ```
 
 Direct message-like accessors are also available: `message()`, `editedMessage()`, `channelPost()`, `editedChannelPost()`, `businessMessage()`, `editedBusinessMessage()`, and `guestMessage()`.
 Callback query updates are available through `callbackQuery()`, including typed `from()` and `message()` accessors.
+Inline mode is covered by `inlineQuery()` and `chosenInlineResult()`.
+Payment queries keep their backward-compatible array accessors and add typed `shippingQueryData()` and `preCheckoutQueryData()`.
+Membership updates are available through `myChatMember()`, `chatMember()`, and `chatJoinRequest()`.
 
 Unknown future update fields remain available through `payload()` and `get()` even before the SDK adds first-class awareness.
+
+## Common Handler Patterns
+
+Message command:
+
+```php
+$message = $update->effectiveMessage();
+
+if ($message?->text() === '/start') {
+    $this->telegram->bot($botName)->sendMessage([
+        'chat_id' => (string) $message->chat()?->id(),
+        'text' => 'Ready.',
+    ]);
+}
+```
+
+Callback button:
+
+```php
+$callback = $update->callbackQuery();
+
+if ($callback?->data() === 'menu:settings') {
+    $this->telegram->bot($botName)->answerCallbackQuery([
+        'callback_query_id' => $callback->id(),
+    ]);
+}
+```
+
+Payment pre-checkout:
+
+```php
+$query = $update->preCheckoutQueryData();
+
+if ($query !== null) {
+    $this->telegram->bot($botName)->answerPreCheckoutQuery([
+        'pre_checkout_query_id' => $query->id(),
+        'ok' => true,
+    ]);
+}
+```
+
+Chat member update:
+
+```php
+$member = $update->chatMember();
+
+if (($member?->newChatMember()['status'] ?? null) === 'administrator') {
+    // Grant app-side moderation permissions.
+}
+```
 
 ## Route And Middleware
 

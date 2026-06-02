@@ -210,4 +210,185 @@ class TelegramWebhookUpdateTest extends TestCase
         $this->assertSame('space_race', $update->gameShortName());
         $this->assertSame($update->get('callback_query'), $callbackQuery?->toArray());
     }
+
+    public function test_exposes_typed_inline_query_payloads(): void
+    {
+        $inlineUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 133,
+            'inline_query' => [
+                'id' => 'inline-query-id',
+                'from' => [
+                    'id' => 123,
+                    'is_bot' => false,
+                    'first_name' => 'Alex',
+                ],
+                'query' => 'docs',
+                'offset' => 'next-page',
+                'chat_type' => 'sender',
+                'location' => ['latitude' => 50.45, 'longitude' => 30.52],
+            ],
+        ]);
+        $chosenUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 134,
+            'chosen_inline_result' => [
+                'result_id' => 'result-id',
+                'from' => [
+                    'id' => '9007199254740991',
+                    'is_bot' => false,
+                    'first_name' => 'Taylor',
+                ],
+                'location' => ['latitude' => 48.45, 'longitude' => 35.05],
+                'inline_message_id' => 'inline-message-id',
+                'query' => 'docs',
+            ],
+        ]);
+
+        $this->assertSame('inline-query-id', $inlineUpdate->inlineQuery()?->id());
+        $this->assertSame(123, $inlineUpdate->inlineQuery()?->from()?->id());
+        $this->assertSame('docs', $inlineUpdate->inlineQuery()?->query());
+        $this->assertSame('next-page', $inlineUpdate->inlineQuery()?->offset());
+        $this->assertSame('sender', $inlineUpdate->inlineQuery()?->chatType());
+        $this->assertSame(['latitude' => 50.45, 'longitude' => 30.52], $inlineUpdate->inlineQuery()?->location());
+        $this->assertSame('result-id', $chosenUpdate->chosenInlineResult()?->resultId());
+        $this->assertSame('9007199254740991', $chosenUpdate->chosenInlineResult()?->from()?->id());
+        $this->assertSame(['latitude' => 48.45, 'longitude' => 35.05], $chosenUpdate->chosenInlineResult()?->location());
+        $this->assertSame('inline-message-id', $chosenUpdate->chosenInlineResult()?->inlineMessageId());
+        $this->assertSame('docs', $chosenUpdate->chosenInlineResult()?->query());
+    }
+
+    public function test_exposes_typed_payment_query_payloads_without_replacing_array_helpers(): void
+    {
+        $shippingUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 135,
+            'shipping_query' => [
+                'id' => 'shipping-query-id',
+                'from' => [
+                    'id' => 123,
+                    'is_bot' => false,
+                    'first_name' => 'Alex',
+                ],
+                'invoice_payload' => 'order-100',
+                'shipping_address' => [
+                    'country_code' => 'US',
+                    'city' => 'New York',
+                ],
+            ],
+        ]);
+        $preCheckoutUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 136,
+            'pre_checkout_query' => [
+                'id' => 'pre-checkout-id',
+                'from' => [
+                    'id' => '9007199254740991',
+                    'is_bot' => false,
+                    'first_name' => 'Taylor',
+                ],
+                'currency' => 'XTR',
+                'total_amount' => 150,
+                'invoice_payload' => 'order-101',
+                'shipping_option_id' => 'express',
+                'order_info' => [
+                    'name' => 'Taylor',
+                ],
+            ],
+        ]);
+
+        $this->assertSame(['id' => 'shipping-query-id', 'from' => ['id' => 123, 'is_bot' => false, 'first_name' => 'Alex'], 'invoice_payload' => 'order-100', 'shipping_address' => ['country_code' => 'US', 'city' => 'New York']], $shippingUpdate->shippingQuery());
+        $this->assertSame('shipping-query-id', $shippingUpdate->shippingQueryData()?->id());
+        $this->assertSame(123, $shippingUpdate->shippingQueryData()?->from()?->id());
+        $this->assertSame('order-100', $shippingUpdate->shippingQueryData()?->invoicePayload());
+        $this->assertSame(['country_code' => 'US', 'city' => 'New York'], $shippingUpdate->shippingQueryData()?->shippingAddress());
+        $this->assertSame('pre-checkout-id', $preCheckoutUpdate->preCheckoutQueryData()?->id());
+        $this->assertSame('9007199254740991', $preCheckoutUpdate->preCheckoutQueryData()?->from()?->id());
+        $this->assertSame('XTR', $preCheckoutUpdate->preCheckoutQueryData()?->currency());
+        $this->assertSame(150, $preCheckoutUpdate->preCheckoutQueryData()?->totalAmount());
+        $this->assertSame('order-101', $preCheckoutUpdate->preCheckoutQueryData()?->invoicePayload());
+        $this->assertSame('express', $preCheckoutUpdate->preCheckoutQueryData()?->shippingOptionId());
+        $this->assertSame(['name' => 'Taylor'], $preCheckoutUpdate->preCheckoutQueryData()?->orderInfo());
+    }
+
+    public function test_exposes_typed_chat_member_and_join_request_payloads(): void
+    {
+        $memberUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 137,
+            'my_chat_member' => [
+                'chat' => ['id' => -1001234567890, 'type' => 'supergroup'],
+                'from' => ['id' => 123, 'is_bot' => false, 'first_name' => 'Alex'],
+                'date' => 1_780_000_000,
+                'old_chat_member' => ['status' => 'member'],
+                'new_chat_member' => ['status' => 'administrator'],
+                'invite_link' => ['invite_link' => 'https://t.me/+invite'],
+                'via_join_request' => true,
+                'via_chat_folder_invite_link' => false,
+            ],
+        ]);
+        $joinRequestUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 138,
+            'chat_join_request' => [
+                'chat' => ['id' => -1001234567890, 'type' => 'supergroup'],
+                'from' => ['id' => '9007199254740991', 'is_bot' => false, 'first_name' => 'Taylor'],
+                'user_chat_id' => '9007199254740992',
+                'date' => 1_780_000_001,
+                'bio' => 'Please approve me',
+                'invite_link' => ['invite_link' => 'https://t.me/+invite'],
+            ],
+        ]);
+
+        $this->assertSame(-1001234567890, $memberUpdate->myChatMember()?->chat()?->id());
+        $this->assertSame(123, $memberUpdate->myChatMember()?->from()?->id());
+        $this->assertSame(1_780_000_000, $memberUpdate->myChatMember()?->date());
+        $this->assertSame(['status' => 'member'], $memberUpdate->myChatMember()?->oldChatMember());
+        $this->assertSame(['status' => 'administrator'], $memberUpdate->myChatMember()?->newChatMember());
+        $this->assertSame(['invite_link' => 'https://t.me/+invite'], $memberUpdate->myChatMember()?->inviteLink());
+        $this->assertTrue($memberUpdate->myChatMember()?->viaJoinRequest());
+        $this->assertFalse($memberUpdate->myChatMember()?->viaChatFolderInviteLink());
+        $this->assertSame(-1001234567890, $joinRequestUpdate->chatJoinRequest()?->chat()?->id());
+        $this->assertSame('9007199254740991', $joinRequestUpdate->chatJoinRequest()?->from()?->id());
+        $this->assertSame('9007199254740992', $joinRequestUpdate->chatJoinRequest()?->userChatId());
+        $this->assertSame(1_780_000_001, $joinRequestUpdate->chatJoinRequest()?->date());
+        $this->assertSame('Please approve me', $joinRequestUpdate->chatJoinRequest()?->bio());
+        $this->assertSame(['invite_link' => 'https://t.me/+invite'], $joinRequestUpdate->chatJoinRequest()?->inviteLink());
+    }
+
+    public function test_exposes_common_typed_message_sub_objects(): void
+    {
+        $update = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 139,
+            'message' => [
+                'message_id' => 91,
+                'text' => 'Receipt',
+                'guest_query_id' => 'guest-query-id',
+                'reply_to_message' => ['message_id' => 90, 'text' => 'Previous'],
+                'guest_bot_caller_user' => ['id' => 123, 'is_bot' => false, 'first_name' => 'Alex'],
+                'guest_bot_caller_chat' => ['id' => -1001234567890, 'type' => 'supergroup'],
+                'photo' => [
+                    ['file_id' => 'small-photo'],
+                    ['file_id' => 'large-photo'],
+                ],
+                'document' => ['file_id' => 'document-id'],
+                'entities' => [['type' => 'bot_command', 'offset' => 0, 'length' => 6]],
+                'caption_entities' => [['type' => 'bold', 'offset' => 0, 'length' => 4]],
+                'successful_payment' => ['telegram_payment_charge_id' => 'payment-charge'],
+                'passport_data' => ['credentials' => ['data' => 'encrypted']],
+                'game' => ['title' => 'Space Race'],
+                'live_photo' => ['width' => 1024, 'height' => 768],
+            ],
+        ]);
+
+        $message = $update->message();
+
+        $this->assertSame('guest-query-id', $message?->guestQueryId());
+        $this->assertSame(90, $message?->replyToMessage()?->messageId());
+        $this->assertSame('Previous', $message?->replyToMessage()?->text());
+        $this->assertSame(123, $message?->guestBotCallerUser()?->id());
+        $this->assertSame(-1001234567890, $message?->guestBotCallerChat()?->id());
+        $this->assertSame([['file_id' => 'small-photo'], ['file_id' => 'large-photo']], $message?->photo());
+        $this->assertSame(['file_id' => 'document-id'], $message?->document());
+        $this->assertSame([['type' => 'bot_command', 'offset' => 0, 'length' => 6]], $message?->entities());
+        $this->assertSame([['type' => 'bold', 'offset' => 0, 'length' => 4]], $message?->captionEntities());
+        $this->assertSame(['telegram_payment_charge_id' => 'payment-charge'], $message?->successfulPayment());
+        $this->assertSame(['credentials' => ['data' => 'encrypted']], $message?->passportData());
+        $this->assertSame(['title' => 'Space Race'], $message?->game());
+        $this->assertSame(['width' => 1024, 'height' => 768], $message?->livePhoto());
+    }
 }

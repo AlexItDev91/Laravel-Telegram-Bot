@@ -140,6 +140,51 @@ final readonly class TelegramWebhookUpdate
         return $callbackQuery !== null ? TelegramCallbackQueryData::fromPayload($callbackQuery) : null;
     }
 
+    public function inlineQuery(): ?TelegramInlineQueryData
+    {
+        $inlineQuery = $this->arrayAt('inline_query');
+
+        return $inlineQuery !== null ? TelegramInlineQueryData::fromPayload($inlineQuery) : null;
+    }
+
+    public function chosenInlineResult(): ?TelegramChosenInlineResultData
+    {
+        $chosenInlineResult = $this->arrayAt('chosen_inline_result');
+
+        return $chosenInlineResult !== null ? TelegramChosenInlineResultData::fromPayload($chosenInlineResult) : null;
+    }
+
+    public function shippingQueryData(): ?TelegramShippingQueryData
+    {
+        $shippingQuery = $this->shippingQuery();
+
+        return $shippingQuery !== null ? TelegramShippingQueryData::fromPayload($shippingQuery) : null;
+    }
+
+    public function preCheckoutQueryData(): ?TelegramPreCheckoutQueryData
+    {
+        $preCheckoutQuery = $this->preCheckoutQuery();
+
+        return $preCheckoutQuery !== null ? TelegramPreCheckoutQueryData::fromPayload($preCheckoutQuery) : null;
+    }
+
+    public function myChatMember(): ?TelegramChatMemberUpdatedData
+    {
+        return $this->chatMemberUpdatedAt('my_chat_member');
+    }
+
+    public function chatMember(): ?TelegramChatMemberUpdatedData
+    {
+        return $this->chatMemberUpdatedAt('chat_member');
+    }
+
+    public function chatJoinRequest(): ?TelegramChatJoinRequestData
+    {
+        $chatJoinRequest = $this->arrayAt('chat_join_request');
+
+        return $chatJoinRequest !== null ? TelegramChatJoinRequestData::fromPayload($chatJoinRequest) : null;
+    }
+
     public function effectiveMessage(): ?TelegramMessageData
     {
         foreach ([
@@ -332,5 +377,12 @@ final readonly class TelegramWebhookUpdate
         $value = $this->arrayAt($key);
 
         return $value !== null ? TelegramUserData::fromPayload($value) : null;
+    }
+
+    private function chatMemberUpdatedAt(string $key): ?TelegramChatMemberUpdatedData
+    {
+        $value = $this->arrayAt($key);
+
+        return $value !== null ? TelegramChatMemberUpdatedData::fromPayload($value) : null;
     }
 }

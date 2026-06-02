@@ -156,9 +156,15 @@ try {
         'text' => 'Hello',
     ]);
 } catch (TelegramBotApiException $exception) {
+    $retryAfter = $exception->retryAfter();
+    $migrateToChatId = $exception->migrateToChatId();
+
     report($exception);
 }
 ```
+
+`retryAfter()` reads Telegram `ResponseParameters.retry_after` for rate limits.
+`migrateToChatId()` reads `ResponseParameters.migrate_to_chat_id` when a group is upgraded to a supergroup.
 
 ## Identifier Safety
 

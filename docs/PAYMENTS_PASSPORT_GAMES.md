@@ -86,7 +86,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\Payments\LabeledPrice;
 use AlexItDev91\LaravelTelegramBot\DTO\Payments\ShippingOption;
 
 $telegram->bot('shop')->answerShippingQuery(AnswerShippingQueryData::accept(
-    shippingQueryId: $update->shippingQuery()['id'],
+    shippingQueryId: (string) $update->shippingQueryData()?->id(),
     shippingOptions: [
         new ShippingOption('fast', 'Fast delivery', [
             new LabeledPrice('Delivery', 150),
@@ -95,7 +95,7 @@ $telegram->bot('shop')->answerShippingQuery(AnswerShippingQueryData::accept(
 ));
 
 $telegram->bot('shop')->answerPreCheckoutQuery(
-    AnswerPreCheckoutQueryData::accept($update->preCheckoutQuery()['id']),
+    AnswerPreCheckoutQueryData::accept((string) $update->preCheckoutQueryData()?->id()),
 );
 ```
 
@@ -161,6 +161,8 @@ $telegram->bot('shop')->sendPaidMedia(new SendPaidMediaData(
 
 - `shippingQuery()`
 - `preCheckoutQuery()`
+- `shippingQueryData()`
+- `preCheckoutQueryData()`
 - `purchasedPaidMedia()`
 - `invoice()`
 - `successfulPayment()`
@@ -168,9 +170,14 @@ $telegram->bot('shop')->sendPaidMedia(new SendPaidMediaData(
 
 ```php
 $shippingQuery = $update->shippingQuery();
+$typedShippingQuery = $update->shippingQueryData();
+$typedPreCheckoutQuery = $update->preCheckoutQueryData();
 $invoice = $update->invoice();
 $payment = $update->successfulPayment();
 $refund = $update->refundedPayment();
+
+$typedShippingQuery?->invoicePayload();
+$typedPreCheckoutQuery?->totalAmount();
 ```
 
 ## Telegram Passport

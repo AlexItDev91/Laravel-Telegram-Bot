@@ -46,6 +46,11 @@ final readonly class TelegramMessageData implements TelegramBotData
         return $this->stringAt('caption');
     }
 
+    public function guestQueryId(): ?string
+    {
+        return $this->stringAt('guest_query_id');
+    }
+
     public function chat(): ?TelegramChatData
     {
         $chat = $this->payload['chat'] ?? null;
@@ -65,6 +70,91 @@ final readonly class TelegramMessageData implements TelegramBotData
         $senderChat = $this->payload['sender_chat'] ?? null;
 
         return is_array($senderChat) ? TelegramChatData::fromPayload($senderChat) : null;
+    }
+
+    public function replyToMessage(): ?self
+    {
+        $message = $this->payload['reply_to_message'] ?? null;
+
+        return is_array($message) ? self::fromPayload($message) : null;
+    }
+
+    public function guestBotCallerUser(): ?TelegramUserData
+    {
+        $user = $this->payload['guest_bot_caller_user'] ?? null;
+
+        return is_array($user) ? TelegramUserData::fromPayload($user) : null;
+    }
+
+    public function guestBotCallerChat(): ?TelegramChatData
+    {
+        $chat = $this->payload['guest_bot_caller_chat'] ?? null;
+
+        return is_array($chat) ? TelegramChatData::fromPayload($chat) : null;
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public function photo(): array
+    {
+        return $this->listOfArraysAt('photo');
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function document(): ?array
+    {
+        return $this->arrayAt('document');
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public function entities(): array
+    {
+        return $this->listOfArraysAt('entities');
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public function captionEntities(): array
+    {
+        return $this->listOfArraysAt('caption_entities');
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function successfulPayment(): ?array
+    {
+        return $this->arrayAt('successful_payment');
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function passportData(): ?array
+    {
+        return $this->arrayAt('passport_data');
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function game(): ?array
+    {
+        return $this->arrayAt('game');
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function livePhoto(): ?array
+    {
+        return $this->arrayAt('live_photo');
     }
 
     public function isTopicMessage(): ?bool
@@ -99,5 +189,29 @@ final readonly class TelegramMessageData implements TelegramBotData
         $value = $this->payload[$key] ?? null;
 
         return is_bool($value) ? $value : null;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function arrayAt(string $key): ?array
+    {
+        $value = $this->payload[$key] ?? null;
+
+        return is_array($value) ? $value : null;
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function listOfArraysAt(string $key): array
+    {
+        $value = $this->payload[$key] ?? null;
+
+        if (! is_array($value)) {
+            return [];
+        }
+
+        return array_values(array_filter($value, static fn (mixed $item): bool => is_array($item)));
     }
 }

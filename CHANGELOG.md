@@ -8,6 +8,10 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.8.3] - 2026-06-02
+
+- Updated the Composer checks workflow to `actions/checkout@v5` to avoid the Node.js 20 action runtime deprecation warning.
+
 ## [1.8.2] - 2026-06-02
 
 - Added a GitHub Actions Composer checks workflow for package validation, static analysis, Telegram API surface checks, and PHPUnit coverage.

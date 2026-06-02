@@ -8,6 +8,10 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.12.2] - 2026-06-02
+
+- Added a committed Qodana configuration using the PHP linter, the recommended inspection profile, Composer bootstrap, PHP 8.2 compatibility analysis, and a zero-problem quality gate.
+
 ## [1.12.1] - 2026-06-02
 
 - Addressed Qodana inspection findings for binary-safe file streams, JSON decoding with `JSON_THROW_ON_ERROR`, class constants, condition ordering, and redundant casts without changing public behavior.

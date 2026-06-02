@@ -8,6 +8,10 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.7.4] - 2026-06-02
+
+- Redacted bot tokens from propagated Telegram transport exception messages while preserving the original exception as the previous throwable.
+
 ## [1.7.3] - 2026-06-02
 
 - Simplified the README documentation section from a table into a compact unordered table of contents.

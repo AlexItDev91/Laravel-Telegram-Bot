@@ -68,7 +68,7 @@ class TelegramBotClient implements TelegramBotClientContract
                 'exception' => $exception::class,
             ]);
 
-            throw new TelegramBotTransportException($exception->getMessage(), previous: $exception);
+            throw new TelegramBotTransportException($this->sanitizeTransportMessage($exception->getMessage()), previous: $exception);
         }
 
         $payload = json_decode((string) $response->getBody(), true);
@@ -144,6 +144,19 @@ class TelegramBotClient implements TelegramBotClientContract
         if (preg_match('/^[A-Za-z0-9_]+$/', $method) !== 1) {
             throw new InvalidArgumentException('Telegram Bot API method names may contain only letters, numbers, and underscores.');
         }
+    }
+
+    private function sanitizeTransportMessage(string $message): string
+    {
+        if ($this->config->token === null || $this->config->token === '') {
+            return $message;
+        }
+
+        return str_replace(
+            [$this->config->token, rawurlencode($this->config->token)],
+            '<redacted-bot-token>',
+            $message,
+        );
     }
 
     /**

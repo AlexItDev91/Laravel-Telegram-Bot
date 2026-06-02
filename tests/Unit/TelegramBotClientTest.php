@@ -9,9 +9,11 @@ use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotTransportException;
 use AlexItDev91\LaravelTelegramBot\InputFile;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\AbstractLogger;
@@ -197,6 +199,30 @@ class TelegramBotClientTest extends TestCase
             $this->assertSame(502, $record['context']['status_code']);
             $this->assertStringNotContainsString('123456:secret-token', json_encode($record, JSON_THROW_ON_ERROR));
             $this->assertStringNotContainsString('proxy leaked token', json_encode($record, JSON_THROW_ON_ERROR));
+        }
+    }
+
+    public function test_transport_exception_message_does_not_expose_bot_token(): void
+    {
+        $client = TelegramBotClient::make(
+            token: '123456:secret-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new RequestException(
+                    'Network failure while requesting https://api.telegram.test/bot123456:secret-token/getMe or https://api.telegram.test/bot123456%3Asecret-token/getMe',
+                    new Request('POST', 'https://api.telegram.test/bot123456:secret-token/getMe'),
+                ),
+            ]),
+        );
+
+        try {
+            $client->getMe();
+            $this->fail('Expected Telegram Bot transport exception was not thrown.');
+        } catch (TelegramBotTransportException $exception) {
+            $this->assertStringNotContainsString('123456:secret-token', $exception->getMessage());
+            $this->assertStringNotContainsString('123456%3Asecret-token', $exception->getMessage());
+            $this->assertStringContainsString('<redacted-bot-token>', $exception->getMessage());
+            $this->assertInstanceOf(RequestException::class, $exception->getPrevious());
         }
     }
 

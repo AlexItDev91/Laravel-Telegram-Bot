@@ -39,6 +39,7 @@ php artisan telegram-bot:install
 - Keep `TELEGRAM_BOT_LOGGING_ENABLED=true` for safe operational warning/error logs without tokens, secret headers, request payloads, response bodies, chat IDs, or message text.
 - Handle incoming updates with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler` or listen for `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived`.
 - Prefer typed webhook accessors for common inbound objects: `effectiveMessage()`, `effectiveChat()`, `effectiveUser()`, `callbackQuery()`, `inlineQuery()`, `shippingQueryData()`, `preCheckoutQueryData()`, `chatMember()`, and `chatJoinRequest()`.
+- Use typed accessors for official non-message update families as well: `businessConnection()`, `deletedBusinessMessages()`, `purchasedPaidMediaData()`, `poll()`, `pollAnswer()`, `messageReaction()`, `messageReactionCount()`, `chatBoost()`, `removedChatBoost()`, and `managedBot()`.
 - Prefer nested typed object accessors where available: `photoData()`, `documentData()`, `entitiesData()`, `captionEntitiesData()`, `successfulPaymentData()`, `orderInfoData()`, `oldChatMemberData()`, and `newChatMemberData()`.
 - Keep raw update access available through `payload()`, `get()`, and the backward-compatible array helpers when Telegram adds fields before typed DTOs exist.
 - Use `TelegramBot::call('methodName', [...])` for new Telegram methods before typed helpers are updated.

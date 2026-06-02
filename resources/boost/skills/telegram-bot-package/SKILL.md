@@ -138,6 +138,8 @@ $userId = $update->effectiveUser()?->id();
 $callbackData = $update->callbackQuery()?->data();
 $preCheckoutId = $update->preCheckoutQueryData()?->id();
 $orderEmail = $update->preCheckoutQueryData()?->orderInfoData()?->email();
+$pollId = $update->poll()?->id();
+$boostId = $update->chatBoost()?->boostData()?->boostId();
 $documentName = $message?->documentData()?->fileName();
 $paymentCharge = $message?->successfulPaymentData()?->telegramPaymentChargeId();
 $newMemberStatus = $update->chatMember()?->newChatMemberData()?->status();
@@ -150,6 +152,7 @@ Useful typed inbound helpers include:
 - `callbackQuery()`, `inlineQuery()`, `chosenInlineResult()`
 - `shippingQueryData()`, `preCheckoutQueryData()`
 - `myChatMember()`, `chatMember()`, `chatJoinRequest()`
+- `businessConnection()`, `deletedBusinessMessages()`, `purchasedPaidMediaData()`, `poll()`, `pollAnswer()`, `messageReaction()`, `messageReactionCount()`, `chatBoost()`, `removedChatBoost()`, `managedBot()`
 - `photoData()`, `documentData()`, `entitiesData()`, `captionEntitiesData()`, `successfulPaymentData()`, `orderInfoData()`, `oldChatMemberData()`, `newChatMemberData()`
 
 Keep the raw payload available through `payload()`, `get()`, and backward-compatible array helpers when Telegram sends fields before the SDK adds typed DTO coverage.

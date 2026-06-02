@@ -164,6 +164,7 @@ $telegram->bot('shop')->sendPaidMedia(new SendPaidMediaData(
 - `shippingQueryData()`
 - `preCheckoutQueryData()`
 - `purchasedPaidMedia()`
+- `purchasedPaidMediaData()`
 - `invoice()`
 - `successfulPayment()`
 - `successfulPaymentData()`
@@ -173,6 +174,7 @@ $telegram->bot('shop')->sendPaidMedia(new SendPaidMediaData(
 $shippingQuery = $update->shippingQuery();
 $typedShippingQuery = $update->shippingQueryData();
 $typedPreCheckoutQuery = $update->preCheckoutQueryData();
+$typedPaidMediaPurchase = $update->purchasedPaidMediaData();
 $invoice = $update->invoice();
 $payment = $update->successfulPayment();
 $typedPayment = $update->successfulPaymentData();
@@ -181,6 +183,7 @@ $refund = $update->refundedPayment();
 $typedShippingQuery?->invoicePayload();
 $typedPreCheckoutQuery?->totalAmount();
 $typedPreCheckoutQuery?->orderInfoData()?->email();
+$typedPaidMediaPurchase?->paidMediaPayload();
 $typedPayment?->telegramPaymentChargeId();
 $typedPayment?->orderInfoData()?->name();
 ```

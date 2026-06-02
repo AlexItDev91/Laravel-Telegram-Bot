@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="1.11.3"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="1.12.0"/>', $config);
 
         foreach ([
             'overview.md',
@@ -114,6 +114,16 @@ class WritersideDocumentationTest extends TestCase
             'shippingQueryData()',
             'preCheckoutQueryData()',
             'chatMember()',
+            'businessConnection()',
+            'deletedBusinessMessages()',
+            'purchasedPaidMediaData()',
+            'poll()',
+            'pollAnswer()',
+            'messageReaction()',
+            'messageReactionCount()',
+            'chatBoost()',
+            'removedChatBoost()',
+            'managedBot()',
             'photoData()',
             'documentData()',
             'entitiesData()',

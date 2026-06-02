@@ -393,10 +393,199 @@ class TelegramWebhookUpdateTest extends TestCase
         $this->assertSame(['invite_link' => 'https://t.me/+invite'], $joinRequestUpdate->chatJoinRequest()?->inviteLink());
     }
 
+    public function test_exposes_remaining_typed_update_families(): void
+    {
+        $businessConnectionUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 139,
+            'business_connection' => [
+                'id' => 'business-connection-id',
+                'user' => ['id' => '9007199254740991', 'is_bot' => false, 'first_name' => 'Alex'],
+                'user_chat_id' => '9007199254740992',
+                'date' => 1_780_000_000,
+                'rights' => ['can_reply' => true],
+                'is_enabled' => true,
+            ],
+        ]);
+        $deletedBusinessMessagesUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 140,
+            'deleted_business_messages' => [
+                'business_connection_id' => 'business-connection-id',
+                'chat' => ['id' => -1001234567890, 'type' => 'supergroup'],
+                'message_ids' => [10, 11],
+            ],
+        ]);
+        $paidMediaUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 141,
+            'purchased_paid_media' => [
+                'from' => ['id' => 123, 'is_bot' => false, 'first_name' => 'Taylor'],
+                'paid_media_payload' => 'paid-media-order',
+            ],
+        ]);
+        $pollUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 142,
+            'poll' => [
+                'id' => 'poll-id',
+                'question' => 'Pick one',
+                'question_entities' => [['type' => 'bold', 'offset' => 0, 'length' => 4]],
+                'options' => [['text' => 'A', 'voter_count' => 3]],
+                'total_voter_count' => 3,
+                'is_closed' => false,
+                'is_anonymous' => true,
+                'type' => 'quiz',
+                'allows_multiple_answers' => false,
+                'allows_revoting' => true,
+                'members_only' => false,
+                'country_codes' => ['US'],
+                'correct_option_ids' => [0],
+                'explanation' => 'Because',
+                'explanation_entities' => [['type' => 'italic', 'offset' => 0, 'length' => 7]],
+                'explanation_media' => ['type' => 'photo'],
+                'open_period' => 60,
+                'close_date' => 1_780_000_060,
+                'description' => 'Description',
+                'description_entities' => [['type' => 'code', 'offset' => 0, 'length' => 4]],
+                'media' => ['type' => 'image'],
+            ],
+        ]);
+        $pollAnswerUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 143,
+            'poll_answer' => [
+                'poll_id' => 'poll-id',
+                'voter_chat' => ['id' => -1001234567890, 'type' => 'supergroup'],
+                'user' => ['id' => 456, 'is_bot' => false, 'first_name' => 'Morgan'],
+                'option_ids' => [0, 2],
+                'option_persistent_ids' => ['option-a'],
+            ],
+        ]);
+        $messageReactionUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 144,
+            'message_reaction' => [
+                'chat' => ['id' => -1001234567890, 'type' => 'supergroup'],
+                'message_id' => 99,
+                'user' => ['id' => 789, 'is_bot' => false, 'first_name' => 'Jordan'],
+                'actor_chat' => ['id' => -1001234567891, 'type' => 'channel'],
+                'date' => 1_780_000_001,
+                'old_reaction' => [['type' => 'emoji', 'emoji' => 'like']],
+                'new_reaction' => [['type' => 'emoji', 'emoji' => 'fire']],
+            ],
+        ]);
+        $messageReactionCountUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 145,
+            'message_reaction_count' => [
+                'chat' => ['id' => -1001234567890, 'type' => 'supergroup'],
+                'message_id' => 100,
+                'date' => 1_780_000_002,
+                'reactions' => [['type' => ['type' => 'emoji', 'emoji' => 'fire'], 'total_count' => 5]],
+            ],
+        ]);
+        $chatBoostUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 146,
+            'chat_boost' => [
+                'chat' => ['id' => -1001234567890, 'type' => 'supergroup'],
+                'boost' => [
+                    'boost_id' => 'boost-id',
+                    'add_date' => 1_780_000_003,
+                    'expiration_date' => 1_790_000_003,
+                    'source' => ['source' => 'premium'],
+                ],
+            ],
+        ]);
+        $removedChatBoostUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 147,
+            'removed_chat_boost' => [
+                'chat' => ['id' => -1001234567890, 'type' => 'supergroup'],
+                'boost_id' => 'boost-id',
+                'remove_date' => 1_780_000_004,
+                'source' => ['source' => 'premium'],
+            ],
+        ]);
+        $managedBotUpdate = TelegramWebhookUpdate::fromPayload([
+            'update_id' => 148,
+            'managed_bot' => [
+                'user' => ['id' => 987, 'is_bot' => false, 'first_name' => 'Owner'],
+                'bot' => ['id' => 654, 'is_bot' => true, 'first_name' => 'Managed Bot'],
+            ],
+        ]);
+
+        $this->assertSame('business-connection-id', $businessConnectionUpdate->businessConnection()?->id());
+        $this->assertSame('9007199254740991', $businessConnectionUpdate->businessConnection()?->user()?->id());
+        $this->assertSame('9007199254740992', $businessConnectionUpdate->businessConnection()?->userChatId());
+        $this->assertSame(1_780_000_000, $businessConnectionUpdate->businessConnection()?->date());
+        $this->assertSame(['can_reply' => true], $businessConnectionUpdate->businessConnection()?->rights());
+        $this->assertTrue($businessConnectionUpdate->businessConnection()?->isEnabled());
+        $this->assertSame('9007199254740991', $businessConnectionUpdate->effectiveUser()?->id());
+
+        $this->assertSame('business-connection-id', $deletedBusinessMessagesUpdate->deletedBusinessMessages()?->businessConnectionId());
+        $this->assertSame(-1001234567890, $deletedBusinessMessagesUpdate->deletedBusinessMessages()?->chat()?->id());
+        $this->assertSame([10, 11], $deletedBusinessMessagesUpdate->deletedBusinessMessages()?->messageIds());
+        $this->assertSame(-1001234567890, $deletedBusinessMessagesUpdate->effectiveChat()?->id());
+
+        $this->assertSame(['from' => ['id' => 123, 'is_bot' => false, 'first_name' => 'Taylor'], 'paid_media_payload' => 'paid-media-order'], $paidMediaUpdate->purchasedPaidMedia());
+        $this->assertSame(123, $paidMediaUpdate->purchasedPaidMediaData()?->from()?->id());
+        $this->assertSame('paid-media-order', $paidMediaUpdate->purchasedPaidMediaData()?->paidMediaPayload());
+
+        $this->assertSame('poll-id', $pollUpdate->poll()?->id());
+        $this->assertSame('Pick one', $pollUpdate->poll()?->question());
+        $this->assertSame('bold', $pollUpdate->poll()?->questionEntitiesData()[0]->type());
+        $this->assertSame([['text' => 'A', 'voter_count' => 3]], $pollUpdate->poll()?->options());
+        $this->assertSame(3, $pollUpdate->poll()?->totalVoterCount());
+        $this->assertFalse($pollUpdate->poll()?->isClosed());
+        $this->assertTrue($pollUpdate->poll()?->isAnonymous());
+        $this->assertSame('quiz', $pollUpdate->poll()?->type());
+        $this->assertFalse($pollUpdate->poll()?->allowsMultipleAnswers());
+        $this->assertTrue($pollUpdate->poll()?->allowsRevoting());
+        $this->assertFalse($pollUpdate->poll()?->membersOnly());
+        $this->assertSame(['US'], $pollUpdate->poll()?->countryCodes());
+        $this->assertSame([0], $pollUpdate->poll()?->correctOptionIds());
+        $this->assertSame('Because', $pollUpdate->poll()?->explanation());
+        $this->assertSame('italic', $pollUpdate->poll()?->explanationEntitiesData()[0]->type());
+        $this->assertSame(['type' => 'photo'], $pollUpdate->poll()?->explanationMedia());
+        $this->assertSame(60, $pollUpdate->poll()?->openPeriod());
+        $this->assertSame(1_780_000_060, $pollUpdate->poll()?->closeDate());
+        $this->assertSame('Description', $pollUpdate->poll()?->description());
+        $this->assertSame('code', $pollUpdate->poll()?->descriptionEntitiesData()[0]->type());
+        $this->assertSame(['type' => 'image'], $pollUpdate->poll()?->media());
+
+        $this->assertSame('poll-id', $pollAnswerUpdate->pollAnswer()?->pollId());
+        $this->assertSame(-1001234567890, $pollAnswerUpdate->pollAnswer()?->voterChat()?->id());
+        $this->assertSame(456, $pollAnswerUpdate->pollAnswer()?->user()?->id());
+        $this->assertSame([0, 2], $pollAnswerUpdate->pollAnswer()?->optionIds());
+        $this->assertSame(['option-a'], $pollAnswerUpdate->pollAnswer()?->optionPersistentIds());
+        $this->assertSame(456, $pollAnswerUpdate->effectiveUser()?->id());
+
+        $this->assertSame(-1001234567890, $messageReactionUpdate->messageReaction()?->chat()?->id());
+        $this->assertSame(99, $messageReactionUpdate->messageReaction()?->messageId());
+        $this->assertSame(789, $messageReactionUpdate->messageReaction()?->user()?->id());
+        $this->assertSame(-1001234567891, $messageReactionUpdate->messageReaction()?->actorChat()?->id());
+        $this->assertSame(1_780_000_001, $messageReactionUpdate->messageReaction()?->date());
+        $this->assertSame([['type' => 'emoji', 'emoji' => 'like']], $messageReactionUpdate->messageReaction()?->oldReaction());
+        $this->assertSame([['type' => 'emoji', 'emoji' => 'fire']], $messageReactionUpdate->messageReaction()?->newReaction());
+
+        $this->assertSame(-1001234567890, $messageReactionCountUpdate->messageReactionCount()?->chat()?->id());
+        $this->assertSame(100, $messageReactionCountUpdate->messageReactionCount()?->messageId());
+        $this->assertSame(1_780_000_002, $messageReactionCountUpdate->messageReactionCount()?->date());
+        $this->assertSame([['type' => ['type' => 'emoji', 'emoji' => 'fire'], 'total_count' => 5]], $messageReactionCountUpdate->messageReactionCount()?->reactions());
+
+        $this->assertSame(-1001234567890, $chatBoostUpdate->chatBoost()?->chat()?->id());
+        $this->assertSame('boost-id', $chatBoostUpdate->chatBoost()?->boostData()?->boostId());
+        $this->assertSame(1_780_000_003, $chatBoostUpdate->chatBoost()?->boostData()?->addDate());
+        $this->assertSame(1_790_000_003, $chatBoostUpdate->chatBoost()?->boostData()?->expirationDate());
+        $this->assertSame(['source' => 'premium'], $chatBoostUpdate->chatBoost()?->boostData()?->source());
+
+        $this->assertSame(-1001234567890, $removedChatBoostUpdate->removedChatBoost()?->chat()?->id());
+        $this->assertSame('boost-id', $removedChatBoostUpdate->removedChatBoost()?->boostId());
+        $this->assertSame(1_780_000_004, $removedChatBoostUpdate->removedChatBoost()?->removeDate());
+        $this->assertSame(['source' => 'premium'], $removedChatBoostUpdate->removedChatBoost()?->source());
+
+        $this->assertSame(987, $managedBotUpdate->managedBot()?->user()?->id());
+        $this->assertSame(654, $managedBotUpdate->managedBot()?->bot()?->id());
+        $this->assertSame(987, $managedBotUpdate->effectiveUser()?->id());
+    }
+
     public function test_exposes_common_typed_message_sub_objects(): void
     {
         $update = TelegramWebhookUpdate::fromPayload([
-            'update_id' => 139,
+            'update_id' => 149,
             'message' => [
                 'message_id' => 91,
                 'text' => 'Receipt',

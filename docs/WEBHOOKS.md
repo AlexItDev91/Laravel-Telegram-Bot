@@ -216,6 +216,12 @@ $inlineQuery = $update->inlineQuery();
 $shippingQuery = $update->shippingQueryData();
 $preCheckoutQuery = $update->preCheckoutQueryData();
 $chatMember = $update->chatMember();
+$poll = $update->poll();
+$pollAnswer = $update->pollAnswer();
+$reaction = $update->messageReaction();
+$chatBoost = $update->chatBoost();
+$businessConnection = $update->businessConnection();
+$managedBot = $update->managedBot();
 
 $message?->messageId();       // int|null
 $message?->messageThreadId(); // int|null
@@ -238,6 +244,12 @@ $shippingQuery?->invoicePayload(); // string|null
 $preCheckoutQuery?->totalAmount(); // int|null
 $preCheckoutQuery?->orderInfoData(); // TelegramOrderInfoData|null
 $chatMember?->newChatMemberData(); // TelegramChatMemberData|null
+$poll?->question();           // string|null
+$pollAnswer?->optionIds();    // list<int>
+$reaction?->newReaction();    // list<array<string, mixed>>
+$chatBoost?->boostData();     // TelegramChatBoostData|null
+$businessConnection?->isEnabled(); // bool|null
+$managedBot?->bot();          // TelegramUserData|null
 ```
 
 Direct message-like accessors are also available: `message()`, `editedMessage()`, `channelPost()`, `editedChannelPost()`, `businessMessage()`, `editedBusinessMessage()`, and `guestMessage()`.
@@ -245,6 +257,7 @@ Callback query updates are available through `callbackQuery()`, including typed 
 Inline mode is covered by `inlineQuery()` and `chosenInlineResult()`.
 Payment queries keep their backward-compatible array accessors and add typed `shippingQueryData()` and `preCheckoutQueryData()`.
 Common message media, entities, successful payments, order info, and chat member payloads also have typed object accessors such as `photoData()`, `documentData()`, `entitiesData()`, `successfulPaymentData()`, `orderInfoData()`, and `newChatMemberData()`.
+The remaining official update families are covered by `businessConnection()`, `deletedBusinessMessages()`, `purchasedPaidMediaData()`, `poll()`, `pollAnswer()`, `messageReaction()`, `messageReactionCount()`, `chatBoost()`, `removedChatBoost()`, and `managedBot()`.
 Membership updates are available through `myChatMember()`, `chatMember()`, and `chatJoinRequest()`.
 
 Unknown future update fields remain available through `payload()` and `get()` even before the SDK adds first-class awareness.

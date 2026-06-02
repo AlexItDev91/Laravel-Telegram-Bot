@@ -24,6 +24,11 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('effectiveMessage()', $guidelines);
         $this->assertStringContainsString('callbackQuery()', $guidelines);
         $this->assertStringContainsString('preCheckoutQueryData()', $guidelines);
+        $this->assertStringContainsString('businessConnection()', $guidelines);
+        $this->assertStringContainsString('poll()', $guidelines);
+        $this->assertStringContainsString('messageReaction()', $guidelines);
+        $this->assertStringContainsString('chatBoost()', $guidelines);
+        $this->assertStringContainsString('managedBot()', $guidelines);
         $this->assertStringContainsString('documentData()', $guidelines);
         $this->assertStringContainsString('successfulPaymentData()', $guidelines);
         $this->assertStringContainsString('newChatMemberData()', $guidelines);
@@ -52,6 +57,11 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('effectiveMessage()', $skill);
         $this->assertStringContainsString('callbackQuery()', $skill);
         $this->assertStringContainsString('preCheckoutQueryData()', $skill);
+        $this->assertStringContainsString('businessConnection()', $skill);
+        $this->assertStringContainsString('poll()', $skill);
+        $this->assertStringContainsString('messageReaction()', $skill);
+        $this->assertStringContainsString('chatBoost()', $skill);
+        $this->assertStringContainsString('managedBot()', $skill);
         $this->assertStringContainsString('orderInfoData()', $skill);
         $this->assertStringContainsString('documentData()', $skill);
         $this->assertStringContainsString('successfulPaymentData()', $skill);

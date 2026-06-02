@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.12.0] - 2026-06-02
+
+- Added typed inbound webhook DTO accessors for the remaining official Telegram update families: business connections, deleted business messages, purchased paid media, polls, poll answers, message reactions, chat boosts, removed chat boosts, and managed bot updates.
+- Added typed DTOs for common boost, poll, reaction, business, and managed bot update objects while keeping raw update payload access available.
+- Updated webhook, payments, README, Writerside, and Laravel Boost documentation with the expanded typed inbound update surface.
+
 ## [1.11.3] - 2026-06-02
 
 - Reduced GitHub Actions usage by keeping Composer checks off documentation-only pushes and simplifying the Writerside workflow to a single documentation generation and Pages deploy job.

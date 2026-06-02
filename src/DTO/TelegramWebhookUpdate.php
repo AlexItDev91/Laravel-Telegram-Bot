@@ -133,6 +133,20 @@ final readonly class TelegramWebhookUpdate
         return $this->messageAt('guest_message');
     }
 
+    public function businessConnection(): ?TelegramBusinessConnectionData
+    {
+        $businessConnection = $this->arrayAt('business_connection');
+
+        return $businessConnection !== null ? TelegramBusinessConnectionData::fromPayload($businessConnection) : null;
+    }
+
+    public function deletedBusinessMessages(): ?TelegramBusinessMessagesDeletedData
+    {
+        $deletedBusinessMessages = $this->arrayAt('deleted_business_messages');
+
+        return $deletedBusinessMessages !== null ? TelegramBusinessMessagesDeletedData::fromPayload($deletedBusinessMessages) : null;
+    }
+
     public function callbackQuery(): ?TelegramCallbackQueryData
     {
         $callbackQuery = $this->arrayAt('callback_query');
@@ -185,6 +199,55 @@ final readonly class TelegramWebhookUpdate
         return $chatJoinRequest !== null ? TelegramChatJoinRequestData::fromPayload($chatJoinRequest) : null;
     }
 
+    public function messageReaction(): ?TelegramMessageReactionUpdatedData
+    {
+        $messageReaction = $this->arrayAt('message_reaction');
+
+        return $messageReaction !== null ? TelegramMessageReactionUpdatedData::fromPayload($messageReaction) : null;
+    }
+
+    public function messageReactionCount(): ?TelegramMessageReactionCountUpdatedData
+    {
+        $messageReactionCount = $this->arrayAt('message_reaction_count');
+
+        return $messageReactionCount !== null ? TelegramMessageReactionCountUpdatedData::fromPayload($messageReactionCount) : null;
+    }
+
+    public function poll(): ?TelegramPollData
+    {
+        $poll = $this->arrayAt('poll');
+
+        return $poll !== null ? TelegramPollData::fromPayload($poll) : null;
+    }
+
+    public function pollAnswer(): ?TelegramPollAnswerData
+    {
+        $pollAnswer = $this->arrayAt('poll_answer');
+
+        return $pollAnswer !== null ? TelegramPollAnswerData::fromPayload($pollAnswer) : null;
+    }
+
+    public function chatBoost(): ?TelegramChatBoostUpdatedData
+    {
+        $chatBoost = $this->arrayAt('chat_boost');
+
+        return $chatBoost !== null ? TelegramChatBoostUpdatedData::fromPayload($chatBoost) : null;
+    }
+
+    public function removedChatBoost(): ?TelegramChatBoostRemovedData
+    {
+        $removedChatBoost = $this->arrayAt('removed_chat_boost');
+
+        return $removedChatBoost !== null ? TelegramChatBoostRemovedData::fromPayload($removedChatBoost) : null;
+    }
+
+    public function managedBot(): ?TelegramManagedBotUpdatedData
+    {
+        $managedBot = $this->arrayAt('managed_bot');
+
+        return $managedBot !== null ? TelegramManagedBotUpdatedData::fromPayload($managedBot) : null;
+    }
+
     public function effectiveMessage(): ?TelegramMessageData
     {
         foreach ([
@@ -219,8 +282,11 @@ final readonly class TelegramWebhookUpdate
             'my_chat_member.chat',
             'chat_member.chat',
             'chat_join_request.chat',
+            'deleted_business_messages.chat',
             'message_reaction.chat',
+            'message_reaction.actor_chat',
             'message_reaction_count.chat',
+            'poll_answer.voter_chat',
             'chat_boost.chat',
             'removed_chat_boost.chat',
         ] as $key) {
@@ -239,6 +305,7 @@ final readonly class TelegramWebhookUpdate
         foreach ([
             'message.from',
             'edited_message.from',
+            'business_connection.user',
             'business_message.from',
             'edited_business_message.from',
             'guest_message.from',
@@ -253,6 +320,7 @@ final readonly class TelegramWebhookUpdate
             'chat_member.from',
             'chat_join_request.from',
             'message_reaction.user',
+            'managed_bot.user',
         ] as $key) {
             $user = $this->userAt($key);
 
@@ -301,6 +369,13 @@ final readonly class TelegramWebhookUpdate
     public function purchasedPaidMedia(): ?array
     {
         return $this->arrayAt('purchased_paid_media');
+    }
+
+    public function purchasedPaidMediaData(): ?TelegramPaidMediaPurchasedData
+    {
+        $purchasedPaidMedia = $this->purchasedPaidMedia();
+
+        return $purchasedPaidMedia !== null ? TelegramPaidMediaPurchasedData::fromPayload($purchasedPaidMedia) : null;
     }
 
     /**

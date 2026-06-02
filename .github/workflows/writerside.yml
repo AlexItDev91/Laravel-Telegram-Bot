@@ -24,6 +24,7 @@ concurrency:
 env:
   INSTANCE: 'Writerside/tg'
   DOCKER_VERSION: '2026.04.8711'
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   build:

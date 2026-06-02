@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="1.11.1"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="1.11.2"/>', $config);
 
         foreach ([
             'overview.md',
@@ -50,6 +50,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString("INSTANCE: 'Writerside/tg'", $workflow);
         $this->assertStringContainsString("DOCKER_VERSION: '2026.04.8711'", $workflow);
+        $this->assertStringContainsString("FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'", $workflow);
         $this->assertStringContainsString('actions/checkout@v6', $workflow);
         $this->assertStringContainsString('actions/upload-artifact@v7', $workflow);
         $this->assertStringContainsString('actions/download-artifact@v7', $workflow);

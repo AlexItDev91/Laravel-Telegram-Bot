@@ -8,6 +8,10 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.11.2] - 2026-06-02
+
+- Opted the Writerside documentation workflow into GitHub Actions Node.js 24 execution for the remaining JetBrains action while keeping the current published JetBrains action major.
+
 ## [1.11.1] - 2026-06-02
 
 - Updated Laravel Boost package guidelines and the package skill with the current typed webhook DTO accessors and Telegram API exception helpers.

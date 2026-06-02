@@ -1,5 +1,7 @@
 # Laravel Telegram Bot
 
+![Laravel Telegram Bot package cover](package-cover.png){ width="700" }
+
 Laravel Telegram Bot is a Laravel-friendly PHP SDK for the official Telegram Bot API.
 It is built for Laravel 12 and Laravel 13 applications.
 It keeps the core client usable outside Laravel where practical, and adds Laravel package discovery, configuration, facade access, webhook receiving, console helpers, and typed request DTOs for the workflows where stronger payload validation reduces production risk.
@@ -26,13 +28,13 @@ The raw `call(method, parameters)` API is always available, so newly released Te
 | Composer installation and package discovery | [Installation](installation.md) |
 | Single-bot and multi-bot config | [Configuration](configuration.md) |
 | Constructor injection, facade calls, channel mappings, and raw calls | [Usage](usage.md) |
-| BotFather, chat ID, topic ID, and safe delivery setup | [Telegram setup](telegram-setup.md) |
+| BotFather, chat ID, topic ID, and safe delivery setup | [End-to-end setup guide](telegram-setup.md) |
 | Artisan install, identity, webhook, update discovery, and delivery-test commands | [Console commands](console-commands.md) |
 | Incoming Telegram webhook route, secret validation, handlers, and events | [Webhooks](webhooks.md) |
 | File uploads and custom HTTP clients | [Files and HTTP](files-and-http.md) |
 | Payments, Stars, paid media, Telegram Passport, and Games DTOs | [Payments, Passport, and Games](payments-passport-games.md) |
-| Supported Telegram method matrix | [API surface](api-surface.md) |
-| Full native method reference | [Method reference](method-reference.md) |
+| Supported method matrix | [API method support](api-surface.md) |
+| Full native method reference | [API method reference](method-reference.md) |
 
 ## Recommended Integration Path
 

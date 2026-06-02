@@ -1,4 +1,4 @@
-# Payments, Telegram Passport, And Games
+# Payments, Passport, And Games
 
 This guide documents the typed helper API for Telegram Bot API `10.0` Payments, Telegram Passport, paid media, and Games features.
 

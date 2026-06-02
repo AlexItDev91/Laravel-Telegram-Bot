@@ -8,6 +8,13 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.7.2] - 2026-06-02
+
+- Reworked the README documentation section to link to the published GitHub Pages documentation with readable page names.
+- Updated README webhook and console command cross-links to use the published documentation pages.
+- Added the package cover image from the README to the Writerside overview page.
+- Shortened Writerside page titles so the navigation does not repeat the package name on every page.
+
 ## [1.7.1] - 2026-06-02
 
 - Added a Writerside documentation module with structured package documentation, examples, tables, troubleshooting, maintenance notes, and imported full method/API reference topics.

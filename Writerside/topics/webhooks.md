@@ -1,4 +1,4 @@
-# Telegram Webhooks
+# Webhooks
 
 This package supports both sides of Telegram webhooks:
 

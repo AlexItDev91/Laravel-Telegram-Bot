@@ -12,21 +12,29 @@ Developed by Aptenova as an independent open-source package. The package is not 
 - Laravel `^12.0|^13.0`
 - Guzzle `^7.8`
 
-## API Coverage
+## Documentation
 
 The package targets Telegram Bot API `10.0`, released on `2026-05-08`.
 
-Available documentation:
+Read the published documentation:
 
-- [Writerside/topics/overview.md](Writerside/topics/overview.md) - Writerside documentation website source with structured navigation, examples, tables, troubleshooting, and maintenance notes.
-- [docs/API.md](docs/API.md) - supported Telegram Bot API method matrix with links to the official Telegram documentation for every method.
-- [docs/CONSOLE_COMMANDS.md](docs/CONSOLE_COMMANDS.md) - interactive Artisan commands for install, webhook management, and parsed chat/thread discovery.
-- [docs/METHODS.md](docs/METHODS.md) - full SDK method reference with call signatures, endpoints, and official parameter names/types.
-- [docs/PAYMENTS_PASSPORT_GAMES.md](docs/PAYMENTS_PASSPORT_GAMES.md) - typed helpers, webhook accessors, and examples for Payments, Telegram Passport, paid media, and Games.
-- [docs/SETUP.md](docs/SETUP.md) - setup guide from creating a bot and a channel or group to adding the bot and finding Telegram identifiers.
-- [docs/WEBHOOKS.md](docs/WEBHOOKS.md) - Laravel webhook receiver setup, secret-token validation, handlers, events, and route configuration.
+| Page | What it covers |
+| --- | --- |
+| [Overview](https://alexitdev91.github.io/Laravel-Telegram-Bot/overview.html) | Package capabilities, compatibility, integration path, and recommended calling styles. |
+| [Installation](https://alexitdev91.github.io/Laravel-Telegram-Bot/installation.html) | Composer installation, config publishing, manual provider registration, and install verification. |
+| [Configuration](https://alexitdev91.github.io/Laravel-Telegram-Bot/configuration.html) | Environment values, single-bot and multi-bot setup, channels, webhooks, logging, and validation. |
+| [Usage](https://alexitdev91.github.io/Laravel-Telegram-Bot/usage.html) | Constructor injection, facade calls, configured channels, raw calls, files, and error handling. |
+| [End-To-End Setup Guide](https://alexitdev91.github.io/Laravel-Telegram-Bot/telegram-setup.html) | BotFather, bot tokens, channel/group setup, chat IDs, topic IDs, and safe test delivery. |
+| [Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html) | Artisan install, identity checks, webhook management, update discovery, and test messages. |
+| [Webhooks](https://alexitdev91.github.io/Laravel-Telegram-Bot/webhooks.html) | Laravel webhook receiver, secret-token validation, handlers, events, routes, logging, and security. |
+| [Files And HTTP](https://alexitdev91.github.io/Laravel-Telegram-Bot/files-and-http.html) | `InputFile` uploads, multipart media groups, custom Guzzle clients, and response handling. |
+| [Payments, Passport, And Games](https://alexitdev91.github.io/Laravel-Telegram-Bot/payments-passport-games.html) | Typed DTOs and examples for Payments, Stars, paid media, Telegram Passport, and Games. |
+| [API Method Support](https://alexitdev91.github.io/Laravel-Telegram-Bot/api-surface.html) | Supported Telegram Bot API method matrix with official source links. |
+| [API Method Reference](https://alexitdev91.github.io/Laravel-Telegram-Bot/method-reference.html) | Full SDK method reference with call signatures, endpoints, and parameter tables. |
+| [Troubleshooting](https://alexitdev91.github.io/Laravel-Telegram-Bot/troubleshooting.html) | Common failures, webhook/polling conflicts, safe logs, and debug checklist. |
+| [Maintenance](https://alexitdev91.github.io/Laravel-Telegram-Bot/maintenance.html) | Writerside deployment, documentation maintenance, API currency, checks, and versioning. |
 
-The repository includes a Writerside module in [Writerside](Writerside) and a GitHub Actions workflow in [.github/workflows/writerside.yml](.github/workflows/writerside.yml) that builds, checks, and deploys the documentation to GitHub Pages.
+Documentation source lives in `Writerside/` and `docs/`. The GitHub Actions workflow builds, checks, and deploys it to GitHub Pages.
 
 Primary sources:
 
@@ -149,9 +157,9 @@ TelegramBot::bot('default')->setWebhook([
 ]);
 ```
 
-See [docs/WEBHOOKS.md](docs/WEBHOOKS.md) for the full setup and handler examples.
+See [Webhooks](https://alexitdev91.github.io/Laravel-Telegram-Bot/webhooks.html) for the full setup and handler examples.
 
-The package also provides Artisan commands for bot identity checks, delivery test messages, webhook registration, deletion, status checks, and parsed `chat_id` / `message_thread_id` discovery. See [docs/CONSOLE_COMMANDS.md](docs/CONSOLE_COMMANDS.md).
+The package also provides Artisan commands for bot identity checks, delivery test messages, webhook registration, deletion, status checks, and parsed `chat_id` / `message_thread_id` discovery. See [Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html).
 
 ## Logging
 

@@ -13,7 +13,7 @@ class TelegramBotConsoleCommandsGuideTest extends TestCase
 
         $this->assertIsString($guide);
         $this->assertIsString($readme);
-        $this->assertStringContainsString('[docs/CONSOLE_COMMANDS.md](docs/CONSOLE_COMMANDS.md)', $readme);
+        $this->assertStringContainsString('[Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html)', $readme);
 
         foreach ([
             'telegram-bot:install',

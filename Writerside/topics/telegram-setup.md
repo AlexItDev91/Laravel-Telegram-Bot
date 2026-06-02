@@ -1,4 +1,4 @@
-# Telegram Bot End-To-End Setup Guide
+# End-To-End Setup Guide
 
 This guide explains the full path from an empty Telegram account to a working Laravel integration:
 

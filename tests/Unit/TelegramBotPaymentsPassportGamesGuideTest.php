@@ -13,7 +13,8 @@ class TelegramBotPaymentsPassportGamesGuideTest extends TestCase
 
         $this->assertIsString($guide);
         $this->assertIsString($readme);
-        $this->assertStringContainsString('[docs/PAYMENTS_PASSPORT_GAMES.md](docs/PAYMENTS_PASSPORT_GAMES.md)', $readme);
+        $this->assertStringContainsString('[Payments, Passport, And Games](https://alexitdev91.github.io/Laravel-Telegram-Bot/payments-passport-games.html)', $readme);
+        $this->assertStringNotContainsString('[docs/PAYMENTS_PASSPORT_GAMES.md](docs/PAYMENTS_PASSPORT_GAMES.md)', $readme);
 
         foreach ([
             'SendInvoiceData',

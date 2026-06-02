@@ -70,7 +70,7 @@ class TelegramBotApiSurfaceTest extends TestCase
 
         $this->assertIsString($documentation);
         $this->assertIsString($readme);
-        $this->assertStringContainsString('[docs/METHODS.md](docs/METHODS.md)', $readme);
+        $this->assertStringContainsString('[API Method Reference](https://alexitdev91.github.io/Laravel-Telegram-Bot/method-reference.html)', $readme);
         $this->assertStringContainsString('array|TelegramBotRequestData $parameters = []', $documentation);
         $this->assertStringContainsString('https://core.telegram.org/bots/api', $documentation);
         $this->assertStringContainsString('https://core.telegram.org/bots/api-changelog', $documentation);

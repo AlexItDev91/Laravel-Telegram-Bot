@@ -13,7 +13,7 @@ class TelegramBotWebhookGuideTest extends TestCase
 
         $this->assertIsString($guide);
         $this->assertIsString($readme);
-        $this->assertStringContainsString('[docs/WEBHOOKS.md](docs/WEBHOOKS.md)', $readme);
+        $this->assertStringContainsString('[Webhooks](https://alexitdev91.github.io/Laravel-Telegram-Bot/webhooks.html)', $readme);
 
         foreach ([
             'TelegramWebhookHandler',

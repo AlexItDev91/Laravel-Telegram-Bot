@@ -1,4 +1,4 @@
-# Telegram Bot Console Commands
+# Console Commands
 
 This package ships interactive Artisan commands for Laravel applications. They use Laravel Prompts for modern console input and keep tokens, webhook secrets, chat IDs, and message text out of logs.
 

@@ -1,4 +1,4 @@
-# Telegram Bot API Method Reference
+# API Method Reference
 
 This document describes every Telegram Bot API method exposed by this package.
 

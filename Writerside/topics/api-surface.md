@@ -1,4 +1,4 @@
-# Telegram Bot API Method Support
+# API Method Support
 
 This package targets Telegram Bot API 10.0, released on 2026-05-08.
 

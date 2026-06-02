@@ -13,7 +13,7 @@ class TelegramBotSetupGuideTest extends TestCase
 
         $this->assertIsString($guide);
         $this->assertIsString($readme);
-        $this->assertStringContainsString('[docs/SETUP.md](docs/SETUP.md)', $readme);
+        $this->assertStringContainsString('[End-To-End Setup Guide](https://alexitdev91.github.io/Laravel-Telegram-Bot/telegram-setup.html)', $readme);
 
         foreach ([
             'Create The Bot In BotFather',

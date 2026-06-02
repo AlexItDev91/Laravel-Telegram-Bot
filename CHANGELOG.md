@@ -8,6 +8,10 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.12.3] - 2026-06-02
+
+- Added a dedicated Qodana GitHub Actions workflow with path filters, concurrency, pull request support, and a safe skip path when `QODANA_TOKEN` is not configured.
+
 ## [1.12.2] - 2026-06-02
 
 - Added a committed Qodana configuration using the PHP linter, the recommended inspection profile, Composer bootstrap, PHP 8.2 compatibility analysis, and a zero-problem quality gate.

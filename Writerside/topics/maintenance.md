@@ -12,6 +12,8 @@ This page is for package maintainers who update the SDK, release notes, and docu
 | `Writerside/tg.tree` | Writerside table of contents. |
 | `Writerside/topics/*.md` | Published documentation website topics. |
 | `.github/workflows/writerside.yml` | GitHub Actions documentation generation and GitHub Pages deploy workflow. |
+| `.github/workflows/qodana.yml` | Qodana static analysis workflow, enabled when `QODANA_TOKEN` is configured. |
+| `qodana.yaml` | Qodana PHP linter, profile, bootstrap, and quality gate configuration. |
 
 Keep `docs/*.md` and `Writerside/topics/*.md` synchronized when changing public documentation.
 Large reference topics can be re-imported from the matching `docs/*.md` file when the content is intentionally identical.
@@ -28,7 +30,15 @@ GitHub repository settings must use:
 | Pages source | `GitHub Actions` |
 | Workflow branch | `main` |
 
-No package token, bot token, webhook secret, or Algolia secret is required by the current workflow.
+No package token, bot token, webhook secret, or Algolia secret is required by the current documentation workflow.
+
+## Qodana Analysis
+
+The Qodana workflow runs on package code, test, Composer, and Qodana configuration changes.
+It is safe for public repository pushes and pull requests without secrets: when `QODANA_TOKEN` is not configured, the workflow records a skip step and exits successfully.
+
+To enforce Qodana analysis, create a repository secret named `QODANA_TOKEN` with a Qodana Cloud project token.
+With the token configured, `.github/workflows/qodana.yml` runs `JetBrains/qodana-action@v2026.1` against `qodana.yaml`.
 
 ## Local Editing
 

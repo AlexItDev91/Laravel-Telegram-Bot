@@ -13,7 +13,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('1.12.2', $version);
+        $this->assertSame('1.12.3', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -34,6 +34,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [1.12.3] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.12.2] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.12.1] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.12.0] - 2026-06-02', $changelog);
@@ -96,6 +97,8 @@ class ReleasePolicyTest extends TestCase
             'composer test:coverage-surface',
             'php: ["8.2", "8.3", "8.4"]',
             'actions/checkout@v6',
+            '".github/workflows/qodana.yml"',
+            '"qodana.yaml"',
         ] as $requiredWorkflowText) {
             $this->assertStringContainsString($requiredWorkflowText, $workflow);
         }

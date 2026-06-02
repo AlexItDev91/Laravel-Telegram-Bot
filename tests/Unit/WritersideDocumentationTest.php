@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="1.12.2"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="1.12.3"/>', $config);
 
         foreach ([
             'overview.md',
@@ -72,11 +72,13 @@ class WritersideDocumentationTest extends TestCase
         $usage = file_get_contents($root.'/Writerside/topics/usage.md');
         $webhooks = file_get_contents($root.'/Writerside/topics/webhooks.md');
         $apiSurface = file_get_contents($root.'/Writerside/topics/api-surface.md');
+        $maintenance = file_get_contents($root.'/Writerside/topics/maintenance.md');
 
         $this->assertIsString($overview);
         $this->assertIsString($usage);
         $this->assertIsString($webhooks);
         $this->assertIsString($apiSurface);
+        $this->assertIsString($maintenance);
 
         foreach ([
             'Laravel 12',
@@ -143,6 +145,15 @@ class WritersideDocumentationTest extends TestCase
             '`sendLivePhoto`',
         ] as $requiredApiText) {
             $this->assertStringContainsString($requiredApiText, $apiSurface);
+        }
+
+        foreach ([
+            '.github/workflows/qodana.yml',
+            'QODANA_TOKEN',
+            'qodana.yaml',
+            'JetBrains/qodana-action@v2026.1',
+        ] as $requiredMaintenanceText) {
+            $this->assertStringContainsString($requiredMaintenanceText, $maintenance);
         }
     }
 

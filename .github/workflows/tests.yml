@@ -5,18 +5,22 @@ on:
     branches: ["main"]
     paths:
       - ".github/workflows/tests.yml"
+      - ".github/workflows/qodana.yml"
       - "composer.json"
       - "phpstan.neon"
       - "phpunit.xml.dist"
+      - "qodana.yaml"
       - "scripts/**"
       - "src/**"
       - "tests/**"
   pull_request:
     paths:
       - ".github/workflows/tests.yml"
+      - ".github/workflows/qodana.yml"
       - "composer.json"
       - "phpstan.neon"
       - "phpunit.xml.dist"
+      - "qodana.yaml"
       - "scripts/**"
       - "src/**"
       - "tests/**"

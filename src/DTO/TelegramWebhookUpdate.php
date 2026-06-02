@@ -49,6 +49,14 @@ final readonly class TelegramWebhookUpdate
         return new self($payload);
     }
 
+    /**
+     * @return list<string>
+     */
+    public static function updateTypes(): array
+    {
+        return self::UPDATE_TYPES;
+    }
+
     public function updateId(): ?int
     {
         return isset($this->payload['update_id']) ? (int) $this->payload['update_id'] : null;

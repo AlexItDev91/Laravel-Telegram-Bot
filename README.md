@@ -19,6 +19,7 @@ The package targets Telegram Bot API `10.0`, released on `2026-05-08`.
 Available documentation:
 
 - [docs/API.md](docs/API.md) - supported Telegram Bot API method matrix with links to the official Telegram documentation for every method.
+- [docs/CONSOLE_COMMANDS.md](docs/CONSOLE_COMMANDS.md) - interactive Artisan commands for install, webhook management, and parsed chat/thread discovery.
 - [docs/METHODS.md](docs/METHODS.md) - full SDK method reference with call signatures, endpoints, and official parameter names/types.
 - [docs/PAYMENTS_PASSPORT_GAMES.md](docs/PAYMENTS_PASSPORT_GAMES.md) - typed helpers, webhook accessors, and examples for Payments, Telegram Passport, paid media, and Games.
 - [docs/SETUP.md](docs/SETUP.md) - setup guide from creating a bot and a channel or group to adding the bot and finding Telegram identifiers.
@@ -44,6 +45,12 @@ php artisan vendor:publish --provider="AlexItDev91\\LaravelTelegramBot\\Laravel\
 ```
 
 This creates `config/telegram-bot.php`.
+
+You can also use the interactive package installer:
+
+```bash
+php artisan telegram-bot:install
+```
 
 If package discovery is disabled in your application, register the provider manually in `bootstrap/providers.php`:
 
@@ -140,6 +147,8 @@ TelegramBot::bot('default')->setWebhook([
 ```
 
 See [docs/WEBHOOKS.md](docs/WEBHOOKS.md) for the full setup and handler examples.
+
+The package also provides Artisan commands for webhook registration, deletion, status checks, and parsed `chat_id` / `message_thread_id` discovery. See [docs/CONSOLE_COMMANDS.md](docs/CONSOLE_COMMANDS.md).
 
 ## Logging
 

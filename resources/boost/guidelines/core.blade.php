@@ -11,6 +11,12 @@ This app uses `alexitdev91/laravel-telegram-bot` for Telegram Bot API calls.
 php artisan vendor:publish --provider="AlexItDev91\\LaravelTelegramBot\\Laravel\\TelegramBotServiceProvider" --tag=telegram-bot-config
 ```
 
+- Or use the interactive installer:
+
+```bash
+php artisan telegram-bot:install
+```
+
 - Config lives in `config/telegram-bot.php`.
 - If package discovery is disabled, register the provider in `bootstrap/providers.php`.
 - Store tokens, chat IDs, webhook secrets, and private identifiers in `.env` or secret storage. Never commit real credentials.
@@ -22,6 +28,8 @@ php artisan vendor:publish --provider="AlexItDev91\\LaravelTelegramBot\\Laravel\
 - Use concrete `TelegramBot` or `TelegramBotClient` when IDE autocomplete for every native Telegram helper is important; contracts expose the stable core surface.
 - Use `TelegramBot::bot('name')` for a named bot.
 - Use `TelegramBot::channel('name')` for a configured destination with `chat_id` and optional `message_thread_id`.
+- Use `php artisan telegram-bot:updates` to discover parsed `chat_id`, `message_thread_id`, and `direct_messages_topic_id` values from Telegram updates.
+- Use `php artisan telegram-bot:webhook:set`, `telegram-bot:webhook:info`, and `telegram-bot:webhook:delete` for webhook management.
 - Use `InputFile::fromPath()` for top-level and nested file uploads; nested media files are converted to Telegram `attach://` multipart references.
 - Bind `GuzzleHttp\ClientInterface` in the host app when custom transport, retries, proxy, tracing, or HTTP fakes are needed.
 - Use the built-in `POST /telegram-bot/webhook` Laravel receiver for incoming updates when `telegram-bot.webhook.route.enabled` is true.

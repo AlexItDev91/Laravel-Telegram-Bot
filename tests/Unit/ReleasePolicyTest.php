@@ -13,7 +13,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('1.5.4', $version);
+        $this->assertSame('1.6.0', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -34,6 +34,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [1.6.0] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.5.4] - 2026-06-02', $changelog);
         $this->assertStringContainsString('## [1.5.3] - 2026-06-01', $changelog);
         $this->assertStringContainsString('## [1.5.2] - 2026-06-01', $changelog);

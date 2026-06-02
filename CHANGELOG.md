@@ -8,6 +8,13 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.6.0] - 2026-06-02
+
+- Added interactive Laravel Prompts Artisan commands for package installation, webhook registration, webhook deletion, webhook status inspection, and Telegram update discovery.
+- Added parsed `getUpdates` discovery output for copy-ready `chat_id`, `message_thread_id`, and `direct_messages_topic_id` values.
+- Added dedicated console command documentation with interactive and non-interactive examples.
+- Declared runtime dependencies on `illuminate/console` and `laravel/prompts` for the new command surface.
+
 ## [1.5.4] - 2026-06-02
 
 - Added early validation for typed Payments, Stars, paid media, Telegram Passport, and Games DTO payloads.

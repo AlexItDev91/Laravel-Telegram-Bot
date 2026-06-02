@@ -27,6 +27,10 @@ class TelegramBotWebhookGuideTest extends TestCase
             'setWebhook',
             'getWebhookInfo',
             'deleteWebhook',
+            'telegram-bot:webhook:set',
+            'telegram-bot:webhook:info',
+            'telegram-bot:webhook:delete',
+            'docs/CONSOLE_COMMANDS.md',
             'Logging',
             'Security Checklist',
         ] as $requiredInstruction) {

@@ -5,6 +5,11 @@ namespace AlexItDev91\LaravelTelegramBot\Laravel;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
+use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotInstallCommand;
+use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotUpdatesCommand;
+use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotWebhookDeleteCommand;
+use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotWebhookInfoCommand;
+use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotWebhookSetCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Http\Controllers\TelegramWebhookController;
 use AlexItDev91\LaravelTelegramBot\Laravel\Http\Middleware\VerifyTelegramWebhookSecret;
 use AlexItDev91\LaravelTelegramBot\TelegramBot;
@@ -63,6 +68,16 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../../config/telegram-bot.php' => config_path('telegram-bot.php'),
         ], 'telegram-bot-config');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                TelegramBotInstallCommand::class,
+                TelegramBotUpdatesCommand::class,
+                TelegramBotWebhookDeleteCommand::class,
+                TelegramBotWebhookInfoCommand::class,
+                TelegramBotWebhookSetCommand::class,
+            ]);
+        }
 
         $this->registerWebhookRoute();
     }

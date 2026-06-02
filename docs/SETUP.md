@@ -265,6 +265,14 @@ Example:
 
 If `message_thread_id` is absent, the message was not sent inside a forum topic.
 
+The package can also fetch updates and print parsed identifiers for you:
+
+```bash
+php artisan telegram-bot:updates --bot=default
+```
+
+See [docs/CONSOLE_COMMANDS.md](CONSOLE_COMMANDS.md) for parsed `chat_id`, `message_thread_id`, and webhook command examples.
+
 ## 13. Install The Laravel Package
 
 Install the package in the host Laravel application:
@@ -285,6 +293,12 @@ This creates:
 
 ```text
 config/telegram-bot.php
+```
+
+You can also run the package installer, which uses Laravel Prompts and prints copy-ready env/config snippets:
+
+```bash
+php artisan telegram-bot:install
 ```
 
 If package discovery is disabled, register the provider manually in `bootstrap/providers.php`:

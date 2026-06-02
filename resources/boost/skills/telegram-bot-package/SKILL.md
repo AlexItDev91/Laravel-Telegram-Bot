@@ -14,6 +14,12 @@ composer require alexitdev91/laravel-telegram-bot
 php artisan vendor:publish --provider="AlexItDev91\\LaravelTelegramBot\\Laravel\\TelegramBotServiceProvider" --tag=telegram-bot-config
 ```
 
+Interactive setup is also available:
+
+```bash
+php artisan telegram-bot:install
+```
+
 Laravel 12/13 auto-discovers the provider. If discovery is disabled, add this to `bootstrap/providers.php`:
 
 ```php
@@ -48,6 +54,8 @@ TELEGRAM_WEBHOOK_ROUTE_URI=telegram-bot/webhook
 ```
 
 Keep real tokens, webhook secrets, and private identifiers out of git.
+
+Use `php artisan telegram-bot:updates --bot=default` after sending a test message in the target chat or topic to discover parsed `chat_id`, `message_thread_id`, and `direct_messages_topic_id` values.
 
 ## Use
 
@@ -105,6 +113,14 @@ TelegramBot::bot('default')->setWebhook([
     'secret_token' => config('telegram-bot.webhook.secret_token'),
     'allowed_updates' => ['message', 'callback_query'],
 ]);
+```
+
+Webhook management commands:
+
+```bash
+php artisan telegram-bot:webhook:set --bot=default --url=https://example.com/telegram-bot/webhook
+php artisan telegram-bot:webhook:info --bot=default
+php artisan telegram-bot:webhook:delete --bot=default --yes
 ```
 
 Handle incoming updates with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler` or listen for `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived`. See `docs/WEBHOOKS.md` for the full receiver setup.

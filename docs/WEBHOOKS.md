@@ -71,10 +71,33 @@ TelegramBot::bot('default')->setWebhook([
 
 The secret token must be 1-256 characters and may contain only `A-Z`, `a-z`, `0-9`, `_`, and `-`.
 
+The same operation is available through an interactive Artisan command:
+
+```bash
+php artisan telegram-bot:webhook:set
+```
+
+Non-interactive example:
+
+```bash
+php artisan telegram-bot:webhook:set \
+  --bot=default \
+  --url=https://example.com/telegram-bot/webhook \
+  --secret="${TELEGRAM_WEBHOOK_SECRET_TOKEN}" \
+  --allowed-updates=message \
+  --allowed-updates=callback_query
+```
+
 Use `getWebhookInfo()` to inspect webhook status:
 
 ```php
 $info = TelegramBot::bot('default')->getWebhookInfo();
+```
+
+Or:
+
+```bash
+php artisan telegram-bot:webhook:info --bot=default
 ```
 
 Use `deleteWebhook()` to switch back to `getUpdates`:
@@ -84,6 +107,14 @@ TelegramBot::bot('default')->deleteWebhook([
     'drop_pending_updates' => false,
 ]);
 ```
+
+Or:
+
+```bash
+php artisan telegram-bot:webhook:delete --bot=default --yes
+```
+
+See [docs/CONSOLE_COMMANDS.md](CONSOLE_COMMANDS.md) for all command options.
 
 ## Handle Incoming Updates
 

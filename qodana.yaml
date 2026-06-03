@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://json.schemastore.org/qodana
+
+version: "1.0"
+
+linter: qodana-php
+
+profile:
+  name: qodana.recommended
+
+php:
+  version: "8.2"
+
+bootstrap: composer install --no-interaction --prefer-dist --no-progress
+
+failureConditions:
+  severityThresholds:
+    any: 0

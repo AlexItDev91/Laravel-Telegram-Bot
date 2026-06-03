@@ -13,7 +13,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('1.18.0', $version);
+        $this->assertSame('1.18.1', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -34,6 +34,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [1.18.1] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [1.18.0] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [1.17.0] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [1.16.0] - 2026-06-03', $changelog);
@@ -113,6 +114,25 @@ class ReleasePolicyTest extends TestCase
         $this->assertStringNotContainsString('"README.md"', $workflow);
         $this->assertStringNotContainsString('"CHANGELOG.md"', $workflow);
         $this->assertStringNotContainsString('"VERSION"', $workflow);
+    }
+
+    public function test_qodana_config_is_restored_without_paid_github_workflow(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $qodana = file_get_contents($root.'/qodana.yaml');
+
+        $this->assertIsString($qodana);
+        $this->assertFileDoesNotExist($root.'/.github/workflows/qodana.yml');
+
+        foreach ([
+            'qodana.recommended',
+            'linter: qodana-php',
+            'version: "8.2"',
+            'composer install --no-interaction --prefer-dist --no-progress',
+            'any: 0',
+        ] as $requiredQodanaConfig) {
+            $this->assertStringContainsString($requiredQodanaConfig, $qodana);
+        }
     }
 
     public function test_composer_does_not_hardcode_package_version(): void

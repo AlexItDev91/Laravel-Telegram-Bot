@@ -30,6 +30,11 @@ GitHub repository settings must use:
 
 No package token, bot token, webhook secret, paid static-analysis token, or Algolia secret is required by the current documentation workflow.
 
+## Qodana Configuration
+
+The repository keeps `qodana.yaml` for local or manually triggered Qodana analysis.
+There is no `.github/workflows/qodana.yml` workflow in the current package release, so GitHub Actions does not require a paid Qodana Cloud token.
+
 ## Local Editing
 
 Open the repository in a JetBrains IDE with the Writerside plugin installed.

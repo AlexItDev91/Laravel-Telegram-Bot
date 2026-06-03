@@ -224,6 +224,8 @@ class WritersideDocumentationTest extends TestCase
 
         foreach ([
             'paid static-analysis token',
+            'qodana.yaml',
+            '.github/workflows/qodana.yml',
             'composer check:telegram-api-surface',
             'composer generate:telegram-api-schema',
             'TelegramBotApiMethodSchema',

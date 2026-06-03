@@ -8,6 +8,10 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.18.1] - 2026-06-03
+
+- Restored the local `qodana.yaml` configuration for manual Qodana analysis without restoring the paid GitHub Qodana workflow.
+
 ## [1.18.0] - 2026-06-03
 
 - Added a generated `TelegramBotApiMethodSchema` and method-scoped `TelegramBotRequestData::forMethod()` coverage for all 176 Bot API 10.0 methods and 863 documented parameters.

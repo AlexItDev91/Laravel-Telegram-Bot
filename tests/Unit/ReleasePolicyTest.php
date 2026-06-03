@@ -13,7 +13,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.0.2', $version);
+        $this->assertSame('2.0.3', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -34,6 +34,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.0.3] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [2.0.2] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [2.0.1] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [2.0.0] - 2026-06-03', $changelog);
@@ -99,6 +100,8 @@ class ReleasePolicyTest extends TestCase
         $this->assertStringContainsString('The `2.x` source uses PHP 8.4-era strictness, including typed class constants, `#[\Override]` attributes, and PHP 8.4 array helpers', $readme);
         $this->assertStringContainsString('| `2.x` | `^8.4` | `^13.0` | Current line.', $readme);
         $this->assertStringContainsString('| `1.x` | `^8.2` | `^12.0` or `^13.0` | Legacy ceiling.', $readme);
+        $this->assertStringContainsString('TelegramParseMode::HTML', $readme);
+        $this->assertStringContainsString('private const string CHANNEL', $readme);
     }
 
     public function test_github_actions_composer_checks_workflow_covers_release_checks(): void
@@ -185,7 +188,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.0.2', $notes);
-        $this->assertStringContainsString('Moved selected validation paths onto PHP 8.4 `array_any`, `array_all`, and `array_find` helpers.', $notes);
+        $this->assertStringContainsString('# v2.0.3', $notes);
+        $this->assertStringContainsString('Added `TelegramParseMode` enum support to notification messages, common typed message DTOs, and generated request builders.', $notes);
     }
 }

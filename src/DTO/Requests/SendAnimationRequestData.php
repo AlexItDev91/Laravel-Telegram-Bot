@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
 use AlexItDev91\LaravelTelegramBot\InputFile;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
 
 /**
@@ -29,7 +30,7 @@ final readonly class SendAnimationRequestData extends TelegramBotApiRequestData
         ?int $height = null,
         InputFile|string|null $thumbnail = null,
         ?string $caption = null,
-        ?string $parseMode = null,
+        string|TelegramParseMode|null $parseMode = null,
         ?array $captionEntities = null,
         ?bool $showCaptionAboveMedia = null,
         ?bool $hasSpoiler = null,

@@ -2,7 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
-
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 
 /**
  * Generated typed request builder for Telegram Bot API method `sendMessageDraft`.
@@ -20,7 +20,7 @@ final readonly class SendMessageDraftRequestData extends TelegramBotApiRequestDa
         int $draftId,
         ?int $messageThreadId = null,
         ?string $text = null,
-        ?string $parseMode = null,
+        string|TelegramParseMode|null $parseMode = null,
         ?array $entities = null,
         array $extra = [],
     ): self {

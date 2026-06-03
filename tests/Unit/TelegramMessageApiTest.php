@@ -7,6 +7,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\Messages\EditMessageTextData;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendDocumentData;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendPhotoData;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\InputFile;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use GuzzleHttp\Client;
@@ -28,7 +29,7 @@ class TelegramMessageApiTest extends TestCase
             chatId: '-1001234567890',
             text: 'Deploy finished',
             messageThreadId: '42',
-            parseMode: 'HTML',
+            parseMode: TelegramParseMode::HTML,
             linkPreviewOptions: ['is_disabled' => true],
             replyMarkup: [
                 'inline_keyboard' => [

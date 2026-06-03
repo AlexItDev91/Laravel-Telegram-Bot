@@ -7,6 +7,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMessageRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\TelegramBotApiRequestData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\TelegramBotApiRequestRegistry;
 use AlexItDev91\LaravelTelegramBot\TelegramBotApiResultSchema;
 use AlexItDev91\LaravelTelegramBot\TelegramBotApiMethodSchema;
@@ -55,7 +56,7 @@ class TelegramBotApiMethodSchemaTest extends TestCase
         $request = SendMessageRequestData::make(
             chatId: '123456789',
             text: 'Hello',
-            parseMode: 'HTML',
+            parseMode: TelegramParseMode::HTML,
             extra: ['future_optional_field' => 'kept'],
         );
 

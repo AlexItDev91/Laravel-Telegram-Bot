@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.0.3] - 2026-06-03
+
+- Added `TelegramParseMode` enum support to notification messages, common typed message DTOs, and generated request builders.
+- Normalized backed enums in request payloads so enum-backed parameters serialize to Telegram-compatible scalar values.
+- Updated README, documentation, Writerside, Boost skill, tests, and examples to avoid hardcoded parse-mode strings in favor of typed constants and enums.
+
 ## [2.0.2] - 2026-06-03
 
 - Moved selected validation paths onto PHP 8.4 `array_any`, `array_all`, and `array_find` helpers.

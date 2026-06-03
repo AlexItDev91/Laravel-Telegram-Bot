@@ -177,12 +177,17 @@ See [Typed Responses](https://alexitdev91.github.io/Laravel-Telegram-Bot/typed-r
 Use the Laravel notification channel when Telegram delivery belongs to a notifiable model or on-demand notification:
 
 ```php
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel;
 use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramNotificationMessage;
 use Illuminate\Notifications\Notification;
 
 class DeployFinished extends Notification
 {
+    private const string CHANNEL = 'alerts';
+
+    private const string TEXT = 'Deploy finished';
+
     public function via(object $notifiable): array
     {
         return [TelegramBotNotificationChannel::class];
@@ -190,9 +195,9 @@ class DeployFinished extends Notification
 
     public function toTelegram(object $notifiable): TelegramNotificationMessage
     {
-        return TelegramNotificationMessage::text('Deploy finished')
-            ->channel('alerts')
-            ->parseMode('HTML');
+        return TelegramNotificationMessage::text(self::TEXT)
+            ->channel(self::CHANNEL)
+            ->parseMode(TelegramParseMode::HTML);
     }
 }
 ```

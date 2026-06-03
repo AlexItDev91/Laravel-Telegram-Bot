@@ -8,12 +8,15 @@ Use it when the destination belongs to a notifiable model or when on-demand noti
 Return the channel class from `via()` and provide a `toTelegram()` method:
 
 ```php
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel;
 use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramNotificationMessage;
 use Illuminate\Notifications\Notification;
 
 class DeployFinished extends Notification
 {
+    private const string TEXT = 'Deploy finished';
+
     /**
      * @return list<class-string>
      */
@@ -24,8 +27,8 @@ class DeployFinished extends Notification
 
     public function toTelegram(object $notifiable): TelegramNotificationMessage
     {
-        return TelegramNotificationMessage::text('Deploy finished')
-            ->parseMode('HTML')
+        return TelegramNotificationMessage::text(self::TEXT)
+            ->parseMode(TelegramParseMode::HTML)
             ->disableNotification();
     }
 }
@@ -96,12 +99,39 @@ public function toTelegram(object $notifiable): string
 Use `TelegramNotificationMessage` for common message options:
 
 ```php
-return TelegramNotificationMessage::text('Build failed')
-    ->bot('support')
-    ->to('123456789')
-    ->thread('42')
-    ->parseMode('HTML')
-    ->protectContent();
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
+use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel;
+use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramNotificationMessage;
+use Illuminate\Notifications\Notification;
+
+class BuildFailed extends Notification
+{
+    private const string BOT = 'support';
+
+    private const string CHAT_ID = '123456789';
+
+    private const string TEXT = 'Build failed';
+
+    private const string THREAD_ID = '42';
+
+    /**
+     * @return list<class-string>
+     */
+    public function via(object $notifiable): array
+    {
+        return [TelegramBotNotificationChannel::class];
+    }
+
+    public function toTelegram(object $notifiable): TelegramNotificationMessage
+    {
+        return TelegramNotificationMessage::text(self::TEXT)
+            ->bot(self::BOT)
+            ->to(self::CHAT_ID)
+            ->thread(self::THREAD_ID)
+            ->parseMode(TelegramParseMode::HTML)
+            ->protectContent();
+    }
+}
 ```
 
 Use `forMethod()` for methods other than `sendMessage`:

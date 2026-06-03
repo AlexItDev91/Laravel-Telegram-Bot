@@ -4,6 +4,7 @@ namespace AlexItDev91\LaravelTelegramBot\Laravel\Notifications;
 
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 
 class TelegramNotificationMessage
 {
@@ -71,9 +72,9 @@ class TelegramNotificationMessage
         return $this->with(['direct_messages_topic_id' => $directMessagesTopicId]);
     }
 
-    public function parseMode(string $parseMode): self
+    public function parseMode(string|TelegramParseMode $parseMode): self
     {
-        return $this->with(['parse_mode' => $parseMode]);
+        return $this->with(['parse_mode' => $parseMode instanceof TelegramParseMode ? $parseMode->value : $parseMode]);
     }
 
     public function disableNotification(bool $disableNotification = true): self

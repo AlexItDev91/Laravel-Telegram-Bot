@@ -284,7 +284,7 @@ function requestClassContent(string $method, array $parameters, string $classNam
     foreach (orderedParameters($parameters) as $parameter) {
         $parameterName = $parameter['name'];
         $variable = parameterVariable($parameterName);
-        $type = phpParameterType($parameter['type'], $parameter['required']);
+        $type = phpParameterType($parameterName, $parameter['type'], $parameter['required']);
 
         if ($type['usesInputFile']) {
             $uses[] = 'AlexItDev91\\LaravelTelegramBot\\InputFile';
@@ -292,6 +292,10 @@ function requestClassContent(string $method, array $parameters, string $classNam
 
         if ($type['usesTelegramBotData']) {
             $uses[] = 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBotData';
+        }
+
+        if ($type['usesTelegramParseMode']) {
+            $uses[] = 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramParseMode';
         }
 
         if ($type['doc'] !== null) {
@@ -356,13 +360,14 @@ function orderedParameters(array $parameters): array
 }
 
 /**
- * @return array{php: string, usesInputFile: bool, usesTelegramBotData: bool, doc: string|null}
+ * @return array{php: string, usesInputFile: bool, usesTelegramBotData: bool, usesTelegramParseMode: bool, doc: string|null}
  */
-function phpParameterType(string $telegramType, bool $required): array
+function phpParameterType(string $parameterName, string $telegramType, bool $required): array
 {
     $normalized = strtolower($telegramType);
     $usesInputFile = str_contains($telegramType, 'InputFile');
     $usesTelegramBotData = false;
+    $usesTelegramParseMode = false;
     $isArray = str_starts_with($telegramType, 'Array of ');
 
     if ($isArray) {
@@ -379,6 +384,10 @@ function phpParameterType(string $telegramType, bool $required): array
         $doc = null;
     } elseif ($telegramType === 'Integer') {
         $php = 'int';
+        $doc = null;
+    } elseif ($telegramType === 'String' && isParseModeParameter($parameterName)) {
+        $php = 'string|TelegramParseMode';
+        $usesTelegramParseMode = true;
         $doc = null;
     } elseif ($telegramType === 'String') {
         $php = 'string';
@@ -418,8 +427,14 @@ function phpParameterType(string $telegramType, bool $required): array
         'php' => $php,
         'usesInputFile' => $usesInputFile,
         'usesTelegramBotData' => $usesTelegramBotData,
+        'usesTelegramParseMode' => $usesTelegramParseMode,
         'doc' => $doc,
     ];
+}
+
+function isParseModeParameter(string $parameterName): bool
+{
+    return str_ends_with($parameterName, 'parse_mode');
 }
 
 function parameterVariable(string $parameter): string

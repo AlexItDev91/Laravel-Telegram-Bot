@@ -119,7 +119,7 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
             'bot' => $bot,
             'channel' => $channel,
             'method' => $methodName,
-            'parameters' => $parameters instanceof TelegramBotRequestData ? $parameters->toArray() : $parameters,
+            'parameters' => $this->normalizeParameters($parameters),
         ];
 
         if (array_key_exists($methodName, $this->results) && $this->results[$methodName] !== []) {
@@ -268,7 +268,20 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
      */
     private function payloadMatcher(array $expected): callable
     {
+        $expected = $this->normalizeParameters($expected);
+
         return static fn (array $parameters): bool => array_intersect_assoc($expected, $parameters) === $expected;
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     * @return array<string, mixed>
+     */
+    private function normalizeParameters(array|TelegramBotRequestData $parameters): array
+    {
+        return $parameters instanceof TelegramBotRequestData
+            ? $parameters->toArray()
+            : TelegramBotRequestData::fromArray($parameters)->toArray();
     }
 
     /**

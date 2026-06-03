@@ -101,12 +101,17 @@ When no dedicated result DTO exists yet, `callData()` wraps associative Telegram
 Use the notification channel when Telegram delivery belongs to a notifiable model or an on-demand Laravel notification:
 
 ```php
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel;
 use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramNotificationMessage;
 use Illuminate\Notifications\Notification;
 
 class DeployFinished extends Notification
 {
+    private const string CHANNEL = 'alerts';
+
+    private const string TEXT = 'Deploy finished';
+
     /**
      * @return list<class-string>
      */
@@ -117,9 +122,9 @@ class DeployFinished extends Notification
 
     public function toTelegram(object $notifiable): TelegramNotificationMessage
     {
-        return TelegramNotificationMessage::text('Deploy finished')
-            ->channel('alerts')
-            ->parseMode('HTML');
+        return TelegramNotificationMessage::text(self::TEXT)
+            ->channel(self::CHANNEL)
+            ->parseMode(TelegramParseMode::HTML);
     }
 }
 ```

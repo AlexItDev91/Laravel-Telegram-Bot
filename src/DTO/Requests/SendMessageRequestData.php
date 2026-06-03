@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
 
 /**
@@ -24,7 +25,7 @@ final readonly class SendMessageRequestData extends TelegramBotApiRequestData
         ?string $businessConnectionId = null,
         ?int $messageThreadId = null,
         ?int $directMessagesTopicId = null,
-        ?string $parseMode = null,
+        string|TelegramParseMode|null $parseMode = null,
         ?array $entities = null,
         TelegramBotData|array|null $linkPreviewOptions = null,
         ?bool $disableNotification = null,

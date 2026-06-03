@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\Tests\Feature;
 
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager;
 use AlexItDev91\LaravelTelegramBot\Tests\TestCase;
@@ -67,6 +68,26 @@ class TelegramBotFakeTest extends TestCase
                 && $parameters['message_thread_id'] === '42'
                 && $parameters['text'] === 'Deploy finished';
         });
+    }
+
+    public function test_fake_normalizes_backed_enum_payloads_for_calls_and_assertions(): void
+    {
+        $fake = TelegramBot::fake();
+
+        TelegramBot::sendMessage([
+            'chat_id' => '123456789',
+            'text' => 'Hello',
+            'parse_mode' => TelegramParseMode::HTML,
+        ]);
+
+        $fake->assertSent('sendMessage', [
+            'text' => 'Hello',
+            'parse_mode' => TelegramParseMode::HTML,
+        ], times: 1);
+
+        $calls = $fake->calls();
+
+        $this->assertSame('HTML', $calls[0]['parameters']['parse_mode'] ?? null);
     }
 
     public function test_fake_returns_typed_response_data_for_typed_helpers(): void

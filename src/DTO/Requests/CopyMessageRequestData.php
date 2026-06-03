@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
 
 /**
@@ -25,7 +26,7 @@ final readonly class CopyMessageRequestData extends TelegramBotApiRequestData
         ?int $directMessagesTopicId = null,
         ?int $videoStartTimestamp = null,
         ?string $caption = null,
-        ?string $parseMode = null,
+        string|TelegramParseMode|null $parseMode = null,
         ?array $captionEntities = null,
         ?bool $showCaptionAboveMedia = null,
         ?bool $disableNotification = null,

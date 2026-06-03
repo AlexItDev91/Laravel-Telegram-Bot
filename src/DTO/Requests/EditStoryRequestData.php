@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 
 /**
  * Generated typed request builder for Telegram Bot API method `editStory`.
@@ -22,7 +23,7 @@ final readonly class EditStoryRequestData extends TelegramBotApiRequestData
         int $storyId,
         TelegramBotData|array $content,
         ?string $caption = null,
-        ?string $parseMode = null,
+        string|TelegramParseMode|null $parseMode = null,
         ?array $captionEntities = null,
         ?array $areas = null,
         array $extra = [],

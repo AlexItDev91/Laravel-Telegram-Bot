@@ -4,6 +4,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO;
 
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\InputFile;
+use BackedEnum;
 
 readonly class TelegramBotRequestData implements TelegramBotData
 {
@@ -67,6 +68,10 @@ readonly class TelegramBotRequestData implements TelegramBotData
 
     public static function normalizeValue(mixed $value): mixed
     {
+        if ($value instanceof BackedEnum) {
+            return $value->value;
+        }
+
         if ($value instanceof InputFile) {
             return $value;
         }

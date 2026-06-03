@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
 
 /**
@@ -23,7 +24,7 @@ final readonly class EditMessageTextRequestData extends TelegramBotApiRequestDat
         int|string|null $chatId = null,
         ?int $messageId = null,
         ?string $inlineMessageId = null,
-        ?string $parseMode = null,
+        string|TelegramParseMode|null $parseMode = null,
         ?array $entities = null,
         TelegramBotData|array|null $linkPreviewOptions = null,
         TelegramBotData|array|null $replyMarkup = null,

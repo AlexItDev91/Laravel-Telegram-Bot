@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="2.0.2"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.0.3"/>', $config);
 
         foreach ([
             'overview.md',
@@ -173,6 +173,7 @@ class WritersideDocumentationTest extends TestCase
             "Notification::route('telegram'",
             'TelegramBotRequestData',
             'TelegramBot::fake()',
+            'TelegramParseMode::HTML',
         ] as $requiredNotificationText) {
             $this->assertStringContainsString($requiredNotificationText, $notifications);
         }
@@ -208,6 +209,7 @@ class WritersideDocumentationTest extends TestCase
             'Webhook Middleware',
             'Conversations',
             'examples/laravel',
+            'TelegramParseMode::HTML',
         ] as $requiredRecipesText) {
             $this->assertStringContainsString($requiredRecipesText, $recipes);
         }

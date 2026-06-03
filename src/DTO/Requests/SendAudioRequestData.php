@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
 use AlexItDev91\LaravelTelegramBot\InputFile;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
 
 /**
@@ -25,7 +26,7 @@ final readonly class SendAudioRequestData extends TelegramBotApiRequestData
         ?int $messageThreadId = null,
         ?int $directMessagesTopicId = null,
         ?string $caption = null,
-        ?string $parseMode = null,
+        string|TelegramParseMode|null $parseMode = null,
         ?array $captionEntities = null,
         ?int $duration = null,
         ?string $performer = null,

@@ -5,6 +5,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Messages;
 use AlexItDev91\LaravelTelegramBot\DTO\Concerns\BuildsTelegramBotPayload;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\InputFile;
 
 final readonly class SendPhotoData extends TelegramBotRequestData
@@ -25,7 +26,7 @@ final readonly class SendPhotoData extends TelegramBotRequestData
         int|string|null $messageThreadId = null,
         int|string|null $directMessagesTopicId = null,
         ?string $caption = null,
-        ?string $parseMode = null,
+        string|TelegramParseMode|null $parseMode = null,
         ?array $captionEntities = null,
         ?bool $showCaptionAboveMedia = null,
         ?bool $hasSpoiler = null,

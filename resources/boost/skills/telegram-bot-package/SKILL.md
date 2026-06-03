@@ -127,16 +127,28 @@ Use `TelegramBotRequestData::forMethod()` for less common Bot API methods that n
 Use `TelegramBotNotificationChannel` for Laravel notifications:
 
 ```php
-public function via(object $notifiable): array
-{
-    return [TelegramBotNotificationChannel::class];
-}
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
+use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel;
+use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramNotificationMessage;
+use Illuminate\Notifications\Notification;
 
-public function toTelegram(object $notifiable): TelegramNotificationMessage
+final class DeployFinished extends Notification
 {
-    return TelegramNotificationMessage::text('Deploy finished')
-        ->channel('alerts')
-        ->parseMode('HTML');
+    private const string CHANNEL = 'alerts';
+
+    private const string TEXT = 'Deploy finished';
+
+    public function via(object $notifiable): array
+    {
+        return [TelegramBotNotificationChannel::class];
+    }
+
+    public function toTelegram(object $notifiable): TelegramNotificationMessage
+    {
+        return TelegramNotificationMessage::text(self::TEXT)
+            ->channel(self::CHANNEL)
+            ->parseMode(TelegramParseMode::HTML);
+    }
 }
 ```
 

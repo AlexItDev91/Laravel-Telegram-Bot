@@ -5,6 +5,7 @@ namespace AlexItDev91\LaravelTelegramBot\Tests\Feature;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendPhotoData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel;
 use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramNotificationMessage;
@@ -159,6 +160,8 @@ final class TelegramNotificationMissingRouteNotifiable
 
 final class TelegramTextNotification extends Notification
 {
+    private const string TEXT = 'Deploy finished';
+
     /**
      * @return list<class-string>
      */
@@ -169,8 +172,8 @@ final class TelegramTextNotification extends Notification
 
     public function toTelegram(object $notifiable): TelegramNotificationMessage
     {
-        return TelegramNotificationMessage::text('Deploy finished')
-            ->parseMode('HTML');
+        return TelegramNotificationMessage::text(self::TEXT)
+            ->parseMode(TelegramParseMode::HTML);
     }
 }
 

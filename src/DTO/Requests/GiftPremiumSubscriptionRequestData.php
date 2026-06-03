@@ -2,7 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
-
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 
 /**
  * Generated typed request builder for Telegram Bot API method `giftPremiumSubscription`.
@@ -20,7 +20,7 @@ final readonly class GiftPremiumSubscriptionRequestData extends TelegramBotApiRe
         int $monthCount,
         int $starCount,
         ?string $text = null,
-        ?string $textParseMode = null,
+        string|TelegramParseMode|null $textParseMode = null,
         ?array $textEntities = null,
         array $extra = [],
     ): self {

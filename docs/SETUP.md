@@ -6,7 +6,7 @@ This guide explains the full path from an empty Telegram account to a working La
 2. get the bot token, bot username, and bot ID;
 3. create a channel or group;
 4. add the bot to the destination;
-5. get the channel, group, or topic identifiers;
+5. get the channel or group ID, plus optional topic identifiers when the destination uses topics;
 6. install and configure the Laravel package;
 7. send a safe test message.
 
@@ -25,9 +25,9 @@ Keep these values separate:
 | --- | --- | --- | --- |
 | Bot token | `123456:ABC...` | Yes | BotFather |
 | Bot username | `@CompanyInboxBot` | No, but useful for adding/searching the bot | BotFather |
-| Bot ID | `123456` | Usually no | `getMe`, or the number before `:` in the token |
+| Bot ID | `123456` | Usually no | `telegram-bot:me`, `getMe`, or the number before `:` in the token |
 | Destination chat ID | `-1001234567890` | Yes | `getUpdates` or `getChat` |
-| Topic ID | `42` | Only for forum topics | `getUpdates` |
+| Topic ID | `42` | Optional; only for forum topics | `telegram-bot:updates` or `getUpdates` |
 
 Do not commit real tokens, private chat IDs, webhook secrets, or screenshots containing them.
 
@@ -71,7 +71,13 @@ If the token was exposed in a commit, screenshot, ticket, log, or chat, revoke i
 
 The bot username is the public handle, for example `@CompanyInboxBot`.
 
-The bot ID is the numeric identifier returned by `getMe`. Open this URL in a browser, replacing `<BOT_TOKEN>`:
+After the package is installed in Laravel, prefer the built-in command because it uses the configured bot and does not put the token in a browser URL:
+
+```bash
+php artisan telegram-bot:me --bot=default
+```
+
+The bot ID is the numeric identifier returned by Telegram `getMe`. If Laravel is not installed yet, the raw HTTP endpoint is a fallback; open this URL in a browser, replacing `<BOT_TOKEN>`:
 
 ```text
 https://api.telegram.org/bot<BOT_TOKEN>/getMe
@@ -241,9 +247,9 @@ Example response:
 
 Use `result.id` as `TELEGRAM_INBOX_CHAT_ID`.
 
-## 12. Get A Topic ID
+## 12. Optionally Get A Forum Topic ID
 
-Forum groups use `message_thread_id` to identify topics.
+Skip this section for normal channels, normal groups, and supergroups without forum topics. Forum groups use `message_thread_id` to identify topics, and the package only needs that value when the destination is a specific forum topic.
 
 1. Enable topics in the group if needed.
 2. Open the exact topic.
@@ -255,7 +261,7 @@ https://api.telegram.org/bot<BOT_TOKEN>/getUpdates
 ```
 
 5. Find `message_thread_id` in the message object.
-6. Use that value as `TELEGRAM_INBOX_MESSAGE_THREAD_ID`.
+6. Use that value as `TELEGRAM_INBOX_MESSAGE_THREAD_ID` only for that forum topic destination.
 
 Example:
 
@@ -322,7 +328,7 @@ return [
 
 ## 14. Configure Environment Values
 
-Add values like these to the Laravel application's `.env`:
+Add values like these to the Laravel application's `.env`. Leave topic-related values empty unless the destination is a forum topic or a direct messages topic:
 
 ```text
 TELEGRAM_BOT=default
@@ -340,13 +346,13 @@ TELEGRAM_WEBHOOK_REQUIRE_SECRET=true
 TELEGRAM_WEBHOOK_ROUTE_URI=telegram-bot/webhook
 ```
 
-For a topic, set:
+For a forum topic destination, set:
 
 ```text
 TELEGRAM_INBOX_MESSAGE_THREAD_ID=42
 ```
 
-For a direct messages topic, set:
+For a direct messages topic destination, set:
 
 ```text
 TELEGRAM_INBOX_DIRECT_MESSAGES_TOPIC_ID=77
@@ -405,7 +411,7 @@ Add a channel mapping:
 ],
 ```
 
-Each configured channel must have a non-empty `chat_id`. The package validates channel mappings when `channel('name')` is resolved so a missing Laravel environment value fails with a configuration exception instead of a delayed Telegram API error.
+Each configured channel must have a non-empty `chat_id`. `message_thread_id` and `direct_messages_topic_id` are optional routing refinements; leave them empty unless the destination is a forum topic or a direct messages topic. The package validates channel mappings when `channel('name')` is resolved so a missing Laravel environment value fails with a configuration exception instead of a delayed Telegram API error.
 
 For multiple bots:
 
@@ -458,7 +464,7 @@ Then send an end-to-end delivery test through a configured channel:
 php artisan telegram-bot:send-test --channel=inbox
 ```
 
-For an explicit chat or topic:
+For an explicit chat, optionally targeting a forum topic:
 
 ```bash
 php artisan telegram-bot:send-test \
@@ -606,7 +612,7 @@ php artisan config:clear
 3. Check that `TELEGRAM_INBOX_CHAT_ID` includes the full negative value.
 4. Check that the bot is still a channel administrator or group member.
 5. Check that the bot has permission to post messages.
-6. Check `TELEGRAM_INBOX_MESSAGE_THREAD_ID` when using topics.
+6. Check `TELEGRAM_INBOX_MESSAGE_THREAD_ID` only when the destination is a forum topic.
 7. Check Laravel logs for Telegram API errors.
 
 If Telegram returns `chat not found`, the bot usually cannot access that chat or the chat ID is wrong.
@@ -632,4 +638,4 @@ If Telegram webhook delivery fails:
 - Use a private channel or private group for operational notifications.
 - Rotate the token if it appears anywhere public.
 - Send a harmless test message before sending real customer, inbox, or operational content.
-- Keep a record of bot username, bot ID, destination chat ID, and topic ID in a private operations document.
+- Keep a record of bot username, bot ID, destination chat ID, and optional topic IDs in a private operations document.

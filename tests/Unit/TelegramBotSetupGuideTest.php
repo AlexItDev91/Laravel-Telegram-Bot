@@ -22,7 +22,7 @@ class TelegramBotSetupGuideTest extends TestCase
             'Add The Bot To The Channel',
             'Get The Channel Or Group ID With getUpdates',
             'Get A Channel ID With getChat',
-            'Get A Topic ID',
+            'Optionally Get A Forum Topic ID',
             'Install The Laravel Package',
             'Configure Environment Values',
             'Configure config/telegram-bot.php',
@@ -37,6 +37,7 @@ class TelegramBotSetupGuideTest extends TestCase
 
         foreach ([
             'https://api.telegram.org/bot<BOT_TOKEN>/getMe',
+            'prefer the built-in command because it uses the configured bot',
             'https://api.telegram.org/bot<BOT_TOKEN>/getUpdates',
             'https://api.telegram.org/bot<BOT_TOKEN>/getChat?chat_id=@company_inbox_alerts',
             'TELEGRAM_BOT_TOKEN',
@@ -50,6 +51,7 @@ class TelegramBotSetupGuideTest extends TestCase
             'php artisan telegram-bot:install',
             'php artisan telegram-bot:doctor --bot=default',
             'php artisan telegram-bot:me --bot=default',
+            '`message_thread_id` and `direct_messages_topic_id` are optional routing refinements',
             'php artisan telegram-bot:send-test --channel=inbox',
             'php artisan telegram-bot:updates --bot=default',
             'docs/CONSOLE_COMMANDS.md',

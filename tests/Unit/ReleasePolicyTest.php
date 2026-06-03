@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.1.3', $version);
+        $this->assertSame('2.1.4', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -35,6 +35,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.1.4] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [2.1.3] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [2.1.2] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [2.1.1] - 2026-06-03', $changelog);
@@ -193,7 +194,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.1.3', $notes);
-        $this->assertStringContainsString('Cleaned up the next Qodana SARIF layer across generator helpers, webhook dispatcher configuration checks, result DTO reflection, conversation keys, notification routing, and retry policy parameters.', $notes);
+        $this->assertStringContainsString('# v2.1.4', $notes);
+        $this->assertStringContainsString('Updated the end-to-end setup guide to prefer the package `telegram-bot:me` command for bot identity checks while keeping raw Telegram `getMe` as a fallback.', $notes);
     }
 }

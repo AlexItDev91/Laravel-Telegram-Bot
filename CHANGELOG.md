@@ -8,6 +8,11 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.1.4] - 2026-06-03
+
+- Updated the end-to-end setup guide to prefer the package `telegram-bot:me` command for bot identity checks while keeping raw Telegram `getMe` as a fallback.
+- Clarified that forum `message_thread_id` and direct messages topic IDs are optional routing refinements, not required channel setup steps.
+
 ## [2.1.3] - 2026-06-03
 
 - Cleaned up the next Qodana SARIF layer across generator helpers, webhook dispatcher configuration checks, result DTO reflection, conversation keys, notification routing, and retry policy parameters.

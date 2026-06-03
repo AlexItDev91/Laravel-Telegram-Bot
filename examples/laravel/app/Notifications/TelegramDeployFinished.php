@@ -16,13 +16,17 @@ class TelegramDeployFinished extends Notification
     /**
      * @return list<class-string>
      */
-    public function via(object $_notifiable): array
+    public function via(object $notifiable): array
     {
+        unset($notifiable);
+
         return [TelegramBotNotificationChannel::class];
     }
 
-    public function toTelegram(object $_notifiable): TelegramNotificationMessage
+    public function toTelegram(object $notifiable): TelegramNotificationMessage
     {
+        unset($notifiable);
+
         return TelegramNotificationMessage::text(self::TEXT)
             ->channel(self::CHANNEL)
             ->parseMode(TelegramParseMode::HTML)

@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\TelegramBotApiMethodSchema;
 use InvalidArgumentException;
@@ -42,13 +43,13 @@ readonly class TelegramBotMethodRequestData extends TelegramBotRequestData imple
         return new self($method, $parameters, $validateRequiredParameters);
     }
 
-    #[\Override]
+    #[Override]
     public function method(): string
     {
         return $this->methodName;
     }
 
-    #[\Override]
+    #[Override]
     public function validatesRequiredParameters(): bool
     {
         return $this->validateRequiredParameters;
@@ -57,7 +58,7 @@ readonly class TelegramBotMethodRequestData extends TelegramBotRequestData imple
     /**
      * @return list<array{name: string, type: string, required: bool}>
      */
-    #[\Override]
+    #[Override]
     public function schema(): array
     {
         return TelegramBotApiMethodSchema::parameters($this->methodName);
@@ -66,7 +67,7 @@ readonly class TelegramBotMethodRequestData extends TelegramBotRequestData imple
     /**
      * @return list<string>
      */
-    #[\Override]
+    #[Override]
     public function requiredParameters(): array
     {
         return TelegramBotApiMethodSchema::requiredParameters($this->methodName);

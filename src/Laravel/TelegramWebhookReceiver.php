@@ -19,11 +19,11 @@ use Throwable;
 readonly class TelegramWebhookReceiver
 {
     public function __construct(
-        private readonly Container $container,
-        private readonly TelegramWebhookProcessor $processor,
-        private readonly TelegramWebhookIdempotency $idempotency,
-        private readonly EventDispatcher $events,
-        private readonly ?LoggerInterface $logger = null,
+        private Container $container,
+        private TelegramWebhookProcessor $processor,
+        private TelegramWebhookIdempotency $idempotency,
+        private EventDispatcher $events,
+        private ?LoggerInterface $logger = null,
     ) {
         //
     }
@@ -131,7 +131,7 @@ readonly class TelegramWebhookReceiver
 
     private function shouldQueue(): bool
     {
-        return config('telegram-bot.webhook.queue.enabled', false) ? true : false;
+        return (bool) config('telegram-bot.webhook.queue.enabled', false);
     }
 
     private function queueConnection(): ?string

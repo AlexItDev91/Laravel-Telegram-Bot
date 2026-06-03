@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Tests\Unit;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotObserver;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotRateLimiter;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestTelemetryData;
@@ -425,7 +426,7 @@ final class TelegramBotTestLogger extends AbstractLogger
     /**
      * @param  array<string, mixed>  $context
      */
-    #[\Override]
+    #[Override]
     public function log($level, string|Stringable $message, array $context = []): void
     {
         $this->records[] = [
@@ -443,7 +444,7 @@ final class TelegramBotTestObserver implements TelegramBotObserver
      */
     public array $records = [];
 
-    #[\Override]
+    #[Override]
     public function record(TelegramBotRequestTelemetryData $telemetry): void
     {
         $this->records[] = $telemetry;
@@ -452,7 +453,7 @@ final class TelegramBotTestObserver implements TelegramBotObserver
 
 final class TelegramBotBlockingRateLimiter implements TelegramBotRateLimiter
 {
-    #[\Override]
+    #[Override]
     public function throttle(string $method, Closure $_next): mixed
     {
         throw new TelegramBotRateLimitException("Blocked $method.", 1);

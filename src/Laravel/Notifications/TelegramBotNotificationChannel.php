@@ -10,7 +10,7 @@ use InvalidArgumentException;
 
 readonly class TelegramBotNotificationChannel
 {
-    public function __construct(private readonly TelegramBotManager $telegram)
+    public function __construct(private TelegramBotManager $telegram)
     {
         //
     }

@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Laravel;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotObserver;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestTelemetryData;
 use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramBotApiRequestRecorded;
@@ -14,7 +15,7 @@ readonly class TelegramBotEventObserver implements TelegramBotObserver
         //
     }
 
-    #[\Override]
+    #[Override]
     public function record(TelegramBotRequestTelemetryData $telemetry): void
     {
         $this->events->dispatch(new TelegramBotApiRequestRecorded($telemetry));

@@ -36,14 +36,14 @@ echo $notes;
 
 function changelogEntry(string $changelog, string $version): string
 {
-    $pattern = '/^## \['.preg_quote($version, '/').'\] - [^\n]+\R(?P<body>.*?)(?=^## \[|\z)/ms';
+    $pattern = '/^## \['.preg_quote($version, '/').'] - [^\n]+\R(?P<body>.*?)(?=^## \[|\z)/ms';
 
     if (preg_match($pattern, $changelog, $match) !== 1) {
         fwrite(STDERR, "CHANGELOG.md does not contain an entry for [$version].\n");
         exit(1);
     }
 
-    $entry = trim((string) $match['body']);
+    $entry = trim($match['body']);
 
     if ($entry === '') {
         fwrite(STDERR, "CHANGELOG.md entry for [$version] is empty.\n");

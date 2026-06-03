@@ -106,7 +106,7 @@ final readonly class TelegramBotLaravelConfig
 
         $secret = $this->webhookSecretToken();
 
-        if ($this->webhookRequiresSecret() && $secret === null) {
+        if ($secret === null && $this->webhookRequiresSecret()) {
             $issues[] = 'Webhook secret is required but missing.';
         }
 

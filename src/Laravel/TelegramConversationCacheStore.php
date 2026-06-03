@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Laravel;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramConversationStore;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramConversationData;
 use AlexItDev91\LaravelTelegramBot\Laravel\Concerns\ResolvesTelegramCacheRepository;
@@ -14,13 +15,13 @@ readonly class TelegramConversationCacheStore implements TelegramConversationSto
     use ResolvesTelegramCacheRepository;
 
     public function __construct(
-        private readonly Container $container,
-        private readonly ?LoggerInterface $logger = null,
+        private Container $container,
+        private ?LoggerInterface $logger = null,
     ) {
         //
     }
 
-    #[\Override]
+    #[Override]
     public function get(string $key): ?TelegramConversationData
     {
         if (! $this->enabled()) {
@@ -45,7 +46,7 @@ readonly class TelegramConversationCacheStore implements TelegramConversationSto
     /**
      * @param  array<string, mixed>  $data
      */
-    #[\Override]
+    #[Override]
     public function put(string $key, string $state, array $data = [], ?int $ttl = null): TelegramConversationData
     {
         $conversation = new TelegramConversationData($key, $state, $data);
@@ -72,7 +73,7 @@ readonly class TelegramConversationCacheStore implements TelegramConversationSto
         return $conversation;
     }
 
-    #[\Override]
+    #[Override]
     public function forget(string $key): void
     {
         if (! $this->enabled()) {
@@ -84,7 +85,7 @@ readonly class TelegramConversationCacheStore implements TelegramConversationSto
 
     private function enabled(): bool
     {
-        return config('telegram-bot.conversation.enabled', false) ? true : false;
+        return (bool) config('telegram-bot.conversation.enabled', false);
     }
 
     private function ttl(): int
@@ -99,7 +100,7 @@ readonly class TelegramConversationCacheStore implements TelegramConversationSto
         return $this->cacheRepository(config('telegram-bot.conversation.store'));
     }
 
-    private function container(): Container
+    protected function container(): Container
     {
         return $this->container;
     }

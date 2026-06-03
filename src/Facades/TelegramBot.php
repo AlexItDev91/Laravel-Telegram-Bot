@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Facades;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
@@ -41,7 +42,7 @@ class TelegramBot extends Facade
         return $fake;
     }
 
-    #[\Override]
+    #[Override]
     protected static function getFacadeAccessor(): string
     {
         return 'telegram-bot';

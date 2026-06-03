@@ -17,9 +17,9 @@ use Throwable;
 readonly class TelegramWebhookProcessor
 {
     public function __construct(
-        private readonly Container $container,
-        private readonly Dispatcher $events,
-        private readonly ?LoggerInterface $logger = null,
+        private Container $container,
+        private Dispatcher $events,
+        private ?LoggerInterface $logger = null,
     ) {
         //
     }

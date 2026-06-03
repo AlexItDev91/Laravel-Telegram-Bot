@@ -2,6 +2,7 @@
 
 namespace App\Telegram\Handlers;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMessageRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
@@ -18,7 +19,7 @@ readonly class ProfileWizardHandler implements TelegramWebhookHandler
         //
     }
 
-    #[\Override]
+    #[Override]
     public function handle(TelegramWebhookUpdate $update, string $botName): mixed
     {
         $message = $update->effectiveMessage();

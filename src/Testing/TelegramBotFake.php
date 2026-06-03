@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Testing;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequest;
@@ -36,7 +37,7 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
 
     private ?string $selectedBot = null;
 
-    #[\Override]
+    #[Override]
     public function bot(?string $name = null): TelegramBotClient
     {
         $this->selectedBot = $name ?? 'default';
@@ -44,7 +45,7 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
         return $this;
     }
 
-    #[\Override]
+    #[Override]
     public function channel(string $name): TelegramBotChannel
     {
         $channels = config('telegram-bot.channels', []);
@@ -66,7 +67,7 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
     /**
      * @param  array<string, mixed>  $parameters
      */
-    #[\Override]
+    #[Override]
     public function call(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
         $methodName = $method instanceof TelegramBotApiMethod ? $method->value : $method;

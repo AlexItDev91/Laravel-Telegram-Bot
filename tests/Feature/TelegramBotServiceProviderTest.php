@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Tests\Feature;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
@@ -217,7 +218,7 @@ final class TelegramBotServiceProviderTestLogger extends AbstractLogger
     /**
      * @param  array<string, mixed>  $context
      */
-    #[\Override]
+    #[Override]
     public function log($level, string|Stringable $message, array $context = []): void
     {
         $this->records[] = [

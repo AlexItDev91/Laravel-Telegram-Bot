@@ -41,7 +41,7 @@ final readonly class TelegramBotRetryPolicy
         );
     }
 
-    public function shouldRetryTransportFailure(int $attempt, Throwable $exception): bool
+    public function shouldRetryTransportFailure(int $attempt, Throwable $_exception): bool
     {
         return $this->enabled
             && $this->retryTransportFailures

@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Tests\Feature;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
 use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookDuplicateSkipped;
@@ -20,7 +21,7 @@ use Stringable;
 
 class TelegramWebhookReceiverTest extends TestCase
 {
-    #[\Override]
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -468,7 +469,7 @@ final class TelegramWebhookTestHandler implements TelegramWebhookHandler
         self::$botName = null;
     }
 
-    #[\Override]
+    #[Override]
     public function handle(TelegramWebhookUpdate $update, string $botName): array
     {
         self::$update = $update;
@@ -483,7 +484,7 @@ final class TelegramWebhookTestHandler implements TelegramWebhookHandler
 
 final class TelegramWebhookFailingHandler implements TelegramWebhookHandler
 {
-    #[\Override]
+    #[Override]
     public function handle(TelegramWebhookUpdate $update, string $botName): mixed
     {
         throw new \RuntimeException('Handler failed.');
@@ -502,7 +503,7 @@ final class TelegramWebhookCountingHandler implements TelegramWebhookHandler
     /**
      * @return array<string, mixed>
      */
-    #[\Override]
+    #[Override]
     public function handle(TelegramWebhookUpdate $update, string $botName): array
     {
         self::$count++;
@@ -526,7 +527,7 @@ final class TelegramWebhookTypedAccessorHandler implements TelegramWebhookHandle
     /**
      * @return array<string, mixed>
      */
-    #[\Override]
+    #[Override]
     public function handle(TelegramWebhookUpdate $update, string $botName): array
     {
         self::$update = $update;
@@ -560,7 +561,7 @@ final class TelegramWebhookCallbackQueryHandler implements TelegramWebhookHandle
     /**
      * @return array<string, mixed>
      */
-    #[\Override]
+    #[Override]
     public function handle(TelegramWebhookUpdate $update, string $botName): array
     {
         self::$update = $update;
@@ -591,7 +592,7 @@ final class TelegramWebhookPaymentQueryHandler implements TelegramWebhookHandler
     /**
      * @return array<string, mixed>
      */
-    #[\Override]
+    #[Override]
     public function handle(TelegramWebhookUpdate $update, string $botName): array
     {
         self::$update = $update;
@@ -623,7 +624,7 @@ final class TelegramWebhookMembershipHandler implements TelegramWebhookHandler
     /**
      * @return array<string, mixed>
      */
-    #[\Override]
+    #[Override]
     public function handle(TelegramWebhookUpdate $update, string $botName): array
     {
         self::$update = $update;
@@ -653,7 +654,7 @@ final class TelegramWebhookTestLogger extends AbstractLogger
     /**
      * @param  array<string, mixed>  $context
      */
-    #[\Override]
+    #[Override]
     public function log($level, string|Stringable $message, array $context = []): void
     {
         $this->records[] = [

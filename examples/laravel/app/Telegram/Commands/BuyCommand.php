@@ -2,6 +2,7 @@
 
 namespace App\Telegram\Commands;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookCommandHandler;
 use AlexItDev91\LaravelTelegramBot\DTO\Payments\LabeledPrice;
 use AlexItDev91\LaravelTelegramBot\DTO\Payments\SendInvoiceData;
@@ -16,7 +17,7 @@ readonly class BuyCommand implements TelegramWebhookCommandHandler
         //
     }
 
-    #[\Override]
+    #[Override]
     public function handle(TelegramWebhookCommand $command, TelegramWebhookUpdate $update, string $botName): mixed
     {
         $chatId = $command->message()->chat()?->id();

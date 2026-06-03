@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.1.2] - 2026-06-03
+
+- Hardened generated Telegram request/result registries to emit package class references as `::class` constants instead of raw class-string literals.
+- Cleaned up confirmed Qodana SARIF findings around readonly promoted properties, boolean config checks, cache resolver visibility, dispatcher route metadata types, release-note parsing, and unused example parameters.
+- Added a self-contained example test base for the Laravel demo tests and kept generated schema output reproducible through the API schema generator.
+
 ## [2.1.1] - 2026-06-03
 
 - Raised PHPStan analysis from level 5 to level 8 and fixed the newly exposed iterable, nullable-string, and mixed-return findings without suppressions.
@@ -32,13 +38,13 @@ This package follows semantic versioning for release tags:
 ## [2.0.2] - 2026-06-03
 
 - Moved selected validation paths onto PHP 8.4 `array_any`, `array_all`, and `array_find` helpers.
-- Expanded `#[\Override]` guards across package service-provider registration, test doubles, and example webhook handlers.
+- Expanded `#[Override]` guards across package service-provider registration, test doubles, and example webhook handlers.
 - Extended PHP 8.4 strictness coverage so key production validation paths keep using PHP 8.4 array helpers.
 
 ## [2.0.1] - 2026-06-03
 
 - Added PHP 8.4 strictness hardening with typed class constants across generated request DTOs, schema registries, webhook update metadata, and Laravel internals.
-- Added `#[\Override]` guards to DTO serialization methods and explicit package contract implementations.
+- Added `#[Override]` guards to DTO serialization methods and explicit package contract implementations.
 - Added regression coverage to require typed class constants for all source classes.
 
 ## [2.0.0] - 2026-06-03

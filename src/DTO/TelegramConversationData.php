@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO;
 
+use Override;
 final readonly class TelegramConversationData implements TelegramBotData
 {
     /**
@@ -56,7 +57,7 @@ final readonly class TelegramConversationData implements TelegramBotData
     /**
      * @return array{key: string, state: string, data: array<string, mixed>}
      */
-    #[\Override]
+    #[Override]
     public function toArray(): array
     {
         return [

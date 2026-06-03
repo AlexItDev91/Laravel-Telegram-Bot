@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
@@ -34,7 +35,7 @@ class TelegramBotManager implements TelegramBotManagerContract
         $this->clientFactory = $clientFactory(...);
     }
 
-    #[\Override]
+    #[Override]
     public function bot(?string $name = null): TelegramBotClientContract
     {
         $name ??= (string) ($this->config['default'] ?? 'default');
@@ -42,7 +43,7 @@ class TelegramBotManager implements TelegramBotManagerContract
         return $this->clients[$name] ??= ($this->clientFactory)(TelegramBotConfigData::fromArray($this->botConfig($name)));
     }
 
-    #[\Override]
+    #[Override]
     public function channel(string $name): TelegramBotChannel
     {
         $channels = $this->config['channels'] ?? [];

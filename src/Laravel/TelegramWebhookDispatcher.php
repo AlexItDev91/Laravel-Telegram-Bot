@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Laravel;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookCommandHandler;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookMiddleware;
@@ -16,13 +17,13 @@ use ReflectionClass;
 readonly class TelegramWebhookDispatcher implements TelegramWebhookHandler
 {
     public function __construct(
-        private readonly Container $container,
-        private readonly ?LoggerInterface $logger = null,
+        private Container $container,
+        private ?LoggerInterface $logger = null,
     ) {
         //
     }
 
-    #[\Override]
+    #[Override]
     public function handle(TelegramWebhookUpdate $update, string $botName): mixed
     {
         $command = TelegramWebhookCommand::fromUpdate($update);
@@ -61,7 +62,7 @@ readonly class TelegramWebhookDispatcher implements TelegramWebhookHandler
             $handler = $this->discoverCommandHandler($command->name()) ?? $this->groupedCommandHandler($command->name());
         }
 
-        if ($handler === null || $handler === '') {
+        if ($handler === null) {
             return ['handled' => false, 'result' => null];
         }
 
@@ -263,7 +264,10 @@ readonly class TelegramWebhookDispatcher implements TelegramWebhookHandler
         return $next($update, $botName);
     }
 
-    private function groupedCommandHandler(string $command): mixed
+    /**
+     * @return array{handler: mixed, middleware: list<mixed>}|null
+     */
+    private function groupedCommandHandler(string $command): ?array
     {
         foreach ($this->groups() as $group) {
             $commands = is_array($group['commands'] ?? null) ? $group['commands'] : [];
@@ -277,7 +281,10 @@ readonly class TelegramWebhookDispatcher implements TelegramWebhookHandler
         return null;
     }
 
-    private function groupedUpdateHandler(string $type): mixed
+    /**
+     * @return array{handler: mixed, middleware: list<mixed>}|null
+     */
+    private function groupedUpdateHandler(string $type): ?array
     {
         foreach ($this->groups() as $group) {
             $handlers = is_array($group['handlers'] ?? null) ? $group['handlers'] : [];
@@ -293,8 +300,9 @@ readonly class TelegramWebhookDispatcher implements TelegramWebhookHandler
 
     /**
      * @param  array<string, mixed>  $group
+     * @return array{handler: mixed, middleware: list<mixed>}
      */
-    private function withGroupMiddleware(mixed $handler, array $group): mixed
+    private function withGroupMiddleware(mixed $handler, array $group): array
     {
         $groupMiddleware = is_array($group['middleware'] ?? null) ? array_values($group['middleware']) : [];
         $route = $this->normalizeRoute($handler);
@@ -319,10 +327,13 @@ readonly class TelegramWebhookDispatcher implements TelegramWebhookHandler
         return array_values(array_filter($groups, static fn (mixed $group): bool => is_array($group)));
     }
 
-    private function discoverCommandHandler(string $command): mixed
+    /**
+     * @return array{handler: class-string, middleware: list<class-string|callable>}|null
+     */
+    private function discoverCommandHandler(string $command): ?array
     {
         foreach ($this->discoveredClasses('commands') as $class) {
-            foreach ((new ReflectionClass($class))->getAttributes(TelegramCommandAttribute::class) as $attribute) {
+            foreach (new ReflectionClass($class)->getAttributes(TelegramCommandAttribute::class) as $attribute) {
                 $commandAttribute = $attribute->newInstance();
 
                 if ($commandAttribute->name === $command || $commandAttribute->name === '*') {
@@ -337,10 +348,13 @@ readonly class TelegramWebhookDispatcher implements TelegramWebhookHandler
         return null;
     }
 
-    private function discoverUpdateHandler(string $type): mixed
+    /**
+     * @return array{handler: class-string, middleware: list<class-string|callable>}|null
+     */
+    private function discoverUpdateHandler(string $type): ?array
     {
         foreach ($this->discoveredClasses('handlers') as $class) {
-            foreach ((new ReflectionClass($class))->getAttributes(TelegramUpdateHandlerAttribute::class) as $attribute) {
+            foreach (new ReflectionClass($class)->getAttributes(TelegramUpdateHandlerAttribute::class) as $attribute) {
                 $handlerAttribute = $attribute->newInstance();
 
                 if ($handlerAttribute->type === $type || $handlerAttribute->type === '*') {

@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO;
 
+use Override;
 final readonly class TelegramMessageReactionUpdatedData implements TelegramBotData
 {
     /**
@@ -71,7 +72,7 @@ final readonly class TelegramMessageReactionUpdatedData implements TelegramBotDa
     /**
      * @return array<string, mixed>
      */
-    #[\Override]
+    #[Override]
     public function toArray(): array
     {
         return $this->payload;

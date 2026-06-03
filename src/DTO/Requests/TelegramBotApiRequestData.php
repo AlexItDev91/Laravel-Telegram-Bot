@@ -6,6 +6,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequest;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\TelegramBotApiMethodSchema;
 use InvalidArgumentException;
+use Override;
 
 /**
  * @phpstan-consistent-constructor
@@ -44,13 +45,13 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
         return new static(array_merge($this->parameters, [$parameter => $value]), $this->validatesRequiredParameters());
     }
 
-    #[\Override]
+    #[Override]
     public function method(): string
     {
         return static::METHOD;
     }
 
-    #[\Override]
+    #[Override]
     public function validatesRequiredParameters(): bool
     {
         return $this->validateRequiredParameters;
@@ -59,7 +60,7 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
     /**
      * @return list<array{name: string, type: string, required: bool}>
      */
-    #[\Override]
+    #[Override]
     public function schema(): array
     {
         return TelegramBotApiMethodSchema::parameters($this->method());
@@ -68,7 +69,7 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
     /**
      * @return list<string>
      */
-    #[\Override]
+    #[Override]
     public function requiredParameters(): array
     {
         return TelegramBotApiMethodSchema::requiredParameters($this->method());

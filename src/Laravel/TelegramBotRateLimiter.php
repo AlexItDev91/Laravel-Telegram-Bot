@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Laravel;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotRateLimiter as TelegramBotRateLimiterContract;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotRateLimitException;
 use AlexItDev91\LaravelTelegramBot\Laravel\Concerns\ResolvesTelegramCacheRepository;
@@ -18,7 +19,7 @@ readonly class TelegramBotRateLimiter implements TelegramBotRateLimiterContract
         //
     }
 
-    #[\Override]
+    #[Override]
     public function throttle(string $method, Closure $next): mixed
     {
         if (! $this->enabled()) {
@@ -61,7 +62,7 @@ readonly class TelegramBotRateLimiter implements TelegramBotRateLimiterContract
 
     private function enabled(): bool
     {
-        return config('telegram-bot.rate_limit.enabled', false) ? true : false;
+        return (bool) config('telegram-bot.rate_limit.enabled', false);
     }
 
     private function maxAttempts(): int
@@ -87,7 +88,7 @@ readonly class TelegramBotRateLimiter implements TelegramBotRateLimiterContract
         return $this->cacheRepository(config('telegram-bot.rate_limit.store'));
     }
 
-    private function container(): Container
+    protected function container(): Container
     {
         return $this->container;
     }

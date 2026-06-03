@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotObserver;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotRateLimiter;
@@ -64,7 +65,7 @@ class TelegramBotClient implements TelegramBotClientContract
     /**
      * @param  array<string, mixed>  $parameters
      */
-    #[\Override]
+    #[Override]
     public function call(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
         $this->assertConfigured();

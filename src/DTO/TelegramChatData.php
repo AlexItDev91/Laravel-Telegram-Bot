@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramChatType;
 
 final readonly class TelegramChatData implements TelegramBotData
@@ -68,7 +69,7 @@ final readonly class TelegramChatData implements TelegramBotData
     /**
      * @return array<string, mixed>
      */
-    #[\Override]
+    #[Override]
     public function toArray(): array
     {
         return $this->payload;

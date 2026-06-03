@@ -2,7 +2,183 @@
 
 namespace AlexItDev91\LaravelTelegramBot;
 
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\AddStickerToSetRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerCallbackQueryRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerGuestQueryRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerInlineQueryRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerPreCheckoutQueryRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerShippingQueryRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerWebAppQueryRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\ApproveChatJoinRequestRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\ApproveSuggestedPostRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\BanChatMemberRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\BanChatSenderChatRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\CloseForumTopicRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\CloseGeneralForumTopicRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\CloseRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\ConvertGiftToStarsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\CopyMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\CopyMessagesRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\CreateChatInviteLinkRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\CreateChatSubscriptionInviteLinkRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\CreateForumTopicRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\CreateInvoiceLinkRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\CreateNewStickerSetRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeclineChatJoinRequestRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeclineSuggestedPostRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteAllMessageReactionsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteBusinessMessagesRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteChatPhotoRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteChatStickerSetRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteForumTopicRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteMessageReactionRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteMessagesRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteMyCommandsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteStickerFromSetRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteStickerSetRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteStoryRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteWebhookRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditChatInviteLinkRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditChatSubscriptionInviteLinkRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditForumTopicRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditGeneralForumTopicRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditMessageCaptionRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditMessageChecklistRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditMessageLiveLocationRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditMessageMediaRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditMessageReplyMarkupRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditMessageTextRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditStoryRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditUserStarSubscriptionRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\ExportChatInviteLinkRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\ForwardMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\ForwardMessagesRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetAvailableGiftsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetBusinessAccountGiftsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetBusinessAccountStarBalanceRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetBusinessConnectionRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetChatAdministratorsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetChatGiftsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetChatMemberCountRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetChatMemberRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetChatMenuButtonRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetChatRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetCustomEmojiStickersRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetFileRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetForumTopicIconStickersRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetGameHighScoresRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetManagedBotAccessSettingsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetManagedBotTokenRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetMeRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetMyCommandsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetMyDefaultAdministratorRightsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetMyDescriptionRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetMyNameRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetMyShortDescriptionRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetMyStarBalanceRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetStarTransactionsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetStickerSetRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetUpdatesRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetUserChatBoostsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetUserGiftsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetUserPersonalChatMessagesRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetUserProfileAudiosRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetUserProfilePhotosRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetWebhookInfoRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GiftPremiumSubscriptionRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\HideGeneralForumTopicRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\LeaveChatRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\LogOutRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\PinChatMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\PostStoryRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\PromoteChatMemberRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\ReadBusinessMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\RefundStarPaymentRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\RemoveBusinessAccountProfilePhotoRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\RemoveChatVerificationRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\RemoveMyProfilePhotoRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\RemoveUserVerificationRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\ReopenForumTopicRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\ReopenGeneralForumTopicRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\ReplaceManagedBotTokenRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\ReplaceStickerInSetRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\RepostStoryRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\RestrictChatMemberRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\RevokeChatInviteLinkRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SavePreparedInlineMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SavePreparedKeyboardButtonRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendAnimationRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendAudioRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendChatActionRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendChecklistRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendContactRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendDiceRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendDocumentRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendGameRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendGiftRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendInvoiceRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendLivePhotoRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendLocationRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMediaGroupRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMessageDraftRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendPaidMediaRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendPhotoRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendPollRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendStickerRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendVenueRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendVideoNoteRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendVideoRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendVoiceRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetBusinessAccountBioRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetBusinessAccountGiftSettingsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetBusinessAccountNameRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetBusinessAccountProfilePhotoRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetBusinessAccountUsernameRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetChatAdministratorCustomTitleRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetChatDescriptionRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetChatMemberTagRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetChatMenuButtonRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetChatPermissionsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetChatPhotoRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetChatStickerSetRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetChatTitleRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetCustomEmojiStickerSetThumbnailRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetGameScoreRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetManagedBotAccessSettingsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetMessageReactionRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetMyCommandsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetMyDefaultAdministratorRightsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetMyDescriptionRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetMyNameRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetMyProfilePhotoRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetMyShortDescriptionRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetPassportDataErrorsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetStickerEmojiListRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetStickerKeywordsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetStickerMaskPositionRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetStickerPositionInSetRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetStickerSetThumbnailRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetStickerSetTitleRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetUserEmojiStatusRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetWebhookRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\StopMessageLiveLocationRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\StopPollRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\TelegramBotApiRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\TransferBusinessAccountStarsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\TransferGiftRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\UnbanChatMemberRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\UnbanChatSenderChatRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\UnhideGeneralForumTopicRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\UnpinAllChatMessagesRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\UnpinAllForumTopicMessagesRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\UnpinAllGeneralForumTopicMessagesRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\UnpinChatMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\UpgradeGiftRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\UploadStickerFileRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\VerifyChatRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\VerifyUserRequestData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 
 /**
@@ -14,182 +190,182 @@ final class TelegramBotApiRequestRegistry
      * @var array<string, class-string<TelegramBotApiRequestData>>
      */
     private const array REQUESTS = [
-        'addStickerToSet' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\AddStickerToSetRequestData',
-        'answerCallbackQuery' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\AnswerCallbackQueryRequestData',
-        'answerGuestQuery' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\AnswerGuestQueryRequestData',
-        'answerInlineQuery' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\AnswerInlineQueryRequestData',
-        'answerPreCheckoutQuery' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\AnswerPreCheckoutQueryRequestData',
-        'answerShippingQuery' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\AnswerShippingQueryRequestData',
-        'answerWebAppQuery' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\AnswerWebAppQueryRequestData',
-        'approveChatJoinRequest' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\ApproveChatJoinRequestRequestData',
-        'approveSuggestedPost' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\ApproveSuggestedPostRequestData',
-        'banChatMember' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\BanChatMemberRequestData',
-        'banChatSenderChat' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\BanChatSenderChatRequestData',
-        'close' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\CloseRequestData',
-        'closeForumTopic' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\CloseForumTopicRequestData',
-        'closeGeneralForumTopic' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\CloseGeneralForumTopicRequestData',
-        'convertGiftToStars' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\ConvertGiftToStarsRequestData',
-        'copyMessage' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\CopyMessageRequestData',
-        'copyMessages' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\CopyMessagesRequestData',
-        'createChatInviteLink' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\CreateChatInviteLinkRequestData',
-        'createChatSubscriptionInviteLink' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\CreateChatSubscriptionInviteLinkRequestData',
-        'createForumTopic' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\CreateForumTopicRequestData',
-        'createInvoiceLink' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\CreateInvoiceLinkRequestData',
-        'createNewStickerSet' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\CreateNewStickerSetRequestData',
-        'declineChatJoinRequest' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\DeclineChatJoinRequestRequestData',
-        'declineSuggestedPost' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\DeclineSuggestedPostRequestData',
-        'deleteAllMessageReactions' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\DeleteAllMessageReactionsRequestData',
-        'deleteBusinessMessages' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\DeleteBusinessMessagesRequestData',
-        'deleteChatPhoto' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\DeleteChatPhotoRequestData',
-        'deleteChatStickerSet' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\DeleteChatStickerSetRequestData',
-        'deleteForumTopic' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\DeleteForumTopicRequestData',
-        'deleteMessage' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\DeleteMessageRequestData',
-        'deleteMessageReaction' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\DeleteMessageReactionRequestData',
-        'deleteMessages' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\DeleteMessagesRequestData',
-        'deleteMyCommands' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\DeleteMyCommandsRequestData',
-        'deleteStickerFromSet' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\DeleteStickerFromSetRequestData',
-        'deleteStickerSet' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\DeleteStickerSetRequestData',
-        'deleteStory' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\DeleteStoryRequestData',
-        'deleteWebhook' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\DeleteWebhookRequestData',
-        'editChatInviteLink' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\EditChatInviteLinkRequestData',
-        'editChatSubscriptionInviteLink' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\EditChatSubscriptionInviteLinkRequestData',
-        'editForumTopic' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\EditForumTopicRequestData',
-        'editGeneralForumTopic' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\EditGeneralForumTopicRequestData',
-        'editMessageCaption' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\EditMessageCaptionRequestData',
-        'editMessageChecklist' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\EditMessageChecklistRequestData',
-        'editMessageLiveLocation' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\EditMessageLiveLocationRequestData',
-        'editMessageMedia' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\EditMessageMediaRequestData',
-        'editMessageReplyMarkup' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\EditMessageReplyMarkupRequestData',
-        'editMessageText' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\EditMessageTextRequestData',
-        'editStory' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\EditStoryRequestData',
-        'editUserStarSubscription' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\EditUserStarSubscriptionRequestData',
-        'exportChatInviteLink' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\ExportChatInviteLinkRequestData',
-        'forwardMessage' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\ForwardMessageRequestData',
-        'forwardMessages' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\ForwardMessagesRequestData',
-        'getAvailableGifts' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetAvailableGiftsRequestData',
-        'getBusinessAccountGifts' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetBusinessAccountGiftsRequestData',
-        'getBusinessAccountStarBalance' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetBusinessAccountStarBalanceRequestData',
-        'getBusinessConnection' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetBusinessConnectionRequestData',
-        'getChat' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetChatRequestData',
-        'getChatAdministrators' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetChatAdministratorsRequestData',
-        'getChatGifts' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetChatGiftsRequestData',
-        'getChatMember' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetChatMemberRequestData',
-        'getChatMemberCount' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetChatMemberCountRequestData',
-        'getChatMenuButton' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetChatMenuButtonRequestData',
-        'getCustomEmojiStickers' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetCustomEmojiStickersRequestData',
-        'getFile' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetFileRequestData',
-        'getForumTopicIconStickers' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetForumTopicIconStickersRequestData',
-        'getGameHighScores' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetGameHighScoresRequestData',
-        'getManagedBotAccessSettings' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetManagedBotAccessSettingsRequestData',
-        'getManagedBotToken' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetManagedBotTokenRequestData',
-        'getMe' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetMeRequestData',
-        'getMyCommands' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetMyCommandsRequestData',
-        'getMyDefaultAdministratorRights' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetMyDefaultAdministratorRightsRequestData',
-        'getMyDescription' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetMyDescriptionRequestData',
-        'getMyName' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetMyNameRequestData',
-        'getMyShortDescription' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetMyShortDescriptionRequestData',
-        'getMyStarBalance' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetMyStarBalanceRequestData',
-        'getStarTransactions' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetStarTransactionsRequestData',
-        'getStickerSet' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetStickerSetRequestData',
-        'getUpdates' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetUpdatesRequestData',
-        'getUserChatBoosts' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetUserChatBoostsRequestData',
-        'getUserGifts' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetUserGiftsRequestData',
-        'getUserPersonalChatMessages' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetUserPersonalChatMessagesRequestData',
-        'getUserProfileAudios' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetUserProfileAudiosRequestData',
-        'getUserProfilePhotos' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetUserProfilePhotosRequestData',
-        'getWebhookInfo' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GetWebhookInfoRequestData',
-        'giftPremiumSubscription' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\GiftPremiumSubscriptionRequestData',
-        'hideGeneralForumTopic' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\HideGeneralForumTopicRequestData',
-        'leaveChat' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\LeaveChatRequestData',
-        'logOut' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\LogOutRequestData',
-        'pinChatMessage' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\PinChatMessageRequestData',
-        'postStory' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\PostStoryRequestData',
-        'promoteChatMember' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\PromoteChatMemberRequestData',
-        'readBusinessMessage' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\ReadBusinessMessageRequestData',
-        'refundStarPayment' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\RefundStarPaymentRequestData',
-        'removeBusinessAccountProfilePhoto' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\RemoveBusinessAccountProfilePhotoRequestData',
-        'removeChatVerification' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\RemoveChatVerificationRequestData',
-        'removeMyProfilePhoto' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\RemoveMyProfilePhotoRequestData',
-        'removeUserVerification' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\RemoveUserVerificationRequestData',
-        'reopenForumTopic' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\ReopenForumTopicRequestData',
-        'reopenGeneralForumTopic' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\ReopenGeneralForumTopicRequestData',
-        'replaceManagedBotToken' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\ReplaceManagedBotTokenRequestData',
-        'replaceStickerInSet' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\ReplaceStickerInSetRequestData',
-        'repostStory' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\RepostStoryRequestData',
-        'restrictChatMember' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\RestrictChatMemberRequestData',
-        'revokeChatInviteLink' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\RevokeChatInviteLinkRequestData',
-        'savePreparedInlineMessage' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SavePreparedInlineMessageRequestData',
-        'savePreparedKeyboardButton' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SavePreparedKeyboardButtonRequestData',
-        'sendAnimation' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendAnimationRequestData',
-        'sendAudio' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendAudioRequestData',
-        'sendChatAction' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendChatActionRequestData',
-        'sendChecklist' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendChecklistRequestData',
-        'sendContact' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendContactRequestData',
-        'sendDice' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendDiceRequestData',
-        'sendDocument' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendDocumentRequestData',
-        'sendGame' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendGameRequestData',
-        'sendGift' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendGiftRequestData',
-        'sendInvoice' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendInvoiceRequestData',
-        'sendLivePhoto' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendLivePhotoRequestData',
-        'sendLocation' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendLocationRequestData',
-        'sendMediaGroup' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendMediaGroupRequestData',
-        'sendMessage' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendMessageRequestData',
-        'sendMessageDraft' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendMessageDraftRequestData',
-        'sendPaidMedia' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendPaidMediaRequestData',
-        'sendPhoto' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendPhotoRequestData',
-        'sendPoll' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendPollRequestData',
-        'sendSticker' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendStickerRequestData',
-        'sendVenue' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendVenueRequestData',
-        'sendVideo' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendVideoRequestData',
-        'sendVideoNote' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendVideoNoteRequestData',
-        'sendVoice' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SendVoiceRequestData',
-        'setBusinessAccountBio' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetBusinessAccountBioRequestData',
-        'setBusinessAccountGiftSettings' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetBusinessAccountGiftSettingsRequestData',
-        'setBusinessAccountName' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetBusinessAccountNameRequestData',
-        'setBusinessAccountProfilePhoto' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetBusinessAccountProfilePhotoRequestData',
-        'setBusinessAccountUsername' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetBusinessAccountUsernameRequestData',
-        'setChatAdministratorCustomTitle' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetChatAdministratorCustomTitleRequestData',
-        'setChatDescription' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetChatDescriptionRequestData',
-        'setChatMemberTag' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetChatMemberTagRequestData',
-        'setChatMenuButton' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetChatMenuButtonRequestData',
-        'setChatPermissions' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetChatPermissionsRequestData',
-        'setChatPhoto' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetChatPhotoRequestData',
-        'setChatStickerSet' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetChatStickerSetRequestData',
-        'setChatTitle' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetChatTitleRequestData',
-        'setCustomEmojiStickerSetThumbnail' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetCustomEmojiStickerSetThumbnailRequestData',
-        'setGameScore' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetGameScoreRequestData',
-        'setManagedBotAccessSettings' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetManagedBotAccessSettingsRequestData',
-        'setMessageReaction' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetMessageReactionRequestData',
-        'setMyCommands' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetMyCommandsRequestData',
-        'setMyDefaultAdministratorRights' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetMyDefaultAdministratorRightsRequestData',
-        'setMyDescription' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetMyDescriptionRequestData',
-        'setMyName' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetMyNameRequestData',
-        'setMyProfilePhoto' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetMyProfilePhotoRequestData',
-        'setMyShortDescription' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetMyShortDescriptionRequestData',
-        'setPassportDataErrors' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetPassportDataErrorsRequestData',
-        'setStickerEmojiList' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetStickerEmojiListRequestData',
-        'setStickerKeywords' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetStickerKeywordsRequestData',
-        'setStickerMaskPosition' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetStickerMaskPositionRequestData',
-        'setStickerPositionInSet' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetStickerPositionInSetRequestData',
-        'setStickerSetThumbnail' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetStickerSetThumbnailRequestData',
-        'setStickerSetTitle' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetStickerSetTitleRequestData',
-        'setUserEmojiStatus' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetUserEmojiStatusRequestData',
-        'setWebhook' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\SetWebhookRequestData',
-        'stopMessageLiveLocation' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\StopMessageLiveLocationRequestData',
-        'stopPoll' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\StopPollRequestData',
-        'transferBusinessAccountStars' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\TransferBusinessAccountStarsRequestData',
-        'transferGift' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\TransferGiftRequestData',
-        'unbanChatMember' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\UnbanChatMemberRequestData',
-        'unbanChatSenderChat' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\UnbanChatSenderChatRequestData',
-        'unhideGeneralForumTopic' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\UnhideGeneralForumTopicRequestData',
-        'unpinAllChatMessages' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\UnpinAllChatMessagesRequestData',
-        'unpinAllForumTopicMessages' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\UnpinAllForumTopicMessagesRequestData',
-        'unpinAllGeneralForumTopicMessages' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\UnpinAllGeneralForumTopicMessagesRequestData',
-        'unpinChatMessage' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\UnpinChatMessageRequestData',
-        'upgradeGift' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\UpgradeGiftRequestData',
-        'uploadStickerFile' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\UploadStickerFileRequestData',
-        'verifyChat' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\VerifyChatRequestData',
-        'verifyUser' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\VerifyUserRequestData',
+        'addStickerToSet' => AddStickerToSetRequestData::class,
+        'answerCallbackQuery' => AnswerCallbackQueryRequestData::class,
+        'answerGuestQuery' => AnswerGuestQueryRequestData::class,
+        'answerInlineQuery' => AnswerInlineQueryRequestData::class,
+        'answerPreCheckoutQuery' => AnswerPreCheckoutQueryRequestData::class,
+        'answerShippingQuery' => AnswerShippingQueryRequestData::class,
+        'answerWebAppQuery' => AnswerWebAppQueryRequestData::class,
+        'approveChatJoinRequest' => ApproveChatJoinRequestRequestData::class,
+        'approveSuggestedPost' => ApproveSuggestedPostRequestData::class,
+        'banChatMember' => BanChatMemberRequestData::class,
+        'banChatSenderChat' => BanChatSenderChatRequestData::class,
+        'close' => CloseRequestData::class,
+        'closeForumTopic' => CloseForumTopicRequestData::class,
+        'closeGeneralForumTopic' => CloseGeneralForumTopicRequestData::class,
+        'convertGiftToStars' => ConvertGiftToStarsRequestData::class,
+        'copyMessage' => CopyMessageRequestData::class,
+        'copyMessages' => CopyMessagesRequestData::class,
+        'createChatInviteLink' => CreateChatInviteLinkRequestData::class,
+        'createChatSubscriptionInviteLink' => CreateChatSubscriptionInviteLinkRequestData::class,
+        'createForumTopic' => CreateForumTopicRequestData::class,
+        'createInvoiceLink' => CreateInvoiceLinkRequestData::class,
+        'createNewStickerSet' => CreateNewStickerSetRequestData::class,
+        'declineChatJoinRequest' => DeclineChatJoinRequestRequestData::class,
+        'declineSuggestedPost' => DeclineSuggestedPostRequestData::class,
+        'deleteAllMessageReactions' => DeleteAllMessageReactionsRequestData::class,
+        'deleteBusinessMessages' => DeleteBusinessMessagesRequestData::class,
+        'deleteChatPhoto' => DeleteChatPhotoRequestData::class,
+        'deleteChatStickerSet' => DeleteChatStickerSetRequestData::class,
+        'deleteForumTopic' => DeleteForumTopicRequestData::class,
+        'deleteMessage' => DeleteMessageRequestData::class,
+        'deleteMessageReaction' => DeleteMessageReactionRequestData::class,
+        'deleteMessages' => DeleteMessagesRequestData::class,
+        'deleteMyCommands' => DeleteMyCommandsRequestData::class,
+        'deleteStickerFromSet' => DeleteStickerFromSetRequestData::class,
+        'deleteStickerSet' => DeleteStickerSetRequestData::class,
+        'deleteStory' => DeleteStoryRequestData::class,
+        'deleteWebhook' => DeleteWebhookRequestData::class,
+        'editChatInviteLink' => EditChatInviteLinkRequestData::class,
+        'editChatSubscriptionInviteLink' => EditChatSubscriptionInviteLinkRequestData::class,
+        'editForumTopic' => EditForumTopicRequestData::class,
+        'editGeneralForumTopic' => EditGeneralForumTopicRequestData::class,
+        'editMessageCaption' => EditMessageCaptionRequestData::class,
+        'editMessageChecklist' => EditMessageChecklistRequestData::class,
+        'editMessageLiveLocation' => EditMessageLiveLocationRequestData::class,
+        'editMessageMedia' => EditMessageMediaRequestData::class,
+        'editMessageReplyMarkup' => EditMessageReplyMarkupRequestData::class,
+        'editMessageText' => EditMessageTextRequestData::class,
+        'editStory' => EditStoryRequestData::class,
+        'editUserStarSubscription' => EditUserStarSubscriptionRequestData::class,
+        'exportChatInviteLink' => ExportChatInviteLinkRequestData::class,
+        'forwardMessage' => ForwardMessageRequestData::class,
+        'forwardMessages' => ForwardMessagesRequestData::class,
+        'getAvailableGifts' => GetAvailableGiftsRequestData::class,
+        'getBusinessAccountGifts' => GetBusinessAccountGiftsRequestData::class,
+        'getBusinessAccountStarBalance' => GetBusinessAccountStarBalanceRequestData::class,
+        'getBusinessConnection' => GetBusinessConnectionRequestData::class,
+        'getChat' => GetChatRequestData::class,
+        'getChatAdministrators' => GetChatAdministratorsRequestData::class,
+        'getChatGifts' => GetChatGiftsRequestData::class,
+        'getChatMember' => GetChatMemberRequestData::class,
+        'getChatMemberCount' => GetChatMemberCountRequestData::class,
+        'getChatMenuButton' => GetChatMenuButtonRequestData::class,
+        'getCustomEmojiStickers' => GetCustomEmojiStickersRequestData::class,
+        'getFile' => GetFileRequestData::class,
+        'getForumTopicIconStickers' => GetForumTopicIconStickersRequestData::class,
+        'getGameHighScores' => GetGameHighScoresRequestData::class,
+        'getManagedBotAccessSettings' => GetManagedBotAccessSettingsRequestData::class,
+        'getManagedBotToken' => GetManagedBotTokenRequestData::class,
+        'getMe' => GetMeRequestData::class,
+        'getMyCommands' => GetMyCommandsRequestData::class,
+        'getMyDefaultAdministratorRights' => GetMyDefaultAdministratorRightsRequestData::class,
+        'getMyDescription' => GetMyDescriptionRequestData::class,
+        'getMyName' => GetMyNameRequestData::class,
+        'getMyShortDescription' => GetMyShortDescriptionRequestData::class,
+        'getMyStarBalance' => GetMyStarBalanceRequestData::class,
+        'getStarTransactions' => GetStarTransactionsRequestData::class,
+        'getStickerSet' => GetStickerSetRequestData::class,
+        'getUpdates' => GetUpdatesRequestData::class,
+        'getUserChatBoosts' => GetUserChatBoostsRequestData::class,
+        'getUserGifts' => GetUserGiftsRequestData::class,
+        'getUserPersonalChatMessages' => GetUserPersonalChatMessagesRequestData::class,
+        'getUserProfileAudios' => GetUserProfileAudiosRequestData::class,
+        'getUserProfilePhotos' => GetUserProfilePhotosRequestData::class,
+        'getWebhookInfo' => GetWebhookInfoRequestData::class,
+        'giftPremiumSubscription' => GiftPremiumSubscriptionRequestData::class,
+        'hideGeneralForumTopic' => HideGeneralForumTopicRequestData::class,
+        'leaveChat' => LeaveChatRequestData::class,
+        'logOut' => LogOutRequestData::class,
+        'pinChatMessage' => PinChatMessageRequestData::class,
+        'postStory' => PostStoryRequestData::class,
+        'promoteChatMember' => PromoteChatMemberRequestData::class,
+        'readBusinessMessage' => ReadBusinessMessageRequestData::class,
+        'refundStarPayment' => RefundStarPaymentRequestData::class,
+        'removeBusinessAccountProfilePhoto' => RemoveBusinessAccountProfilePhotoRequestData::class,
+        'removeChatVerification' => RemoveChatVerificationRequestData::class,
+        'removeMyProfilePhoto' => RemoveMyProfilePhotoRequestData::class,
+        'removeUserVerification' => RemoveUserVerificationRequestData::class,
+        'reopenForumTopic' => ReopenForumTopicRequestData::class,
+        'reopenGeneralForumTopic' => ReopenGeneralForumTopicRequestData::class,
+        'replaceManagedBotToken' => ReplaceManagedBotTokenRequestData::class,
+        'replaceStickerInSet' => ReplaceStickerInSetRequestData::class,
+        'repostStory' => RepostStoryRequestData::class,
+        'restrictChatMember' => RestrictChatMemberRequestData::class,
+        'revokeChatInviteLink' => RevokeChatInviteLinkRequestData::class,
+        'savePreparedInlineMessage' => SavePreparedInlineMessageRequestData::class,
+        'savePreparedKeyboardButton' => SavePreparedKeyboardButtonRequestData::class,
+        'sendAnimation' => SendAnimationRequestData::class,
+        'sendAudio' => SendAudioRequestData::class,
+        'sendChatAction' => SendChatActionRequestData::class,
+        'sendChecklist' => SendChecklistRequestData::class,
+        'sendContact' => SendContactRequestData::class,
+        'sendDice' => SendDiceRequestData::class,
+        'sendDocument' => SendDocumentRequestData::class,
+        'sendGame' => SendGameRequestData::class,
+        'sendGift' => SendGiftRequestData::class,
+        'sendInvoice' => SendInvoiceRequestData::class,
+        'sendLivePhoto' => SendLivePhotoRequestData::class,
+        'sendLocation' => SendLocationRequestData::class,
+        'sendMediaGroup' => SendMediaGroupRequestData::class,
+        'sendMessage' => SendMessageRequestData::class,
+        'sendMessageDraft' => SendMessageDraftRequestData::class,
+        'sendPaidMedia' => SendPaidMediaRequestData::class,
+        'sendPhoto' => SendPhotoRequestData::class,
+        'sendPoll' => SendPollRequestData::class,
+        'sendSticker' => SendStickerRequestData::class,
+        'sendVenue' => SendVenueRequestData::class,
+        'sendVideo' => SendVideoRequestData::class,
+        'sendVideoNote' => SendVideoNoteRequestData::class,
+        'sendVoice' => SendVoiceRequestData::class,
+        'setBusinessAccountBio' => SetBusinessAccountBioRequestData::class,
+        'setBusinessAccountGiftSettings' => SetBusinessAccountGiftSettingsRequestData::class,
+        'setBusinessAccountName' => SetBusinessAccountNameRequestData::class,
+        'setBusinessAccountProfilePhoto' => SetBusinessAccountProfilePhotoRequestData::class,
+        'setBusinessAccountUsername' => SetBusinessAccountUsernameRequestData::class,
+        'setChatAdministratorCustomTitle' => SetChatAdministratorCustomTitleRequestData::class,
+        'setChatDescription' => SetChatDescriptionRequestData::class,
+        'setChatMemberTag' => SetChatMemberTagRequestData::class,
+        'setChatMenuButton' => SetChatMenuButtonRequestData::class,
+        'setChatPermissions' => SetChatPermissionsRequestData::class,
+        'setChatPhoto' => SetChatPhotoRequestData::class,
+        'setChatStickerSet' => SetChatStickerSetRequestData::class,
+        'setChatTitle' => SetChatTitleRequestData::class,
+        'setCustomEmojiStickerSetThumbnail' => SetCustomEmojiStickerSetThumbnailRequestData::class,
+        'setGameScore' => SetGameScoreRequestData::class,
+        'setManagedBotAccessSettings' => SetManagedBotAccessSettingsRequestData::class,
+        'setMessageReaction' => SetMessageReactionRequestData::class,
+        'setMyCommands' => SetMyCommandsRequestData::class,
+        'setMyDefaultAdministratorRights' => SetMyDefaultAdministratorRightsRequestData::class,
+        'setMyDescription' => SetMyDescriptionRequestData::class,
+        'setMyName' => SetMyNameRequestData::class,
+        'setMyProfilePhoto' => SetMyProfilePhotoRequestData::class,
+        'setMyShortDescription' => SetMyShortDescriptionRequestData::class,
+        'setPassportDataErrors' => SetPassportDataErrorsRequestData::class,
+        'setStickerEmojiList' => SetStickerEmojiListRequestData::class,
+        'setStickerKeywords' => SetStickerKeywordsRequestData::class,
+        'setStickerMaskPosition' => SetStickerMaskPositionRequestData::class,
+        'setStickerPositionInSet' => SetStickerPositionInSetRequestData::class,
+        'setStickerSetThumbnail' => SetStickerSetThumbnailRequestData::class,
+        'setStickerSetTitle' => SetStickerSetTitleRequestData::class,
+        'setUserEmojiStatus' => SetUserEmojiStatusRequestData::class,
+        'setWebhook' => SetWebhookRequestData::class,
+        'stopMessageLiveLocation' => StopMessageLiveLocationRequestData::class,
+        'stopPoll' => StopPollRequestData::class,
+        'transferBusinessAccountStars' => TransferBusinessAccountStarsRequestData::class,
+        'transferGift' => TransferGiftRequestData::class,
+        'unbanChatMember' => UnbanChatMemberRequestData::class,
+        'unbanChatSenderChat' => UnbanChatSenderChatRequestData::class,
+        'unhideGeneralForumTopic' => UnhideGeneralForumTopicRequestData::class,
+        'unpinAllChatMessages' => UnpinAllChatMessagesRequestData::class,
+        'unpinAllForumTopicMessages' => UnpinAllForumTopicMessagesRequestData::class,
+        'unpinAllGeneralForumTopicMessages' => UnpinAllGeneralForumTopicMessagesRequestData::class,
+        'unpinChatMessage' => UnpinChatMessageRequestData::class,
+        'upgradeGift' => UpgradeGiftRequestData::class,
+        'uploadStickerFile' => UploadStickerFileRequestData::class,
+        'verifyChat' => VerifyChatRequestData::class,
+        'verifyUser' => VerifyUserRequestData::class,
     ];
 
     /**

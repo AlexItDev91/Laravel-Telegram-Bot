@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Tests\Unit;
 
+use Override;
 use PHPUnit\Framework\TestCase;
 
 class ReleasePolicyTest extends TestCase
@@ -13,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.1.1', $version);
+        $this->assertSame('2.1.2', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -34,6 +35,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.1.2] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [2.1.1] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [2.1.0] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [2.0.3] - 2026-06-03', $changelog);
@@ -99,7 +101,7 @@ class ReleasePolicyTest extends TestCase
         $this->assertStringContainsString('## Version Support Policy', $readme);
         $this->assertStringContainsString('Version `v1.19.1` is the final 1.x release', $readme);
         $this->assertStringContainsString('Starting with `v2.0.0`, this package no longer supports Laravel 12, PHP 8.2, or PHP 8.3.', $readme);
-        $this->assertStringContainsString('The `2.x` source uses PHP 8.4-era strictness, including typed class constants, `#[\Override]` attributes, and PHP 8.4 array helpers', $readme);
+        $this->assertStringContainsString('The `2.x` source uses PHP 8.4-era strictness, including typed class constants, imported `#[Override]` attributes, and PHP 8.4 array helpers', $readme);
         $this->assertStringContainsString('| `2.x` | `^8.4` | `^13.0` | Current line.', $readme);
         $this->assertStringContainsString('| `1.x` | `^8.2` | `^12.0` or `^13.0` | Legacy ceiling.', $readme);
         $this->assertStringContainsString('TelegramParseMode::HTML', $readme);
@@ -190,7 +192,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.1.1', $notes);
-        $this->assertStringContainsString('Raised PHPStan analysis from level 5 to level 8 and fixed the newly exposed iterable, nullable-string, and mixed-return findings without suppressions.', $notes);
+        $this->assertStringContainsString('# v2.1.2', $notes);
+        $this->assertStringContainsString('Hardened generated Telegram request/result registries to emit package class references as `::class` constants instead of raw class-string literals.', $notes);
     }
 }

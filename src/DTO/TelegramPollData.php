@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramPollType;
 
 final readonly class TelegramPollData implements TelegramBotData
@@ -162,7 +163,7 @@ final readonly class TelegramPollData implements TelegramBotData
     /**
      * @return array<string, mixed>
      */
-    #[\Override]
+    #[Override]
     public function toArray(): array
     {
         return $this->payload;

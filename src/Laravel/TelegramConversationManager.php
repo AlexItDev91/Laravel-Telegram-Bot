@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\Laravel\Conversation\TelegramConversationWork
 
 readonly class TelegramConversationManager
 {
-    public function __construct(private readonly TelegramConversationStore $store)
+    public function __construct(private TelegramConversationStore $store)
     {
         //
     }
@@ -66,7 +66,7 @@ readonly class TelegramConversationManager
         $userId = $update->effectiveUser()?->id();
         $updateId = $update->updateId();
         $subject = $chatId !== null || $userId !== null
-            ? sprintf('chat:%s:user:%s', $chatId ?? 'none', $userId ?? 'none')
+            ? sprintf('chat:%s:user:%s', $chatId !== null ? (string) $chatId : 'none', $userId !== null ? (string) $userId : 'none')
             : sprintf('update:%s', $updateId ?? 'unknown');
 
         return implode(':', [

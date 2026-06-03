@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 readonly class VerifyTelegramWebhookSecret
 {
     public function __construct(
-        private readonly ?LoggerInterface $logger = null,
+        private ?LoggerInterface $logger = null,
     ) {
         //
     }

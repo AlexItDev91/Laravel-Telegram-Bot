@@ -13,8 +13,8 @@ readonly class TelegramWebhookIdempotency
     use ResolvesTelegramCacheRepository;
 
     public function __construct(
-        private readonly Container $container,
-        private readonly ?LoggerInterface $logger = null,
+        private Container $container,
+        private ?LoggerInterface $logger = null,
     ) {
         //
     }
@@ -64,7 +64,7 @@ readonly class TelegramWebhookIdempotency
 
     private function enabled(): bool
     {
-        return config('telegram-bot.webhook.idempotency.enabled', false) ? true : false;
+        return (bool) config('telegram-bot.webhook.idempotency.enabled', false);
     }
 
     private function ttl(): int
@@ -84,7 +84,7 @@ readonly class TelegramWebhookIdempotency
         return $this->cacheRepository(config('telegram-bot.webhook.idempotency.store'));
     }
 
-    private function container(): Container
+    protected function container(): Container
     {
         return $this->container;
     }

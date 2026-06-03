@@ -3,6 +3,50 @@
 
 declare(strict_types=1);
 
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\TelegramBotApiRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotAccessSettingsData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotCommandData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotDescriptionData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotNameData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotShortDescriptionData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBusinessConnectionData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatAdministratorRightsData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatFullInfoData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatInviteLinkData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatMemberData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramFileData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramForumTopicData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramGameHighScoreData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramGiftsData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramMenuButtonData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramMessageData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramMessageIdData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramOwnedGiftsData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramPollData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramPreparedInlineMessageData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramPreparedKeyboardButtonData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramSentGuestMessageData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramSentWebAppMessageData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramStarAmountData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramStarTransactionsData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramStickerData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramStickerSetData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramStoryData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserChatBoostsData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserProfileAudiosData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserProfilePhotosData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookInfoData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramChatAction;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramPollType;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramStickerFormat;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramStickerType;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramUpdateType;
+
 require __DIR__.'/../vendor/autoload.php';
 
 $root = dirname(__DIR__);
@@ -176,6 +220,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequest;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\TelegramBotApiMethodSchema;
 use InvalidArgumentException;
+use Override;
 
 /**
  * @phpstan-consistent-constructor
@@ -214,13 +259,13 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
         return new static(array_merge($this->parameters, [$parameter => $value]), $this->validatesRequiredParameters());
     }
 
-    #[\Override]
+    #[Override]
     public function method(): string
     {
         return static::METHOD;
     }
 
-    #[\Override]
+    #[Override]
     public function validatesRequiredParameters(): bool
     {
         return $this->validateRequiredParameters;
@@ -229,7 +274,7 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
     /**
      * @return list<array{name: string, type: string, required: bool}>
      */
-    #[\Override]
+    #[Override]
     public function schema(): array
     {
         return TelegramBotApiMethodSchema::parameters($this->method());
@@ -238,7 +283,7 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
     /**
      * @return list<string>
      */
-    #[\Override]
+    #[Override]
     public function requiredParameters(): array
     {
         return TelegramBotApiMethodSchema::requiredParameters($this->method());
@@ -440,7 +485,7 @@ function phpParameterType(string $method, string $parameterName, string $telegra
 function enumClassForParameter(string $method, string $parameterName): ?string
 {
     if (str_ends_with($parameterName, 'parse_mode')) {
-        return 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramParseMode';
+        return TelegramParseMode::class;
     }
 
     return enumParameterBindings()[$method.':'.$parameterName] ?? null;
@@ -452,12 +497,12 @@ function enumClassForParameter(string $method, string $parameterName): ?string
 function enumParameterBindings(): array
 {
     return [
-        'createNewStickerSet:sticker_type' => 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramStickerType',
-        'getUpdates:allowed_updates' => 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramUpdateType',
-        'sendChatAction:action' => 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramChatAction',
-        'sendPoll:type' => 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramPollType',
-        'setWebhook:allowed_updates' => 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramUpdateType',
-        'uploadStickerFile:sticker_format' => 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramStickerFormat',
+        'createNewStickerSet:sticker_type' => TelegramStickerType::class,
+        'getUpdates:allowed_updates' => TelegramUpdateType::class,
+        'sendChatAction:action' => TelegramChatAction::class,
+        'sendPoll:type' => TelegramPollType::class,
+        'setWebhook:allowed_updates' => TelegramUpdateType::class,
+        'uploadStickerFile:sticker_format' => TelegramStickerFormat::class,
     ];
 }
 
@@ -486,15 +531,19 @@ function requestClassName(string $method): string
  */
 function requestRegistryContent(array $requestClasses): string
 {
-    $export = shortArrayExport($requestClasses, 2);
+    $classImports = classImportMap(array_merge([
+        TelegramBotApiMethod::class,
+        TelegramBotApiRequestData::class,
+    ], array_values($requestClasses)));
+    $classUseLines = classUseStatements($classImports);
+    $export = shortArrayExport($requestClasses, 2, $classImports);
 
     return <<<PHP
 <?php
 
 namespace AlexItDev91\\LaravelTelegramBot;
 
-use AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\TelegramBotApiRequestData;
-use AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramBotApiMethod;
+$classUseLines
 
 /**
  * Generated from docs/METHODS.md by scripts/generate-telegram-api-schema.php.
@@ -549,19 +598,19 @@ function resultSchema(array $schema): array
     }
 
     foreach (messageMethods() as $method) {
-        setResult($results, $method, 'Message', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData');
+        setResult($results, $method, 'Message', TelegramMessageData::class);
     }
 
     foreach (messageListMethods() as $method) {
-        setResult($results, $method, 'Array<Message>', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData', list: true);
+        setResult($results, $method, 'Array<Message>', TelegramMessageData::class, list: true);
     }
 
     foreach (messageIdListMethods() as $method) {
-        setResult($results, $method, 'Array<MessageId>', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageIdData', list: true);
+        setResult($results, $method, 'Array<MessageId>', TelegramMessageIdData::class, list: true);
     }
 
     foreach (messageOrBoolMethods() as $method) {
-        setResult($results, $method, 'Message|Boolean', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData', allowsBool: true);
+        setResult($results, $method, 'Message|Boolean', TelegramMessageData::class, allowsBool: true);
     }
 
     foreach ([
@@ -578,56 +627,56 @@ function resultSchema(array $schema): array
     }
 
     foreach ([
-        'getMe' => ['User', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramUserData'],
-        'getChat' => ['ChatFullInfo', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatFullInfoData'],
-        'getChatMember' => ['ChatMember', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatMemberData'],
-        'getFile' => ['File', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramFileData'],
-        'getWebhookInfo' => ['WebhookInfo', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramWebhookInfoData'],
-        'getBusinessConnection' => ['BusinessConnection', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBusinessConnectionData'],
-        'getUserChatBoosts' => ['UserChatBoosts', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramUserChatBoostsData'],
-        'createChatInviteLink' => ['ChatInviteLink', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatInviteLinkData'],
-        'createChatSubscriptionInviteLink' => ['ChatInviteLink', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatInviteLinkData'],
-        'editChatInviteLink' => ['ChatInviteLink', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatInviteLinkData'],
-        'editChatSubscriptionInviteLink' => ['ChatInviteLink', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatInviteLinkData'],
-        'revokeChatInviteLink' => ['ChatInviteLink', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatInviteLinkData'],
-        'createForumTopic' => ['ForumTopic', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramForumTopicData'],
-        'getStickerSet' => ['StickerSet', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStickerSetData'],
-        'getAvailableGifts' => ['Gifts', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramGiftsData'],
-        'getBusinessAccountGifts' => ['OwnedGifts', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramOwnedGiftsData'],
-        'getChatGifts' => ['OwnedGifts', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramOwnedGiftsData'],
-        'getUserGifts' => ['OwnedGifts', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramOwnedGiftsData'],
-        'getBusinessAccountStarBalance' => ['StarAmount', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStarAmountData'],
-        'getMyStarBalance' => ['StarAmount', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStarAmountData'],
-        'getStarTransactions' => ['StarTransactions', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStarTransactionsData'],
-        'getUserProfilePhotos' => ['UserProfilePhotos', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramUserProfilePhotosData'],
-        'getUserProfileAudios' => ['UserProfileAudios', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramUserProfileAudiosData'],
-        'getChatMenuButton' => ['MenuButton', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMenuButtonData'],
-        'getMyName' => ['BotName', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBotNameData'],
-        'getMyDescription' => ['BotDescription', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBotDescriptionData'],
-        'getMyShortDescription' => ['BotShortDescription', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBotShortDescriptionData'],
-        'getMyDefaultAdministratorRights' => ['ChatAdministratorRights', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatAdministratorRightsData'],
-        'copyMessage' => ['MessageId', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageIdData'],
-        'stopPoll' => ['Poll', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramPollData'],
-        'postStory' => ['Story', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStoryData'],
-        'repostStory' => ['Story', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStoryData'],
-        'editStory' => ['Story', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStoryData'],
-        'answerWebAppQuery' => ['SentWebAppMessage', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramSentWebAppMessageData'],
-        'savePreparedInlineMessage' => ['PreparedInlineMessage', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramPreparedInlineMessageData'],
-        'savePreparedKeyboardButton' => ['PreparedKeyboardButton', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramPreparedKeyboardButtonData'],
-        'answerGuestQuery' => ['SentGuestMessage', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramSentGuestMessageData'],
-        'getManagedBotAccessSettings' => ['BotAccessSettings', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBotAccessSettingsData'],
-        'uploadStickerFile' => ['File', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramFileData'],
+        'getMe' => ['User', TelegramUserData::class],
+        'getChat' => ['ChatFullInfo', TelegramChatFullInfoData::class],
+        'getChatMember' => ['ChatMember', TelegramChatMemberData::class],
+        'getFile' => ['File', TelegramFileData::class],
+        'getWebhookInfo' => ['WebhookInfo', TelegramWebhookInfoData::class],
+        'getBusinessConnection' => ['BusinessConnection', TelegramBusinessConnectionData::class],
+        'getUserChatBoosts' => ['UserChatBoosts', TelegramUserChatBoostsData::class],
+        'createChatInviteLink' => ['ChatInviteLink', TelegramChatInviteLinkData::class],
+        'createChatSubscriptionInviteLink' => ['ChatInviteLink', TelegramChatInviteLinkData::class],
+        'editChatInviteLink' => ['ChatInviteLink', TelegramChatInviteLinkData::class],
+        'editChatSubscriptionInviteLink' => ['ChatInviteLink', TelegramChatInviteLinkData::class],
+        'revokeChatInviteLink' => ['ChatInviteLink', TelegramChatInviteLinkData::class],
+        'createForumTopic' => ['ForumTopic', TelegramForumTopicData::class],
+        'getStickerSet' => ['StickerSet', TelegramStickerSetData::class],
+        'getAvailableGifts' => ['Gifts', TelegramGiftsData::class],
+        'getBusinessAccountGifts' => ['OwnedGifts', TelegramOwnedGiftsData::class],
+        'getChatGifts' => ['OwnedGifts', TelegramOwnedGiftsData::class],
+        'getUserGifts' => ['OwnedGifts', TelegramOwnedGiftsData::class],
+        'getBusinessAccountStarBalance' => ['StarAmount', TelegramStarAmountData::class],
+        'getMyStarBalance' => ['StarAmount', TelegramStarAmountData::class],
+        'getStarTransactions' => ['StarTransactions', TelegramStarTransactionsData::class],
+        'getUserProfilePhotos' => ['UserProfilePhotos', TelegramUserProfilePhotosData::class],
+        'getUserProfileAudios' => ['UserProfileAudios', TelegramUserProfileAudiosData::class],
+        'getChatMenuButton' => ['MenuButton', TelegramMenuButtonData::class],
+        'getMyName' => ['BotName', TelegramBotNameData::class],
+        'getMyDescription' => ['BotDescription', TelegramBotDescriptionData::class],
+        'getMyShortDescription' => ['BotShortDescription', TelegramBotShortDescriptionData::class],
+        'getMyDefaultAdministratorRights' => ['ChatAdministratorRights', TelegramChatAdministratorRightsData::class],
+        'copyMessage' => ['MessageId', TelegramMessageIdData::class],
+        'stopPoll' => ['Poll', TelegramPollData::class],
+        'postStory' => ['Story', TelegramStoryData::class],
+        'repostStory' => ['Story', TelegramStoryData::class],
+        'editStory' => ['Story', TelegramStoryData::class],
+        'answerWebAppQuery' => ['SentWebAppMessage', TelegramSentWebAppMessageData::class],
+        'savePreparedInlineMessage' => ['PreparedInlineMessage', TelegramPreparedInlineMessageData::class],
+        'savePreparedKeyboardButton' => ['PreparedKeyboardButton', TelegramPreparedKeyboardButtonData::class],
+        'answerGuestQuery' => ['SentGuestMessage', TelegramSentGuestMessageData::class],
+        'getManagedBotAccessSettings' => ['BotAccessSettings', TelegramBotAccessSettingsData::class],
+        'uploadStickerFile' => ['File', TelegramFileData::class],
     ] as $method => [$type, $class]) {
         setResult($results, $method, $type, $class);
     }
 
     foreach ([
-        'getUpdates' => ['Update', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramWebhookUpdate'],
-        'getChatAdministrators' => ['ChatMember', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatMemberData'],
-        'getCustomEmojiStickers' => ['Sticker', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStickerData'],
-        'getForumTopicIconStickers' => ['Sticker', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStickerData'],
-        'getMyCommands' => ['BotCommand', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBotCommandData'],
-        'getGameHighScores' => ['GameHighScore', 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramGameHighScoreData'],
+        'getUpdates' => ['Update', TelegramWebhookUpdate::class],
+        'getChatAdministrators' => ['ChatMember', TelegramChatMemberData::class],
+        'getCustomEmojiStickers' => ['Sticker', TelegramStickerData::class],
+        'getForumTopicIconStickers' => ['Sticker', TelegramStickerData::class],
+        'getMyCommands' => ['BotCommand', TelegramBotCommandData::class],
+        'getGameHighScores' => ['GameHighScore', TelegramGameHighScoreData::class],
     ] as $method => [$type, $class]) {
         setResult($results, $method, 'Array<'.$type.'>', $class, list: true);
     }
@@ -755,15 +804,19 @@ function messageOrBoolMethods(): array
  */
 function resultSchemaContent(array $results): string
 {
-    $export = shortArrayExport($results, 2);
+    $classImports = classImportMap(array_merge([
+        TelegramBotApiMethod::class,
+        TelegramBotData::class,
+    ], array_values(array_filter(array_column($results, 'data_class'), 'is_string'))));
+    $classUseLines = classUseStatements($classImports);
+    $export = shortArrayExport($results, 2, $classImports);
 
     return <<<PHP
 <?php
 
 namespace AlexItDev91\\LaravelTelegramBot;
 
-use AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBotData;
-use AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramBotApiMethod;
+$classUseLines
 
 /**
  * Generated from docs/METHODS.md by scripts/generate-telegram-api-schema.php.
@@ -829,9 +882,59 @@ PHP;
 }
 
 /**
- * @param  array<string|int, mixed>  $value
+ * @param  list<string>  $classes
+ * @return array<string, string>
  */
-function shortArrayExport(array $value, int $indent = 1): string
+function classImportMap(array $classes): array
+{
+    $imports = [];
+    $basenames = [];
+
+    foreach (array_values(array_unique($classes)) as $class) {
+        if (! isPackageClassString($class)) {
+            continue;
+        }
+
+        $basename = classBasename($class);
+
+        if (array_key_exists($basename, $basenames)) {
+            throw new RuntimeException(sprintf(
+                'Cannot import both %s and %s because they share short class name %s.',
+                $basenames[$basename],
+                $class,
+                $basename,
+            ));
+        }
+
+        $imports[$class] = $basename;
+        $basenames[$basename] = $class;
+    }
+
+    ksort($imports);
+
+    return $imports;
+}
+
+/**
+ * @param  array<string, string>  $classImports
+ */
+function classUseStatements(array $classImports): string
+{
+    if ($classImports === []) {
+        return '';
+    }
+
+    return implode(
+        "\n",
+        array_map(static fn (string $class): string => 'use '.$class.';', array_keys($classImports)),
+    );
+}
+
+/**
+ * @param  array<string|int, mixed>  $value
+ * @param  array<string, string>  $classImports
+ */
+function shortArrayExport(array $value, int $indent = 1, array $classImports = []): string
 {
     $spaces = str_repeat('    ', $indent);
     $outer = str_repeat('    ', $indent - 1);
@@ -842,15 +945,38 @@ function shortArrayExport(array $value, int $indent = 1): string
         $prefix = $isList ? $spaces : $spaces.var_export($key, true).' => ';
 
         if (is_array($item)) {
-            $lines[] = $prefix.shortArrayExport($item, $indent + 1).',';
+            $lines[] = $prefix.shortArrayExport($item, $indent + 1, $classImports).',';
 
             continue;
         }
 
-        $lines[] = $prefix.var_export($item, true).',';
+        $lines[] = $prefix.valueExport($item, $classImports).',';
     }
 
     $lines[] = $outer.']';
 
     return implode("\n", $lines);
+}
+
+/**
+ * @param  array<string, string>  $classImports
+ */
+function valueExport(mixed $value, array $classImports = []): string
+{
+    if (is_string($value) && array_key_exists($value, $classImports)) {
+        return $classImports[$value].'::class';
+    }
+
+    if (is_string($value) && isPackageClassString($value)) {
+        return '\\'.$value.'::class';
+    }
+
+    return var_export($value, true);
+}
+
+function isPackageClassString(string $value): bool
+{
+    return str_starts_with($value, 'AlexItDev91\\LaravelTelegramBot\\')
+        && preg_match('/^[A-Za-z_][A-Za-z0-9_]*(?:\\\\[A-Za-z_][A-Za-z0-9_]*)+$/', $value) === 1
+        && (class_exists($value) || interface_exists($value) || enum_exists($value));
 }

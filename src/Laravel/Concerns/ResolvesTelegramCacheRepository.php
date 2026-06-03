@@ -7,7 +7,7 @@ use Illuminate\Contracts\Container\Container;
 
 trait ResolvesTelegramCacheRepository
 {
-    abstract private function container(): Container;
+    abstract protected function container(): Container;
 
     private function cacheRepository(mixed $store): ?CacheRepository
     {

@@ -30,7 +30,7 @@ The first major version line is closed. Version `v1.19.1` is the final 1.x relea
 
 Starting with `v2.0.0`, this package no longer supports Laravel 12, PHP 8.2, or PHP 8.3.
 
-The `2.x` source uses PHP 8.4-era strictness, including typed class constants, `#[\Override]` attributes, and PHP 8.4 array helpers such as `array_any`, `array_all`, and `array_find`, so PHP 8.4 is a hard runtime requirement.
+The `2.x` source uses PHP 8.4-era strictness, including typed class constants, imported `#[Override]` attributes, and PHP 8.4 array helpers such as `array_any`, `array_all`, and `array_find`, so PHP 8.4 is a hard runtime requirement.
 
 ## Documentation
 

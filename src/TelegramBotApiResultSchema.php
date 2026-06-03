@@ -2,7 +2,41 @@
 
 namespace AlexItDev91\LaravelTelegramBot;
 
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotAccessSettingsData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotCommandData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotDescriptionData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotNameData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotShortDescriptionData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBusinessConnectionData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatAdministratorRightsData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatFullInfoData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatInviteLinkData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatMemberData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramFileData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramForumTopicData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramGameHighScoreData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramGiftsData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramMenuButtonData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramMessageData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramMessageIdData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramOwnedGiftsData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramPollData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramPreparedInlineMessageData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramPreparedKeyboardButtonData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramSentGuestMessageData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramSentWebAppMessageData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramStarAmountData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramStarTransactionsData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramStickerData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramStickerSetData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramStoryData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserChatBoostsData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserProfileAudiosData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserProfilePhotosData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookInfoData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 
 /**
@@ -28,7 +62,7 @@ final class TelegramBotApiResultSchema
         ],
         'answerGuestQuery' => [
             'type' => 'SentGuestMessage',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramSentGuestMessageData',
+            'data_class' => TelegramSentGuestMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -52,7 +86,7 @@ final class TelegramBotApiResultSchema
         ],
         'answerWebAppQuery' => [
             'type' => 'SentWebAppMessage',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramSentWebAppMessageData',
+            'data_class' => TelegramSentWebAppMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -106,31 +140,31 @@ final class TelegramBotApiResultSchema
         ],
         'copyMessage' => [
             'type' => 'MessageId',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageIdData',
+            'data_class' => TelegramMessageIdData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'copyMessages' => [
             'type' => 'Array<MessageId>',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageIdData',
+            'data_class' => TelegramMessageIdData::class,
             'list' => true,
             'allows_bool' => false,
         ],
         'createChatInviteLink' => [
             'type' => 'ChatInviteLink',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatInviteLinkData',
+            'data_class' => TelegramChatInviteLinkData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'createChatSubscriptionInviteLink' => [
             'type' => 'ChatInviteLink',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatInviteLinkData',
+            'data_class' => TelegramChatInviteLinkData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'createForumTopic' => [
             'type' => 'ForumTopic',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramForumTopicData',
+            'data_class' => TelegramForumTopicData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -238,13 +272,13 @@ final class TelegramBotApiResultSchema
         ],
         'editChatInviteLink' => [
             'type' => 'ChatInviteLink',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatInviteLinkData',
+            'data_class' => TelegramChatInviteLinkData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'editChatSubscriptionInviteLink' => [
             'type' => 'ChatInviteLink',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatInviteLinkData',
+            'data_class' => TelegramChatInviteLinkData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -262,43 +296,43 @@ final class TelegramBotApiResultSchema
         ],
         'editMessageCaption' => [
             'type' => 'Message|Boolean',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => true,
         ],
         'editMessageChecklist' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'editMessageLiveLocation' => [
             'type' => 'Message|Boolean',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => true,
         ],
         'editMessageMedia' => [
             'type' => 'Message|Boolean',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => true,
         ],
         'editMessageReplyMarkup' => [
             'type' => 'Message|Boolean',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => true,
         ],
         'editMessageText' => [
             'type' => 'Message|Boolean',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => true,
         ],
         'editStory' => [
             'type' => 'Story',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStoryData',
+            'data_class' => TelegramStoryData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -316,61 +350,61 @@ final class TelegramBotApiResultSchema
         ],
         'forwardMessage' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'forwardMessages' => [
             'type' => 'Array<MessageId>',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageIdData',
+            'data_class' => TelegramMessageIdData::class,
             'list' => true,
             'allows_bool' => false,
         ],
         'getAvailableGifts' => [
             'type' => 'Gifts',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramGiftsData',
+            'data_class' => TelegramGiftsData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getBusinessAccountGifts' => [
             'type' => 'OwnedGifts',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramOwnedGiftsData',
+            'data_class' => TelegramOwnedGiftsData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getBusinessAccountStarBalance' => [
             'type' => 'StarAmount',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStarAmountData',
+            'data_class' => TelegramStarAmountData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getBusinessConnection' => [
             'type' => 'BusinessConnection',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBusinessConnectionData',
+            'data_class' => TelegramBusinessConnectionData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getChat' => [
             'type' => 'ChatFullInfo',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatFullInfoData',
+            'data_class' => TelegramChatFullInfoData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getChatAdministrators' => [
             'type' => 'Array<ChatMember>',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatMemberData',
+            'data_class' => TelegramChatMemberData::class,
             'list' => true,
             'allows_bool' => false,
         ],
         'getChatGifts' => [
             'type' => 'OwnedGifts',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramOwnedGiftsData',
+            'data_class' => TelegramOwnedGiftsData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getChatMember' => [
             'type' => 'ChatMember',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatMemberData',
+            'data_class' => TelegramChatMemberData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -382,37 +416,37 @@ final class TelegramBotApiResultSchema
         ],
         'getChatMenuButton' => [
             'type' => 'MenuButton',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMenuButtonData',
+            'data_class' => TelegramMenuButtonData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getCustomEmojiStickers' => [
             'type' => 'Array<Sticker>',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStickerData',
+            'data_class' => TelegramStickerData::class,
             'list' => true,
             'allows_bool' => false,
         ],
         'getFile' => [
             'type' => 'File',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramFileData',
+            'data_class' => TelegramFileData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getForumTopicIconStickers' => [
             'type' => 'Array<Sticker>',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStickerData',
+            'data_class' => TelegramStickerData::class,
             'list' => true,
             'allows_bool' => false,
         ],
         'getGameHighScores' => [
             'type' => 'Array<GameHighScore>',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramGameHighScoreData',
+            'data_class' => TelegramGameHighScoreData::class,
             'list' => true,
             'allows_bool' => false,
         ],
         'getManagedBotAccessSettings' => [
             'type' => 'BotAccessSettings',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBotAccessSettingsData',
+            'data_class' => TelegramBotAccessSettingsData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -424,97 +458,97 @@ final class TelegramBotApiResultSchema
         ],
         'getMe' => [
             'type' => 'User',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramUserData',
+            'data_class' => TelegramUserData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getMyCommands' => [
             'type' => 'Array<BotCommand>',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBotCommandData',
+            'data_class' => TelegramBotCommandData::class,
             'list' => true,
             'allows_bool' => false,
         ],
         'getMyDefaultAdministratorRights' => [
             'type' => 'ChatAdministratorRights',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatAdministratorRightsData',
+            'data_class' => TelegramChatAdministratorRightsData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getMyDescription' => [
             'type' => 'BotDescription',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBotDescriptionData',
+            'data_class' => TelegramBotDescriptionData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getMyName' => [
             'type' => 'BotName',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBotNameData',
+            'data_class' => TelegramBotNameData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getMyShortDescription' => [
             'type' => 'BotShortDescription',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBotShortDescriptionData',
+            'data_class' => TelegramBotShortDescriptionData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getMyStarBalance' => [
             'type' => 'StarAmount',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStarAmountData',
+            'data_class' => TelegramStarAmountData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getStarTransactions' => [
             'type' => 'StarTransactions',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStarTransactionsData',
+            'data_class' => TelegramStarTransactionsData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getStickerSet' => [
             'type' => 'StickerSet',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStickerSetData',
+            'data_class' => TelegramStickerSetData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getUpdates' => [
             'type' => 'Array<Update>',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramWebhookUpdate',
+            'data_class' => TelegramWebhookUpdate::class,
             'list' => true,
             'allows_bool' => false,
         ],
         'getUserChatBoosts' => [
             'type' => 'UserChatBoosts',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramUserChatBoostsData',
+            'data_class' => TelegramUserChatBoostsData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getUserGifts' => [
             'type' => 'OwnedGifts',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramOwnedGiftsData',
+            'data_class' => TelegramOwnedGiftsData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getUserPersonalChatMessages' => [
             'type' => 'Array<Message>',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => true,
             'allows_bool' => false,
         ],
         'getUserProfileAudios' => [
             'type' => 'UserProfileAudios',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramUserProfileAudiosData',
+            'data_class' => TelegramUserProfileAudiosData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getUserProfilePhotos' => [
             'type' => 'UserProfilePhotos',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramUserProfilePhotosData',
+            'data_class' => TelegramUserProfilePhotosData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'getWebhookInfo' => [
             'type' => 'WebhookInfo',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramWebhookInfoData',
+            'data_class' => TelegramWebhookInfoData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -550,7 +584,7 @@ final class TelegramBotApiResultSchema
         ],
         'postStory' => [
             'type' => 'Story',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStoryData',
+            'data_class' => TelegramStoryData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -622,7 +656,7 @@ final class TelegramBotApiResultSchema
         ],
         'repostStory' => [
             'type' => 'Story',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramStoryData',
+            'data_class' => TelegramStoryData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -634,31 +668,31 @@ final class TelegramBotApiResultSchema
         ],
         'revokeChatInviteLink' => [
             'type' => 'ChatInviteLink',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramChatInviteLinkData',
+            'data_class' => TelegramChatInviteLinkData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'savePreparedInlineMessage' => [
             'type' => 'PreparedInlineMessage',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramPreparedInlineMessageData',
+            'data_class' => TelegramPreparedInlineMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'savePreparedKeyboardButton' => [
             'type' => 'PreparedKeyboardButton',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramPreparedKeyboardButtonData',
+            'data_class' => TelegramPreparedKeyboardButtonData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendAnimation' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendAudio' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -670,31 +704,31 @@ final class TelegramBotApiResultSchema
         ],
         'sendChecklist' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendContact' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendDice' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendDocument' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendGame' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -706,31 +740,31 @@ final class TelegramBotApiResultSchema
         ],
         'sendInvoice' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendLivePhoto' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendLocation' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendMediaGroup' => [
             'type' => 'Array<Message>',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => true,
             'allows_bool' => false,
         ],
         'sendMessage' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -742,49 +776,49 @@ final class TelegramBotApiResultSchema
         ],
         'sendPaidMedia' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendPhoto' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendPoll' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendSticker' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendVenue' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendVideo' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendVideoNote' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
         'sendVoice' => [
             'type' => 'Message',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -874,7 +908,7 @@ final class TelegramBotApiResultSchema
         ],
         'setGameScore' => [
             'type' => 'Message|Boolean',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => true,
         ],
@@ -982,13 +1016,13 @@ final class TelegramBotApiResultSchema
         ],
         'stopMessageLiveLocation' => [
             'type' => 'Message|Boolean',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramMessageData',
+            'data_class' => TelegramMessageData::class,
             'list' => false,
             'allows_bool' => true,
         ],
         'stopPoll' => [
             'type' => 'Poll',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramPollData',
+            'data_class' => TelegramPollData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -1054,7 +1088,7 @@ final class TelegramBotApiResultSchema
         ],
         'uploadStickerFile' => [
             'type' => 'File',
-            'data_class' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramFileData',
+            'data_class' => TelegramFileData::class,
             'list' => false,
             'allows_bool' => false,
         ],

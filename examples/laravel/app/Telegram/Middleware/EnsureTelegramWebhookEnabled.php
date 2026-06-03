@@ -2,13 +2,14 @@
 
 namespace App\Telegram\Middleware;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookMiddleware;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
 use Closure;
 
 final class EnsureTelegramWebhookEnabled implements TelegramWebhookMiddleware
 {
-    #[\Override]
+    #[Override]
     public function process(TelegramWebhookUpdate $update, string $botName, Closure $next): mixed
     {
         if (config('services.telegram.webhook_enabled', true)) {

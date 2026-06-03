@@ -2,6 +2,7 @@
 
 namespace App\Telegram\Commands;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookCommandHandler;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
@@ -12,12 +13,12 @@ readonly class StartCommand implements TelegramWebhookCommandHandler
 {
     private const string WELCOME_TEXT = 'Welcome. Use the menu buttons to continue.';
 
-    public function __construct(private readonly TelegramBot $telegram)
+    public function __construct(private TelegramBot $telegram)
     {
         //
     }
 
-    #[\Override]
+    #[Override]
     public function handle(TelegramWebhookCommand $command, TelegramWebhookUpdate $update, string $botName): mixed
     {
         $chatId = $command->message()->chat()?->id();

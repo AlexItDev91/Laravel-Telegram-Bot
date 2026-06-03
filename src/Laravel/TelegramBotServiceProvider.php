@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Laravel;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotObserver as TelegramBotObserverContract;
@@ -32,7 +33,7 @@ use RuntimeException;
 
 class TelegramBotServiceProvider extends ServiceProvider
 {
-    #[\Override]
+    #[Override]
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../../config/telegram-bot.php', 'telegram-bot');
@@ -123,7 +124,7 @@ class TelegramBotServiceProvider extends ServiceProvider
 
     private function registerRouteMacro(): void
     {
-        Route::macro('telegramBotWebhook', function (
+        Route::macro('telegramBotWebhook', static function (
             string $uri = 'telegram-bot/webhook',
             ?string $name = 'telegram-bot.webhook',
             array|string $middleware = [],

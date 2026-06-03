@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequest;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
@@ -25,7 +26,7 @@ class TelegramBotChannel implements TelegramBotClient
     /**
      * @param  array<string, mixed>  $parameters
      */
-    #[\Override]
+    #[Override]
     public function call(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
         if ($parameters instanceof TelegramBotMethodRequest) {
@@ -40,11 +41,11 @@ class TelegramBotChannel implements TelegramBotClient
             }
         }
 
-        $parameters = $parameters instanceof TelegramBotRequestData ? $parameters->parameters : $parameters;
+        $callParameters = $parameters instanceof TelegramBotRequestData ? $parameters->parameters : $parameters;
 
         return $this->bot->call($method, array_merge(
             $this->config->chatDefaults(),
-            $parameters,
+            $callParameters,
         ));
     }
 

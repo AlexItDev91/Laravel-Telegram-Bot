@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Testing;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChannelConfigData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
@@ -24,7 +25,7 @@ final class TelegramBotFakeChannel extends TelegramBotChannel
     /**
      * @param  array<string, mixed>  $parameters
      */
-    #[\Override]
+    #[Override]
     public function call(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
         $parameters = $parameters instanceof TelegramBotRequestData ? $parameters->parameters : $parameters;

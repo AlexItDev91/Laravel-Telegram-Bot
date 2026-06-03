@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot;
 
+use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
@@ -18,13 +19,13 @@ class TelegramBot implements TelegramBotManager
     ) {
     }
 
-    #[\Override]
+    #[Override]
     public function bot(?string $name = null): TelegramBotClient
     {
         return $this->manager->bot($name);
     }
 
-    #[\Override]
+    #[Override]
     public function channel(string $name): TelegramBotChannel
     {
         return $this->manager->channel($name);

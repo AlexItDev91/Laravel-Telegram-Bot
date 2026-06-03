@@ -90,8 +90,8 @@ readonly class TelegramBotNotificationChannel
     private function arrayMessage(array $message): array
     {
         $method = $message['method'] ?? null;
-        $bot = isset($message['bot']) && is_string($message['bot']) && $message['bot'] !== '' ? $message['bot'] : null;
-        $channel = isset($message['channel']) && is_string($message['channel']) && $message['channel'] !== '' ? $message['channel'] : null;
+        $bot = $this->optionalString($message, 'bot');
+        $channel = $this->optionalString($message, 'channel');
         $parameters = $message['parameters'] ?? null;
 
         if ($parameters instanceof TelegramBotRequestData) {
@@ -147,8 +147,8 @@ readonly class TelegramBotNotificationChannel
             ];
         }
 
-        $bot = isset($route['bot']) && is_string($route['bot']) && $route['bot'] !== '' ? $route['bot'] : null;
-        $channel = isset($route['channel']) && is_string($route['channel']) && $route['channel'] !== '' ? $route['channel'] : null;
+        $bot = $this->optionalString($route, 'bot');
+        $channel = $this->optionalString($route, 'channel');
         $parameters = $route;
         unset($parameters['bot'], $parameters['channel']);
 
@@ -182,6 +182,16 @@ readonly class TelegramBotNotificationChannel
     private function parameters(array|TelegramBotRequestData $parameters): array
     {
         return $parameters instanceof TelegramBotRequestData ? $parameters->toArray() : $parameters;
+    }
+
+    /**
+     * @param  array<string, mixed>  $values
+     */
+    private function optionalString(array $values, string $key): ?string
+    {
+        $value = $values[$key] ?? null;
+
+        return is_string($value) && $value !== '' ? $value : null;
     }
 
     private function methodForRequestData(TelegramBotRequestData $data): TelegramBotApiMethod

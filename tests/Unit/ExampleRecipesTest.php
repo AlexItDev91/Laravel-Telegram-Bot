@@ -81,6 +81,7 @@ class ExampleRecipesTest extends TestCase
         $this->assertStringContainsString('TelegramBotNotificationChannel', $notification);
         $this->assertStringContainsString('TelegramNotificationMessage', $notification);
         $this->assertStringContainsString('assertSentTypedPayload', $exampleTest);
-        $this->assertStringContainsString('Route::telegramBotWebhook', $route);
+        $this->assertStringContainsString('TelegramWebhookController', $route);
+        $this->assertStringContainsString('VerifyTelegramWebhookSecret', $route);
     }
 }

@@ -46,6 +46,7 @@ use AlexItDev91\LaravelTelegramBot\Enums\TelegramPollType;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramStickerFormat;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramStickerType;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramUpdateType;
+use AlexItDev91\LaravelTelegramBot\InputFile;
 
 require __DIR__.'/../vendor/autoload.php';
 
@@ -332,11 +333,11 @@ function requestClassContent(string $method, array $parameters, string $classNam
         $type = phpParameterType($method, $parameterName, $parameter['type'], $parameter['required']);
 
         if ($type['usesInputFile']) {
-            $uses[] = 'AlexItDev91\\LaravelTelegramBot\\InputFile';
+            $uses[] = InputFile::class;
         }
 
         if ($type['usesTelegramBotData']) {
-            $uses[] = 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBotData';
+            $uses[] = TelegramBotData::class;
         }
 
         foreach ($type['uses'] as $use) {
@@ -362,7 +363,7 @@ function requestClassContent(string $method, array $parameters, string $classNam
         ? '[]'
         : "[\n".implode("\n", $payloadLines)."\n        ]";
 
-    $useLines = implode("\n", array_map(static fn (string $use): string => 'use '.$use.';', array_values(array_unique($uses))));
+    $useLines = implode("\n", array_map(static fn (string $use): string => 'use '.$use.';', array_unique($uses)));
     $docblock = "    /**\n".implode("\n", $docblocks)."\n     */";
 
     return <<<PHP
@@ -890,7 +891,7 @@ function classImportMap(array $classes): array
     $imports = [];
     $basenames = [];
 
-    foreach (array_values(array_unique($classes)) as $class) {
+    foreach (array_unique($classes) as $class) {
         if (! isPackageClassString($class)) {
             continue;
         }
@@ -977,6 +978,6 @@ function valueExport(mixed $value, array $classImports = []): string
 function isPackageClassString(string $value): bool
 {
     return str_starts_with($value, 'AlexItDev91\\LaravelTelegramBot\\')
-        && preg_match('/^[A-Za-z_][A-Za-z0-9_]*(?:\\\\[A-Za-z_][A-Za-z0-9_]*)+$/', $value) === 1
+        && preg_match('/^[A-Za-z_]\w*(?:\\\\[A-Za-z_]\w*)+$/', $value) === 1
         && (class_exists($value) || interface_exists($value) || enum_exists($value));
 }

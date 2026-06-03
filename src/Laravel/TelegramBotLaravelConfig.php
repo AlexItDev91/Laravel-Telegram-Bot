@@ -5,6 +5,7 @@ namespace AlexItDev91\LaravelTelegramBot\Laravel;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChannelConfigData;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotNotConfiguredException;
+use AlexItDev91\LaravelTelegramBot\Support\TelegramBotConfigResolver;
 use Throwable;
 
 final readonly class TelegramBotLaravelConfig
@@ -136,38 +137,7 @@ final readonly class TelegramBotLaravelConfig
      */
     private function botConfig(string $name): array
     {
-        $bots = $this->config['bots'] ?? [];
-
-        if (is_array($bots) && is_array($bots[$name] ?? null)) {
-            return array_merge($this->sharedBotConfig(), $this->configuredBotValues($bots[$name]));
-        }
-
-        if ($name === 'default') {
-            return $this->sharedBotConfig();
-        }
-
-        throw new TelegramBotNotConfiguredException("Telegram Bot [$name] is not configured.");
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function sharedBotConfig(): array
-    {
-        return [
-            'token' => $this->config['token'] ?? null,
-            'api_url' => $this->config['api_url'] ?? 'https://api.telegram.org',
-            'timeout' => $this->config['timeout'] ?? 10,
-        ];
-    }
-
-    /**
-     * @param  array<string, mixed>  $config
-     * @return array<string, mixed>
-     */
-    private function configuredBotValues(array $config): array
-    {
-        return array_filter($config, static fn (mixed $value): bool => $value !== null && $value !== '');
+        return TelegramBotConfigResolver::botConfig($this->config, $name);
     }
 
     /**

@@ -97,7 +97,7 @@ class TelegramBotClient implements TelegramBotClientContract
             try {
                 [$apiResponse, $statusCode] = $this->requestApi($method, $request);
             } catch (TelegramBotTransportException $exception) {
-                if ($this->retryPolicy()->shouldRetryTransportFailure($attempt, $exception)) {
+                if ($this->retryPolicy()->shouldRetryTransportFailure($attempt)) {
                     $this->retryPolicy()->pause($this->retryPolicy()->delaySeconds($attempt));
 
                     continue;

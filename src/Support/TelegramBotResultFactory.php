@@ -77,7 +77,7 @@ final class TelegramBotResultFactory
             return $result;
         }
 
-        $data = (new ReflectionMethod($dataClass, 'fromPayload'))->invoke(null, $result);
+        $data = new ReflectionMethod($dataClass, 'fromPayload')->invoke(null, $result);
 
         return $data instanceof TelegramBotData ? $data : TelegramBotResultData::fromPayload($result);
     }

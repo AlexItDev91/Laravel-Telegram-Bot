@@ -3,7 +3,6 @@
 namespace AlexItDev91\LaravelTelegramBot\Support;
 
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramApiResponseData;
-use Throwable;
 
 final readonly class TelegramBotRetryPolicy
 {
@@ -41,7 +40,7 @@ final readonly class TelegramBotRetryPolicy
         );
     }
 
-    public function shouldRetryTransportFailure(int $attempt, Throwable $_exception): bool
+    public function shouldRetryTransportFailure(int $attempt): bool
     {
         return $this->enabled
             && $this->retryTransportFailures

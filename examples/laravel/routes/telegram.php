@@ -1,10 +1,9 @@
 <?php
 
+use AlexItDev91\LaravelTelegramBot\Laravel\Http\Controllers\TelegramWebhookController;
+use AlexItDev91\LaravelTelegramBot\Laravel\Http\Middleware\VerifyTelegramWebhookSecret;
 use Illuminate\Support\Facades\Route;
 
-// noinspection PhpUndefinedMethodInspection
-Route::telegramBotWebhook(
-    uri: 'integrations/telegram/webhook',
-    name: 'integrations.telegram.webhook',
-    middleware: ['throttle:telegram-webhook'],
-);
+Route::post('integrations/telegram/webhook', TelegramWebhookController::class)
+    ->middleware(['throttle:telegram-webhook', VerifyTelegramWebhookSecret::class])
+    ->name('integrations.telegram.webhook');

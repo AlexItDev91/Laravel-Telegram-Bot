@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.1.3] - 2026-06-03
+
+- Cleaned up the next Qodana SARIF layer across generator helpers, webhook dispatcher configuration checks, result DTO reflection, conversation keys, notification routing, and retry policy parameters.
+- Extracted shared bot configuration resolution so the Laravel config validator and runtime manager use the same implementation.
+- Updated the Laravel example webhook route to avoid IDE-only macro false positives while keeping the package route macro documented and tested.
+
 ## [2.1.2] - 2026-06-03
 
 - Hardened generated Telegram request/result registries to emit package class references as `::class` constants instead of raw class-string literals.

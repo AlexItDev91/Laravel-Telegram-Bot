@@ -19,6 +19,9 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramStickerSetData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookInfoData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramChatType;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramPollType;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramStickerType;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -75,6 +78,7 @@ class TelegramBotTypedResponseTest extends TestCase
         $this->assertSame(10, $message->messageId());
         $this->assertSame('Deploy finished', $message->text());
         $this->assertSame('-1001234567890', $message->chat()?->id());
+        $this->assertSame(TelegramChatType::Supergroup, $message->chat()?->typeEnum());
         $this->assertTrue($message->from()?->isBot());
         $this->assertSame('/bot123456:test-token/sendMessage', $history[0]['request']->getUri()->getPath());
     }
@@ -179,7 +183,7 @@ class TelegramBotTypedResponseTest extends TestCase
                 ['message_id' => 78],
                 ['message_id' => 79],
             ],
-            ['id' => 'poll-id', 'question' => 'Deploy?', 'total_voter_count' => 2],
+            ['id' => 'poll-id', 'question' => 'Deploy?', 'type' => 'regular', 'total_voter_count' => 2],
             ['inline_message_id' => 'inline-web-app-message'],
             ['id' => '-1001234567890', 'type' => 'supergroup', 'title' => 'Ops', 'description' => 'Ops room'],
         ]);
@@ -198,6 +202,7 @@ class TelegramBotTypedResponseTest extends TestCase
         $this->assertSame(79, $copiedMessages[1]->messageId());
         $this->assertInstanceOf(TelegramPollData::class, $poll);
         $this->assertSame('poll-id', $poll->id());
+        $this->assertSame(TelegramPollType::Regular, $poll->typeEnum());
         $this->assertInstanceOf(TelegramSentWebAppMessageData::class, $webAppMessage);
         $this->assertSame('inline-web-app-message', $webAppMessage->inlineMessageId());
         $this->assertInstanceOf(TelegramChatFullInfoData::class, $chat);
@@ -258,7 +263,9 @@ class TelegramBotTypedResponseTest extends TestCase
         $this->assertInstanceOf(TelegramForumTopicData::class, $topic);
         $this->assertSame(42, $topic->messageThreadId());
         $this->assertInstanceOf(TelegramStickerSetData::class, $stickerSet);
+        $this->assertSame(TelegramStickerType::Regular, $stickerSet->stickerTypeEnum());
         $this->assertContainsOnlyInstancesOf(TelegramStickerData::class, $stickerSet->stickers());
+        $this->assertSame(TelegramStickerType::Regular, $stickerSet->stickers()[0]->typeEnum());
         $this->assertInstanceOf(TelegramGiftsData::class, $gifts);
         $this->assertSame('gift-id', $gifts->gifts()[0]->id());
         $this->assertContainsOnlyInstancesOf(TelegramBotCommandData::class, $commands);

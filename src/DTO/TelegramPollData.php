@@ -2,6 +2,8 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO;
 
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramPollType;
+
 final readonly class TelegramPollData implements TelegramBotData
 {
     /**
@@ -65,6 +67,13 @@ final readonly class TelegramPollData implements TelegramBotData
     public function type(): ?string
     {
         return $this->stringAt('type');
+    }
+
+    public function typeEnum(): ?TelegramPollType
+    {
+        $type = $this->type();
+
+        return $type !== null ? TelegramPollType::tryFrom($type) : null;
     }
 
     public function allowsMultipleAnswers(): ?bool

@@ -1,21 +1,21 @@
 <?php
 
-namespace AlexItDev91\LaravelTelegramBot\DTO\Payments;
+namespace AlexItDev91\LaravelTelegramBot\DTO\Messages;
 
 use AlexItDev91\LaravelTelegramBot\DTO\Concerns\BuildsTelegramBotPayload;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
-use AlexItDev91\LaravelTelegramBot\Enums\TelegramPaidMediaType;
-use AlexItDev91\LaravelTelegramBot\InputFile;
 
-final readonly class InputPaidMediaPhoto implements TelegramBotData
+final readonly class SuggestedPostParameters implements TelegramBotData
 {
     use BuildsTelegramBotPayload;
 
     /**
+     * @param  TelegramBotData|array<string, mixed>|null  $price
      * @param  array<string, mixed>  $extra
      */
     public function __construct(
-        private string|InputFile $media,
+        private TelegramBotData|array|null $price = null,
+        private ?int $sendDate = null,
         private array $extra = [],
     ) {
         //
@@ -28,8 +28,8 @@ final readonly class InputPaidMediaPhoto implements TelegramBotData
     public function toArray(): array
     {
         return self::payload([
-            'type' => TelegramPaidMediaType::Photo,
-            'media' => $this->media,
-        ], $this->extra, ['type', 'media']);
+            'price' => $this->price,
+            'send_date' => $this->sendDate,
+        ], $this->extra);
     }
 }

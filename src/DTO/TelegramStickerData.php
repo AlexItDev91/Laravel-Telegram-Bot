@@ -2,6 +2,8 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO;
 
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramStickerType;
+
 final readonly class TelegramStickerData extends TelegramObjectData
 {
     public function fileId(): ?string
@@ -17,6 +19,13 @@ final readonly class TelegramStickerData extends TelegramObjectData
     public function type(): ?string
     {
         return $this->string('type');
+    }
+
+    public function typeEnum(): ?TelegramStickerType
+    {
+        $type = $this->type();
+
+        return $type !== null ? TelegramStickerType::tryFrom($type) : null;
     }
 
     public function width(): ?int

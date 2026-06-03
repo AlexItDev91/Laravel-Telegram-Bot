@@ -10,6 +10,8 @@ use AlexItDev91\LaravelTelegramBot\TelegramBot;
 
 readonly class StartCommand implements TelegramWebhookCommandHandler
 {
+    private const string WELCOME_TEXT = 'Welcome. Use the menu buttons to continue.';
+
     public function __construct(private readonly TelegramBot $telegram)
     {
         //
@@ -26,7 +28,7 @@ readonly class StartCommand implements TelegramWebhookCommandHandler
 
         return $this->telegram->bot($botName)->sendMessage(new SendMessageData(
             chatId: $chatId,
-            text: 'Welcome. Use the menu buttons to continue.',
+            text: self::WELCOME_TEXT,
         ));
     }
 }

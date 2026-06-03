@@ -2,7 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
-
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramStickerType;
 
 /**
  * Generated typed request builder for Telegram Bot API method `createNewStickerSet`.
@@ -20,7 +20,7 @@ final readonly class CreateNewStickerSetRequestData extends TelegramBotApiReques
         string $name,
         string $title,
         array $stickers,
-        ?string $stickerType = null,
+        string|TelegramStickerType|null $stickerType = null,
         ?bool $needsRepainting = null,
         array $extra = [],
     ): self {

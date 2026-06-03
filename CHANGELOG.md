@@ -8,6 +8,15 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.1.0] - 2026-06-03
+
+- Added Telegram domain enums for chat actions, chat types, update types, poll types, sticker types/formats, menu buttons, message entities, inline query result types, paid media types, and bot command scope types.
+- Expanded generated request builders with enum-aware bindings for parse modes, chat actions, poll types, sticker types/formats, and allowed update types.
+- Added typed nested input DTOs for link previews, reply parameters, suggested post parameters/prices, inline keyboard buttons, and inline keyboard markup.
+- Added enum accessors to common Telegram result DTOs and completed the generated result map for `sendChatAction`, `sendGift`, and `sendMessageDraft`.
+- Added `TelegramBotLaravelConfig` for typed Laravel config access and reused it in `telegram-bot:doctor` validation.
+- Hardened README, Writerside, Boost guidance, examples, and documentation tests against returning to magic-string parse-mode snippets.
+
 ## [2.0.3] - 2026-06-03
 
 - Added `TelegramParseMode` enum support to notification messages, common typed message DTOs, and generated request builders.

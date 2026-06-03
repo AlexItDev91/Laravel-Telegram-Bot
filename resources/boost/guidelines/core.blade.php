@@ -33,6 +33,9 @@ php artisan telegram-bot:install
 - Use typed response helpers such as `getMeData()`, `sendMessageData()`, `getUpdatesData()`, `getFileData()`, and `getWebhookInfoData()` when application code needs DTO accessors. Use raw methods when it needs Telegram's unmodified `result`.
 - Use `callData()` for typed response mapping. When no dedicated result DTO exists, associative Telegram objects are returned as `TelegramBotResultData` and lists of objects as `list<TelegramBotResultData>`.
 - Use typed outbound DTOs for common payloads when validation helps: `SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
+- Prefer nested input DTOs over raw arrays for common structured payloads: `LinkPreviewOptions`, `ReplyParameters`, `SuggestedPostParameters`, `SuggestedPostPrice`, `InlineKeyboardButton`, and `InlineKeyboardMarkup`.
+- Prefer package enums over magic strings for known Telegram domains: `TelegramParseMode`, `TelegramChatAction`, `TelegramPollType`, `TelegramStickerType`, `TelegramStickerFormat`, and `TelegramUpdateType`.
+- Inject `TelegramBotLaravelConfig` when the host app needs typed access to bot, channel, webhook route, or webhook secret configuration.
 - Use `TelegramBotRequestData::forMethod()` for less common Bot API methods that need generated required-parameter validation. It is backed by `TelegramBotApiMethodSchema`; pass `validateRequiredParameters: false` only when channel defaults supply required fields later.
 - Use `php artisan telegram-bot:me --bot=default` to verify the configured bot token and Telegram identity.
 - Use `php artisan telegram-bot:doctor --bot=default` before deploys to check config, webhook secret policy, route registration, and Telegram API reachability.

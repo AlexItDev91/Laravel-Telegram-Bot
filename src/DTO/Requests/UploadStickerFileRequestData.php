@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
 use AlexItDev91\LaravelTelegramBot\InputFile;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramStickerFormat;
 
 /**
  * Generated typed request builder for Telegram Bot API method `uploadStickerFile`.
@@ -17,7 +18,7 @@ final readonly class UploadStickerFileRequestData extends TelegramBotApiRequestD
     public static function make(
         int $userId,
         InputFile $sticker,
-        string $stickerFormat,
+        string|TelegramStickerFormat $stickerFormat,
         array $extra = [],
     ): self {
         return new self(self::withoutNullValues(array_merge([

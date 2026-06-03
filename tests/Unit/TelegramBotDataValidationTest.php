@@ -7,6 +7,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\Games\SetGameScoreData;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\AnswerCallbackQueryData;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\EditMessageTextData;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\SuggestedPostPrice;
 use AlexItDev91\LaravelTelegramBot\DTO\Passport\PassportAuthorizationRequest;
 use AlexItDev91\LaravelTelegramBot\DTO\Passport\PassportElementError;
 use AlexItDev91\LaravelTelegramBot\DTO\Passport\PassportScope;
@@ -134,6 +135,10 @@ class TelegramBotDataValidationTest extends TestCase
                     nonce: 'nonce-123',
                 ))->toArray(),
                 'message' => 'Telegram Bot payload field [public_key] must not be empty.',
+            ],
+            'suggested post price must be positive' => [
+                'factory' => static fn (): mixed => SuggestedPostPrice::stars(0),
+                'message' => 'Telegram Bot payload field [amount] must be greater than zero.',
             ],
         ];
     }

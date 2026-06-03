@@ -284,7 +284,7 @@ function requestClassContent(string $method, array $parameters, string $classNam
     foreach (orderedParameters($parameters) as $parameter) {
         $parameterName = $parameter['name'];
         $variable = parameterVariable($parameterName);
-        $type = phpParameterType($parameterName, $parameter['type'], $parameter['required']);
+        $type = phpParameterType($method, $parameterName, $parameter['type'], $parameter['required']);
 
         if ($type['usesInputFile']) {
             $uses[] = 'AlexItDev91\\LaravelTelegramBot\\InputFile';
@@ -294,8 +294,8 @@ function requestClassContent(string $method, array $parameters, string $classNam
             $uses[] = 'AlexItDev91\\LaravelTelegramBot\\DTO\\TelegramBotData';
         }
 
-        if ($type['usesTelegramParseMode']) {
-            $uses[] = 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramParseMode';
+        foreach ($type['uses'] as $use) {
+            $uses[] = $use;
         }
 
         if ($type['doc'] !== null) {
@@ -360,17 +360,22 @@ function orderedParameters(array $parameters): array
 }
 
 /**
- * @return array{php: string, usesInputFile: bool, usesTelegramBotData: bool, usesTelegramParseMode: bool, doc: string|null}
+ * @return array{php: string, usesInputFile: bool, usesTelegramBotData: bool, uses: list<string>, doc: string|null}
  */
-function phpParameterType(string $parameterName, string $telegramType, bool $required): array
+function phpParameterType(string $method, string $parameterName, string $telegramType, bool $required): array
 {
     $normalized = strtolower($telegramType);
     $usesInputFile = str_contains($telegramType, 'InputFile');
     $usesTelegramBotData = false;
-    $usesTelegramParseMode = false;
+    $uses = [];
     $isArray = str_starts_with($telegramType, 'Array of ');
+    $enumClass = enumClassForParameter($method, $parameterName);
 
-    if ($isArray) {
+    if ($isArray && $enumClass !== null) {
+        $php = 'array';
+        $uses[] = $enumClass;
+        $doc = 'array<int, string|'.classBasename($enumClass).'>';
+    } elseif ($isArray) {
         $php = 'array';
         $doc = 'array<string|int, mixed>';
     } elseif (str_contains($telegramType, 'InputFile') && str_contains($telegramType, 'String')) {
@@ -385,9 +390,9 @@ function phpParameterType(string $parameterName, string $telegramType, bool $req
     } elseif ($telegramType === 'Integer') {
         $php = 'int';
         $doc = null;
-    } elseif ($telegramType === 'String' && isParseModeParameter($parameterName)) {
-        $php = 'string|TelegramParseMode';
-        $usesTelegramParseMode = true;
+    } elseif ($telegramType === 'String' && $enumClass !== null) {
+        $php = 'string|'.classBasename($enumClass);
+        $uses[] = $enumClass;
         $doc = null;
     } elseif ($telegramType === 'String') {
         $php = 'string';
@@ -427,14 +432,38 @@ function phpParameterType(string $parameterName, string $telegramType, bool $req
         'php' => $php,
         'usesInputFile' => $usesInputFile,
         'usesTelegramBotData' => $usesTelegramBotData,
-        'usesTelegramParseMode' => $usesTelegramParseMode,
+        'uses' => $uses,
         'doc' => $doc,
     ];
 }
 
-function isParseModeParameter(string $parameterName): bool
+function enumClassForParameter(string $method, string $parameterName): ?string
 {
-    return str_ends_with($parameterName, 'parse_mode');
+    if (str_ends_with($parameterName, 'parse_mode')) {
+        return 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramParseMode';
+    }
+
+    return enumParameterBindings()[$method.':'.$parameterName] ?? null;
+}
+
+/**
+ * @return array<string, class-string>
+ */
+function enumParameterBindings(): array
+{
+    return [
+        'createNewStickerSet:sticker_type' => 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramStickerType',
+        'getUpdates:allowed_updates' => 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramUpdateType',
+        'sendChatAction:action' => 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramChatAction',
+        'sendPoll:type' => 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramPollType',
+        'setWebhook:allowed_updates' => 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramUpdateType',
+        'uploadStickerFile:sticker_format' => 'AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramStickerFormat',
+    ];
+}
+
+function classBasename(string $class): string
+{
+    return substr($class, (int) strrpos($class, '\\') + 1);
 }
 
 function parameterVariable(string $parameter): string
@@ -541,6 +570,9 @@ function resultSchema(array $schema): array
         'getChatMemberCount' => 'Integer',
         'getManagedBotToken' => 'String',
         'replaceManagedBotToken' => 'String',
+        'sendChatAction' => 'Boolean',
+        'sendGift' => 'Boolean',
+        'sendMessageDraft' => 'Boolean',
     ] as $method => $type) {
         setScalarResult($results, $method, $type);
     }

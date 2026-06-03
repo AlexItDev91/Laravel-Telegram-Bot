@@ -212,8 +212,46 @@ The package keeps the full Telegram Bot API available through native methods and
 Typed DTOs validate required fields, empty lists, selected numeric constraints, and documented Telegram conditions before the HTTP request is sent. DTO `extra` arrays are reserved for additional Telegram fields and may not duplicate typed constructor fields. Laravel channel config requires a non-empty `chat_id`; bot config requires a valid `api_url` and positive `timeout`. Generic array calls remain intentionally flexible for newly released Telegram methods and less common API objects.
 
 Common outbound DTOs include `SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
+Nested input DTOs are available for common structured payloads such as `LinkPreviewOptions`, `ReplyParameters`, `SuggestedPostParameters`, `SuggestedPostPrice`, `InlineKeyboardButton`, and `InlineKeyboardMarkup`.
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\InlineKeyboardButton;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\InlineKeyboardMarkup;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\LinkPreviewOptions;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData;
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+final class DeployAlert
+{
+    private const string BOT = 'support';
+
+    private const string BUTTON_RETRY = 'Retry';
+
+    private const string CALLBACK_RETRY = 'deploy:retry';
+
+    private const string CHAT_ID = '-1001234567890';
+
+    private const string TEXT = 'Build failed';
+
+    public function send(): mixed
+    {
+        return TelegramBot::bot(self::BOT)->sendMessage(new SendMessageData(
+            chatId: self::CHAT_ID,
+            text: self::TEXT,
+            linkPreviewOptions: LinkPreviewOptions::disabled(),
+            replyMarkup: InlineKeyboardMarkup::singleButton(
+                InlineKeyboardButton::callback(self::BUTTON_RETRY, self::CALLBACK_RETRY),
+            ),
+        ));
+    }
+}
+```
+
+Generated request builders also bind well-known Telegram string domains to enums, including `TelegramParseMode`, `TelegramChatAction`, `TelegramPollType`, `TelegramStickerType`, `TelegramStickerFormat`, and `TelegramUpdateType`.
 
 For less common methods, use `TelegramBotRequestData::forMethod()` to create a method-scoped DTO backed by the generated `TelegramBotApiMethodSchema`. The schema currently covers all 176 Bot API 10.0 methods and 863 documented parameters, validates required parameters, and prevents a request DTO for one method from being passed to another method. Pass `validateRequiredParameters: false` when a Laravel channel supplies required defaults such as `chat_id`.
+
+Laravel hosts can inject `AlexItDev91\LaravelTelegramBot\Laravel\TelegramBotLaravelConfig` when application code needs typed access to the configured default bot, named bots, channels, webhook route, and webhook secret validation state. The `telegram-bot:doctor` command uses the same accessor for local configuration checks before live Telegram calls.
 
 ## Webhooks
 

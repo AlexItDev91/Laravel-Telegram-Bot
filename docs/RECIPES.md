@@ -10,41 +10,78 @@ Use typed outbound DTOs for common send/edit/answer calls when you want validati
 ```php
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\AnswerCallbackQueryData;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\EditMessageTextData;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\InlineKeyboardButton;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\InlineKeyboardMarkup;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\LinkPreviewOptions;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendDocumentData;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendPhotoData;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\InputFile;
 
-TelegramBot::bot('support')->sendMessage(new SendMessageData(
-    chatId: '-1001234567890',
-    text: 'Deploy finished',
-    messageThreadId: '42',
-));
+final class TelegramOpsNotifier
+{
+    private const string BOT = 'support';
 
-TelegramBot::bot('support')->editMessageText(new EditMessageTextData(
-    chatId: '-1001234567890',
-    messageId: 55,
-    text: 'Deploy finished successfully',
-));
+    private const string BUTTON_RETRY = 'Retry';
 
-TelegramBot::bot('support')->sendPhoto(new SendPhotoData(
-    chatId: '-1001234567890',
-    photo: InputFile::fromPath(storage_path('app/report.jpg')),
-    caption: 'Daily report',
-));
+    private const string CALLBACK_QUERY_ID = 'callback-query-id';
 
-TelegramBot::bot('support')->sendDocument(new SendDocumentData(
-    chatId: '-1001234567890',
-    document: InputFile::fromPath(storage_path('app/report.pdf')),
-    caption: 'Daily report',
-));
+    private const string CALLBACK_RETRY = 'deploy:retry';
 
-TelegramBot::bot('support')->answerCallbackQuery(new AnswerCallbackQueryData(
-    callbackQueryId: 'callback-query-id',
-    text: 'Saved',
-    cacheTime: 30,
-));
+    private const string CHAT_ID = '-1001234567890';
+
+    private const string MESSAGE_THREAD_ID = '42';
+
+    private const string PHOTO_CAPTION = 'Daily report';
+
+    private const string PHOTO_PATH = 'app/report.jpg';
+
+    private const string REPORT_PATH = 'app/report.pdf';
+
+    private const string TEXT_CALLBACK_SAVED = 'Saved';
+
+    private const string TEXT_DEPLOY_FINISHED = 'Deploy finished';
+
+    private const string TEXT_DEPLOY_SUCCEEDED = 'Deploy finished successfully';
+
+    public function send(): void
+    {
+        TelegramBot::bot(self::BOT)->sendMessage(new SendMessageData(
+            chatId: self::CHAT_ID,
+            text: self::TEXT_DEPLOY_FINISHED,
+            messageThreadId: self::MESSAGE_THREAD_ID,
+            linkPreviewOptions: LinkPreviewOptions::disabled(),
+            replyMarkup: InlineKeyboardMarkup::singleButton(
+                InlineKeyboardButton::callback(self::BUTTON_RETRY, self::CALLBACK_RETRY),
+            ),
+        ));
+
+        TelegramBot::bot(self::BOT)->editMessageText(new EditMessageTextData(
+            chatId: self::CHAT_ID,
+            messageId: 55,
+            text: self::TEXT_DEPLOY_SUCCEEDED,
+        ));
+
+        TelegramBot::bot(self::BOT)->sendPhoto(new SendPhotoData(
+            chatId: self::CHAT_ID,
+            photo: InputFile::fromPath(storage_path(self::PHOTO_PATH)),
+            caption: self::PHOTO_CAPTION,
+        ));
+
+        TelegramBot::bot(self::BOT)->sendDocument(new SendDocumentData(
+            chatId: self::CHAT_ID,
+            document: InputFile::fromPath(storage_path(self::REPORT_PATH)),
+            caption: self::PHOTO_CAPTION,
+        ));
+
+        TelegramBot::bot(self::BOT)->answerCallbackQuery(new AnswerCallbackQueryData(
+            callbackQueryId: self::CALLBACK_QUERY_ID,
+            text: self::TEXT_CALLBACK_SAVED,
+            cacheTime: 30,
+        ));
+    }
+}
 ```
 
 Configured channels still work well for repeated destinations:
@@ -73,6 +110,7 @@ TelegramBot::bot('support')->sendMessage(
 ```
 
 The generated `TelegramBotApiMethodSchema` covers all 176 Bot API 10.0 methods and 863 documented parameters. It validates required parameters and prevents a DTO scoped to one method from being sent through another method. For configured channels that merge `chat_id` or topic defaults after DTO creation, pass `validateRequiredParameters: false`.
+Generated request builders bind well-known Telegram string domains to enums, including `TelegramParseMode`, `TelegramChatAction`, `TelegramPollType`, `TelegramStickerType`, `TelegramStickerFormat`, and `TelegramUpdateType`.
 
 ## Typed Response Accessors
 

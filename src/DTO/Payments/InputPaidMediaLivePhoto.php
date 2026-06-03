@@ -4,6 +4,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Payments;
 
 use AlexItDev91\LaravelTelegramBot\DTO\Concerns\BuildsTelegramBotPayload;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramPaidMediaType;
 use AlexItDev91\LaravelTelegramBot\InputFile;
 
 final readonly class InputPaidMediaLivePhoto implements TelegramBotData
@@ -28,7 +29,7 @@ final readonly class InputPaidMediaLivePhoto implements TelegramBotData
     public function toArray(): array
     {
         return self::payload([
-            'type' => 'live_photo',
+            'type' => TelegramPaidMediaType::LivePhoto,
             'media' => $this->media,
             'photo' => $this->photo,
         ], $this->extra, ['type', 'media', 'photo']);

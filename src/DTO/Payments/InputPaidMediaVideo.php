@@ -4,6 +4,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Payments;
 
 use AlexItDev91\LaravelTelegramBot\DTO\Concerns\BuildsTelegramBotPayload;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramPaidMediaType;
 use AlexItDev91\LaravelTelegramBot\InputFile;
 
 final readonly class InputPaidMediaVideo implements TelegramBotData
@@ -45,7 +46,7 @@ final readonly class InputPaidMediaVideo implements TelegramBotData
         }
 
         return self::payload([
-            'type' => 'video',
+            'type' => TelegramPaidMediaType::Video,
             'media' => $this->media,
             'thumbnail' => $this->thumbnail,
             'cover' => $this->cover,

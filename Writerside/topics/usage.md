@@ -32,12 +32,40 @@ Type-hint `AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager` or `Cont
 Use typed outbound DTOs for common message workflows when you want validation before the HTTP request:
 
 ```php
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\InlineKeyboardButton;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\InlineKeyboardMarkup;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\LinkPreviewOptions;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData;
+use AlexItDev91\LaravelTelegramBot\TelegramBot;
 
-$telegram->bot('support')->sendMessage(new SendMessageData(
-    chatId: '-1001234567890',
-    text: 'Deploy finished',
-));
+final readonly class DeployNotifier
+{
+    private const string BOT = 'support';
+
+    private const string BUTTON_RETRY = 'Retry';
+
+    private const string CALLBACK_RETRY = 'deploy:retry';
+
+    private const string CHAT_ID = '-1001234567890';
+
+    private const string TEXT = 'Deploy finished';
+
+    public function __construct(private TelegramBot $telegram)
+    {
+    }
+
+    public function send(): mixed
+    {
+        return $this->telegram->bot(self::BOT)->sendMessage(new SendMessageData(
+            chatId: self::CHAT_ID,
+            text: self::TEXT,
+            linkPreviewOptions: LinkPreviewOptions::disabled(),
+            replyMarkup: InlineKeyboardMarkup::singleButton(
+                InlineKeyboardButton::callback(self::BUTTON_RETRY, self::CALLBACK_RETRY),
+            ),
+        ));
+    }
+}
 ```
 
 ## Facade

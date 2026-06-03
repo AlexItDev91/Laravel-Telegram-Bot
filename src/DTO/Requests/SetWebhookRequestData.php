@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
 use AlexItDev91\LaravelTelegramBot\InputFile;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramUpdateType;
 
 /**
  * Generated typed request builder for Telegram Bot API method `setWebhook`.
@@ -12,7 +13,7 @@ final readonly class SetWebhookRequestData extends TelegramBotApiRequestData
     public const string METHOD = 'setWebhook';
 
     /**
-     * @param  array<string|int, mixed>|null  $allowedUpdates
+     * @param  array<int, string|TelegramUpdateType>|null  $allowedUpdates
      * @param  array<string, mixed>  $extra
      */
     public static function make(

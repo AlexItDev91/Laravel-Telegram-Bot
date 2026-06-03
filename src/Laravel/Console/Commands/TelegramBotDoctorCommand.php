@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands;
 
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\Concerns\ResolvesTelegramBotConsoleInput;
+use AlexItDev91\LaravelTelegramBot\Laravel\TelegramBotLaravelConfig;
 use AlexItDev91\LaravelTelegramBot\TelegramBotManager;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Route;
@@ -22,13 +23,18 @@ class TelegramBotDoctorCommand extends Command
 
     protected $description = 'Diagnose Telegram bot configuration, webhook route, and Telegram API reachability.';
 
-    public function handle(TelegramBotManager $manager): int
+    public function handle(TelegramBotManager $manager, TelegramBotLaravelConfig $config): int
     {
         $bot = $this->botName();
         $rows = [];
         $failed = false;
 
         info('Telegram Bot doctor for bot ['.$bot.']');
+
+        foreach ($config->validationIssues() as $issue) {
+            $failed = true;
+            $rows[] = ['Laravel config', 'failed', $issue];
+        }
 
         try {
             $manager->bot($bot);
@@ -38,8 +44,8 @@ class TelegramBotDoctorCommand extends Command
             $rows[] = ['Bot config', 'failed', $exception->getMessage()];
         }
 
-        $secret = config('telegram-bot.webhook.secret_token');
-        $requireSecret = config('telegram-bot.webhook.require_secret', config('app.env') === 'production');
+        $secret = $config->webhookSecretToken();
+        $requireSecret = $config->webhookRequiresSecret();
 
         if ($requireSecret && (! is_string($secret) || $secret === '')) {
             $failed = true;
@@ -51,12 +57,12 @@ class TelegramBotDoctorCommand extends Command
             $rows[] = ['Webhook secret', 'ok', $secret === null || $secret === '' ? 'Not configured.' : 'Configured.'];
         }
 
-        $routeName = config('telegram-bot.webhook.route.name', 'telegram-bot.webhook');
-        $routeEnabled = config('telegram-bot.webhook.route.enabled', true);
+        $routeName = $config->webhookRouteName();
+        $routeEnabled = $config->webhookRouteEnabled();
 
         if (! $routeEnabled) {
             $rows[] = ['Webhook route', 'skipped', 'Package route auto-registration is disabled.'];
-        } elseif (is_string($routeName) && Route::has($routeName)) {
+        } elseif (Route::has($routeName)) {
             $rows[] = ['Webhook route', 'ok', route($routeName, [], false)];
         } else {
             $failed = true;

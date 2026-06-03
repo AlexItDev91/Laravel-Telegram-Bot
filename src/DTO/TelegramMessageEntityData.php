@@ -2,6 +2,8 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO;
 
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramMessageEntityType;
+
 final readonly class TelegramMessageEntityData implements TelegramBotData
 {
     /**
@@ -24,6 +26,13 @@ final readonly class TelegramMessageEntityData implements TelegramBotData
     public function type(): ?string
     {
         return $this->stringAt('type');
+    }
+
+    public function typeEnum(): ?TelegramMessageEntityType
+    {
+        $type = $this->type();
+
+        return $type !== null ? TelegramMessageEntityType::tryFrom($type) : null;
     }
 
     public function offset(): ?int

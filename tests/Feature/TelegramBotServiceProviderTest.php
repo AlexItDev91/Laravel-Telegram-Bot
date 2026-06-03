@@ -8,6 +8,7 @@ use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotApiException;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotRateLimitException;
 use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramBotApiRequestRecorded;
+use AlexItDev91\LaravelTelegramBot\Laravel\TelegramBotLaravelConfig;
 use AlexItDev91\LaravelTelegramBot\TelegramBot as TelegramBotService;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\TelegramBotManager;
@@ -38,6 +39,7 @@ class TelegramBotServiceProviderTest extends TestCase
         $this->assertInstanceOf(TelegramBotManager::class, TelegramBot::getFacadeRoot());
         $this->assertInstanceOf(TelegramBotClientContract::class, app(TelegramBotClientContract::class));
         $this->assertInstanceOf(TelegramBotClient::class, app(TelegramBotClient::class));
+        $this->assertInstanceOf(TelegramBotLaravelConfig::class, app(TelegramBotLaravelConfig::class));
     }
 
     public function test_supports_constructor_injection_for_laravel_di(): void
@@ -151,6 +153,29 @@ class TelegramBotServiceProviderTest extends TestCase
         $this->expectException(TelegramBotRateLimitException::class);
 
         app(TelegramBotClient::class)->getMe();
+    }
+
+    public function test_laravel_config_accessor_exposes_typed_config_and_validation_issues(): void
+    {
+        config()->set('telegram-bot.default', 'support');
+        config()->set('telegram-bot.bots.support', [
+            'token' => '123456:test-token',
+            'api_url' => 'https://api.telegram.test',
+            'timeout' => 5,
+        ]);
+        config()->set('telegram-bot.channels.alerts', [
+            'bot' => 'support',
+            'chat_id' => '-1001234567890',
+        ]);
+        config()->set('telegram-bot.webhook.secret_token', 'invalid secret');
+        config()->set('telegram-bot.webhook.require_secret', true);
+
+        $config = TelegramBotLaravelConfig::fromArray(config('telegram-bot'));
+
+        $this->assertSame('support', $config->defaultBot());
+        $this->assertSame('123456:test-token', $config->bot()->token);
+        $this->assertSame('-1001234567890', $config->channel('alerts')->chatId);
+        $this->assertContains('Webhook secret contains characters Telegram will not accept.', $config->validationIssues());
     }
 
     /**

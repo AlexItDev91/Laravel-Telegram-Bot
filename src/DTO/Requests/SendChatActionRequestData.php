@@ -2,7 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
-
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramChatAction;
 
 /**
  * Generated typed request builder for Telegram Bot API method `sendChatAction`.
@@ -16,7 +16,7 @@ final readonly class SendChatActionRequestData extends TelegramBotApiRequestData
      */
     public static function make(
         int|string $chatId,
-        string $action,
+        string|TelegramChatAction $action,
         ?string $businessConnectionId = null,
         ?int $messageThreadId = null,
         array $extra = [],

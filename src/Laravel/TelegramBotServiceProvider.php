@@ -65,6 +65,10 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->alias(TelegramBotManager::class, 'telegram-bot');
         $this->app->alias(TelegramBotManager::class, TelegramBotManagerContract::class);
 
+        $this->app->singleton(TelegramBotLaravelConfig::class, static function (): TelegramBotLaravelConfig {
+            return TelegramBotLaravelConfig::fromArray(config('telegram-bot', []));
+        });
+
         $this->app->singleton(TelegramBot::class, static function ($app): TelegramBot {
             return new TelegramBot($app->make(TelegramBotManagerContract::class));
         });

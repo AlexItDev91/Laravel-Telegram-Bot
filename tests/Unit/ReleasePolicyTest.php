@@ -13,7 +13,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.0.3', $version);
+        $this->assertSame('2.1.0', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -34,6 +34,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.1.0] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [2.0.3] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [2.0.2] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [2.0.1] - 2026-06-03', $changelog);
@@ -188,7 +189,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.0.3', $notes);
-        $this->assertStringContainsString('Added `TelegramParseMode` enum support to notification messages, common typed message DTOs, and generated request builders.', $notes);
+        $this->assertStringContainsString('# v2.1.0', $notes);
+        $this->assertStringContainsString('Added Telegram domain enums for chat actions, chat types, update types, poll types, sticker types/formats, menu buttons, message entities, inline query result types, paid media types, and bot command scope types.', $notes);
     }
 }

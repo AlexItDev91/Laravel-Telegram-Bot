@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramPollType;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
 
 /**
@@ -33,7 +34,7 @@ final readonly class SendPollRequestData extends TelegramBotApiRequestData
         string|TelegramParseMode|null $questionParseMode = null,
         ?array $questionEntities = null,
         ?bool $isAnonymous = null,
-        ?string $type = null,
+        string|TelegramPollType|null $type = null,
         ?bool $allowsMultipleAnswers = null,
         ?bool $allowsRevoting = null,
         ?bool $shuffleOptions = null,

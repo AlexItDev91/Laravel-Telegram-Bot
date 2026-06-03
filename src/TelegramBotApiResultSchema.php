@@ -663,7 +663,7 @@ final class TelegramBotApiResultSchema
             'allows_bool' => false,
         ],
         'sendChatAction' => [
-            'type' => 'mixed',
+            'type' => 'Boolean',
             'data_class' => NULL,
             'list' => false,
             'allows_bool' => false,
@@ -699,7 +699,7 @@ final class TelegramBotApiResultSchema
             'allows_bool' => false,
         ],
         'sendGift' => [
-            'type' => 'mixed',
+            'type' => 'Boolean',
             'data_class' => NULL,
             'list' => false,
             'allows_bool' => false,
@@ -735,7 +735,7 @@ final class TelegramBotApiResultSchema
             'allows_bool' => false,
         ],
         'sendMessageDraft' => [
-            'type' => 'mixed',
+            'type' => 'Boolean',
             'data_class' => NULL,
             'list' => false,
             'allows_bool' => false,

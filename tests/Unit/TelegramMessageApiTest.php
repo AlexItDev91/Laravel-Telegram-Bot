@@ -4,9 +4,15 @@ namespace AlexItDev91\LaravelTelegramBot\Tests\Unit;
 
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\AnswerCallbackQueryData;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\EditMessageTextData;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\InlineKeyboardButton;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\InlineKeyboardMarkup;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\LinkPreviewOptions;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\ReplyParameters;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendDocumentData;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendPhotoData;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\SuggestedPostParameters;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\SuggestedPostPrice;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\InputFile;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
@@ -53,6 +59,47 @@ class TelegramMessageApiTest extends TestCase
                 ],
             ],
         ], $payload);
+    }
+
+    public function test_send_message_data_accepts_typed_nested_input_objects(): void
+    {
+        $data = new SendMessageData(
+            chatId: '123456789',
+            text: 'Build failed',
+            linkPreviewOptions: LinkPreviewOptions::disabled(),
+            suggestedPostParameters: new SuggestedPostParameters(
+                price: SuggestedPostPrice::stars(25),
+                sendDate: 1710000300,
+            ),
+            replyParameters: new ReplyParameters(
+                messageId: 10,
+                quote: 'Earlier message',
+                quoteParseMode: TelegramParseMode::HTML,
+            ),
+            replyMarkup: InlineKeyboardMarkup::singleButton(
+                InlineKeyboardButton::callback('Retry', 'deploy:retry'),
+            ),
+        );
+
+        $this->assertSame([
+            'chat_id' => '123456789',
+            'text' => 'Build failed',
+            'link_preview_options' => ['is_disabled' => true],
+            'suggested_post_parameters' => [
+                'price' => ['currency' => 'XTR', 'amount' => 25],
+                'send_date' => 1710000300,
+            ],
+            'reply_parameters' => [
+                'message_id' => 10,
+                'quote' => 'Earlier message',
+                'quote_parse_mode' => 'HTML',
+            ],
+            'reply_markup' => [
+                'inline_keyboard' => [
+                    [['text' => 'Retry', 'callback_data' => 'deploy:retry']],
+                ],
+            ],
+        ], $data->json());
     }
 
     public function test_edit_message_text_data_supports_inline_and_chat_message_references(): void

@@ -3,7 +3,7 @@
 ![Laravel Telegram Bot package cover](package-cover.png){ width="700" }
 
 Laravel Telegram Bot is a Laravel-friendly PHP SDK for the official Telegram Bot API.
-It is built for Laravel 12 and Laravel 13 applications.
+It is built for Laravel 13 applications.
 It keeps the core client usable outside Laravel where practical, and adds Laravel package discovery, configuration, facade access, webhook receiving, console helpers, and typed request DTOs for the workflows where stronger payload validation reduces production risk.
 
 The package targets Telegram Bot API 10.0, released on 2026-05-08.
@@ -13,13 +13,15 @@ The raw `call(method, parameters)` API is always available, so newly released Te
 
 | Area | Supported versions or behavior |
 | --- | --- |
-| PHP | `^8.2` |
-| Laravel | `^12.0` or `^13.0` |
+| PHP | `^8.4` |
+| Laravel | `^13.0` |
 | HTTP client | Guzzle `^7.8`, customizable through Laravel container binding or direct client construction |
 | Telegram API target | Telegram Bot API 10.0 |
 | Request formats | JSON by default, multipart when `InputFile` values are present |
 | Main package namespace | `AlexItDev91\LaravelTelegramBot` |
 | Laravel namespaces | `AlexItDev91\LaravelTelegramBot\Laravel` and `AlexItDev91\LaravelTelegramBot\Facades` |
+
+Version `v1.19.1` is the final 1.x release for older host applications. Starting with `v2.0.0`, the package supports only PHP 8.4 and Laravel 13.
 
 ## What The Package Provides
 

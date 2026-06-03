@@ -1,6 +1,6 @@
 # Installation
 
-Install the package into a Laravel 12 or 13 application:
+Install the package into a Laravel 13 application:
 
 ```bash
 composer require alexitdev91/laravel-telegram-bot
@@ -12,11 +12,13 @@ Laravel discovers the service provider and facade automatically through package 
 
 | Dependency | Constraint |
 | --- | --- |
-| PHP | `^8.2` |
-| Laravel console/routing/support components | `^12.0` or `^13.0` |
+| PHP | `^8.4` |
+| Laravel console/routing/support components | `^13.0` |
 | Guzzle | `^7.8` |
 | Laravel Prompts | `^0.3.0` |
 | PSR logger | `^3.0` |
+
+Version `v1.19.1` is the final 1.x release for older host applications. Starting with `v2.0.0`, the package supports only PHP 8.4 and Laravel 13.
 
 ## Publish Configuration
 

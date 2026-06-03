@@ -10,14 +10,25 @@
 
 Laravel-friendly PHP SDK for the official Telegram Bot API.
 
-Developed by Aptenova as an independent open-source package. The package is not tied to any Aptenova application and can be used in any compatible Laravel 12 or 13 project.
+Developed by Aptenova as an independent open-source package. The package is not tied to any Aptenova application and can be used in any compatible Laravel 13 project.
 
 ## Requirements
 
-- PHP `^8.2`
+- PHP `^8.4`
 - PHP extension `openssl`
-- Laravel `^12.0|^13.0`
+- Laravel `^13.0`
 - Guzzle `^7.8`
+
+## Version Support Policy
+
+The first major version line is closed. Version `v1.19.1` is the final 1.x release for older host applications.
+
+| Package line | PHP | Laravel | Status |
+| --- | --- | --- | --- |
+| `2.x` | `^8.4` | `^13.0` | Current line. New features, fixes, and Telegram API updates land here. |
+| `1.x` | `^8.2` | `^12.0` or `^13.0` | Legacy ceiling. Pin to `^1.19.1` only if the host app cannot move to PHP 8.4 and Laravel 13 yet. |
+
+Starting with `v2.0.0`, this package no longer supports Laravel 12, PHP 8.2, or PHP 8.3.
 
 ## Documentation
 
@@ -53,7 +64,7 @@ Primary sources:
 composer require alexitdev91/laravel-telegram-bot
 ```
 
-Laravel 12 and 13 discover the service provider and facade automatically through package discovery.
+Laravel 13 discovers the service provider and facade automatically through package discovery.
 
 Publish the Laravel package configuration with the provider-qualified command:
 

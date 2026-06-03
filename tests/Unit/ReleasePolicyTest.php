@@ -13,7 +13,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('1.19.1', $version);
+        $this->assertSame('2.0.0', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -34,6 +34,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.0.0] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [1.19.1] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [1.19.0] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [1.18.2] - 2026-06-03', $changelog);
@@ -90,6 +91,11 @@ class ReleasePolicyTest extends TestCase
 
         $this->assertStringNotContainsString('https://poser.pugx.org/alexitdev91/laravel-telegram-bot/v/stable', $readme);
         $this->assertStringNotContainsString('docs/RELEASE.md', $readme);
+        $this->assertStringContainsString('## Version Support Policy', $readme);
+        $this->assertStringContainsString('Version `v1.19.1` is the final 1.x release', $readme);
+        $this->assertStringContainsString('Starting with `v2.0.0`, this package no longer supports Laravel 12, PHP 8.2, or PHP 8.3.', $readme);
+        $this->assertStringContainsString('| `2.x` | `^8.4` | `^13.0` | Current line.', $readme);
+        $this->assertStringContainsString('| `1.x` | `^8.2` | `^12.0` or `^13.0` | Legacy ceiling.', $readme);
     }
 
     public function test_github_actions_composer_checks_workflow_covers_release_checks(): void
@@ -105,11 +111,13 @@ class ReleasePolicyTest extends TestCase
             'composer check:telegram-api-surface',
             'composer test',
             'composer test:coverage-surface',
-            'php: ["8.2", "8.3", "8.4"]',
+            'php: ["8.4"]',
             'actions/checkout@v6',
         ] as $requiredWorkflowText) {
             $this->assertStringContainsString($requiredWorkflowText, $workflow);
         }
+
+        $this->assertStringNotContainsString('php: ["8.2", "8.3", "8.4"]', $workflow);
 
         $this->assertStringNotContainsString('actions/checkout@v4', $workflow);
         $this->assertStringNotContainsString('actions/checkout@v5', $workflow);
@@ -130,7 +138,7 @@ class ReleasePolicyTest extends TestCase
         foreach ([
             'qodana.recommended',
             'linter: qodana-php',
-            'version: "8.2"',
+            'version: "8.4"',
             'composer install --no-interaction --prefer-dist --no-progress',
             'any: 0',
             'PhpSameParameterValueInspection',
@@ -150,6 +158,12 @@ class ReleasePolicyTest extends TestCase
 
         $this->assertIsArray($composer);
         $this->assertArrayNotHasKey('version', $composer);
+        $this->assertSame('^8.4', $composer['require']['php'] ?? null);
+        $this->assertSame('^13.0', $composer['require']['illuminate/console'] ?? null);
+        $this->assertSame('^13.0', $composer['require']['illuminate/notifications'] ?? null);
+        $this->assertSame('^13.0', $composer['require']['illuminate/routing'] ?? null);
+        $this->assertSame('^13.0', $composer['require']['illuminate/support'] ?? null);
+        $this->assertSame('^11.0', $composer['require-dev']['orchestra/testbench'] ?? null);
         $this->assertSame('php scripts/check-release-readiness.php', $composer['scripts']['check:release-readiness'] ?? null);
         $this->assertSame('php scripts/generate-github-release-notes.php', $composer['scripts']['generate:github-release-notes'] ?? null);
         $this->assertSame('php scripts/verify-packagist-release.php', $composer['scripts']['verify:packagist-release'] ?? null);
@@ -168,7 +182,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v1.19.1', $notes);
-        $this->assertStringContainsString('GitHub release notes generation command', $notes);
+        $this->assertStringContainsString('# v2.0.0', $notes);
+        $this->assertStringContainsString('Raised the package baseline to PHP `^8.4` and Laravel/Illuminate `^13.0` only.', $notes);
     }
 }

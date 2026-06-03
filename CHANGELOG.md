@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.0.0] - 2026-06-03
+
+- Raised the package baseline to PHP `^8.4` and Laravel/Illuminate `^13.0` only.
+- Ended compatibility with Laravel 12 and PHP 8.2/8.3; the 1.x line is capped at `v1.19.1`.
+- Updated CI, documentation, and release policy coverage for the new major-version support policy.
+
 ## [1.19.1] - 2026-06-03
 
 - Added a GitHub release notes generation command that renders the current changelog entry into release-ready markdown.

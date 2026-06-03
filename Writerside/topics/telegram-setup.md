@@ -291,7 +291,7 @@ Install the package in the host Laravel application:
 composer require alexitdev91/laravel-telegram-bot
 ```
 
-Laravel 12 and 13 discover the service provider and facade automatically.
+Laravel 13 discovers the service provider and facade automatically.
 
 Publish the package configuration:
 

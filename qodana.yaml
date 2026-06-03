@@ -16,7 +16,7 @@ exclude:
   - name: PhpLoopCanBeConvertedToArrayMapInspection
 
 php:
-  version: "8.2"
+  version: "8.4"
 
 bootstrap: composer install --no-interaction --prefer-dist --no-progress
 

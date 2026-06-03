@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="1.19.1"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.0.0"/>', $config);
 
         foreach ([
             'overview.md',
@@ -90,8 +90,8 @@ class WritersideDocumentationTest extends TestCase
         $this->assertIsString($maintenance);
 
         foreach ([
-            'Laravel 12',
             'Laravel 13',
+            'Version `v1.19.1` is the final 1.x release',
             'Telegram Bot API 10.0',
             'raw `call(method, parameters)` API',
             '![Laravel Telegram Bot package cover](package-cover.png){ width="700" }',
@@ -275,6 +275,6 @@ class WritersideDocumentationTest extends TestCase
         }
 
         $this->assertStringNotContainsString('| Page | What it covers |', $readme);
-        $this->assertStringNotContainsString('| --- | --- |', $readme);
+        $this->assertStringNotContainsString('| API Method Reference |', $readme);
     }
 }

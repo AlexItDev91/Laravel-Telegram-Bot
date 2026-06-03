@@ -16,6 +16,13 @@ Publish it during installation, then store real values in the host application's
 | `TELEGRAM_WEBHOOK_BOT_USERNAME` | No | Bot username used to ignore commands addressed to another bot. |
 | `TELEGRAM_WEBHOOK_SECRET_TOKEN` | Recommended for webhooks | Secret Telegram sends in `X-Telegram-Bot-Api-Secret-Token`. |
 | `TELEGRAM_WEBHOOK_REQUIRE_SECRET` | Recommended in production | Fails closed when the webhook secret is missing. |
+| `TELEGRAM_WEBHOOK_QUEUE_ENABLED` | No | Dispatches accepted webhook updates to Laravel queue jobs. |
+| `TELEGRAM_WEBHOOK_QUEUE_CONNECTION` | No | Queue connection for webhook jobs. |
+| `TELEGRAM_WEBHOOK_QUEUE` | No | Queue name for webhook jobs. |
+| `TELEGRAM_WEBHOOK_QUEUE_AFTER_COMMIT` | No | Dispatches webhook jobs after open database transactions commit. |
+| `TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED` | No | Skips duplicate webhook `update_id` values for the same bot. |
+| `TELEGRAM_WEBHOOK_IDEMPOTENCY_STORE` | No | Cache store used by the duplicate-update guard. |
+| `TELEGRAM_WEBHOOK_IDEMPOTENCY_TTL` | No | Duplicate-update guard TTL in seconds. Defaults to `86400`. |
 | `TELEGRAM_WEBHOOK_ROUTE_ENABLED` | No | Enables the package route. Defaults to `true`. |
 | `TELEGRAM_WEBHOOK_ROUTE_URI` | No | Defaults to `telegram-bot/webhook`. |
 | `TELEGRAM_WEBHOOK_ROUTE_NAME` | No | Defaults to `telegram-bot.webhook`. |
@@ -98,6 +105,17 @@ $telegram->channel('inbox')->sendMessage([
     ],
     'fallback_handler' => App\Telegram\Handlers\FallbackHandler::class,
     'dispatch_event' => true,
+    'queue' => [
+        'enabled' => env('TELEGRAM_WEBHOOK_QUEUE_ENABLED', false),
+        'connection' => env('TELEGRAM_WEBHOOK_QUEUE_CONNECTION'),
+        'queue' => env('TELEGRAM_WEBHOOK_QUEUE'),
+        'after_commit' => env('TELEGRAM_WEBHOOK_QUEUE_AFTER_COMMIT', false),
+    ],
+    'idempotency' => [
+        'enabled' => env('TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED', false),
+        'store' => env('TELEGRAM_WEBHOOK_IDEMPOTENCY_STORE'),
+        'ttl' => env('TELEGRAM_WEBHOOK_IDEMPOTENCY_TTL', 86400),
+    ],
     'route' => [
         'enabled' => env('TELEGRAM_WEBHOOK_ROUTE_ENABLED', true),
         'uri' => env('TELEGRAM_WEBHOOK_ROUTE_URI', 'telegram-bot/webhook'),

@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.14.0] - 2026-06-03
+
+- Added optional queued webhook processing through `TelegramWebhookJob`, including queue connection/name/after-commit configuration.
+- Added cache-backed webhook idempotency for duplicate Telegram `update_id` deliveries per bot.
+- Documented production webhook queue and duplicate-update guard configuration in README, Writerside, Markdown docs, and Laravel Boost resources.
+
 ## [1.13.0] - 2026-06-03
 
 - Added a Laravel webhook dispatcher for command handlers, update-type handlers, fallback handlers, and manual webhook route registration through `Route::telegramBotWebhook()`.

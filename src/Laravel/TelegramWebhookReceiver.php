@@ -2,11 +2,10 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Laravel;
 
-use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
-use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived;
+use AlexItDev91\LaravelTelegramBot\Laravel\Jobs\TelegramWebhookJob;
+use Illuminate\Contracts\Bus\Dispatcher as BusDispatcher;
 use Illuminate\Contracts\Container\Container;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use JsonException;
@@ -18,7 +17,8 @@ class TelegramWebhookReceiver
 {
     public function __construct(
         private readonly Container $container,
-        private readonly Dispatcher $events,
+        private readonly TelegramWebhookProcessor $processor,
+        private readonly TelegramWebhookIdempotency $idempotency,
         private readonly ?LoggerInterface $logger = null,
     ) {
         //
@@ -41,19 +41,26 @@ class TelegramWebhookReceiver
 
         $update = TelegramWebhookUpdate::fromPayload($payload);
 
-        if ((bool) config('telegram-bot.webhook.dispatch_event', true)) {
-            $this->events->dispatch(new TelegramWebhookReceived($update, $botName));
+        if ($this->idempotency->shouldSkip($update, $botName)) {
+            return new JsonResponse(['ok' => true, 'duplicate' => true]);
+        }
+
+        if ($this->shouldQueue()) {
+            try {
+                if ($this->dispatchQueued($payload, $botName)) {
+                    return new JsonResponse(['ok' => true, 'queued' => true]);
+                }
+            } catch (Throwable $exception) {
+                $this->idempotency->release($update, $botName);
+
+                throw $exception;
+            }
         }
 
         try {
-            $handlerResult = $this->handleWithConfiguredHandler($update, $botName);
+            $handlerResult = $this->processor->process($update, $botName);
         } catch (Throwable $exception) {
-            $this->error('Telegram webhook handler failed.', [
-                'bot' => $botName,
-                'update_id' => $update->updateId(),
-                'update_type' => $update->type(),
-                'exception' => $exception::class,
-            ]);
+            $this->idempotency->release($update, $botName);
 
             throw $exception;
         }
@@ -75,57 +82,43 @@ class TelegramWebhookReceiver
         return is_array($payload) ? $payload : null;
     }
 
-    private function handleWithConfiguredHandler(TelegramWebhookUpdate $update, string $botName): mixed
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function dispatchQueued(array $payload, string $botName): bool
     {
-        $handler = config('telegram-bot.webhook.handler');
-
-        if ($handler === null || $handler === '') {
-            if (! $this->hasDispatcherConfiguration()) {
-                return null;
-            }
-
-            $handler = TelegramWebhookDispatcher::class;
-        }
-
-        if (is_string($handler) && class_exists($handler)) {
-            $handler = $this->container->make($handler);
-        }
-
-        if ($handler instanceof TelegramWebhookHandler) {
-            return $handler->handle($update, $botName);
-        }
-
-        if (is_callable($handler)) {
-            return $this->container->call($handler, [
-                'update' => $update,
-                'botName' => $botName,
+        if (! $this->container->bound(BusDispatcher::class)) {
+            $this->warning('Telegram webhook queue is enabled but the bus dispatcher is not available; processing synchronously.', [
+                'bot' => $botName,
             ]);
+
+            return false;
         }
 
-        $this->warning('Telegram webhook handler is configured but is not resolvable or callable.', [
-            'bot' => $botName,
-            'update_id' => $update->updateId(),
-            'update_type' => $update->type(),
-            'handler_type' => get_debug_type($handler),
-        ]);
+        $job = new TelegramWebhookJob($payload, $botName);
+        $connection = config('telegram-bot.webhook.queue.connection');
+        $queue = config('telegram-bot.webhook.queue.queue');
 
-        return null;
+        if (is_string($connection) && $connection !== '') {
+            $job->onConnection($connection);
+        }
+
+        if (is_string($queue) && $queue !== '') {
+            $job->onQueue($queue);
+        }
+
+        if ((bool) config('telegram-bot.webhook.queue.after_commit', false)) {
+            $job->afterCommit();
+        }
+
+        $this->container->make(BusDispatcher::class)->dispatch($job);
+
+        return true;
     }
 
-    private function hasDispatcherConfiguration(): bool
+    private function shouldQueue(): bool
     {
-        foreach ([
-            config('telegram-bot.webhook.commands', []),
-            config('telegram-bot.webhook.handlers', []),
-        ] as $handlers) {
-            if (is_array($handlers) && $handlers !== []) {
-                return true;
-            }
-        }
-
-        $fallback = config('telegram-bot.webhook.fallback_handler');
-
-        return $fallback !== null && $fallback !== '';
+        return (bool) config('telegram-bot.webhook.queue.enabled', false);
     }
 
     private function response(mixed $handlerResult): Response
@@ -155,17 +148,5 @@ class TelegramWebhookReceiver
         }
 
         $this->logger?->warning($message, $context);
-    }
-
-    /**
-     * @param  array<string, mixed>  $context
-     */
-    private function error(string $message, array $context): void
-    {
-        if (! (bool) config('telegram-bot.logging.enabled', true)) {
-            return;
-        }
-
-        $this->logger?->error($message, $context);
     }
 }

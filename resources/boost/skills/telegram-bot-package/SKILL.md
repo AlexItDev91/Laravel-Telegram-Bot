@@ -111,6 +111,8 @@ The package registers `POST /telegram-bot/webhook` when `telegram-bot.webhook.ro
 
 Keep `TELEGRAM_BOT_LOGGING_ENABLED=true` for safe operational warning/error logs. Logs must not include bot tokens, secret headers, request payloads, response bodies, chat IDs, or message text.
 
+For production handlers that do real work, set `TELEGRAM_WEBHOOK_QUEUE_ENABLED=true`, run Laravel queue workers for `AlexItDev91\LaravelTelegramBot\Laravel\Jobs\TelegramWebhookJob`, and enable `TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED=true` with a shared cache store when duplicate update processing is unsafe.
+
 ```php
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 

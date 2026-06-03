@@ -5,8 +5,11 @@ namespace AlexItDev91\LaravelTelegramBot\Tests\Feature;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
 use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived;
+use AlexItDev91\LaravelTelegramBot\Laravel\Jobs\TelegramWebhookJob;
+use AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookProcessor;
 use AlexItDev91\LaravelTelegramBot\Tests\TestCase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Bus;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
 use Stringable;
@@ -22,6 +25,7 @@ class TelegramWebhookReceiverTest extends TestCase
         TelegramWebhookCallbackQueryHandler::reset();
         TelegramWebhookPaymentQueryHandler::reset();
         TelegramWebhookMembershipHandler::reset();
+        TelegramWebhookCountingHandler::reset();
     }
 
     public function test_default_webhook_route_accepts_updates_and_dispatches_event(): void
@@ -310,6 +314,88 @@ class TelegramWebhookReceiverTest extends TestCase
         $this->assertSame('Telegram webhook handler is configured but is not resolvable or callable.', $logger->records[0]['message']);
     }
 
+    public function test_webhook_can_queue_processing_without_calling_handler_inline(): void
+    {
+        Bus::fake();
+
+        config()->set('telegram-bot.webhook.handler', TelegramWebhookTestHandler::class);
+        config()->set('telegram-bot.webhook.bot', 'support');
+        config()->set('telegram-bot.webhook.queue.enabled', true);
+        config()->set('telegram-bot.webhook.queue.connection', 'redis');
+        config()->set('telegram-bot.webhook.queue.queue', 'telegram-webhooks');
+        config()->set('telegram-bot.webhook.queue.after_commit', true);
+
+        $this->postJson('/telegram-bot/webhook', [
+            'update_id' => 1010,
+            'message' => [
+                'message_id' => 10,
+                'text' => 'Queued update',
+            ],
+        ])->assertOk()->assertExactJson([
+            'ok' => true,
+            'queued' => true,
+        ]);
+
+        $this->assertNull(TelegramWebhookTestHandler::$update);
+
+        Bus::assertDispatched(TelegramWebhookJob::class, function (TelegramWebhookJob $job): bool {
+            return $job->botName === 'support'
+                && $job->payload['update_id'] === 1010
+                && $job->connection === 'redis'
+                && $job->queue === 'telegram-webhooks'
+                && $job->afterCommit === true;
+        });
+    }
+
+    public function test_queued_webhook_job_processes_configured_handler(): void
+    {
+        config()->set('telegram-bot.webhook.handler', TelegramWebhookTestHandler::class);
+
+        $job = new TelegramWebhookJob([
+            'update_id' => 1011,
+            'callback_query' => [
+                'id' => 'queued-callback',
+            ],
+        ], 'support');
+
+        $job->handle($this->app->make(TelegramWebhookProcessor::class));
+
+        $this->assertSame(1011, TelegramWebhookTestHandler::$update?->updateId());
+        $this->assertSame('callback_query', TelegramWebhookTestHandler::$update?->type());
+        $this->assertSame('support', TelegramWebhookTestHandler::$botName);
+    }
+
+    public function test_webhook_idempotency_skips_duplicate_updates(): void
+    {
+        config()->set('telegram-bot.webhook.handler', TelegramWebhookCountingHandler::class);
+        config()->set('telegram-bot.webhook.idempotency.enabled', true);
+        config()->set('telegram-bot.webhook.idempotency.ttl', 60);
+
+        $payload = [
+            'update_id' => 1012,
+            'message' => [
+                'message_id' => 12,
+                'text' => 'Duplicate update',
+            ],
+        ];
+
+        $this->postJson('/telegram-bot/webhook', $payload)
+            ->assertOk()
+            ->assertExactJson([
+                'count' => 1,
+                'update_id' => 1012,
+            ]);
+
+        $this->postJson('/telegram-bot/webhook', $payload)
+            ->assertOk()
+            ->assertExactJson([
+                'duplicate' => true,
+                'ok' => true,
+            ]);
+
+        $this->assertSame(1, TelegramWebhookCountingHandler::$count);
+    }
+
     public function test_webhook_logs_handler_failures_without_payload_values(): void
     {
         $logger = new TelegramWebhookTestLogger();
@@ -370,6 +456,29 @@ final class TelegramWebhookFailingHandler implements TelegramWebhookHandler
     public function handle(TelegramWebhookUpdate $update, string $botName): mixed
     {
         throw new \RuntimeException('Handler failed.');
+    }
+}
+
+final class TelegramWebhookCountingHandler implements TelegramWebhookHandler
+{
+    public static int $count = 0;
+
+    public static function reset(): void
+    {
+        self::$count = 0;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function handle(TelegramWebhookUpdate $update, string $botName): array
+    {
+        self::$count++;
+
+        return [
+            'count' => self::$count,
+            'update_id' => $update->updateId(),
+        ];
     }
 }
 

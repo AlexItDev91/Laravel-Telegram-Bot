@@ -418,6 +418,41 @@ Package middleware always validates `X-Telegram-Bot-Api-Secret-Token` when `secr
 
 The receiver rejects malformed updates before dispatching events or handlers. A valid incoming payload must be JSON and include an integer `update_id`, matching Telegram's `Update` object contract.
 
+## Queue And Idempotency
+
+By default, webhook handlers run synchronously during the HTTP request. For production handlers that do non-trivial work, enable the queue handoff:
+
+```env
+TELEGRAM_WEBHOOK_QUEUE_ENABLED=true
+TELEGRAM_WEBHOOK_QUEUE_CONNECTION=redis
+TELEGRAM_WEBHOOK_QUEUE=telegram-webhooks
+TELEGRAM_WEBHOOK_QUEUE_AFTER_COMMIT=false
+```
+
+When queueing is enabled, the receiver validates the payload and secret token, dispatches `AlexItDev91\LaravelTelegramBot\Laravel\Jobs\TelegramWebhookJob`, and returns:
+
+```json
+{"ok": true, "queued": true}
+```
+
+The queued job processes the same `TelegramWebhookUpdate` through the configured event, handler, dispatcher, command, and fallback pipeline. If the host application does not provide Laravel's bus dispatcher, the receiver logs a warning and processes the update synchronously instead of dropping it.
+
+Telegram can retry webhook deliveries, so enable the cache-backed idempotency guard when handlers are not safe to run twice for the same `update_id`:
+
+```env
+TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED=true
+TELEGRAM_WEBHOOK_IDEMPOTENCY_STORE=redis
+TELEGRAM_WEBHOOK_IDEMPOTENCY_TTL=86400
+```
+
+The guard uses the host application's cache repository and `add()` semantics. A repeated update for the same bot and `update_id` returns:
+
+```json
+{"ok": true, "duplicate": true}
+```
+
+If a synchronous handler throws, the idempotency key is released so Telegram retries can be processed. In queued mode, the key is kept after the job is dispatched and Laravel queue retries handle processing failures.
+
 ## Logging
 
 When `telegram-bot.logging.enabled` is true, the Laravel integration writes warning/error logs for:
@@ -437,6 +472,7 @@ Log context is intentionally limited to operational metadata such as method name
 - Keep `TELEGRAM_WEBHOOK_REQUIRE_SECRET=true` in production so a missing secret does not silently expose the route.
 - Keep `TELEGRAM_BOT_LOGGING_ENABLED=true` unless the host application has equivalent monitoring.
 - Do not commit real bot tokens, webhook secrets, chat IDs, logs, or payload dumps.
-- Avoid long-running work in the webhook request; queue it.
+- Avoid long-running work in the webhook request; use `TELEGRAM_WEBHOOK_QUEUE_ENABLED=true`.
+- Enable `TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED=true` when duplicate webhook processing would be harmful.
 - Use `allowed_updates` in `setWebhook` to reduce unnecessary traffic.
 - Use `getWebhookInfo` after deployment to confirm Telegram sees the expected URL and has no delivery errors.

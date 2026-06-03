@@ -31,6 +31,15 @@ Keep these values separate:
 
 Do not commit real tokens, private chat IDs, webhook secrets, or screenshots containing them.
 
+For production webhooks, also plan queue and duplicate-update settings:
+
+| Value | Recommended example | Purpose |
+| --- | --- | --- |
+| Webhook queue | `TELEGRAM_WEBHOOK_QUEUE_ENABLED=true` | Acknowledge Telegram quickly and process handlers in Laravel queue workers. |
+| Webhook queue name | `TELEGRAM_WEBHOOK_QUEUE=telegram-webhooks` | Keeps bot work separate from default application jobs. |
+| Idempotency guard | `TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED=true` | Skips repeated deliveries for the same bot and `update_id`. |
+| Idempotency TTL | `TELEGRAM_WEBHOOK_IDEMPOTENCY_TTL=86400` | Keeps duplicate keys long enough for Telegram retry windows. |
+
 ## 2. Create The Bot In BotFather
 
 1. Open Telegram.

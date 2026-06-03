@@ -67,6 +67,8 @@ class TelegramBotServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(TelegramWebhookDispatcher::class);
+        $this->app->singleton(TelegramWebhookIdempotency::class);
+        $this->app->singleton(TelegramWebhookProcessor::class);
     }
 
     public function boot(): void

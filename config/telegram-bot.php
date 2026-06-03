@@ -54,6 +54,19 @@ return [
 
         'dispatch_event' => true,
 
+        'queue' => [
+            'enabled' => env('TELEGRAM_WEBHOOK_QUEUE_ENABLED', false),
+            'connection' => env('TELEGRAM_WEBHOOK_QUEUE_CONNECTION'),
+            'queue' => env('TELEGRAM_WEBHOOK_QUEUE'),
+            'after_commit' => env('TELEGRAM_WEBHOOK_QUEUE_AFTER_COMMIT', false),
+        ],
+
+        'idempotency' => [
+            'enabled' => env('TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED', false),
+            'store' => env('TELEGRAM_WEBHOOK_IDEMPOTENCY_STORE'),
+            'ttl' => env('TELEGRAM_WEBHOOK_IDEMPOTENCY_TTL', 86400),
+        ],
+
         'route' => [
             'enabled' => env('TELEGRAM_WEBHOOK_ROUTE_ENABLED', true),
             'uri' => env('TELEGRAM_WEBHOOK_ROUTE_URI', 'telegram-bot/webhook'),

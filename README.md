@@ -150,6 +150,16 @@ Typed DTOs validate required fields, empty lists, selected numeric constraints, 
 
 The package includes a Laravel webhook receiver at `POST /telegram-bot/webhook` by default. It validates `X-Telegram-Bot-Api-Secret-Token` when `TELEGRAM_WEBHOOK_SECRET_TOKEN` is configured, dispatches a `TelegramWebhookReceived` event, and can call a configured `TelegramWebhookHandler`. For larger bots, configure command handlers, update-type handlers, and a fallback handler through the built-in webhook dispatcher. In production, `TELEGRAM_WEBHOOK_REQUIRE_SECRET` defaults to `true`, so missing webhook secrets fail closed.
 
+For production bots that do non-trivial work in handlers, enable the built-in Laravel queue handoff and duplicate-update guard:
+
+```env
+TELEGRAM_WEBHOOK_QUEUE_ENABLED=true
+TELEGRAM_WEBHOOK_QUEUE_CONNECTION=redis
+TELEGRAM_WEBHOOK_QUEUE=telegram-webhooks
+TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED=true
+TELEGRAM_WEBHOOK_IDEMPOTENCY_TTL=86400
+```
+
 Webhook handlers receive `TelegramWebhookUpdate`, which keeps the raw payload and exposes typed convenience accessors for common Telegram objects:
 
 ```php

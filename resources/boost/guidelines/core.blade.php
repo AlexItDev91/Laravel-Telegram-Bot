@@ -28,6 +28,7 @@ php artisan telegram-bot:install
 - Use concrete `TelegramBot` or `TelegramBotClient` when IDE autocomplete for every native Telegram helper is important; contracts expose the stable core surface.
 - Use `TelegramBot::bot('name')` for a named bot.
 - Use `TelegramBot::channel('name')` for a configured destination with `chat_id` and optional `message_thread_id` or `direct_messages_topic_id`.
+- Use typed outbound DTOs for common payloads when validation helps: `SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
 - Use `php artisan telegram-bot:me --bot=default` to verify the configured bot token and Telegram identity.
 - Use `php artisan telegram-bot:doctor --bot=default` before deploys to check config, webhook secret policy, route registration, and Telegram API reachability.
 - Use `php artisan telegram-bot:updates` to discover parsed `chat_id`, `message_thread_id`, and `direct_messages_topic_id` values from Telegram updates.
@@ -40,6 +41,7 @@ php artisan telegram-bot:install
 - Keep `TELEGRAM_BOT_LOGGING_ENABLED=true` for safe operational warning/error logs without tokens, secret headers, request payloads, response bodies, chat IDs, or message text.
 - Use `TELEGRAM_WEBHOOK_QUEUE_ENABLED=true` for handlers that do non-trivial work; run Laravel queue workers for `AlexItDev91\LaravelTelegramBot\Laravel\Jobs\TelegramWebhookJob`.
 - Use `TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED=true` with a shared cache store when duplicate Telegram `update_id` processing would be harmful.
+- Observe webhook processing with `TelegramWebhookReceived`, `TelegramWebhookHandled`, `TelegramWebhookFailed`, `TelegramWebhookQueued`, and `TelegramWebhookDuplicateSkipped`.
 - Handle incoming updates with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler` or listen for `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived`.
 - For larger bots, prefer webhook dispatcher maps: `telegram-bot.webhook.commands`, `telegram-bot.webhook.handlers`, and `telegram-bot.webhook.fallback_handler`.
 - Implement command handlers with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookCommandHandler` and `AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookCommand`.
@@ -50,6 +52,7 @@ php artisan telegram-bot:install
 - Keep raw update access available through `payload()`, `get()`, and the backward-compatible array helpers when Telegram adds fields before typed DTOs exist.
 - Use `TelegramBot::call('methodName', [...])` for new Telegram methods before typed helpers are updated.
 - For failed Telegram API responses, use `retryAfter()` and `migrateToChatId()` on `TelegramBotApiException` when handling rate limits or migrated groups.
+- Use `docs/RECIPES.md` and `examples/laravel` for copy-ready Laravel jobs, handlers, listeners, and route snippets.
 - Keep Telegram IDs as strings or 64-bit safe values.
 
 ## API Currency

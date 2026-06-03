@@ -29,6 +29,17 @@ final class SendTelegramAlert
 Type-hint `AlexItDev91\LaravelTelegramBot\TelegramBot` or `TelegramBotClient` when you want IDE autocomplete for every native Telegram method.
 Type-hint `AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager` or `Contracts\TelegramBotClient` when you only need the stable core contract.
 
+Use typed outbound DTOs for common message workflows when you want validation before the HTTP request:
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData;
+
+$telegram->bot('support')->sendMessage(new SendMessageData(
+    chatId: '-1001234567890',
+    text: 'Deploy finished',
+));
+```
+
 ## Facade
 
 ```php

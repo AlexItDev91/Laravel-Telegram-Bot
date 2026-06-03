@@ -57,6 +57,8 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('telegram-bot:send-test', $skill);
         $this->assertStringContainsString('telegram-bot:webhook:set', $skill);
         $this->assertStringContainsString('TelegramBot::channel', $skill);
+        $this->assertStringContainsString('SendMessageData', $skill);
+        $this->assertStringContainsString('AnswerCallbackQueryData', $skill);
         $this->assertStringContainsString('TELEGRAM_INBOX_DIRECT_MESSAGES_TOPIC_ID', $skill);
         $this->assertStringContainsString('TELEGRAM_WEBHOOK_SECRET_TOKEN', $skill);
         $this->assertStringContainsString('TELEGRAM_WEBHOOK_REQUIRE_SECRET', $skill);
@@ -64,6 +66,10 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TELEGRAM_BOT_LOGGING_ENABLED', $skill);
         $this->assertStringContainsString('TelegramWebhookCommandHandler', $skill);
         $this->assertStringContainsString('TelegramWebhookCommand', $skill);
+        $this->assertStringContainsString('TelegramWebhookHandled', $skill);
+        $this->assertStringContainsString('TelegramWebhookDuplicateSkipped', $skill);
+        $this->assertStringContainsString('docs/RECIPES.md', $skill);
+        $this->assertStringContainsString('examples/laravel', $skill);
         $this->assertStringContainsString('Route::telegramBotWebhook()', $skill);
         $this->assertStringContainsString('TelegramBot::fake()', $skill);
         $this->assertStringContainsString('assertSentMessage()', $skill);

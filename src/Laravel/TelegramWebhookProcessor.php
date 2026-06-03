@@ -4,6 +4,8 @@ namespace AlexItDev91\LaravelTelegramBot\Laravel;
 
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
+use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookFailed;
+use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookHandled;
 use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -22,13 +24,15 @@ class TelegramWebhookProcessor
 
     public function process(TelegramWebhookUpdate $update, string $botName): mixed
     {
-        if ((bool) config('telegram-bot.webhook.dispatch_event', true)) {
-            $this->events->dispatch(new TelegramWebhookReceived($update, $botName));
-        }
+        $this->dispatchEvent(new TelegramWebhookReceived($update, $botName));
 
         try {
-            return $this->handleWithConfiguredHandler($update, $botName);
+            $result = $this->handleWithConfiguredHandler($update, $botName);
+            $this->dispatchEvent(new TelegramWebhookHandled($update, $botName));
+
+            return $result;
         } catch (Throwable $exception) {
+            $this->dispatchEvent(new TelegramWebhookFailed($update, $botName, $exception));
             $this->error('Telegram webhook handler failed.', [
                 'bot' => $botName,
                 'update_id' => $update->updateId(),
@@ -91,6 +95,15 @@ class TelegramWebhookProcessor
         $fallback = config('telegram-bot.webhook.fallback_handler');
 
         return $fallback !== null && $fallback !== '';
+    }
+
+    private function dispatchEvent(object $event): void
+    {
+        if (! (bool) config('telegram-bot.webhook.dispatch_event', true)) {
+            return;
+        }
+
+        $this->events->dispatch($event);
     }
 
     /**

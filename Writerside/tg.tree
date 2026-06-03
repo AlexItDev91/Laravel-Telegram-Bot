@@ -9,6 +9,7 @@
     <toc-element topic="telegram-setup.md"/>
     <toc-element topic="console-commands.md"/>
     <toc-element topic="webhooks.md"/>
+    <toc-element topic="production-recipes.md"/>
     <toc-element topic="files-and-http.md"/>
     <toc-element topic="payments-passport-games.md"/>
     <toc-element topic="api-surface.md"/>

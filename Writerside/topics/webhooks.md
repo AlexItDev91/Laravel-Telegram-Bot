@@ -453,6 +453,18 @@ The guard uses the host application's cache repository and `add()` semantics. A 
 
 If a synchronous handler throws, the idempotency key is released so Telegram retries can be processed. In queued mode, the key is kept after the job is dispatched and Laravel queue retries handle processing failures.
 
+## Observability Events
+
+When `telegram-bot.webhook.dispatch_event` is true, the Laravel integration dispatches:
+
+- `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived`
+- `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookHandled`
+- `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookFailed`
+- `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookQueued`
+- `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookDuplicateSkipped`
+
+Use these events for metrics, tracing, and low-cardinality operational dashboards. Avoid logging full payloads, chat IDs, message text, tokens, and secret headers from event listeners.
+
 ## Logging
 
 When `telegram-bot.logging.enabled` is true, the Laravel integration writes warning/error logs for:

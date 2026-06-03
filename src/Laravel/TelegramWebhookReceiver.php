@@ -3,9 +3,12 @@
 namespace AlexItDev91\LaravelTelegramBot\Laravel;
 
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
+use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookDuplicateSkipped;
+use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookQueued;
 use AlexItDev91\LaravelTelegramBot\Laravel\Jobs\TelegramWebhookJob;
 use Illuminate\Contracts\Bus\Dispatcher as BusDispatcher;
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use JsonException;
@@ -19,6 +22,7 @@ class TelegramWebhookReceiver
         private readonly Container $container,
         private readonly TelegramWebhookProcessor $processor,
         private readonly TelegramWebhookIdempotency $idempotency,
+        private readonly EventDispatcher $events,
         private readonly ?LoggerInterface $logger = null,
     ) {
         //
@@ -42,12 +46,21 @@ class TelegramWebhookReceiver
         $update = TelegramWebhookUpdate::fromPayload($payload);
 
         if ($this->idempotency->shouldSkip($update, $botName)) {
+            $this->dispatchEvent(new TelegramWebhookDuplicateSkipped($update, $botName));
+
             return new JsonResponse(['ok' => true, 'duplicate' => true]);
         }
 
         if ($this->shouldQueue()) {
             try {
                 if ($this->dispatchQueued($payload, $botName)) {
+                    $this->dispatchEvent(new TelegramWebhookQueued(
+                        update: $update,
+                        botName: $botName,
+                        connection: $this->queueConnection(),
+                        queue: $this->queueName(),
+                    ));
+
                     return new JsonResponse(['ok' => true, 'queued' => true]);
                 }
             } catch (Throwable $exception) {
@@ -96,8 +109,8 @@ class TelegramWebhookReceiver
         }
 
         $job = new TelegramWebhookJob($payload, $botName);
-        $connection = config('telegram-bot.webhook.queue.connection');
-        $queue = config('telegram-bot.webhook.queue.queue');
+        $connection = $this->queueConnection();
+        $queue = $this->queueName();
 
         if (is_string($connection) && $connection !== '') {
             $job->onConnection($connection);
@@ -119,6 +132,29 @@ class TelegramWebhookReceiver
     private function shouldQueue(): bool
     {
         return (bool) config('telegram-bot.webhook.queue.enabled', false);
+    }
+
+    private function queueConnection(): ?string
+    {
+        $connection = config('telegram-bot.webhook.queue.connection');
+
+        return is_string($connection) && $connection !== '' ? $connection : null;
+    }
+
+    private function queueName(): ?string
+    {
+        $queue = config('telegram-bot.webhook.queue.queue');
+
+        return is_string($queue) && $queue !== '' ? $queue : null;
+    }
+
+    private function dispatchEvent(object $event): void
+    {
+        if (! (bool) config('telegram-bot.webhook.dispatch_event', true)) {
+            return;
+        }
+
+        $this->events->dispatch($event);
     }
 
     private function response(mixed $handlerResult): Response

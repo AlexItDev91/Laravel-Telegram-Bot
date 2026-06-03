@@ -4,6 +4,9 @@ namespace AlexItDev91\LaravelTelegramBot\Tests\Unit;
 
 use AlexItDev91\LaravelTelegramBot\DTO\Games\GetGameHighScoresData;
 use AlexItDev91\LaravelTelegramBot\DTO\Games\SetGameScoreData;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\AnswerCallbackQueryData;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\EditMessageTextData;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData;
 use AlexItDev91\LaravelTelegramBot\DTO\Passport\PassportAuthorizationRequest;
 use AlexItDev91\LaravelTelegramBot\DTO\Passport\PassportElementError;
 use AlexItDev91\LaravelTelegramBot\DTO\Passport\PassportScope;
@@ -54,6 +57,22 @@ class TelegramBotDataValidationTest extends TestCase
                     new LabeledPrice('Plan', 100),
                 ]),
                 'message' => 'Telegram Bot payload field [chat_id] must not be empty.',
+            ],
+            'empty send message text' => [
+                'factory' => static fn (): mixed => new SendMessageData('100', ''),
+                'message' => 'Telegram Bot payload field [text] must not be empty.',
+            ],
+            'edit message text without message reference' => [
+                'factory' => static fn (): mixed => new EditMessageTextData('Updated text'),
+                'message' => 'Telegram Bot payload requires either [inline_message_id] or both [chat_id] and [message_id].',
+            ],
+            'empty callback query id' => [
+                'factory' => static fn (): mixed => new AnswerCallbackQueryData(''),
+                'message' => 'Telegram Bot payload field [callback_query_id] must not be empty.',
+            ],
+            'negative callback cache time' => [
+                'factory' => static fn (): mixed => new AnswerCallbackQueryData('callback-id', cacheTime: -1),
+                'message' => 'Telegram Bot payload field [cache_time] must not be negative.',
             ],
             'empty invoice prices' => [
                 'factory' => static fn (): mixed => new SendInvoiceData('100', 'Title', 'Description', 'payload', 'XTR', []),

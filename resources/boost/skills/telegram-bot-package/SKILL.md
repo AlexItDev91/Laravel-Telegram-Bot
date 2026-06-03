@@ -103,6 +103,8 @@ Prefer constructor injection with `AlexItDev91\LaravelTelegramBot\TelegramBot` o
 
 Use `InputFile::fromPath()` for top-level and nested file uploads. Nested media files are converted to Telegram `attach://` multipart references automatically.
 
+Use typed outbound DTOs for common payloads when validation helps: `AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
+
 Bind `GuzzleHttp\ClientInterface` in the host app when custom transport, retries, proxy, tracing, or HTTP fakes are needed. Keep `http_errors` disabled so Telegram API error payloads remain available to the SDK.
 
 ## Webhooks
@@ -112,6 +114,8 @@ The package registers `POST /telegram-bot/webhook` when `telegram-bot.webhook.ro
 Keep `TELEGRAM_BOT_LOGGING_ENABLED=true` for safe operational warning/error logs. Logs must not include bot tokens, secret headers, request payloads, response bodies, chat IDs, or message text.
 
 For production handlers that do real work, set `TELEGRAM_WEBHOOK_QUEUE_ENABLED=true`, run Laravel queue workers for `AlexItDev91\LaravelTelegramBot\Laravel\Jobs\TelegramWebhookJob`, and enable `TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED=true` with a shared cache store when duplicate update processing is unsafe.
+
+Observe webhook processing with `TelegramWebhookReceived`, `TelegramWebhookHandled`, `TelegramWebhookFailed`, `TelegramWebhookQueued`, and `TelegramWebhookDuplicateSkipped`. Use `docs/RECIPES.md` and `examples/laravel` for copy-ready jobs, handlers, listeners, and route snippets.
 
 ```php
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;

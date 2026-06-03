@@ -4,6 +4,10 @@ namespace AlexItDev91\LaravelTelegramBot\Tests\Feature;
 
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
+use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookDuplicateSkipped;
+use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookFailed;
+use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookHandled;
+use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookQueued;
 use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived;
 use AlexItDev91\LaravelTelegramBot\Laravel\Jobs\TelegramWebhookJob;
 use AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookProcessor;
@@ -45,6 +49,10 @@ class TelegramWebhookReceiverTest extends TestCase
         Event::assertDispatched(TelegramWebhookReceived::class, function (TelegramWebhookReceived $event): bool {
             return $event->update->updateId() === 1001
                 && $event->update->type() === 'message'
+                && $event->botName === 'default';
+        });
+        Event::assertDispatched(TelegramWebhookHandled::class, function (TelegramWebhookHandled $event): bool {
+            return $event->update->updateId() === 1001
                 && $event->botName === 'default';
         });
     }
@@ -316,6 +324,7 @@ class TelegramWebhookReceiverTest extends TestCase
 
     public function test_webhook_can_queue_processing_without_calling_handler_inline(): void
     {
+        Event::fake();
         Bus::fake();
 
         config()->set('telegram-bot.webhook.handler', TelegramWebhookTestHandler::class);
@@ -345,6 +354,12 @@ class TelegramWebhookReceiverTest extends TestCase
                 && $job->queue === 'telegram-webhooks'
                 && $job->afterCommit === true;
         });
+        Event::assertDispatched(TelegramWebhookQueued::class, function (TelegramWebhookQueued $event): bool {
+            return $event->update->updateId() === 1010
+                && $event->botName === 'support'
+                && $event->connection === 'redis'
+                && $event->queue === 'telegram-webhooks';
+        });
     }
 
     public function test_queued_webhook_job_processes_configured_handler(): void
@@ -367,6 +382,8 @@ class TelegramWebhookReceiverTest extends TestCase
 
     public function test_webhook_idempotency_skips_duplicate_updates(): void
     {
+        Event::fake();
+
         config()->set('telegram-bot.webhook.handler', TelegramWebhookCountingHandler::class);
         config()->set('telegram-bot.webhook.idempotency.enabled', true);
         config()->set('telegram-bot.webhook.idempotency.ttl', 60);
@@ -394,10 +411,16 @@ class TelegramWebhookReceiverTest extends TestCase
             ]);
 
         $this->assertSame(1, TelegramWebhookCountingHandler::$count);
+        Event::assertDispatched(TelegramWebhookDuplicateSkipped::class, function (TelegramWebhookDuplicateSkipped $event): bool {
+            return $event->update->updateId() === 1012
+                && $event->botName === 'default';
+        });
     }
 
     public function test_webhook_logs_handler_failures_without_payload_values(): void
     {
+        Event::fake();
+
         $logger = new TelegramWebhookTestLogger();
         $this->app->instance(LoggerInterface::class, $logger);
 
@@ -423,6 +446,11 @@ class TelegramWebhookReceiverTest extends TestCase
             $this->assertSame(1004, $record['context']['update_id']);
             $this->assertSame('message', $record['context']['update_type']);
             $this->assertStringNotContainsString('Private inbound text', json_encode($record, JSON_THROW_ON_ERROR));
+            Event::assertDispatched(TelegramWebhookFailed::class, function (TelegramWebhookFailed $event): bool {
+                return $event->update->updateId() === 1004
+                    && $event->botName === 'default'
+                    && $event->exception instanceof \RuntimeException;
+            });
         }
     }
 }

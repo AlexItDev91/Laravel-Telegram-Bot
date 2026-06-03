@@ -71,6 +71,11 @@ trait BuildsTelegramBotPayload
 
     private static function assertGameMessageReference(int|string|null $chatId, ?int $messageId, ?string $inlineMessageId): void
     {
+        self::assertMessageReference($chatId, $messageId, $inlineMessageId);
+    }
+
+    private static function assertMessageReference(int|string|null $chatId, ?int $messageId, ?string $inlineMessageId): void
+    {
         if (! self::isBlankPayloadValue($inlineMessageId)) {
             return;
         }

@@ -32,6 +32,7 @@ Read the published documentation:
 - [End-To-End Setup Guide](https://alexitdev91.github.io/Laravel-Telegram-Bot/telegram-setup.html)
 - [Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html)
 - [Webhooks](https://alexitdev91.github.io/Laravel-Telegram-Bot/webhooks.html)
+- [Production Recipes](https://alexitdev91.github.io/Laravel-Telegram-Bot/production-recipes.html)
 - [Files And HTTP](https://alexitdev91.github.io/Laravel-Telegram-Bot/files-and-http.html)
 - [Payments, Passport, And Games](https://alexitdev91.github.io/Laravel-Telegram-Bot/payments-passport-games.html)
 - [API Method Support](https://alexitdev91.github.io/Laravel-Telegram-Bot/api-surface.html)
@@ -142,9 +143,11 @@ The raw `call(method, parameters)` API remains available for newly released Tele
 
 ## Validation And DTOs
 
-The package keeps the full Telegram Bot API available through native methods and the raw `call()` API. Typed DTOs are provided for the higher-risk Laravel workflows where structured payloads improve correctness: Payments, Stars, paid media, Telegram Passport, Games, package config, channels, and webhook updates.
+The package keeps the full Telegram Bot API available through native methods and the raw `call()` API. Typed DTOs are provided for the higher-risk Laravel workflows where structured payloads improve correctness: common outbound messages, Payments, Stars, paid media, Telegram Passport, Games, package config, channels, and webhook updates.
 
 Typed DTOs validate required fields, empty lists, selected numeric constraints, and documented Telegram conditions before the HTTP request is sent. DTO `extra` arrays are reserved for additional Telegram fields and may not duplicate typed constructor fields. Laravel channel config requires a non-empty `chat_id`; bot config requires a valid `api_url` and positive `timeout`. Generic array calls remain intentionally flexible for newly released Telegram methods and less common API objects.
+
+Common outbound DTOs include `SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
 
 ## Webhooks
 

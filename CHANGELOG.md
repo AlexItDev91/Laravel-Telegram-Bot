@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.15.0] - 2026-06-03
+
+- Added typed outbound DTO builders for common message workflows: `SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
+- Added webhook observability events for handled, failed, queued, and duplicate-skipped updates.
+- Added production recipes and copy-ready Laravel examples for command handlers, callback handlers, outbound retry/rate-limit recovery, metrics listeners, and manual webhook routes.
+
 ## [1.14.0] - 2026-06-03
 
 - Added optional queued webhook processing through `TelegramWebhookJob`, including queue connection/name/after-commit configuration.

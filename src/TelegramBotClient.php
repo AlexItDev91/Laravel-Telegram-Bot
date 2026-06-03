@@ -3,21 +3,26 @@
 namespace AlexItDev91\LaravelTelegramBot;
 
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotObserver;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotRateLimiter;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramApiResponseData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
-use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequest;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestTelemetryData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotApiException;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotConfigurationException;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotTransportException;
 use AlexItDev91\LaravelTelegramBot\Support\TelegramBotResultFactory;
+use AlexItDev91\LaravelTelegramBot\Support\TelegramBotRetryPolicy;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 use JsonException;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class TelegramBotClient implements TelegramBotClientContract
 {
@@ -28,6 +33,9 @@ class TelegramBotClient implements TelegramBotClientContract
         private readonly TelegramBotConfigData $config,
         private ?ClientInterface $httpClient = null,
         private readonly ?LoggerInterface $logger = null,
+        private readonly ?TelegramBotRetryPolicy $retryPolicy = null,
+        private readonly ?TelegramBotRateLimiter $rateLimiter = null,
+        private readonly ?TelegramBotObserver $observer = null,
     ) {
         //
     }
@@ -38,12 +46,18 @@ class TelegramBotClient implements TelegramBotClientContract
         float $timeout = 10.0,
         ?ClientInterface $httpClient = null,
         ?LoggerInterface $logger = null,
+        ?TelegramBotRetryPolicy $retryPolicy = null,
+        ?TelegramBotRateLimiter $rateLimiter = null,
+        ?TelegramBotObserver $observer = null,
     ): self
     {
         return new self(
             config: new TelegramBotConfigData($token, $apiUrl, $timeout),
             httpClient: $httpClient,
             logger: $logger,
+            retryPolicy: $retryPolicy,
+            rateLimiter: $rateLimiter,
+            observer: $observer,
         );
     }
 
@@ -61,6 +75,71 @@ class TelegramBotClient implements TelegramBotClientContract
             : TelegramBotRequestData::fromArray($parameters);
         $this->assertRequestMatchesMethod($request, $method);
 
+        $execute = fn (): mixed => $this->sendWithRetries($method, $request);
+
+        if ($this->rateLimiter !== null) {
+            return $this->rateLimiter->throttle($method, $execute);
+        }
+
+        return $execute();
+    }
+
+    private function sendWithRetries(string $method, TelegramBotRequestData $request): mixed
+    {
+        $startedAt = microtime(true);
+        $attempt = 0;
+
+        while (true) {
+            $attempt++;
+
+            try {
+                [$apiResponse, $statusCode] = $this->requestApi($method, $request);
+            } catch (TelegramBotTransportException $exception) {
+                if ($this->retryPolicy()->shouldRetryTransportFailure($attempt, $exception)) {
+                    $this->retryPolicy()->pause($this->retryPolicy()->delaySeconds($attempt));
+
+                    continue;
+                }
+
+                $this->recordTelemetry($method, $request, false, $startedAt, $attempt, exception: $exception);
+
+                throw $exception;
+            }
+
+            if (! $apiResponse->ok) {
+                if ($this->retryPolicy()->shouldRetryApiResponse($attempt, $statusCode, $apiResponse)) {
+                    $this->retryPolicy()->pause($this->retryPolicy()->delaySeconds($attempt, $apiResponse));
+
+                    continue;
+                }
+
+                $this->logger?->warning('Telegram Bot API request failed.', [
+                    'method' => $method,
+                    'telegram_error_code' => $apiResponse->errorCode,
+                ]);
+
+                $exception = new TelegramBotApiException(
+                    $apiResponse->description ?? 'Telegram Bot API request failed.',
+                    $apiResponse->errorCode,
+                    $apiResponse->parameters ?? [],
+                );
+
+                $this->recordTelemetry($method, $request, false, $startedAt, $attempt, $statusCode, $apiResponse->errorCode, $exception);
+
+                throw $exception;
+            }
+
+            $this->recordTelemetry($method, $request, true, $startedAt, $attempt, $statusCode);
+
+            return $apiResponse->result;
+        }
+    }
+
+    /**
+     * @return array{TelegramApiResponseData, int}
+     */
+    private function requestApi(string $method, TelegramBotRequestData $request): array
+    {
         try {
             $response = $this->httpClient()->request(
                 'POST',
@@ -93,22 +172,7 @@ class TelegramBotClient implements TelegramBotClientContract
 
         $this->assertValidResponsePayload($payload, $method);
 
-        $apiResponse = TelegramApiResponseData::fromPayload($payload);
-
-        if (! $apiResponse->ok) {
-            $this->logger?->warning('Telegram Bot API request failed.', [
-                'method' => $method,
-                'telegram_error_code' => $apiResponse->errorCode,
-            ]);
-
-            throw new TelegramBotApiException(
-                $apiResponse->description ?? 'Telegram Bot API request failed.',
-                $apiResponse->errorCode,
-                $apiResponse->parameters ?? [],
-            );
-        }
-
-        return $apiResponse->result;
+        return [TelegramApiResponseData::fromPayload($payload), $response->getStatusCode()];
     }
 
     /**
@@ -117,6 +181,44 @@ class TelegramBotClient implements TelegramBotClientContract
     public function callData(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
         return TelegramBotResultFactory::from($method, $this->call($method, $parameters));
+    }
+
+    private function retryPolicy(): TelegramBotRetryPolicy
+    {
+        return $this->retryPolicy ?? new TelegramBotRetryPolicy();
+    }
+
+    private function recordTelemetry(
+        string $method,
+        TelegramBotRequestData $request,
+        bool $ok,
+        float $startedAt,
+        int $attempts,
+        ?int $statusCode = null,
+        ?int $telegramErrorCode = null,
+        ?Throwable $exception = null,
+    ): void {
+        if ($this->observer === null) {
+            return;
+        }
+
+        try {
+            $this->observer->record(new TelegramBotRequestTelemetryData(
+                method: $method,
+                ok: $ok,
+                durationMs: round((microtime(true) - $startedAt) * 1000, 3),
+                attempts: $attempts,
+                statusCode: $statusCode,
+                telegramErrorCode: $telegramErrorCode,
+                exception: $exception !== null ? $exception::class : null,
+                hasFiles: $request->containsFiles(),
+            ));
+        } catch (Throwable $observerException) {
+            $this->logger?->warning('Telegram Bot observer failed.', [
+                'method' => $method,
+                'exception' => $observerException::class,
+            ]);
+        }
     }
 
     /**
@@ -165,7 +267,7 @@ class TelegramBotClient implements TelegramBotClientContract
 
     private function assertRequestMatchesMethod(TelegramBotRequestData $request, string $method): void
     {
-        if (! $request instanceof TelegramBotMethodRequestData || $request->method() === $method) {
+        if (! $request instanceof TelegramBotMethodRequest || $request->method() === $method) {
             return;
         }
 

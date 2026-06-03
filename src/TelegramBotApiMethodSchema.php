@@ -9,6 +9,8 @@ use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
  */
 final class TelegramBotApiMethodSchema
 {
+    public const CHECKSUM = '530ff42016e193d4d7348a53709fa53cb5e131b1db545e22227c98484432f7ec';
+
     /**
      * @var array<string, list<array{name: string, type: string, required: bool}>>
      */
@@ -4712,6 +4714,11 @@ final class TelegramBotApiMethodSchema
     public static function all(): array
     {
         return self::PARAMETERS;
+    }
+
+    public static function checksum(): string
+    {
+        return self::CHECKSUM;
     }
 
     private static function methodName(string|TelegramBotApiMethod $method): string

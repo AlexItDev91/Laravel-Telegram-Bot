@@ -3,9 +3,19 @@
 namespace AlexItDev91\LaravelTelegramBot\Tests\Unit;
 
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatMemberData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotCommandData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotResultData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatFullInfoData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatInviteLinkData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramFileData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramForumTopicData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramGiftsData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramMessageIdData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramMessageData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramPollData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramSentWebAppMessageData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramStickerData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramStickerSetData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookInfoData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
@@ -159,7 +169,42 @@ class TelegramBotTypedResponseTest extends TestCase
         $this->assertSame(123456789, $administrators[0]->user()?->id());
     }
 
-    public function test_call_data_wraps_unmapped_object_results_in_generic_dto(): void
+    public function test_official_result_map_uses_precise_scalar_and_object_types(): void
+    {
+        $history = [];
+        $client = $this->client($history, [
+            'https://pay.telegram.test/invoice',
+            ['message_id' => 77],
+            [
+                ['message_id' => 78],
+                ['message_id' => 79],
+            ],
+            ['id' => 'poll-id', 'question' => 'Deploy?', 'total_voter_count' => 2],
+            ['inline_message_id' => 'inline-web-app-message'],
+            ['id' => '-1001234567890', 'type' => 'supergroup', 'title' => 'Ops', 'description' => 'Ops room'],
+        ]);
+
+        $invoiceLink = $client->callData('createInvoiceLink');
+        $copiedMessage = $client->callData('copyMessage');
+        $copiedMessages = $client->callData('copyMessages');
+        $poll = $client->callData('stopPoll');
+        $webAppMessage = $client->callData('answerWebAppQuery');
+        $chat = $client->getChatData(['chat_id' => '-1001234567890']);
+
+        $this->assertSame('https://pay.telegram.test/invoice', $invoiceLink);
+        $this->assertInstanceOf(TelegramMessageIdData::class, $copiedMessage);
+        $this->assertSame(77, $copiedMessage->messageId());
+        $this->assertContainsOnlyInstancesOf(TelegramMessageIdData::class, $copiedMessages);
+        $this->assertSame(79, $copiedMessages[1]->messageId());
+        $this->assertInstanceOf(TelegramPollData::class, $poll);
+        $this->assertSame('poll-id', $poll->id());
+        $this->assertInstanceOf(TelegramSentWebAppMessageData::class, $webAppMessage);
+        $this->assertSame('inline-web-app-message', $webAppMessage->inlineMessageId());
+        $this->assertInstanceOf(TelegramChatFullInfoData::class, $chat);
+        $this->assertSame('Ops room', $chat->description());
+    }
+
+    public function test_call_data_wraps_mapped_object_results_in_named_dtos(): void
     {
         $history = [];
         $client = $this->client($history, [
@@ -173,9 +218,51 @@ class TelegramBotTypedResponseTest extends TestCase
             'chat_id' => '-1001234567890',
         ]);
 
-        $this->assertInstanceOf(TelegramBotResultData::class, $invite);
-        $this->assertSame('https://t.me/+invite', $invite->string('invite_link'));
-        $this->assertTrue($invite->bool('creates_join_request'));
+        $this->assertInstanceOf(TelegramChatInviteLinkData::class, $invite);
+        $this->assertSame('https://t.me/+invite', $invite->inviteLink());
+        $this->assertTrue($invite->createsJoinRequest());
+    }
+
+    public function test_call_data_maps_frequent_result_objects_and_lists(): void
+    {
+        $history = [];
+        $client = $this->client($history, [
+            [
+                'message_thread_id' => 42,
+                'name' => 'Support',
+                'icon_color' => 7322096,
+            ],
+            [
+                'name' => 'stickerset',
+                'title' => 'Sticker Set',
+                'sticker_type' => 'regular',
+                'stickers' => [
+                    ['file_id' => 'sticker-file', 'file_unique_id' => 'unique', 'type' => 'regular', 'width' => 512, 'height' => 512],
+                ],
+            ],
+            [
+                'gifts' => [
+                    ['id' => 'gift-id', 'star_count' => 100, 'sticker' => ['file_id' => 'gift-sticker']],
+                ],
+            ],
+            [
+                ['command' => 'start', 'description' => 'Start bot'],
+            ],
+        ]);
+
+        $topic = $client->callData('createForumTopic', ['chat_id' => '-1001234567890', 'name' => 'Support']);
+        $stickerSet = $client->callData('getStickerSet', ['name' => 'stickerset']);
+        $gifts = $client->callData('getAvailableGifts');
+        $commands = $client->callData('getMyCommands');
+
+        $this->assertInstanceOf(TelegramForumTopicData::class, $topic);
+        $this->assertSame(42, $topic->messageThreadId());
+        $this->assertInstanceOf(TelegramStickerSetData::class, $stickerSet);
+        $this->assertContainsOnlyInstancesOf(TelegramStickerData::class, $stickerSet->stickers());
+        $this->assertInstanceOf(TelegramGiftsData::class, $gifts);
+        $this->assertSame('gift-id', $gifts->gifts()[0]->id());
+        $this->assertContainsOnlyInstancesOf(TelegramBotCommandData::class, $commands);
+        $this->assertSame('start', $commands[0]->command());
     }
 
     public function test_call_data_wraps_unmapped_object_lists_in_generic_dtos(): void

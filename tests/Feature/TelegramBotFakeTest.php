@@ -2,7 +2,9 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Tests\Feature;
 
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMessageRequestData;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+use AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager;
 use AlexItDev91\LaravelTelegramBot\Tests\TestCase;
 use AlexItDev91\LaravelTelegramBot\Testing\TelegramBotFake;
 
@@ -101,5 +103,42 @@ class TelegramBotFakeTest extends TestCase
         $fake = new TelegramBotFake();
 
         $fake->assertNothingSent();
+    }
+
+    public function test_testing_dsl_asserts_payload_sequence_token_leakage_webhook_updates_and_conversations(): void
+    {
+        config()->set('telegram-bot.token', '123456:secret-token');
+        config()->set('telegram-bot.conversation.enabled', true);
+
+        $fake = TelegramBot::fake();
+
+        TelegramBot::sendMessage(SendMessageRequestData::make(
+            chatId: '123456789',
+            text: 'Hello',
+        ));
+        TelegramBot::sendPhoto([
+            'chat_id' => '123456789',
+            'photo' => 'file-id',
+        ]);
+
+        $fake->assertSent('sendMessage', ['text' => 'Hello'], times: 1);
+        $fake->assertSentTypedPayload('sendMessage', SendMessageRequestData::class, times: 1);
+        $fake->assertSentSequence(['sendMessage', 'sendPhoto']);
+        $fake->assertNoTokenLeakage();
+
+        $update = $fake->fakeWebhookUpdate([
+            'update_id' => 5001,
+            'message' => [
+                'message_id' => 1,
+                'chat' => ['id' => '123456789', 'type' => 'private'],
+                'text' => 'Hello',
+            ],
+        ]);
+
+        $manager = app(TelegramConversationManager::class);
+        $key = $manager->keyForUpdate($update, 'default');
+        $manager->put($key, 'awaiting_name');
+
+        $fake->assertConversationState($manager, $key, 'awaiting_name');
     }
 }

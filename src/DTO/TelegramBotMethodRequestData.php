@@ -6,7 +6,7 @@ use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\TelegramBotApiMethodSchema;
 use InvalidArgumentException;
 
-readonly class TelegramBotMethodRequestData extends TelegramBotRequestData
+readonly class TelegramBotMethodRequestData extends TelegramBotRequestData implements TelegramBotMethodRequest
 {
     private string $methodName;
 

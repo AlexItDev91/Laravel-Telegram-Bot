@@ -2,12 +2,18 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Tests\Unit;
 
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotObserver;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotRateLimiter;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestTelemetryData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotApiException;
+use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotRateLimitException;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotTransportException;
 use AlexItDev91\LaravelTelegramBot\InputFile;
+use AlexItDev91\LaravelTelegramBot\Support\TelegramBotRetryPolicy;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
+use Closure;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
@@ -313,6 +319,71 @@ class TelegramBotClientTest extends TestCase
         $client->getMe();
     }
 
+    public function test_retries_retryable_telegram_api_responses_without_sleep_when_configured(): void
+    {
+        $history = [];
+        $client = TelegramBotClient::make(
+            token: '123456:test-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new Response(429, [], json_encode([
+                    'ok' => false,
+                    'error_code' => 429,
+                    'description' => 'Too Many Requests',
+                    'parameters' => ['retry_after' => 10],
+                ], JSON_THROW_ON_ERROR)),
+                new Response(200, [], json_encode(['ok' => true, 'result' => ['id' => 1]], JSON_THROW_ON_ERROR)),
+            ], $history),
+            retryPolicy: new TelegramBotRetryPolicy(enabled: true, maxAttempts: 2, sleep: false),
+        );
+
+        $this->assertSame(['id' => 1], $client->getMe());
+        $this->assertCount(2, $history);
+    }
+
+    public function test_observer_records_sanitized_request_telemetry(): void
+    {
+        $observer = new TelegramBotTestObserver();
+        $client = TelegramBotClient::make(
+            token: '123456:secret-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+            ]),
+            observer: $observer,
+        );
+
+        $client->sendMessage([
+            'chat_id' => '-1001234567890',
+            'text' => 'Private alert body',
+        ]);
+
+        $this->assertCount(1, $observer->records);
+        $this->assertSame('sendMessage', $observer->records[0]->method);
+        $this->assertTrue($observer->records[0]->ok);
+        $this->assertSame(1, $observer->records[0]->attempts);
+        $this->assertStringNotContainsString('123456:secret-token', json_encode($observer->records[0]->toArray(), JSON_THROW_ON_ERROR));
+        $this->assertStringNotContainsString('-1001234567890', json_encode($observer->records[0]->toArray(), JSON_THROW_ON_ERROR));
+        $this->assertStringNotContainsString('Private alert body', json_encode($observer->records[0]->toArray(), JSON_THROW_ON_ERROR));
+    }
+
+    public function test_client_uses_injected_rate_limiter(): void
+    {
+        $limiter = new TelegramBotBlockingRateLimiter();
+        $client = TelegramBotClient::make(
+            token: '123456:test-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+            ]),
+            rateLimiter: $limiter,
+        );
+
+        $this->expectException(TelegramBotRateLimitException::class);
+
+        $client->getMe();
+    }
+
     /**
      * @param  list<Response>  $responses
      * @param  array<int, array{request: RequestInterface}>  $history
@@ -361,5 +432,26 @@ final class TelegramBotTestLogger extends AbstractLogger
             'message' => (string) $message,
             'context' => $context,
         ];
+    }
+}
+
+final class TelegramBotTestObserver implements TelegramBotObserver
+{
+    /**
+     * @var list<TelegramBotRequestTelemetryData>
+     */
+    public array $records = [];
+
+    public function record(TelegramBotRequestTelemetryData $telemetry): void
+    {
+        $this->records[] = $telemetry;
+    }
+}
+
+final class TelegramBotBlockingRateLimiter implements TelegramBotRateLimiter
+{
+    public function throttle(string $method, Closure $_next): mixed
+    {
+        throw new TelegramBotRateLimitException("Blocked $method.", 1);
     }
 }

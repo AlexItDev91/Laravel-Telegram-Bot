@@ -287,8 +287,112 @@ class RecordTelegramWebhookMetric
 Copy-ready examples are stored in `examples/laravel`:
 
 - `app/Telegram/Commands/StartCommand.php`
+- `app/Telegram/Commands/BuyCommand.php`
 - `app/Telegram/Handlers/CallbackQueryHandler.php`
+- `app/Telegram/Handlers/ProfileWizardHandler.php`
+- `app/Telegram/Middleware/EnsureTelegramWebhookEnabled.php`
 - `app/Notifications/TelegramDeployFinished.php`
 - `app/Jobs/SendTelegramAlert.php`
 - `app/Listeners/RecordTelegramWebhookMetric.php`
 - `routes/telegram.php`
+- `tests/Feature/TelegramBotExampleTest.php`
+
+## Generated Request Builders
+
+Every Bot API method has a generated request class under `AlexItDev91\LaravelTelegramBot\DTO\Requests`.
+Use these when you want IDE-friendly named arguments for methods that do not have a hand-written rich DTO:
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+TelegramBot::bot('support')->sendMessage(SendMessageRequestData::make(
+    chatId: '-1001234567890',
+    text: 'Ticket created.',
+    extra: ['future_optional_parameter' => 'kept'],
+));
+```
+
+## Webhook Router V2
+
+Use route-level middleware, grouped handlers, update-type fallbacks, or attribute discovery:
+
+```php
+'webhook' => [
+    'commands' => [
+        'start' => [
+            'handler' => App\Telegram\Commands\StartCommand::class,
+            'middleware' => [App\Telegram\Middleware\EnsureTelegramWebhookEnabled::class],
+        ],
+    ],
+    'groups' => [
+        'admin' => [
+            'middleware' => [App\Telegram\Middleware\EnsureTelegramAdmin::class],
+            'handlers' => [
+                'chat_member' => App\Telegram\Handlers\AdminChatMemberHandler::class,
+            ],
+        ],
+    ],
+    'fallback_handlers' => [
+        'message' => App\Telegram\Handlers\UnknownMessageHandler::class,
+    ],
+],
+```
+
+## Retry, Rate Limit, And API Observability
+
+Enable retry for retryable Telegram responses and transient transport failures:
+
+```php
+'retry' => [
+    'enabled' => true,
+    'max_attempts' => 2,
+    'sleep' => false,
+],
+```
+
+Enable the local Laravel-friendly rate limiter before outbound bursts hit Telegram:
+
+```php
+'rate_limit' => [
+    'enabled' => true,
+    'store' => 'redis',
+    'max_attempts' => 30,
+    'decay_seconds' => 1,
+],
+```
+
+Enable API observability to dispatch `TelegramBotApiRequestRecorded` events with method, status, duration, attempts, and file flag. The telemetry does not include chat IDs, message text, tokens, or webhook secrets.
+
+## Cookbook Bots
+
+Admin bot:
+Use grouped webhook handlers with an admin middleware, handle `/stats`, and keep all metric labels to bot name, method, and update type.
+
+Support bot:
+Use `ProfileWizardHandler` style conversations for multi-step intake, `TelegramBot::fake()` in tests, and channel defaults for team inbox topics.
+
+Marketplace or payments bot:
+Use a `/buy` command that sends `SendInvoiceData`, answer pre-checkout and shipping queries with typed DTOs, and keep provider tokens in host app secrets only.
+
+Channel broadcaster:
+Use configured channels, queue outbound jobs, retry on `retry_after`, and handle `migrate_to_chat_id` by updating host app configuration.
+
+Mini App backend:
+Use web app or callback query handlers for signed Mini App flows, keep raw update payloads out of logs, and respond through typed `answerCallbackQuery` or message edit DTOs.
+
+## Testing DSL 2.0
+
+```php
+$fake = TelegramBot::fake();
+
+TelegramBot::sendMessage(SendMessageRequestData::make(
+    chatId: '123456789',
+    text: 'Hello',
+));
+
+$fake->assertSent('sendMessage', ['text' => 'Hello'], times: 1);
+$fake->assertSentTypedPayload('sendMessage', SendMessageRequestData::class);
+$fake->assertSentSequence(['sendMessage']);
+$fake->assertNoTokenLeakage();
+```

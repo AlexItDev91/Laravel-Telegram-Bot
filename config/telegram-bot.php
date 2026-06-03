@@ -13,6 +13,27 @@ return [
         'enabled' => env('TELEGRAM_BOT_LOGGING_ENABLED', true),
     ],
 
+    'retry' => [
+        'enabled' => env('TELEGRAM_BOT_RETRY_ENABLED', false),
+        'max_attempts' => env('TELEGRAM_BOT_RETRY_MAX_ATTEMPTS', 2),
+        'retry_transport_failures' => true,
+        'status_codes' => [429, 500, 502, 503, 504],
+        'base_delay_seconds' => env('TELEGRAM_BOT_RETRY_BASE_DELAY_SECONDS', 0.25),
+        'sleep' => true,
+    ],
+
+    'rate_limit' => [
+        'enabled' => env('TELEGRAM_BOT_RATE_LIMIT_ENABLED', false),
+        'store' => env('TELEGRAM_BOT_RATE_LIMIT_STORE'),
+        'max_attempts' => env('TELEGRAM_BOT_RATE_LIMIT_MAX_ATTEMPTS', 30),
+        'decay_seconds' => env('TELEGRAM_BOT_RATE_LIMIT_DECAY_SECONDS', 1),
+        'key_prefix' => env('TELEGRAM_BOT_RATE_LIMIT_KEY_PREFIX', 'telegram-bot:rate-limit'),
+    ],
+
+    'observability' => [
+        'enabled' => env('TELEGRAM_BOT_OBSERVABILITY_ENABLED', false),
+    ],
+
     'bots' => [
         'default' => [
             'token' => env('TELEGRAM_BOT_TOKEN'),
@@ -55,13 +76,46 @@ return [
         'handlers' => [
             // 'message' => App\Telegram\Handlers\MessageHandler::class,
             // 'callback_query' => App\Telegram\Handlers\CallbackQueryHandler::class,
+            // 'message' => [
+            //     'handler' => App\Telegram\Handlers\MessageHandler::class,
+            //     'middleware' => [App\Telegram\Middleware\EnsureKnownChat::class],
+            // ],
         ],
 
         'commands' => [
             // 'start' => App\Telegram\Commands\StartCommand::class,
+            // 'start' => [
+            //     'handler' => App\Telegram\Commands\StartCommand::class,
+            //     'middleware' => [App\Telegram\Middleware\ThrottleCommand::class],
+            // ],
+        ],
+
+        'groups' => [
+            // 'admin' => [
+            //     'middleware' => [App\Telegram\Middleware\EnsureAdmin::class],
+            //     'commands' => [
+            //         'stats' => App\Telegram\Commands\AdminStatsCommand::class,
+            //     ],
+            //     'handlers' => [
+            //         'chat_member' => App\Telegram\Handlers\AdminChatMemberHandler::class,
+            //     ],
+            // ],
+        ],
+
+        'fallback_handlers' => [
+            // 'message' => App\Telegram\Handlers\UnknownMessageHandler::class,
         ],
 
         'fallback_handler' => null,
+
+        'discover' => [
+            'commands' => [
+                // App\Telegram\Commands\StartCommand::class,
+            ],
+            'handlers' => [
+                // App\Telegram\Handlers\MessageHandler::class,
+            ],
+        ],
 
         'dispatch_event' => true,
 

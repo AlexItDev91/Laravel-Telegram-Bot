@@ -3,7 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot;
 
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient;
-use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequest;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChannelConfigData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
@@ -27,7 +27,7 @@ class TelegramBotChannel implements TelegramBotClient
      */
     public function call(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
-        if ($parameters instanceof TelegramBotMethodRequestData) {
+        if ($parameters instanceof TelegramBotMethodRequest) {
             $methodName = $method instanceof TelegramBotApiMethod ? $method->value : $method;
 
             if ($parameters->method() !== $methodName) {

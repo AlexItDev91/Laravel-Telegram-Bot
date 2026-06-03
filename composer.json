@@ -33,9 +33,11 @@
     "scripts": {
         "analyse": "vendor/bin/phpstan analyse --no-progress --memory-limit=512M",
         "check:telegram-api-surface": "php scripts/check-telegram-api-surface.php",
+        "check:release-readiness": "php scripts/check-release-readiness.php",
         "generate:telegram-api-schema": "php scripts/generate-telegram-api-schema.php",
         "test": "vendor/bin/phpunit",
-        "test:coverage-surface": "vendor/bin/phpunit --filter=TelegramBotApiSurfaceTest"
+        "test:coverage-surface": "vendor/bin/phpunit --filter=TelegramBotApiSurfaceTest",
+        "verify:packagist-release": "php scripts/verify-packagist-release.php"
     },
     "extra": {
         "laravel": {

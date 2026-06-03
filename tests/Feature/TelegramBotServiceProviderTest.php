@@ -6,6 +6,8 @@ use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotCli
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotApiException;
+use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotRateLimitException;
+use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramBotApiRequestRecorded;
 use AlexItDev91\LaravelTelegramBot\TelegramBot as TelegramBotService;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\TelegramBotManager;
@@ -16,6 +18,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Facades\Event;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
@@ -101,11 +104,60 @@ class TelegramBotServiceProviderTest extends TestCase
         }
     }
 
+    public function test_laravel_resolved_client_dispatches_observability_events_when_enabled(): void
+    {
+        Event::fake();
+
+        config()->set('telegram-bot.token', '123456:test-token');
+        config()->set('telegram-bot.api_url', 'https://api.telegram.test');
+        config()->set('telegram-bot.observability.enabled', true);
+
+        $this->app->bind(ClientInterface::class, function (): ClientInterface {
+            return $this->fakeHttpClient([
+                new Response(200, [], json_encode(['ok' => true, 'result' => ['id' => 1]], JSON_THROW_ON_ERROR)),
+            ]);
+        });
+
+        app(TelegramBotClient::class)->getMe();
+
+        Event::assertDispatched(
+            TelegramBotApiRequestRecorded::class,
+            static fn (TelegramBotApiRequestRecorded $event): bool => $event->telemetry->method === 'getMe'
+                && $event->telemetry->ok === true
+                && $event->telemetry->attempts === 1,
+        );
+    }
+
+    public function test_laravel_resolved_client_uses_configured_rate_limiter(): void
+    {
+        $history = [];
+
+        config()->set('telegram-bot.token', '123456:test-token');
+        config()->set('telegram-bot.api_url', 'https://api.telegram.test');
+        config()->set('telegram-bot.rate_limit.enabled', true);
+        config()->set('telegram-bot.rate_limit.max_attempts', 1);
+        config()->set('telegram-bot.rate_limit.decay_seconds', 60);
+        config()->set('telegram-bot.rate_limit.key_prefix', 'telegram-bot:test-rate-limit');
+
+        $this->app->bind(ClientInterface::class, function () use (&$history): ClientInterface {
+            return $this->fakeHttpClient([
+                new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+                new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+            ], $history);
+        });
+
+        app(TelegramBotClient::class)->getMe();
+
+        $this->expectException(TelegramBotRateLimitException::class);
+
+        app(TelegramBotClient::class)->getMe();
+    }
+
     /**
      * @param  list<Response>  $responses
      * @param  array<int, array{request: RequestInterface}>  $history
      */
-    private function fakeHttpClient(array $responses, array &$history): Client
+    private function fakeHttpClient(array $responses, array &$history = []): Client
     {
         $handler = HandlerStack::create(new MockHandler($responses));
         $handler->push(Middleware::history($history));

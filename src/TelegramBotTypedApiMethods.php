@@ -3,7 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot;
 
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
-use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatFullInfoData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatMemberData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramFileData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramMessageData;
@@ -27,7 +27,7 @@ trait TelegramBotTypedApiMethods
     /**
      * @param  array<string, mixed>  $parameters
      */
-    public function getChatData(array|TelegramBotRequestData $parameters = []): TelegramChatData
+    public function getChatData(array|TelegramBotRequestData $parameters = []): TelegramChatFullInfoData
     {
         return $this->callData(TelegramBotApiMethod::getChat, $parameters);
     }

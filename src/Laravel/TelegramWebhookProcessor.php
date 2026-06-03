@@ -148,9 +148,21 @@ readonly class TelegramWebhookProcessor
         foreach ([
             config('telegram-bot.webhook.commands', []),
             config('telegram-bot.webhook.handlers', []),
+            config('telegram-bot.webhook.groups', []),
+            config('telegram-bot.webhook.fallback_handlers', []),
         ] as $handlers) {
             if (is_array($handlers) && $handlers !== []) {
                 return true;
+            }
+        }
+
+        $discover = config('telegram-bot.webhook.discover', []);
+
+        if (is_array($discover)) {
+            foreach ($discover as $classes) {
+                if (is_array($classes) && $classes !== []) {
+                    return true;
+                }
             }
         }
 

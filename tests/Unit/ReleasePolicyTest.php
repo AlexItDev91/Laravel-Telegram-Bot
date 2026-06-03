@@ -13,7 +13,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('1.18.2', $version);
+        $this->assertSame('1.19.0', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -34,6 +34,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [1.19.0] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [1.18.2] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [1.18.1] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [1.18.0] - 2026-06-03', $changelog);
@@ -148,5 +149,9 @@ class ReleasePolicyTest extends TestCase
 
         $this->assertIsArray($composer);
         $this->assertArrayNotHasKey('version', $composer);
+        $this->assertSame('php scripts/check-release-readiness.php', $composer['scripts']['check:release-readiness'] ?? null);
+        $this->assertSame('php scripts/verify-packagist-release.php', $composer['scripts']['verify:packagist-release'] ?? null);
+        $this->assertFileExists(__DIR__.'/../../scripts/check-release-readiness.php');
+        $this->assertFileExists(__DIR__.'/../../scripts/verify-packagist-release.php');
     }
 }

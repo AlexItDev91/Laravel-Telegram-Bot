@@ -5,6 +5,7 @@ namespace AlexItDev91\LaravelTelegramBot\Laravel;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramConversationStore;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramConversationData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
+use AlexItDev91\LaravelTelegramBot\Laravel\Conversation\TelegramConversationWorkflow;
 
 readonly class TelegramConversationManager
 {
@@ -31,6 +32,11 @@ readonly class TelegramConversationManager
         $this->store->forget($key);
     }
 
+    public function workflow(string $key): TelegramConversationWorkflow
+    {
+        return new TelegramConversationWorkflow($this, $key);
+    }
+
     public function forUpdate(TelegramWebhookUpdate $update, string $botName): ?TelegramConversationData
     {
         return $this->get($this->keyForUpdate($update, $botName));
@@ -47,6 +53,11 @@ readonly class TelegramConversationManager
     public function forgetForUpdate(TelegramWebhookUpdate $update, string $botName): void
     {
         $this->forget($this->keyForUpdate($update, $botName));
+    }
+
+    public function workflowForUpdate(TelegramWebhookUpdate $update, string $botName): TelegramConversationWorkflow
+    {
+        return $this->workflow($this->keyForUpdate($update, $botName));
     }
 
     public function keyForUpdate(TelegramWebhookUpdate $update, string $botName): string

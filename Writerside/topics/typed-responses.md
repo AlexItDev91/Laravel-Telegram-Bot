@@ -35,7 +35,7 @@ The raw `call(method, parameters)` API remains available for newly released Tele
 | Helper | Returned DTO |
 | --- | --- |
 | `getMeData()` | `TelegramUserData` |
-| `getChatData()` | `TelegramChatData` |
+| `getChatData()` | `TelegramChatFullInfoData` |
 | `getChatMemberData()` | `TelegramChatMemberData` |
 | `getChatAdministratorsData()` | `list<TelegramChatMemberData>` |
 | `getFileData()` | `TelegramFileData` |

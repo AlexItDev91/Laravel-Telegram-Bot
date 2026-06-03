@@ -8,6 +8,17 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.19.0] - 2026-06-03
+
+- Added generated IDE-friendly request builders for all 176 Telegram Bot API methods, plus request/result registries and schema checksums.
+- Expanded typed response mapping and DTO coverage for common API result objects including invite links, forum topics, stickers, gifts, stars, profile photos, menus, commands, and bot metadata.
+- Added conversation workflow APIs with typed context accessors, guarded transitions, timeouts, reset support, and update-scoped workflows.
+- Added webhook router v2 support for per-route middleware, grouped handlers, update-type fallbacks, and attribute discovery.
+- Added optional retry, local rate limiting, and sanitized API observability events for Laravel-resolved clients.
+- Expanded the fake testing DSL with typed payload, sequence, token leakage, webhook update, and conversation assertions.
+- Expanded Laravel examples and cookbook documentation for demo bots, payments stubs, conversations, middleware, testing, and production bot recipes.
+- Added release readiness and Packagist verification scripts.
+
 ## [1.18.2] - 2026-06-03
 
 - Addressed Qodana SARIF findings for the Telegram fake channel constructor, duplicated cache repository resolution, readonly Laravel services, redundant casts/interpolation, facade imports, and documentation signatures.

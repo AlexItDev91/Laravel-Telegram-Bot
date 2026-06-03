@@ -4,6 +4,8 @@ namespace AlexItDev91\LaravelTelegramBot\Laravel;
 
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotObserver as TelegramBotObserverContract;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotRateLimiter as TelegramBotRateLimiterContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramConversationStore as TelegramConversationStoreContract;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotDoctorCommand;
@@ -20,6 +22,7 @@ use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotification
 use AlexItDev91\LaravelTelegramBot\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\TelegramBotManager;
+use AlexItDev91\LaravelTelegramBot\Support\TelegramBotRetryPolicy;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +37,8 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../../config/telegram-bot.php', 'telegram-bot');
 
         $this->app->singleton(TelegramBotManager::class, function ($app): TelegramBotManager {
+            $retryConfig = config('telegram-bot.retry');
+
             return new TelegramBotManager(
                 config: config('telegram-bot', []),
                 clientFactory: fn (TelegramBotConfigData $config): TelegramBotClientContract => new TelegramBotClient(
@@ -44,6 +49,13 @@ class TelegramBotServiceProvider extends ServiceProvider
                     ]),
                     logger: config('telegram-bot.logging.enabled', true) && $app->bound(LoggerInterface::class)
                         ? $app->make(LoggerInterface::class)
+                        : null,
+                    retryPolicy: TelegramBotRetryPolicy::fromArray(is_array($retryConfig) ? $retryConfig : []),
+                    rateLimiter: config('telegram-bot.rate_limit.enabled', false) && $app->bound(TelegramBotRateLimiterContract::class)
+                        ? $app->make(TelegramBotRateLimiterContract::class)
+                        : null,
+                    observer: config('telegram-bot.observability.enabled', false) && $app->bound(TelegramBotObserverContract::class)
+                        ? $app->make(TelegramBotObserverContract::class)
                         : null,
                 ),
             );
@@ -71,6 +83,10 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->singleton(TelegramWebhookDispatcher::class);
         $this->app->singleton(TelegramWebhookIdempotency::class);
         $this->app->singleton(TelegramWebhookProcessor::class);
+        $this->app->singleton(TelegramBotRateLimiter::class);
+        $this->app->alias(TelegramBotRateLimiter::class, TelegramBotRateLimiterContract::class);
+        $this->app->singleton(TelegramBotEventObserver::class);
+        $this->app->alias(TelegramBotEventObserver::class, TelegramBotObserverContract::class);
         $this->app->singleton(TelegramConversationCacheStore::class);
         $this->app->alias(TelegramConversationCacheStore::class, TelegramConversationStoreContract::class);
         $this->app->singleton(TelegramConversationManager::class);

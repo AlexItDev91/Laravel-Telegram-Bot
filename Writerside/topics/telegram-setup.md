@@ -39,6 +39,7 @@ For production webhooks, also plan queue and duplicate-update settings:
 | Webhook queue name | `TELEGRAM_WEBHOOK_QUEUE=telegram-webhooks` | Keeps bot work separate from default application jobs. |
 | Idempotency guard | `TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED=true` | Skips repeated deliveries for the same bot and `update_id`. |
 | Idempotency TTL | `TELEGRAM_WEBHOOK_IDEMPOTENCY_TTL=86400` | Keeps duplicate keys long enough for Telegram retry windows. |
+| Conversation store | `TELEGRAM_CONVERSATION_ENABLED=true` | Enables cache-backed state for multi-step webhook flows. |
 
 ## 2. Create The Bot In BotFather
 

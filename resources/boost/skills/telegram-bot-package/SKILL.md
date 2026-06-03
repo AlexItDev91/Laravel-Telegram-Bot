@@ -41,6 +41,9 @@ TELEGRAM_WEBHOOK_SECRET_TOKEN=change-this-secret
 TELEGRAM_WEBHOOK_REQUIRE_SECRET=true
 TELEGRAM_WEBHOOK_ROUTE_URI=telegram-bot/webhook
 TELEGRAM_WEBHOOK_BOT_USERNAME=
+TELEGRAM_CONVERSATION_ENABLED=false
+TELEGRAM_CONVERSATION_STORE=
+TELEGRAM_CONVERSATION_TTL=86400
 ```
 
 `config/telegram-bot.php`:
@@ -117,7 +120,9 @@ $message = TelegramBot::channel('inbox')->sendMessageData([
 $webhook = TelegramBot::getWebhookInfoData();
 ```
 
-Typed response helpers include `callData()`, `getMeData()`, `getChatData()`, `getChatMemberData()`, `getChatAdministratorsData()`, `getFileData()`, `getWebhookInfoData()`, `getUpdatesData()`, `sendMessageData()`, `sendPhotoData()`, `sendDocumentData()`, `forwardMessageData()`, and `editMessageTextData()`. Raw methods still return Telegram's decoded `result` unchanged.
+Typed response helpers include `callData()`, `getMeData()`, `getChatData()`, `getChatMemberData()`, `getChatAdministratorsData()`, `getFileData()`, `getWebhookInfoData()`, `getUpdatesData()`, `sendMessageData()`, `sendPhotoData()`, `sendDocumentData()`, `forwardMessageData()`, and `editMessageTextData()`. Raw methods still return Telegram's decoded `result` unchanged. When no dedicated result DTO exists, `callData()` wraps associative Telegram objects in `TelegramBotResultData` and lists of objects in `list<TelegramBotResultData>`.
+
+Use `TelegramBotRequestData::forMethod()` for less common Bot API methods that need generated method/required-parameter validation through `TelegramBotApiMethodSchema`. Pass `validateRequiredParameters: false` only when configured channels supply required defaults such as `chat_id` later.
 
 Use `TelegramBotNotificationChannel` for Laravel notifications:
 
@@ -148,6 +153,10 @@ The package registers `POST /telegram-bot/webhook` when `telegram-bot.webhook.ro
 Keep `TELEGRAM_BOT_LOGGING_ENABLED=true` for safe operational warning/error logs. Logs must not include bot tokens, secret headers, request payloads, response bodies, chat IDs, or message text.
 
 For production handlers that do real work, set `TELEGRAM_WEBHOOK_QUEUE_ENABLED=true`, run Laravel queue workers for `AlexItDev91\LaravelTelegramBot\Laravel\Jobs\TelegramWebhookJob`, and enable `TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED=true` with a shared cache store when duplicate update processing is unsafe.
+
+Use `telegram-bot.webhook.middleware` with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookMiddleware` for parsed-update pipeline concerns such as tenant resolution, authorization, tracing, and conversation bootstrap. Middleware can short-circuit by returning a response without calling `$next`.
+
+Use `TELEGRAM_CONVERSATION_ENABLED=true` and inject `AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager` for cache-backed stateful webhook flows. Configure `TELEGRAM_CONVERSATION_STORE`, `TELEGRAM_CONVERSATION_TTL`, and `TELEGRAM_CONVERSATION_KEY_PREFIX` in the host app.
 
 Observe webhook processing with `TelegramWebhookReceived`, `TelegramWebhookHandled`, `TelegramWebhookFailed`, `TelegramWebhookQueued`, and `TelegramWebhookDuplicateSkipped`. Use `docs/RECIPES.md`, `docs/NOTIFICATIONS.md`, `docs/RESPONSES.md`, and `examples/laravel` for copy-ready notifications, typed response accessors, jobs, handlers, listeners, and route snippets.
 
@@ -211,6 +220,7 @@ Before changing Telegram API behavior, check both official sources:
 - https://core.telegram.org/bots/api-changelog
 
 When Telegram changes the Bot API, update methods, enum values, docs, tests, and Laravel integration examples together.
+After refreshing the method reference, run `composer generate:telegram-api-schema` so `TelegramBotApiMethodSchema` and `TelegramBotRequestData::forMethod()` stay aligned with the official Bot API.
 
 ## Version
 

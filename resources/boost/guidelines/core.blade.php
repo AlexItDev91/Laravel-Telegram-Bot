@@ -31,7 +31,9 @@ php artisan telegram-bot:install
 - Use `AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel` and `TelegramNotificationMessage` for Laravel notifications that should deliver through Telegram.
 - Route notification destinations with `routeNotificationForTelegram()` or `Notification::route('telegram', [...])`; return `channel`, `bot`, `chat_id`, `message_thread_id`, or `direct_messages_topic_id` values rather than hardcoding credentials in the notification class.
 - Use typed response helpers such as `getMeData()`, `sendMessageData()`, `getUpdatesData()`, `getFileData()`, and `getWebhookInfoData()` when application code needs DTO accessors. Use raw methods when it needs Telegram's unmodified `result`.
+- Use `callData()` for typed response mapping. When no dedicated result DTO exists, associative Telegram objects are returned as `TelegramBotResultData` and lists of objects as `list<TelegramBotResultData>`.
 - Use typed outbound DTOs for common payloads when validation helps: `SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
+- Use `TelegramBotRequestData::forMethod()` for less common Bot API methods that need generated required-parameter validation. It is backed by `TelegramBotApiMethodSchema`; pass `validateRequiredParameters: false` only when channel defaults supply required fields later.
 - Use `php artisan telegram-bot:me --bot=default` to verify the configured bot token and Telegram identity.
 - Use `php artisan telegram-bot:doctor --bot=default` before deploys to check config, webhook secret policy, route registration, and Telegram API reachability.
 - Use `php artisan telegram-bot:updates` to discover parsed `chat_id`, `message_thread_id`, and `direct_messages_topic_id` values from Telegram updates.
@@ -44,6 +46,8 @@ php artisan telegram-bot:install
 - Keep `TELEGRAM_BOT_LOGGING_ENABLED=true` for safe operational warning/error logs without tokens, secret headers, request payloads, response bodies, chat IDs, or message text.
 - Use `TELEGRAM_WEBHOOK_QUEUE_ENABLED=true` for handlers that do non-trivial work; run Laravel queue workers for `AlexItDev91\LaravelTelegramBot\Laravel\Jobs\TelegramWebhookJob`.
 - Use `TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED=true` with a shared cache store when duplicate Telegram `update_id` processing would be harmful.
+- Use `telegram-bot.webhook.middleware` with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookMiddleware` for parsed-update pipeline concerns such as tenant resolution, authorization, tracing, and conversation bootstrap.
+- Use `TELEGRAM_CONVERSATION_ENABLED=true` and `AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager` for cache-backed stateful webhook flows. Configure `TELEGRAM_CONVERSATION_STORE`, `TELEGRAM_CONVERSATION_TTL`, and `TELEGRAM_CONVERSATION_KEY_PREFIX` in the host app.
 - Observe webhook processing with `TelegramWebhookReceived`, `TelegramWebhookHandled`, `TelegramWebhookFailed`, `TelegramWebhookQueued`, and `TelegramWebhookDuplicateSkipped`.
 - Handle incoming updates with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler` or listen for `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived`.
 - For larger bots, prefer webhook dispatcher maps: `telegram-bot.webhook.commands`, `telegram-bot.webhook.handlers`, and `telegram-bot.webhook.fallback_handler`.
@@ -57,6 +61,7 @@ php artisan telegram-bot:install
 - For failed Telegram API responses, use `retryAfter()` and `migrateToChatId()` on `TelegramBotApiException` when handling rate limits or migrated groups.
 - Use `docs/RECIPES.md`, `docs/NOTIFICATIONS.md`, `docs/RESPONSES.md`, and `examples/laravel` for copy-ready Laravel notifications, typed response accessors, jobs, handlers, listeners, and route snippets.
 - Keep Telegram IDs as strings or 64-bit safe values.
+- For package maintenance, run `composer generate:telegram-api-schema` after refreshing `docs/METHODS.md` so method-scoped request DTO validation stays aligned with Telegram.
 
 ## API Currency
 

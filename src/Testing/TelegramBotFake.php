@@ -4,6 +4,7 @@ namespace AlexItDev91\LaravelTelegramBot\Testing;
 
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChannelConfigData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
@@ -62,6 +63,10 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
     public function call(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
         $methodName = $method instanceof TelegramBotApiMethod ? $method->value : $method;
+        if ($parameters instanceof TelegramBotMethodRequestData && $parameters->method() !== $methodName) {
+            throw new \InvalidArgumentException("Telegram Bot request DTO for method [{$parameters->method()}] cannot be used with method [{$methodName}].");
+        }
+
         $botName = $this->selectedBot ?? 'default';
         $this->selectedBot = null;
 

@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\Tests\Unit;
 
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatMemberData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotResultData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramFileData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramMessageData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserData;
@@ -156,6 +157,55 @@ class TelegramBotTypedResponseTest extends TestCase
         $this->assertContainsOnlyInstancesOf(TelegramChatMemberData::class, $administrators);
         $this->assertSame('administrator', $administrators[0]->status());
         $this->assertSame(123456789, $administrators[0]->user()?->id());
+    }
+
+    public function test_call_data_wraps_unmapped_object_results_in_generic_dto(): void
+    {
+        $history = [];
+        $client = $this->client($history, [
+            [
+                'invite_link' => 'https://t.me/+invite',
+                'creates_join_request' => true,
+            ],
+        ]);
+
+        $invite = $client->callData('createChatInviteLink', [
+            'chat_id' => '-1001234567890',
+        ]);
+
+        $this->assertInstanceOf(TelegramBotResultData::class, $invite);
+        $this->assertSame('https://t.me/+invite', $invite->string('invite_link'));
+        $this->assertTrue($invite->bool('creates_join_request'));
+    }
+
+    public function test_call_data_wraps_unmapped_object_lists_in_generic_dtos(): void
+    {
+        $history = [];
+        $client = $this->client($history, [
+            [
+                ['name' => 'one'],
+                ['name' => 'two'],
+            ],
+        ]);
+
+        $results = $client->callData('someFutureObjectListMethod');
+
+        $this->assertIsArray($results);
+        $this->assertContainsOnlyInstancesOf(TelegramBotResultData::class, $results);
+        $this->assertSame('one', $results[0]->string('name'));
+        $this->assertSame('two', $results[1]->string('name'));
+    }
+
+    public function test_call_data_preserves_unmapped_scalar_lists(): void
+    {
+        $history = [];
+        $client = $this->client($history, [
+            ['one', 'two'],
+        ]);
+
+        $result = $client->callData('someFutureMethod');
+
+        $this->assertSame(['one', 'two'], $result);
     }
 
     /**

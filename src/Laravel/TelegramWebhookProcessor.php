@@ -3,10 +3,12 @@
 namespace AlexItDev91\LaravelTelegramBot\Laravel;
 
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookMiddleware;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
 use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookFailed;
 use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookHandled;
 use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived;
+use Closure;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Psr\Log\LoggerInterface;
@@ -46,6 +48,15 @@ class TelegramWebhookProcessor
 
     private function handleWithConfiguredHandler(TelegramWebhookUpdate $update, string $botName): mixed
     {
+        return $this->runMiddlewarePipeline(
+            $update,
+            $botName,
+            fn (TelegramWebhookUpdate $pipelineUpdate, string $pipelineBotName): mixed => $this->dispatchConfiguredHandler($pipelineUpdate, $pipelineBotName),
+        );
+    }
+
+    private function dispatchConfiguredHandler(TelegramWebhookUpdate $update, string $botName): mixed
+    {
         $handler = config('telegram-bot.webhook.handler');
 
         if ($handler === null || $handler === '') {
@@ -79,6 +90,57 @@ class TelegramWebhookProcessor
         ]);
 
         return null;
+    }
+
+    /**
+     * @param  Closure(TelegramWebhookUpdate, string): mixed  $destination
+     */
+    private function runMiddlewarePipeline(TelegramWebhookUpdate $update, string $botName, Closure $destination): mixed
+    {
+        $middleware = config('telegram-bot.webhook.middleware', []);
+
+        if (! is_array($middleware) || $middleware === []) {
+            return $destination($update, $botName);
+        }
+
+        $pipeline = array_reduce(
+            array_reverse($middleware),
+            fn (Closure $next, mixed $middleware): Closure => fn (TelegramWebhookUpdate $pipelineUpdate, string $pipelineBotName): mixed => $this->runMiddleware($middleware, $pipelineUpdate, $pipelineBotName, $next),
+            $destination,
+        );
+
+        return $pipeline($update, $botName);
+    }
+
+    /**
+     * @param  Closure(TelegramWebhookUpdate, string): mixed  $next
+     */
+    private function runMiddleware(mixed $middleware, TelegramWebhookUpdate $update, string $botName, Closure $next): mixed
+    {
+        if (is_string($middleware) && class_exists($middleware)) {
+            $middleware = $this->container->make($middleware);
+        }
+
+        if ($middleware instanceof TelegramWebhookMiddleware) {
+            return $middleware->process($update, $botName, $next);
+        }
+
+        if (is_callable($middleware)) {
+            return $this->container->call($middleware, [
+                'update' => $update,
+                'botName' => $botName,
+                'next' => $next,
+            ]);
+        }
+
+        $this->warning('Telegram webhook middleware is configured but is not resolvable or callable.', [
+            'bot' => $botName,
+            'update_id' => $update->updateId(),
+            'update_type' => $update->type(),
+            'middleware_type' => get_debug_type($middleware),
+        ]);
+
+        return $next($update, $botName);
     }
 
     private function hasDispatcherConfiguration(): bool

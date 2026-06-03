@@ -5,6 +5,7 @@ namespace AlexItDev91\LaravelTelegramBot;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramApiResponseData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotApiException;
@@ -58,6 +59,7 @@ class TelegramBotClient implements TelegramBotClientContract
         $request = $parameters instanceof TelegramBotRequestData
             ? $parameters
             : TelegramBotRequestData::fromArray($parameters);
+        $this->assertRequestMatchesMethod($request, $method);
 
         try {
             $response = $this->httpClient()->request(
@@ -159,6 +161,15 @@ class TelegramBotClient implements TelegramBotClientContract
         if (preg_match('/^\w+$/', $method) !== 1) {
             throw new InvalidArgumentException('Telegram Bot API method names may contain only letters, numbers, and underscores.');
         }
+    }
+
+    private function assertRequestMatchesMethod(TelegramBotRequestData $request, string $method): void
+    {
+        if (! $request instanceof TelegramBotMethodRequestData || $request->method() === $method) {
+            return;
+        }
+
+        throw new InvalidArgumentException("Telegram Bot request DTO for method [{$request->method()}] cannot be used with method [{$method}].");
     }
 
     private function sanitizeTransportMessage(string $message): string

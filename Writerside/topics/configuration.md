@@ -23,6 +23,10 @@ Publish it during installation, then store real values in the host application's
 | `TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED` | No | Skips duplicate webhook `update_id` values for the same bot. |
 | `TELEGRAM_WEBHOOK_IDEMPOTENCY_STORE` | No | Cache store used by the duplicate-update guard. |
 | `TELEGRAM_WEBHOOK_IDEMPOTENCY_TTL` | No | Duplicate-update guard TTL in seconds. Defaults to `86400`. |
+| `TELEGRAM_CONVERSATION_ENABLED` | No | Enables cache-backed conversation state for webhook handlers. |
+| `TELEGRAM_CONVERSATION_STORE` | No | Cache store used by conversation state. |
+| `TELEGRAM_CONVERSATION_TTL` | No | Conversation state TTL in seconds. Defaults to `86400`. |
+| `TELEGRAM_CONVERSATION_KEY_PREFIX` | No | Cache key prefix for conversation state. |
 | `TELEGRAM_WEBHOOK_ROUTE_ENABLED` | No | Enables the package route. Defaults to `true`. |
 | `TELEGRAM_WEBHOOK_ROUTE_URI` | No | Defaults to `telegram-bot/webhook`. |
 | `TELEGRAM_WEBHOOK_ROUTE_NAME` | No | Defaults to `telegram-bot.webhook`. |
@@ -103,6 +107,9 @@ $telegram->channel('inbox')->sendMessage([
     'commands' => [
         'start' => App\Telegram\Commands\StartCommand::class,
     ],
+    'middleware' => [
+        App\Telegram\Middleware\ResolveTelegramTenant::class,
+    ],
     'fallback_handler' => App\Telegram\Handlers\FallbackHandler::class,
     'dispatch_event' => true,
     'queue' => [
@@ -127,6 +134,21 @@ $telegram->channel('inbox')->sendMessage([
 
 The secret token must be 1-256 characters and use only `A-Z`, `a-z`, `0-9`, `_`, and `-`.
 Invalid configured secrets fail closed.
+
+Use `webhook.middleware` for parsed `TelegramWebhookUpdate` pipeline concerns such as tenant resolution, authorization, tracing, and conversation bootstrap. Keep HTTP concerns such as throttling in `webhook.route.middleware`.
+
+## Conversation Configuration
+
+```php
+'conversation' => [
+    'enabled' => env('TELEGRAM_CONVERSATION_ENABLED', false),
+    'store' => env('TELEGRAM_CONVERSATION_STORE'),
+    'ttl' => env('TELEGRAM_CONVERSATION_TTL', 86400),
+    'key_prefix' => env('TELEGRAM_CONVERSATION_KEY_PREFIX', 'telegram-bot:conversation'),
+],
+```
+
+The conversation store is disabled by default. Enable it when webhook handlers need cache-backed state through `TelegramConversationManager`.
 
 ## Logging
 

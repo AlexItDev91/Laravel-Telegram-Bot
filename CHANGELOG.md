@@ -8,6 +8,13 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.18.0] - 2026-06-03
+
+- Added a generated `TelegramBotApiMethodSchema` and method-scoped `TelegramBotRequestData::forMethod()` coverage for all 176 Bot API 10.0 methods and 863 documented parameters.
+- Expanded typed responses with a generic `TelegramBotResultData` fallback for unmapped Telegram objects and lists while preserving raw `call()` behavior.
+- Added a Laravel webhook middleware pipeline and cache-backed `TelegramConversationManager` for stateful webhook flows.
+- Added Telegram API schema generator tooling, documentation, Writerside updates, Laravel Boost guidance, and release coverage for the new layers.
+
 ## [1.17.0] - 2026-06-03
 
 - Added an opt-in typed response layer through `callData()` and common `*Data()` response helpers while preserving raw Telegram `result` returns from existing methods.

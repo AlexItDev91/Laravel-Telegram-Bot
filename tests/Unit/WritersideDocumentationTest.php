@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="1.17.0"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="1.18.0"/>', $config);
 
         foreach ([
             'overview.md',
@@ -150,9 +150,13 @@ class WritersideDocumentationTest extends TestCase
             'Dispatcher, Commands, And Fallbacks',
             'Route::telegramBotWebhook',
             'fallback_handler',
+            'TelegramWebhookMiddleware',
+            'telegram-bot.webhook.middleware',
             'TelegramWebhookJob',
             'TELEGRAM_WEBHOOK_QUEUE_ENABLED',
             'TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED',
+            'TelegramConversationManager',
+            'TELEGRAM_CONVERSATION_ENABLED',
             '{"ok": true, "duplicate": true}',
             'TelegramWebhookHandled',
             'TelegramWebhookFailed',
@@ -179,6 +183,7 @@ class WritersideDocumentationTest extends TestCase
             'getMeData()',
             'sendMessageData()',
             'getUpdatesData()',
+            'TelegramBotResultData',
             'TelegramFileData',
             'TelegramWebhookInfoData',
             'TelegramBot::fake()',
@@ -198,6 +203,10 @@ class WritersideDocumentationTest extends TestCase
             'TelegramWebhookHandled',
             'TelegramBotNotificationChannel',
             'Typed Response Accessors',
+            'Method-Scoped Request DTOs',
+            'TelegramBotRequestData::forMethod()',
+            'Webhook Middleware',
+            'Conversations',
             'examples/laravel',
         ] as $requiredRecipesText) {
             $this->assertStringContainsString($requiredRecipesText, $recipes);
@@ -216,6 +225,8 @@ class WritersideDocumentationTest extends TestCase
         foreach ([
             'paid static-analysis token',
             'composer check:telegram-api-surface',
+            'composer generate:telegram-api-schema',
+            'TelegramBotApiMethodSchema',
             'Packagist reads versions from Git tags.',
         ] as $requiredMaintenanceText) {
             $this->assertStringContainsString($requiredMaintenanceText, $maintenance);

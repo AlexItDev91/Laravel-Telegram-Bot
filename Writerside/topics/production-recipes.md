@@ -55,6 +55,25 @@ TelegramBot::channel('alerts')->sendMessage([
 ]);
 ```
 
+## Method-Scoped Request DTOs
+
+Use `TelegramBotRequestData::forMethod()` when a method does not have a dedicated outbound DTO yet, but the host application still wants generated Bot API parameter validation:
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+TelegramBot::bot('support')->sendMessage(
+    TelegramBotRequestData::forMethod(TelegramBotApiMethod::sendMessage, [
+        'chat_id' => '-1001234567890',
+        'text' => 'Deploy finished',
+    ]),
+);
+```
+
+The generated `TelegramBotApiMethodSchema` covers all 176 Bot API 10.0 methods and 863 documented parameters. It validates required parameters and prevents a DTO scoped to one method from being sent through another method. For configured channels that merge `chat_id` or topic defaults after DTO creation, pass `validateRequiredParameters: false`.
+
 ## Typed Response Accessors
 
 Use typed response helpers when the host application needs stable DTO accessors for returned Telegram objects:
@@ -74,6 +93,8 @@ $pendingUpdates = $webhook->pendingUpdateCount();
 
 Raw methods such as `sendMessage()` and `getWebhookInfo()` still return Telegram's decoded `result` unchanged.
 Use the Typed Responses topic for the full typed response helper list.
+
+When no dedicated result DTO exists yet, `callData()` wraps associative Telegram objects in `TelegramBotResultData` and lists of objects in `list<TelegramBotResultData>`. Scalars and raw `call()` results remain unchanged.
 
 ## Laravel Notifications
 
@@ -102,6 +123,80 @@ class DeployFinished extends Notification
     }
 }
 ```
+
+## Webhook Middleware
+
+Use `TelegramWebhookMiddleware` for cross-cutting work that should run before the configured handler, dispatcher, command map, or fallback:
+
+```php
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookMiddleware;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
+use Closure;
+
+final class ResolveTelegramTenant implements TelegramWebhookMiddleware
+{
+    public function process(TelegramWebhookUpdate $update, string $botName, Closure $next): mixed
+    {
+        app()->instance('telegram.tenant_key', (string) ($update->effectiveChat()?->id() ?? $botName));
+
+        return $next($update, $botName);
+    }
+}
+```
+
+Register middleware in order:
+
+```php
+'webhook' => [
+    'middleware' => [
+        App\Telegram\Middleware\ResolveTelegramTenant::class,
+    ],
+],
+```
+
+Middleware may return its own response to short-circuit downstream handlers.
+
+## Conversations
+
+Enable the cache-backed conversation store when webhook handlers need per-chat or per-user state:
+
+```env
+TELEGRAM_CONVERSATION_ENABLED=true
+TELEGRAM_CONVERSATION_STORE=redis
+TELEGRAM_CONVERSATION_TTL=86400
+TELEGRAM_CONVERSATION_KEY_PREFIX=telegram-bot:conversation
+```
+
+Use `TelegramConversationManager` from handlers:
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
+use AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager;
+
+final readonly class ProfileWizardHandler
+{
+    public function __construct(private TelegramConversationManager $conversations)
+    {
+    }
+
+    public function handle(TelegramWebhookUpdate $update, string $botName): mixed
+    {
+        $conversation = $this->conversations->forUpdate($update, $botName);
+
+        if ($conversation?->state() === 'awaiting_email') {
+            $this->conversations->forgetForUpdate($update, $botName);
+
+            return ['ok' => true];
+        }
+
+        $this->conversations->putForUpdate($update, $botName, 'awaiting_email');
+
+        return ['ok' => true];
+    }
+}
+```
+
+Conversation keys are namespaced by bot and the effective chat/user when Telegram provides them. The store is disabled by default so existing webhook handlers keep their current stateless behavior.
 
 Routes can return a configured package `channel`, a named `bot` plus `chat_id`, or a plain `chat_id`.
 Use the Notifications topic for the full routing and payload guide.

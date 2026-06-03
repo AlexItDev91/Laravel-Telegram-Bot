@@ -45,6 +45,9 @@ TELEGRAM_WEBHOOK_ROUTE_NAME=telegram-bot.webhook
     'commands' => [
         'start' => App\Telegram\Commands\StartCommand::class,
     ],
+    'middleware' => [
+        App\Telegram\Middleware\ResolveTelegramTenant::class,
+    ],
     'fallback_handler' => App\Telegram\Handlers\FallbackHandler::class,
     'dispatch_event' => true,
     'route' => [
@@ -53,6 +56,13 @@ TELEGRAM_WEBHOOK_ROUTE_NAME=telegram-bot.webhook
         'name' => env('TELEGRAM_WEBHOOK_ROUTE_NAME', 'telegram-bot.webhook'),
         'middleware' => [],
     ],
+],
+
+'conversation' => [
+    'enabled' => env('TELEGRAM_CONVERSATION_ENABLED', false),
+    'store' => env('TELEGRAM_CONVERSATION_STORE'),
+    'ttl' => env('TELEGRAM_CONVERSATION_TTL', 86400),
+    'key_prefix' => env('TELEGRAM_CONVERSATION_KEY_PREFIX', 'telegram-bot:conversation'),
 ],
 ```
 
@@ -236,6 +246,40 @@ final readonly class StartCommand implements TelegramWebhookCommandHandler
 The dispatcher checks commands before update-type handlers. It understands `/start`, `/start arguments`, and `/start@YourBot arguments`; when `bot_username` is configured, commands addressed to another bot are ignored and normal update dispatch continues.
 
 Update-type and fallback handlers implement `TelegramWebhookHandler`, the same contract used by the single-handler mode. The `handlers` map uses Telegram update field names such as `message`, `callback_query`, `pre_checkout_query`, `poll`, and `chat_member`. A `*` key may be used as a catch-all command or update handler.
+
+## Webhook Middleware
+
+Use `telegram-bot.webhook.middleware` for application-level webhook pipeline steps that should run before the configured handler, dispatcher, command map, or fallback. This is separate from Laravel route middleware: route middleware protects the HTTP endpoint, while webhook middleware receives the parsed `TelegramWebhookUpdate`.
+
+```php
+namespace App\Telegram\Middleware;
+
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookMiddleware;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
+use Closure;
+
+final class ResolveTelegramTenant implements TelegramWebhookMiddleware
+{
+    public function process(TelegramWebhookUpdate $update, string $botName, Closure $next): mixed
+    {
+        app()->instance('telegram.tenant_key', (string) ($update->effectiveChat()?->id() ?? $botName));
+
+        return $next($update, $botName);
+    }
+}
+```
+
+Register middleware in config:
+
+```php
+'webhook' => [
+    'middleware' => [
+        App\Telegram\Middleware\ResolveTelegramTenant::class,
+    ],
+],
+```
+
+Middleware runs in the configured order. It can short-circuit downstream handlers by returning its own result instead of calling `$next($update, $botName)`.
 
 ## Manual Route Registration
 
@@ -452,6 +496,50 @@ The guard uses the host application's cache repository and `add()` semantics. A 
 ```
 
 If a synchronous handler throws, the idempotency key is released so Telegram retries can be processed. In queued mode, the key is kept after the job is dispatched and Laravel queue retries handle processing failures.
+
+## Conversation State
+
+The package includes an opt-in cache-backed conversation store for stateful webhook flows such as profile wizards, support triage, and multi-step admin commands.
+
+```env
+TELEGRAM_CONVERSATION_ENABLED=true
+TELEGRAM_CONVERSATION_STORE=redis
+TELEGRAM_CONVERSATION_TTL=86400
+TELEGRAM_CONVERSATION_KEY_PREFIX=telegram-bot:conversation
+```
+
+Resolve `TelegramConversationManager` in a handler or middleware:
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
+use AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager;
+
+final readonly class ProfileWizardHandler
+{
+    public function __construct(private TelegramConversationManager $conversations)
+    {
+    }
+
+    public function handle(TelegramWebhookUpdate $update, string $botName): mixed
+    {
+        $conversation = $this->conversations->forUpdate($update, $botName);
+
+        if ($conversation?->state() === 'awaiting_email') {
+            $this->conversations->forgetForUpdate($update, $botName);
+
+            return ['ok' => true];
+        }
+
+        $this->conversations->putForUpdate($update, $botName, 'awaiting_email', [
+            'started_at' => now()->toISOString(),
+        ]);
+
+        return ['ok' => true];
+    }
+}
+```
+
+Conversation keys are namespaced by bot and the effective chat/user when Telegram provides them. If a cache repository is unavailable, the manager returns DTOs for the current call but does not persist state, and the package logs a safe warning when logging is enabled.
 
 ## Observability Events
 

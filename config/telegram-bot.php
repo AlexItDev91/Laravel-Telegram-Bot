@@ -30,6 +30,13 @@ return [
         // ],
     ],
 
+    'conversation' => [
+        'enabled' => env('TELEGRAM_CONVERSATION_ENABLED', false),
+        'store' => env('TELEGRAM_CONVERSATION_STORE'),
+        'ttl' => env('TELEGRAM_CONVERSATION_TTL', 86400),
+        'key_prefix' => env('TELEGRAM_CONVERSATION_KEY_PREFIX', 'telegram-bot:conversation'),
+    ],
+
     'webhook' => [
         'bot' => env('TELEGRAM_WEBHOOK_BOT', env('TELEGRAM_BOT', 'default')),
 
@@ -40,6 +47,10 @@ return [
         'require_secret' => env('TELEGRAM_WEBHOOK_REQUIRE_SECRET', env('APP_ENV') === 'production'),
 
         'handler' => null,
+
+        'middleware' => [
+            // App\Telegram\Middleware\ResolveTenant::class,
+        ],
 
         'handlers' => [
             // 'message' => App\Telegram\Handlers\MessageHandler::class,

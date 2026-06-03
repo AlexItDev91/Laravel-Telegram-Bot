@@ -4,6 +4,7 @@ namespace AlexItDev91\LaravelTelegramBot\Laravel;
 
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramConversationStore as TelegramConversationStoreContract;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotDoctorCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotInstallCommand;
@@ -70,6 +71,9 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->singleton(TelegramWebhookDispatcher::class);
         $this->app->singleton(TelegramWebhookIdempotency::class);
         $this->app->singleton(TelegramWebhookProcessor::class);
+        $this->app->singleton(TelegramConversationCacheStore::class);
+        $this->app->alias(TelegramConversationCacheStore::class, TelegramConversationStoreContract::class);
+        $this->app->singleton(TelegramConversationManager::class);
         $this->app->singleton(TelegramBotNotificationChannel::class);
     }
 

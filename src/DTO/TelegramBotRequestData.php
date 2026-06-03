@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO;
 
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\InputFile;
 
 readonly class TelegramBotRequestData implements TelegramBotData
@@ -20,6 +21,17 @@ readonly class TelegramBotRequestData implements TelegramBotData
     public static function fromArray(array $parameters): self
     {
         return new self($parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public static function forMethod(
+        string|TelegramBotApiMethod $method,
+        array $parameters = [],
+        bool $validateRequiredParameters = true,
+    ): TelegramBotMethodRequestData {
+        return TelegramBotMethodRequestData::forMethod($method, $parameters, $validateRequiredParameters);
     }
 
     public function containsFiles(): bool

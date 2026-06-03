@@ -4,9 +4,11 @@ namespace AlexItDev91\LaravelTelegramBot\Tests\Feature;
 
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookCommandHandler;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookMiddleware;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
 use AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookCommand;
 use AlexItDev91\LaravelTelegramBot\Tests\TestCase;
+use Closure;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
 use Stringable;
@@ -20,6 +22,8 @@ class TelegramWebhookDispatcherTest extends TestCase
         TelegramWebhookStartCommandHandler::reset();
         TelegramWebhookMessageUpdateHandler::reset();
         TelegramWebhookFallbackHandler::reset();
+        TelegramWebhookRecordingMiddleware::reset();
+        TelegramWebhookShortCircuitMiddleware::reset();
     }
 
     public function test_dispatches_configured_command_handlers_before_update_type_handlers(): void
@@ -117,6 +121,47 @@ class TelegramWebhookDispatcherTest extends TestCase
         $this->assertSame('message', $logger->records[0]['context']['update_type']);
         $this->assertStringNotContainsString('Private payload', json_encode($logger->records[0], JSON_THROW_ON_ERROR));
     }
+
+    public function test_webhook_middleware_runs_around_configured_handlers(): void
+    {
+        config()->set('telegram-bot.webhook.middleware', [TelegramWebhookRecordingMiddleware::class]);
+        config()->set('telegram-bot.webhook.handlers.message', TelegramWebhookMessageUpdateHandler::class);
+
+        $this->postJson('/telegram-bot/webhook', [
+            'update_id' => 2005,
+            'message' => [
+                'message_id' => 13,
+                'text' => 'Middleware',
+                'chat' => ['id' => 456, 'type' => 'private'],
+            ],
+        ])->assertOk()->assertExactJson([
+            'message_id' => 13,
+            'text' => 'Middleware',
+            'type' => 'message',
+        ]);
+
+        $this->assertSame(['before:2005:default', 'after:2005:default'], TelegramWebhookRecordingMiddleware::$events);
+    }
+
+    public function test_webhook_middleware_can_short_circuit_handler_execution(): void
+    {
+        config()->set('telegram-bot.webhook.middleware', [TelegramWebhookShortCircuitMiddleware::class]);
+        config()->set('telegram-bot.webhook.handlers.message', TelegramWebhookMessageUpdateHandler::class);
+
+        $this->postJson('/telegram-bot/webhook', [
+            'update_id' => 2006,
+            'message' => [
+                'message_id' => 14,
+                'text' => 'Stop',
+                'chat' => ['id' => 456, 'type' => 'private'],
+            ],
+        ])->assertOk()->assertExactJson([
+            'middleware' => 'stopped',
+            'update_id' => 2006,
+        ]);
+
+        $this->assertNull(TelegramWebhookMessageUpdateHandler::$update);
+    }
 }
 
 final class TelegramWebhookStartCommandHandler implements TelegramWebhookCommandHandler
@@ -211,6 +256,47 @@ final class TelegramWebhookDispatcherTestLogger extends AbstractLogger
             'level' => (string) $level,
             'message' => (string) $message,
             'context' => $context,
+        ];
+    }
+}
+
+final class TelegramWebhookRecordingMiddleware implements TelegramWebhookMiddleware
+{
+    /**
+     * @var list<string>
+     */
+    public static array $events = [];
+
+    public static function reset(): void
+    {
+        self::$events = [];
+    }
+
+    public function process(TelegramWebhookUpdate $update, string $botName, Closure $next): mixed
+    {
+        self::$events[] = 'before:'.$update->updateId().':'.$botName;
+        $result = $next($update, $botName);
+        self::$events[] = 'after:'.$update->updateId().':'.$botName;
+
+        return $result;
+    }
+}
+
+final class TelegramWebhookShortCircuitMiddleware implements TelegramWebhookMiddleware
+{
+    public static function reset(): void
+    {
+        //
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function process(TelegramWebhookUpdate $update, string $botName, Closure $next): array
+    {
+        return [
+            'middleware' => 'stopped',
+            'update_id' => $update->updateId(),
         ];
     }
 }

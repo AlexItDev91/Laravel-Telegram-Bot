@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\Laravel\Notifications;
 
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use InvalidArgumentException;
@@ -59,7 +60,7 @@ class TelegramBotNotificationChannel
 
         if ($message instanceof TelegramBotRequestData) {
             return [
-                'method' => $this->methodForRequestData($message),
+                'method' => $message instanceof TelegramBotMethodRequestData ? $message->method() : $this->methodForRequestData($message),
                 'parameters' => $message->toArray(),
                 'bot' => null,
                 'channel' => null,
@@ -94,7 +95,7 @@ class TelegramBotNotificationChannel
         $parameters = $message['parameters'] ?? null;
 
         if ($parameters instanceof TelegramBotRequestData) {
-            $method ??= $this->methodForRequestData($parameters);
+            $method ??= $parameters instanceof TelegramBotMethodRequestData ? $parameters->method() : $this->methodForRequestData($parameters);
             $parameters = $parameters->toArray();
         }
 

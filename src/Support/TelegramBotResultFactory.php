@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\Support;
 
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotResultData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatMemberData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramFileData;
@@ -60,7 +61,7 @@ final class TelegramBotResultFactory
             TelegramBotApiMethod::sendVideoNote->value,
             TelegramBotApiMethod::sendVoice->value,
             TelegramBotApiMethod::stopPoll->value => self::message($result),
-            default => $result,
+            default => self::generic($result),
         };
     }
 
@@ -121,6 +122,23 @@ final class TelegramBotResultFactory
     private static function chatMembers(mixed $result): mixed
     {
         return self::mapList($result, static fn (array $payload): TelegramChatMemberData => TelegramChatMemberData::fromPayload($payload));
+    }
+
+    private static function generic(mixed $result): mixed
+    {
+        if (! is_array($result)) {
+            return $result;
+        }
+
+        if (array_is_list($result)) {
+            if (array_filter($result, static fn (mixed $item): bool => ! is_array($item)) !== []) {
+                return $result;
+            }
+
+            return self::mapList($result, static fn (array $payload): TelegramBotResultData => TelegramBotResultData::fromPayload($payload));
+        }
+
+        return TelegramBotResultData::fromPayload($result);
     }
 
     /**

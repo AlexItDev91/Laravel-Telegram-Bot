@@ -49,13 +49,18 @@ Then run:
 
 ```bash
 composer check:telegram-api-surface
+composer generate:telegram-api-schema
 ```
+
+`composer check:telegram-api-surface` verifies that the public method enum, native helpers, Markdown method reference, and Writerside method reference still match the documented Bot API methods.
+`composer generate:telegram-api-schema` refreshes the generated `TelegramBotApiMethodSchema` used by method-scoped request DTOs such as `TelegramBotRequestData::forMethod()`.
 
 When Telegram adds, changes, renames, or deprecates methods, objects, fields, parameters, webhook behavior, file behavior, payments, Mini Apps, or update types, update all relevant areas together:
 
 | Area | Expected update |
 | --- | --- |
 | SDK method registry and native helpers | New or changed Telegram methods are exposed. |
+| Generated method schema | Method-scoped request DTOs know the current method parameters and required fields. |
 | DTOs and validation | High-risk structured payloads remain correct. |
 | Tests | Surface, behavior, and regression coverage stays current. |
 | `docs/*.md` | Repository Markdown docs stay accurate. |

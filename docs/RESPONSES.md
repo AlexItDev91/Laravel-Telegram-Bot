@@ -27,7 +27,7 @@ $message = TelegramBot::callData(TelegramBotApiMethod::sendMessage, [
 ]);
 ```
 
-When a method has no typed mapper yet, `callData()` returns the raw result.
+When a method has no dedicated typed mapper yet, `callData()` keeps scalar results unchanged and wraps associative Telegram objects in `TelegramBotResultData`. Lists of Telegram objects are returned as `list<TelegramBotResultData>`.
 The raw `call(method, parameters)` API remains available for newly released Telegram methods.
 
 ## Typed Helper Methods
@@ -66,6 +66,18 @@ $messageId = $message->messageId();
 $chatId = $message->chat()?->id();
 $text = $message->text();
 $senderUsername = $message->from()?->username();
+```
+
+Generic result DTOs expose the raw payload and typed accessors for unmapped Telegram objects:
+
+```php
+$invite = TelegramBot::callData('createChatInviteLink', [
+    'chat_id' => '-1001234567890',
+]);
+
+$inviteLink = $invite->string('invite_link');
+$createsJoinRequest = $invite->bool('creates_join_request');
+$rawInvite = $invite->toArray();
 ```
 
 File and webhook status responses expose typed accessors as well:

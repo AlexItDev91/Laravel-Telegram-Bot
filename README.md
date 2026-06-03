@@ -155,7 +155,9 @@ $messageId = $message->messageId();
 $chatId = $message->chat()?->id();
 ```
 
-See [Typed Responses](https://alexitdev91.github.io/Laravel-Telegram-Bot/typed-responses.html) for `callData()`, `getUpdatesData()`, `getFileData()`, `getWebhookInfoData()`, message DTO helpers, and fake-based tests.
+When `callData()` does not have a dedicated result DTO yet, associative Telegram objects are wrapped in `TelegramBotResultData` so application code can still use typed `get()`, `string()`, `int()`, `bool()`, and `array()` accessors without losing the raw payload.
+
+See [Typed Responses](https://alexitdev91.github.io/Laravel-Telegram-Bot/typed-responses.html) for `callData()`, `TelegramBotResultData`, `getUpdatesData()`, `getFileData()`, `getWebhookInfoData()`, message DTO helpers, and fake-based tests.
 
 ## Notifications
 
@@ -193,9 +195,11 @@ Typed DTOs validate required fields, empty lists, selected numeric constraints, 
 
 Common outbound DTOs include `SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
 
+For less common methods, use `TelegramBotRequestData::forMethod()` to create a method-scoped DTO backed by the generated `TelegramBotApiMethodSchema`. The schema currently covers all 176 Bot API 10.0 methods and 863 documented parameters, validates required parameters, and prevents a request DTO for one method from being passed to another method. Pass `validateRequiredParameters: false` when a Laravel channel supplies required defaults such as `chat_id`.
+
 ## Webhooks
 
-The package includes a Laravel webhook receiver at `POST /telegram-bot/webhook` by default. It validates `X-Telegram-Bot-Api-Secret-Token` when `TELEGRAM_WEBHOOK_SECRET_TOKEN` is configured, dispatches a `TelegramWebhookReceived` event, and can call a configured `TelegramWebhookHandler`. For larger bots, configure command handlers, update-type handlers, and a fallback handler through the built-in webhook dispatcher. In production, `TELEGRAM_WEBHOOK_REQUIRE_SECRET` defaults to `true`, so missing webhook secrets fail closed.
+The package includes a Laravel webhook receiver at `POST /telegram-bot/webhook` by default. It validates `X-Telegram-Bot-Api-Secret-Token` when `TELEGRAM_WEBHOOK_SECRET_TOKEN` is configured, dispatches a `TelegramWebhookReceived` event, and can call a configured `TelegramWebhookHandler`. For larger bots, configure command handlers, update-type handlers, middleware, and a fallback handler through the built-in webhook dispatcher. In production, `TELEGRAM_WEBHOOK_REQUIRE_SECRET` defaults to `true`, so missing webhook secrets fail closed.
 
 For production bots that do non-trivial work in handlers, enable the built-in Laravel queue handoff and duplicate-update guard:
 
@@ -206,6 +210,19 @@ TELEGRAM_WEBHOOK_QUEUE=telegram-webhooks
 TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED=true
 TELEGRAM_WEBHOOK_IDEMPOTENCY_TTL=86400
 ```
+
+Register `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookMiddleware` classes in `telegram-bot.webhook.middleware` when handlers need tenant resolution, authorization, tracing, or conversation state before the dispatcher runs.
+
+Enable the cache-backed conversation layer for stateful webhook flows:
+
+```env
+TELEGRAM_CONVERSATION_ENABLED=true
+TELEGRAM_CONVERSATION_STORE=redis
+TELEGRAM_CONVERSATION_TTL=86400
+TELEGRAM_CONVERSATION_KEY_PREFIX=telegram-bot:conversation
+```
+
+Resolve `AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager` in handlers to read, write, and clear per-bot conversation state keyed by the effective chat and user.
 
 Webhook handlers receive `TelegramWebhookUpdate`, which keeps the raw payload and exposes typed convenience accessors for common Telegram objects:
 

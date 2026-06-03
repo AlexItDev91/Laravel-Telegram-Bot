@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.16.0] - 2026-06-03
+
+- Added a Laravel notification channel with `TelegramNotificationMessage` for model and on-demand Telegram notifications.
+- Added notification payload support for strings, explicit method arrays, typed request DTOs with method inference, configured package channels, named bots, forum topics, and direct messages topics.
+- Added notification documentation, Writerside topic, Laravel Boost guidance, and a copy-ready Laravel notification example.
+
 ## [1.15.0] - 2026-06-03
 
 - Added typed outbound DTO builders for common message workflows: `SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.

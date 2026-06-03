@@ -68,6 +68,8 @@ Use `php artisan telegram-bot:send-test --channel=inbox` to verify delivery to a
 ```php
 use AlexItDev91\LaravelTelegramBot\TelegramBot as TelegramBotService;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel;
+use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramNotificationMessage;
 use AlexItDev91\LaravelTelegramBot\InputFile;
 
 public function __construct(
@@ -105,6 +107,26 @@ Use `InputFile::fromPath()` for top-level and nested file uploads. Nested media 
 
 Use typed outbound DTOs for common payloads when validation helps: `AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
 
+Use `TelegramBotNotificationChannel` for Laravel notifications:
+
+```php
+public function via(object $notifiable): array
+{
+    return [TelegramBotNotificationChannel::class];
+}
+
+public function toTelegram(object $notifiable): TelegramNotificationMessage
+{
+    return TelegramNotificationMessage::text('Deploy finished')
+        ->channel('alerts')
+        ->parseMode('HTML');
+}
+```
+
+Notification routes may come from `routeNotificationForTelegram()` or `Notification::route('telegram', [...])`.
+Return `channel`, `bot`, `chat_id`, `message_thread_id`, or `direct_messages_topic_id` values from routing code. Keep tokens, chat IDs, and secrets out of notification classes.
+`toTelegram()` may return `TelegramNotificationMessage`, `string`, explicit `array` payloads, typed request DTOs, or `null` to skip delivery. Wrap generic `TelegramBotRequestData` in `TelegramNotificationMessage::forMethod()`.
+
 Bind `GuzzleHttp\ClientInterface` in the host app when custom transport, retries, proxy, tracing, or HTTP fakes are needed. Keep `http_errors` disabled so Telegram API error payloads remain available to the SDK.
 
 ## Webhooks
@@ -115,7 +137,7 @@ Keep `TELEGRAM_BOT_LOGGING_ENABLED=true` for safe operational warning/error logs
 
 For production handlers that do real work, set `TELEGRAM_WEBHOOK_QUEUE_ENABLED=true`, run Laravel queue workers for `AlexItDev91\LaravelTelegramBot\Laravel\Jobs\TelegramWebhookJob`, and enable `TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED=true` with a shared cache store when duplicate update processing is unsafe.
 
-Observe webhook processing with `TelegramWebhookReceived`, `TelegramWebhookHandled`, `TelegramWebhookFailed`, `TelegramWebhookQueued`, and `TelegramWebhookDuplicateSkipped`. Use `docs/RECIPES.md` and `examples/laravel` for copy-ready jobs, handlers, listeners, and route snippets.
+Observe webhook processing with `TelegramWebhookReceived`, `TelegramWebhookHandled`, `TelegramWebhookFailed`, `TelegramWebhookQueued`, and `TelegramWebhookDuplicateSkipped`. Use `docs/RECIPES.md`, `docs/NOTIFICATIONS.md`, and `examples/laravel` for copy-ready notifications, jobs, handlers, listeners, and route snippets.
 
 ```php
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;

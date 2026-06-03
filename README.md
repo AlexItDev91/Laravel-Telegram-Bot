@@ -32,6 +32,7 @@ Read the published documentation:
 - [End-To-End Setup Guide](https://alexitdev91.github.io/Laravel-Telegram-Bot/telegram-setup.html)
 - [Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html)
 - [Webhooks](https://alexitdev91.github.io/Laravel-Telegram-Bot/webhooks.html)
+- [Notifications](https://alexitdev91.github.io/Laravel-Telegram-Bot/notifications.html)
 - [Production Recipes](https://alexitdev91.github.io/Laravel-Telegram-Bot/production-recipes.html)
 - [Files And HTTP](https://alexitdev91.github.io/Laravel-Telegram-Bot/files-and-http.html)
 - [Payments, Passport, And Games](https://alexitdev91.github.io/Laravel-Telegram-Bot/payments-passport-games.html)
@@ -140,6 +141,34 @@ TelegramBot::channel('inbox')->sendMessage([
 ```
 
 The raw `call(method, parameters)` API remains available for newly released Telegram methods before the typed SDK surface is updated.
+
+## Notifications
+
+Use the Laravel notification channel when Telegram delivery belongs to a notifiable model or on-demand notification:
+
+```php
+use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel;
+use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramNotificationMessage;
+use Illuminate\Notifications\Notification;
+
+class DeployFinished extends Notification
+{
+    public function via(object $notifiable): array
+    {
+        return [TelegramBotNotificationChannel::class];
+    }
+
+    public function toTelegram(object $notifiable): TelegramNotificationMessage
+    {
+        return TelegramNotificationMessage::text('Deploy finished')
+            ->channel('alerts')
+            ->parseMode('HTML');
+    }
+}
+```
+
+Routes may return a plain `chat_id`, a configured package `channel`, a named `bot`, and optional `message_thread_id` or `direct_messages_topic_id`.
+See [Notifications](https://alexitdev91.github.io/Laravel-Telegram-Bot/notifications.html) for model routing, on-demand routes, typed DTO payloads, and fake-based tests.
 
 ## Validation And DTOs
 

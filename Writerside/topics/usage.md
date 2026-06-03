@@ -125,7 +125,7 @@ It is intentionally retained so applications are not blocked when Telegram relea
 ```php
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 
-$result = $telegram->bot('support')->call(TelegramBotApiMethod::SendMessage, [
+$result = $telegram->bot('support')->call(TelegramBotApiMethod::sendMessage, [
     'chat_id' => '-1001234567890',
     'text' => 'Enum-based call',
 ]);

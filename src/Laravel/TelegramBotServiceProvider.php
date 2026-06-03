@@ -15,6 +15,7 @@ use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotWebhookIn
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotWebhookSetCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Http\Controllers\TelegramWebhookController;
 use AlexItDev91\LaravelTelegramBot\Laravel\Http\Middleware\VerifyTelegramWebhookSecret;
+use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel;
 use AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookDispatcher;
 use AlexItDev91\LaravelTelegramBot\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
@@ -69,6 +70,7 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->singleton(TelegramWebhookDispatcher::class);
         $this->app->singleton(TelegramWebhookIdempotency::class);
         $this->app->singleton(TelegramWebhookProcessor::class);
+        $this->app->singleton(TelegramBotNotificationChannel::class);
     }
 
     public function boot(): void

@@ -55,6 +55,37 @@ TelegramBot::channel('alerts')->sendMessage([
 ]);
 ```
 
+## Laravel Notifications
+
+Use the notification channel when Telegram delivery belongs to a notifiable model or an on-demand Laravel notification:
+
+```php
+use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel;
+use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramNotificationMessage;
+use Illuminate\Notifications\Notification;
+
+class DeployFinished extends Notification
+{
+    /**
+     * @return list<class-string>
+     */
+    public function via(object $notifiable): array
+    {
+        return [TelegramBotNotificationChannel::class];
+    }
+
+    public function toTelegram(object $notifiable): TelegramNotificationMessage
+    {
+        return TelegramNotificationMessage::text('Deploy finished')
+            ->channel('alerts')
+            ->parseMode('HTML');
+    }
+}
+```
+
+Routes can return a configured package `channel`, a named `bot` plus `chat_id`, or a plain `chat_id`.
+Use the Notifications topic for the full routing and payload guide.
+
 ## Queue Outbound Messages And Recover From Telegram Limits
 
 Telegram failed responses may include `retry_after` for flood limits or `migrate_to_chat_id` when a group was upgraded.
@@ -142,6 +173,7 @@ Copy-ready examples are stored in `examples/laravel`:
 
 - `app/Telegram/Commands/StartCommand.php`
 - `app/Telegram/Handlers/CallbackQueryHandler.php`
+- `app/Notifications/TelegramDeployFinished.php`
 - `app/Jobs/SendTelegramAlert.php`
 - `app/Listeners/RecordTelegramWebhookMetric.php`
 - `routes/telegram.php`

@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class UnpinAllForumTopicMessagesRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'unpinAllForumTopicMessages';
+    public const string METHOD = 'unpinAllForumTopicMessages';
 
     /**
      * @param  array<string, mixed>  $extra

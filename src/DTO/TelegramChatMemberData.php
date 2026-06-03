@@ -201,6 +201,7 @@ final readonly class TelegramChatMemberData implements TelegramBotData
     /**
      * @return array<string, mixed>
      */
+    #[\Override]
     public function toArray(): array
     {
         return $this->payload;

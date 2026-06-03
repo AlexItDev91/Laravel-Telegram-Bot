@@ -25,6 +25,7 @@ class TelegramBotChannel implements TelegramBotClient
     /**
      * @param  array<string, mixed>  $parameters
      */
+    #[\Override]
     public function call(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
         if ($parameters instanceof TelegramBotMethodRequest) {

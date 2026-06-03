@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.0.1] - 2026-06-03
+
+- Added PHP 8.4 strictness hardening with typed class constants across generated request DTOs, schema registries, webhook update metadata, and Laravel internals.
+- Added `#[\Override]` guards to DTO serialization methods and explicit package contract implementations.
+- Added regression coverage to require typed class constants for all source classes.
+
 ## [2.0.0] - 2026-06-03
 
 - Raised the package baseline to PHP `^8.4` and Laravel/Illuminate `^13.0` only.

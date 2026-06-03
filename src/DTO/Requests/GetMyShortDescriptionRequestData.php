@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class GetMyShortDescriptionRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'getMyShortDescription';
+    public const string METHOD = 'getMyShortDescription';
 
     /**
      * @param  array<string, mixed>  $extra

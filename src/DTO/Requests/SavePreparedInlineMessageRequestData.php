@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class SavePreparedInlineMessageRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'savePreparedInlineMessage';
+    public const string METHOD = 'savePreparedInlineMessage';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>  $result

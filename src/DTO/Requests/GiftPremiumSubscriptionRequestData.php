@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class GiftPremiumSubscriptionRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'giftPremiumSubscription';
+    public const string METHOD = 'giftPremiumSubscription';
 
     /**
      * @param  array<string|int, mixed>|null  $textEntities

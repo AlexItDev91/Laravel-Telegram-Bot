@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class CopyMessageRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'copyMessage';
+    public const string METHOD = 'copyMessage';
 
     /**
      * @param  array<string|int, mixed>|null  $captionEntities

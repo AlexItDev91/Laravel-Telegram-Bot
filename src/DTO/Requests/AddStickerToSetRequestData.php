@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class AddStickerToSetRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'addStickerToSet';
+    public const string METHOD = 'addStickerToSet';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>  $sticker

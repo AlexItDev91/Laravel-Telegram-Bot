@@ -13,7 +13,7 @@ final class TelegramBotApiRequestRegistry
     /**
      * @var array<string, class-string<TelegramBotApiRequestData>>
      */
-    private const REQUESTS = [
+    private const array REQUESTS = [
         'addStickerToSet' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\AddStickerToSetRequestData',
         'answerCallbackQuery' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\AnswerCallbackQueryRequestData',
         'answerGuestQuery' => 'AlexItDev91\\LaravelTelegramBot\\DTO\\Requests\\AnswerGuestQueryRequestData',

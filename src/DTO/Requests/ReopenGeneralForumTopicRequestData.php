@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class ReopenGeneralForumTopicRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'reopenGeneralForumTopic';
+    public const string METHOD = 'reopenGeneralForumTopic';
 
     /**
      * @param  array<string, mixed>  $extra

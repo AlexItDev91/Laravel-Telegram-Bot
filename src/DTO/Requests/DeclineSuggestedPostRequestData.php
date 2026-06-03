@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class DeclineSuggestedPostRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'declineSuggestedPost';
+    public const string METHOD = 'declineSuggestedPost';
 
     /**
      * @param  array<string, mixed>  $extra

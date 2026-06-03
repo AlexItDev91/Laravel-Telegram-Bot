@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class SetCustomEmojiStickerSetThumbnailRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'setCustomEmojiStickerSetThumbnail';
+    public const string METHOD = 'setCustomEmojiStickerSetThumbnail';
 
     /**
      * @param  array<string, mixed>  $extra

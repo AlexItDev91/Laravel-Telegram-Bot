@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class SetBusinessAccountGiftSettingsRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'setBusinessAccountGiftSettings';
+    public const string METHOD = 'setBusinessAccountGiftSettings';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>  $acceptedGiftTypes

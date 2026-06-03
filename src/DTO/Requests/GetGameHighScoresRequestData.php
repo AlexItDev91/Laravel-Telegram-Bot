@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class GetGameHighScoresRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'getGameHighScores';
+    public const string METHOD = 'getGameHighScores';
 
     /**
      * @param  array<string, mixed>  $extra

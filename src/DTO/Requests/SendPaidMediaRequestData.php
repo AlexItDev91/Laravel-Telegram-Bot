@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class SendPaidMediaRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'sendPaidMedia';
+    public const string METHOD = 'sendPaidMedia';
 
     /**
      * @param  array<string|int, mixed>  $media

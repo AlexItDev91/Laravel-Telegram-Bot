@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class SetPassportDataErrorsRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'setPassportDataErrors';
+    public const string METHOD = 'setPassportDataErrors';
 
     /**
      * @param  array<string|int, mixed>  $errors

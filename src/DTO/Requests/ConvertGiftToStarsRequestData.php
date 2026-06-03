@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class ConvertGiftToStarsRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'convertGiftToStars';
+    public const string METHOD = 'convertGiftToStars';
 
     /**
      * @param  array<string, mixed>  $extra

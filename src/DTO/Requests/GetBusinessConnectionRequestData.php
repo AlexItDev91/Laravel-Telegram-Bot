@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class GetBusinessConnectionRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'getBusinessConnection';
+    public const string METHOD = 'getBusinessConnection';
 
     /**
      * @param  array<string, mixed>  $extra

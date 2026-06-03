@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class DeleteChatStickerSetRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'deleteChatStickerSet';
+    public const string METHOD = 'deleteChatStickerSet';
 
     /**
      * @param  array<string, mixed>  $extra

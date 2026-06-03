@@ -10,7 +10,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class SendStickerRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'sendSticker';
+    public const string METHOD = 'sendSticker';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>|null  $suggestedPostParameters

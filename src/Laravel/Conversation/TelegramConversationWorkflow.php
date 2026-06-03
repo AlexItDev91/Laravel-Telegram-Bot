@@ -8,7 +8,7 @@ use AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager;
 
 final readonly class TelegramConversationWorkflow
 {
-    private const EXPIRES_AT = '_expires_at';
+    private const string EXPIRES_AT = '_expires_at';
 
     public function __construct(
         private TelegramConversationManager $manager,

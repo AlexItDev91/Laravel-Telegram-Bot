@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class AnswerCallbackQueryRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'answerCallbackQuery';
+    public const string METHOD = 'answerCallbackQuery';
 
     /**
      * @param  array<string, mixed>  $extra

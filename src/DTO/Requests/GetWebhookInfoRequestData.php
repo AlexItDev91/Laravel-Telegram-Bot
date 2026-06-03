@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class GetWebhookInfoRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'getWebhookInfo';
+    public const string METHOD = 'getWebhookInfo';
 
     /**
      * @param  array<string, mixed>  $extra

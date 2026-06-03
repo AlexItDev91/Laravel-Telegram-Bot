@@ -7,7 +7,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
 
 final readonly class TelegramWebhookCommand
 {
-    private const PATTERN = '/^\/(\w{1,32})(?:@(\w{1,32}))?(?:\s+(.*))?$/s';
+    private const string PATTERN = '/^\/(\w{1,32})(?:@(\w{1,32}))?(?:\s+(.*))?$/s';
 
     public function __construct(
         private TelegramMessageData $message,

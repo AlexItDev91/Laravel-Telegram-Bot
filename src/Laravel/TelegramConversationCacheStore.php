@@ -20,6 +20,7 @@ readonly class TelegramConversationCacheStore implements TelegramConversationSto
         //
     }
 
+    #[\Override]
     public function get(string $key): ?TelegramConversationData
     {
         if (! $this->enabled()) {
@@ -44,6 +45,7 @@ readonly class TelegramConversationCacheStore implements TelegramConversationSto
     /**
      * @param  array<string, mixed>  $data
      */
+    #[\Override]
     public function put(string $key, string $state, array $data = [], ?int $ttl = null): TelegramConversationData
     {
         $conversation = new TelegramConversationData($key, $state, $data);
@@ -70,6 +72,7 @@ readonly class TelegramConversationCacheStore implements TelegramConversationSto
         return $conversation;
     }
 
+    #[\Override]
     public function forget(string $key): void
     {
         if (! $this->enabled()) {

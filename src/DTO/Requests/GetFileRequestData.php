@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class GetFileRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'getFile';
+    public const string METHOD = 'getFile';
 
     /**
      * @param  array<string, mixed>  $extra

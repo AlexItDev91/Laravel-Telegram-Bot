@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class ApproveChatJoinRequestRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'approveChatJoinRequest';
+    public const string METHOD = 'approveChatJoinRequest';
 
     /**
      * @param  array<string, mixed>  $extra

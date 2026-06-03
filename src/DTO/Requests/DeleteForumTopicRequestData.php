@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class DeleteForumTopicRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'deleteForumTopic';
+    public const string METHOD = 'deleteForumTopic';
 
     /**
      * @param  array<string, mixed>  $extra

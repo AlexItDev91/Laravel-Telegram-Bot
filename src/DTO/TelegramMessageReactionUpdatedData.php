@@ -71,6 +71,7 @@ final readonly class TelegramMessageReactionUpdatedData implements TelegramBotDa
     /**
      * @return array<string, mixed>
      */
+    #[\Override]
     public function toArray(): array
     {
         return $this->payload;

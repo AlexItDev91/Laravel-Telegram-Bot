@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class SetBusinessAccountBioRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'setBusinessAccountBio';
+    public const string METHOD = 'setBusinessAccountBio';
 
     /**
      * @param  array<string, mixed>  $extra

@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class EditMessageCaptionRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'editMessageCaption';
+    public const string METHOD = 'editMessageCaption';
 
     /**
      * @param  array<string|int, mixed>|null  $captionEntities

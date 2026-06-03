@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class SetMyProfilePhotoRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'setMyProfilePhoto';
+    public const string METHOD = 'setMyProfilePhoto';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>  $photo

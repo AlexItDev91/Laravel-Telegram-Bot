@@ -18,11 +18,13 @@ class TelegramBot implements TelegramBotManager
     ) {
     }
 
+    #[\Override]
     public function bot(?string $name = null): TelegramBotClient
     {
         return $this->manager->bot($name);
     }
 
+    #[\Override]
     public function channel(string $name): TelegramBotChannel
     {
         return $this->manager->channel($name);

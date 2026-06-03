@@ -18,6 +18,7 @@ readonly class TelegramBotRateLimiter implements TelegramBotRateLimiterContract
         //
     }
 
+    #[\Override]
     public function throttle(string $method, Closure $next): mixed
     {
         if (! $this->enabled()) {

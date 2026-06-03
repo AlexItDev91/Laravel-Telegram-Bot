@@ -26,6 +26,7 @@ final readonly class PassportAuthorizationRequest implements TelegramBotData
     /**
      * @return array<string, mixed>
      */
+    #[\Override]
     public function toArray(): array
     {
         return self::payload([

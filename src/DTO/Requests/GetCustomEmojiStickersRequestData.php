@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class GetCustomEmojiStickersRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'getCustomEmojiStickers';
+    public const string METHOD = 'getCustomEmojiStickers';
 
     /**
      * @param  array<string|int, mixed>  $customEmojiIds

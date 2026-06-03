@@ -50,6 +50,7 @@ final readonly class TelegramBusinessMessagesDeletedData implements TelegramBotD
     /**
      * @return array<string, mixed>
      */
+    #[\Override]
     public function toArray(): array
     {
         return $this->payload;

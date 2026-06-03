@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class GetMyDefaultAdministratorRightsRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'getMyDefaultAdministratorRights';
+    public const string METHOD = 'getMyDefaultAdministratorRights';
 
     /**
      * @param  array<string, mixed>  $extra

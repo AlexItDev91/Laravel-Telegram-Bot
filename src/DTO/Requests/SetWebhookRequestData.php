@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\InputFile;
  */
 final readonly class SetWebhookRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'setWebhook';
+    public const string METHOD = 'setWebhook';
 
     /**
      * @param  array<string|int, mixed>|null  $allowedUpdates

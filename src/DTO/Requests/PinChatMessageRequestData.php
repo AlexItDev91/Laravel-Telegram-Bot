@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class PinChatMessageRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'pinChatMessage';
+    public const string METHOD = 'pinChatMessage';
 
     /**
      * @param  array<string, mixed>  $extra

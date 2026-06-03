@@ -13,7 +13,7 @@ final class TelegramBotApiResultSchema
     /**
      * @var array<string, array{type: string, data_class: class-string<TelegramBotData>|null, list: bool, allows_bool: bool}>
      */
-    private const RESULTS = [
+    private const array RESULTS = [
         'addStickerToSet' => [
             'type' => 'Boolean',
             'data_class' => NULL,

@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class UnhideGeneralForumTopicRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'unhideGeneralForumTopic';
+    public const string METHOD = 'unhideGeneralForumTopic';
 
     /**
      * @param  array<string, mixed>  $extra

@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class GetBusinessAccountStarBalanceRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'getBusinessAccountStarBalance';
+    public const string METHOD = 'getBusinessAccountStarBalance';
 
     /**
      * @param  array<string, mixed>  $extra

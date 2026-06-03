@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class SendPollRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'sendPoll';
+    public const string METHOD = 'sendPoll';
 
     /**
      * @param  array<string|int, mixed>  $options

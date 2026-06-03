@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class StopPollRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'stopPoll';
+    public const string METHOD = 'stopPoll';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>|null  $replyMarkup

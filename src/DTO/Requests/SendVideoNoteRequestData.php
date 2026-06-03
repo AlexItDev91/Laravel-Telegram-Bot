@@ -10,7 +10,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class SendVideoNoteRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'sendVideoNote';
+    public const string METHOD = 'sendVideoNote';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>|null  $suggestedPostParameters

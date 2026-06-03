@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class SetChatMenuButtonRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'setChatMenuButton';
+    public const string METHOD = 'setChatMenuButton';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>|null  $menuButton

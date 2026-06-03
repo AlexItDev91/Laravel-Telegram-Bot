@@ -9,12 +9,12 @@ use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
  */
 final class TelegramBotApiMethodSchema
 {
-    public const CHECKSUM = '530ff42016e193d4d7348a53709fa53cb5e131b1db545e22227c98484432f7ec';
+    public const string CHECKSUM = '530ff42016e193d4d7348a53709fa53cb5e131b1db545e22227c98484432f7ec';
 
     /**
      * @var array<string, list<array{name: string, type: string, required: bool}>>
      */
-    private const PARAMETERS = [
+    private const array PARAMETERS = [
         'addStickerToSet' => [
             [
                 'name' => 'user_id',

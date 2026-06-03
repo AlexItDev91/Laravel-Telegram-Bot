@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class AnswerShippingQueryRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'answerShippingQuery';
+    public const string METHOD = 'answerShippingQuery';
 
     /**
      * @param  array<string|int, mixed>|null  $shippingOptions

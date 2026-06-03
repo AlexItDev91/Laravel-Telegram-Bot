@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class CreateInvoiceLinkRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'createInvoiceLink';
+    public const string METHOD = 'createInvoiceLink';
 
     /**
      * @param  array<string|int, mixed>  $prices

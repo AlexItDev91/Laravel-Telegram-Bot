@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class AnswerPreCheckoutQueryRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'answerPreCheckoutQuery';
+    public const string METHOD = 'answerPreCheckoutQuery';
 
     /**
      * @param  array<string, mixed>  $extra

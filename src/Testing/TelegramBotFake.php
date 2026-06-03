@@ -36,6 +36,7 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
 
     private ?string $selectedBot = null;
 
+    #[\Override]
     public function bot(?string $name = null): TelegramBotClient
     {
         $this->selectedBot = $name ?? 'default';
@@ -43,6 +44,7 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
         return $this;
     }
 
+    #[\Override]
     public function channel(string $name): TelegramBotChannel
     {
         $channels = config('telegram-bot.channels', []);
@@ -64,6 +66,7 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
     /**
      * @param  array<string, mixed>  $parameters
      */
+    #[\Override]
     public function call(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
         $methodName = $method instanceof TelegramBotApiMethod ? $method->value : $method;

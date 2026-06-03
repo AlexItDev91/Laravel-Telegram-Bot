@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class GetManagedBotAccessSettingsRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'getManagedBotAccessSettings';
+    public const string METHOD = 'getManagedBotAccessSettings';
 
     /**
      * @param  array<string, mixed>  $extra

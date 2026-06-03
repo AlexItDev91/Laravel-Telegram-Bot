@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class SendChatActionRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'sendChatAction';
+    public const string METHOD = 'sendChatAction';
 
     /**
      * @param  array<string, mixed>  $extra

@@ -13,7 +13,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.0.0', $version);
+        $this->assertSame('2.0.1', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -34,6 +34,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.0.1] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [2.0.0] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [1.19.1] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [1.19.0] - 2026-06-03', $changelog);
@@ -94,6 +95,7 @@ class ReleasePolicyTest extends TestCase
         $this->assertStringContainsString('## Version Support Policy', $readme);
         $this->assertStringContainsString('Version `v1.19.1` is the final 1.x release', $readme);
         $this->assertStringContainsString('Starting with `v2.0.0`, this package no longer supports Laravel 12, PHP 8.2, or PHP 8.3.', $readme);
+        $this->assertStringContainsString('The `2.x` source uses PHP 8.4-era strictness, including typed class constants and `#[\Override]` attributes', $readme);
         $this->assertStringContainsString('| `2.x` | `^8.4` | `^13.0` | Current line.', $readme);
         $this->assertStringContainsString('| `1.x` | `^8.2` | `^12.0` or `^13.0` | Legacy ceiling.', $readme);
     }
@@ -182,7 +184,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.0.0', $notes);
-        $this->assertStringContainsString('Raised the package baseline to PHP `^8.4` and Laravel/Illuminate `^13.0` only.', $notes);
+        $this->assertStringContainsString('# v2.0.1', $notes);
+        $this->assertStringContainsString('Added PHP 8.4 strictness hardening with typed class constants', $notes);
     }
 }

@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class GetChatMenuButtonRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'getChatMenuButton';
+    public const string METHOD = 'getChatMenuButton';
 
     /**
      * @param  array<string, mixed>  $extra

@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class DeleteWebhookRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'deleteWebhook';
+    public const string METHOD = 'deleteWebhook';
 
     /**
      * @param  array<string, mixed>  $extra

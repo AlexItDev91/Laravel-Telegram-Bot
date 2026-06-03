@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class GetForumTopicIconStickersRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'getForumTopicIconStickers';
+    public const string METHOD = 'getForumTopicIconStickers';
 
     /**
      * @param  array<string, mixed>  $extra

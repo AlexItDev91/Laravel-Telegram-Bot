@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class LogOutRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'logOut';
+    public const string METHOD = 'logOut';
 
     /**
      * @param  array<string, mixed>  $extra

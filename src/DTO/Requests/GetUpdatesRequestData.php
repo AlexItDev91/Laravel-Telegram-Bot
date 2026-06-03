@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class GetUpdatesRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'getUpdates';
+    public const string METHOD = 'getUpdates';
 
     /**
      * @param  array<string|int, mixed>|null  $allowedUpdates

@@ -34,6 +34,7 @@ class TelegramBotManager implements TelegramBotManagerContract
         $this->clientFactory = $clientFactory(...);
     }
 
+    #[\Override]
     public function bot(?string $name = null): TelegramBotClientContract
     {
         $name ??= (string) ($this->config['default'] ?? 'default');
@@ -41,6 +42,7 @@ class TelegramBotManager implements TelegramBotManagerContract
         return $this->clients[$name] ??= ($this->clientFactory)(TelegramBotConfigData::fromArray($this->botConfig($name)));
     }
 
+    #[\Override]
     public function channel(string $name): TelegramBotChannel
     {
         $channels = $this->config['channels'] ?? [];

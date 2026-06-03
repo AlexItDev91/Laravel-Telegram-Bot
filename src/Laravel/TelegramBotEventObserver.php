@@ -14,6 +14,7 @@ readonly class TelegramBotEventObserver implements TelegramBotObserver
         //
     }
 
+    #[\Override]
     public function record(TelegramBotRequestTelemetryData $telemetry): void
     {
         $this->events->dispatch(new TelegramBotApiRequestRecorded($telemetry));

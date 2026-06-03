@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\InputFile;
  */
 final readonly class SetChatPhotoRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'setChatPhoto';
+    public const string METHOD = 'setChatPhoto';
 
     /**
      * @param  array<string, mixed>  $extra

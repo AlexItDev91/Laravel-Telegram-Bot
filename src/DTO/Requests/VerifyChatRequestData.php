@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class VerifyChatRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'verifyChat';
+    public const string METHOD = 'verifyChat';
 
     /**
      * @param  array<string, mixed>  $extra

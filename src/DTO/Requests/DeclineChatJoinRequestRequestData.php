@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class DeclineChatJoinRequestRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'declineChatJoinRequest';
+    public const string METHOD = 'declineChatJoinRequest';
 
     /**
      * @param  array<string, mixed>  $extra

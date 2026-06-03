@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class ReplaceStickerInSetRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'replaceStickerInSet';
+    public const string METHOD = 'replaceStickerInSet';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>  $sticker

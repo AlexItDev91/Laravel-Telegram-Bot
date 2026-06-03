@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class SetStickerMaskPositionRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'setStickerMaskPosition';
+    public const string METHOD = 'setStickerMaskPosition';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>|null  $maskPosition

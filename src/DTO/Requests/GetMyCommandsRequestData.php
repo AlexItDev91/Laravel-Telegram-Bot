@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class GetMyCommandsRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'getMyCommands';
+    public const string METHOD = 'getMyCommands';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>|null  $scope

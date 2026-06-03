@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class ForwardMessagesRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'forwardMessages';
+    public const string METHOD = 'forwardMessages';
 
     /**
      * @param  array<string|int, mixed>  $messageIds

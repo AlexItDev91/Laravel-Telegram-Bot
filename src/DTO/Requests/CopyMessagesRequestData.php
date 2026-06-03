@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class CopyMessagesRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'copyMessages';
+    public const string METHOD = 'copyMessages';
 
     /**
      * @param  array<string|int, mixed>  $messageIds

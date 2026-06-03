@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class RestrictChatMemberRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'restrictChatMember';
+    public const string METHOD = 'restrictChatMember';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>  $permissions

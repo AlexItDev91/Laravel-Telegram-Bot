@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class RemoveMyProfilePhotoRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'removeMyProfilePhoto';
+    public const string METHOD = 'removeMyProfilePhoto';
 
     /**
      * @param  array<string, mixed>  $extra

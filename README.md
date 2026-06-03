@@ -30,6 +30,8 @@ The first major version line is closed. Version `v1.19.1` is the final 1.x relea
 
 Starting with `v2.0.0`, this package no longer supports Laravel 12, PHP 8.2, or PHP 8.3.
 
+The `2.x` source uses PHP 8.4-era strictness, including typed class constants and `#[\Override]` attributes, so PHP 8.4 is a hard runtime requirement.
+
 ## Documentation
 
 The package targets Telegram Bot API `10.0`, released on `2026-05-08`.

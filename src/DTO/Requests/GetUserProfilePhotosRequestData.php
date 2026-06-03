@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class GetUserProfilePhotosRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'getUserProfilePhotos';
+    public const string METHOD = 'getUserProfilePhotos';
 
     /**
      * @param  array<string, mixed>  $extra

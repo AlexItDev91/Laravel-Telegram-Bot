@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class SetChatPermissionsRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'setChatPermissions';
+    public const string METHOD = 'setChatPermissions';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>  $permissions

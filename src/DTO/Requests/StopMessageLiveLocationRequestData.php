@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class StopMessageLiveLocationRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'stopMessageLiveLocation';
+    public const string METHOD = 'stopMessageLiveLocation';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>|null  $replyMarkup

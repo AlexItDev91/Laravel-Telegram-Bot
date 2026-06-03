@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\InputFile;
  */
 final readonly class UploadStickerFileRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'uploadStickerFile';
+    public const string METHOD = 'uploadStickerFile';
 
     /**
      * @param  array<string, mixed>  $extra

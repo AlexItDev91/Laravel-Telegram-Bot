@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class SavePreparedKeyboardButtonRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'savePreparedKeyboardButton';
+    public const string METHOD = 'savePreparedKeyboardButton';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>  $button

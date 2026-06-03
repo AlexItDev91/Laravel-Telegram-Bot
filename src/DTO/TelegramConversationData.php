@@ -56,6 +56,7 @@ final readonly class TelegramConversationData implements TelegramBotData
     /**
      * @return array{key: string, state: string, data: array<string, mixed>}
      */
+    #[\Override]
     public function toArray(): array
     {
         return [

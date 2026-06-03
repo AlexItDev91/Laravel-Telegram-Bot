@@ -64,6 +64,7 @@ class TelegramBotClient implements TelegramBotClientContract
     /**
      * @param  array<string, mixed>  $parameters
      */
+    #[\Override]
     public function call(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
         $this->assertConfigured();

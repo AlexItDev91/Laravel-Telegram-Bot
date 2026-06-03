@@ -10,7 +10,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class SendVideoRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'sendVideo';
+    public const string METHOD = 'sendVideo';
 
     /**
      * @param  array<string|int, mixed>|null  $captionEntities

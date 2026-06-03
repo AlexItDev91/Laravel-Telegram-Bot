@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class TransferBusinessAccountStarsRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'transferBusinessAccountStars';
+    public const string METHOD = 'transferBusinessAccountStars';
 
     /**
      * @param  array<string, mixed>  $extra

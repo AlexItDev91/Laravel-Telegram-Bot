@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class EditMessageChecklistRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'editMessageChecklist';
+    public const string METHOD = 'editMessageChecklist';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>  $checklist

@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class EditMessageReplyMarkupRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'editMessageReplyMarkup';
+    public const string METHOD = 'editMessageReplyMarkup';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>|null  $replyMarkup

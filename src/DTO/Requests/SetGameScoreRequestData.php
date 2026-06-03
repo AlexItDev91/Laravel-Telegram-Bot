@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class SetGameScoreRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'setGameScore';
+    public const string METHOD = 'setGameScore';
 
     /**
      * @param  array<string, mixed>  $extra

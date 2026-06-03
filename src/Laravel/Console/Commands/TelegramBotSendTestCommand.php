@@ -22,7 +22,7 @@ class TelegramBotSendTestCommand extends Command
 {
     use ResolvesTelegramBotConsoleInput;
 
-    private const MANUAL_DESTINATION = '__manual_chat_id__';
+    private const string MANUAL_DESTINATION = '__manual_chat_id__';
 
     protected $signature = 'telegram-bot:send-test
         {--bot= : Configured bot name used with --chat-id}

@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class AnswerInlineQueryRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'answerInlineQuery';
+    public const string METHOD = 'answerInlineQuery';
 
     /**
      * @param  array<string|int, mixed>  $results

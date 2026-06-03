@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class RevokeChatInviteLinkRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'revokeChatInviteLink';
+    public const string METHOD = 'revokeChatInviteLink';
 
     /**
      * @param  array<string, mixed>  $extra

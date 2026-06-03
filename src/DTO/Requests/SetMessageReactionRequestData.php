@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class SetMessageReactionRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'setMessageReaction';
+    public const string METHOD = 'setMessageReaction';
 
     /**
      * @param  array<string|int, mixed>|null  $reaction

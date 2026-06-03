@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class SetStickerSetTitleRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'setStickerSetTitle';
+    public const string METHOD = 'setStickerSetTitle';
 
     /**
      * @param  array<string, mixed>  $extra

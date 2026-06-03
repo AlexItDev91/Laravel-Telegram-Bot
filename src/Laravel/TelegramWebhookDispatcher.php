@@ -22,6 +22,7 @@ readonly class TelegramWebhookDispatcher implements TelegramWebhookHandler
         //
     }
 
+    #[\Override]
     public function handle(TelegramWebhookUpdate $update, string $botName): mixed
     {
         $command = TelegramWebhookCommand::fromUpdate($update);

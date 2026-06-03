@@ -61,6 +61,7 @@ final readonly class TelegramInlineQueryData implements TelegramBotData
     /**
      * @return array<string, mixed>
      */
+    #[\Override]
     public function toArray(): array
     {
         return $this->payload;

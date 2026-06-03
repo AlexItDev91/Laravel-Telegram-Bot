@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class RemoveUserVerificationRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'removeUserVerification';
+    public const string METHOD = 'removeUserVerification';
 
     /**
      * @param  array<string, mixed>  $extra

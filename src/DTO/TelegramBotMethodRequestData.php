@@ -42,11 +42,13 @@ readonly class TelegramBotMethodRequestData extends TelegramBotRequestData imple
         return new self($method, $parameters, $validateRequiredParameters);
     }
 
+    #[\Override]
     public function method(): string
     {
         return $this->methodName;
     }
 
+    #[\Override]
     public function validatesRequiredParameters(): bool
     {
         return $this->validateRequiredParameters;
@@ -55,6 +57,7 @@ readonly class TelegramBotMethodRequestData extends TelegramBotRequestData imple
     /**
      * @return list<array{name: string, type: string, required: bool}>
      */
+    #[\Override]
     public function schema(): array
     {
         return TelegramBotApiMethodSchema::parameters($this->methodName);
@@ -63,6 +66,7 @@ readonly class TelegramBotMethodRequestData extends TelegramBotRequestData imple
     /**
      * @return list<string>
      */
+    #[\Override]
     public function requiredParameters(): array
     {
         return TelegramBotApiMethodSchema::requiredParameters($this->methodName);

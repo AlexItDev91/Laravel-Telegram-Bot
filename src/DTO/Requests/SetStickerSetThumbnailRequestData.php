@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\InputFile;
  */
 final readonly class SetStickerSetThumbnailRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'setStickerSetThumbnail';
+    public const string METHOD = 'setStickerSetThumbnail';
 
     /**
      * @param  array<string, mixed>  $extra

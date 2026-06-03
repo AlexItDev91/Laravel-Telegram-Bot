@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class RefundStarPaymentRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'refundStarPayment';
+    public const string METHOD = 'refundStarPayment';
 
     /**
      * @param  array<string, mixed>  $extra

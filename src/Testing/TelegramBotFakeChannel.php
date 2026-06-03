@@ -24,6 +24,7 @@ final class TelegramBotFakeChannel extends TelegramBotChannel
     /**
      * @param  array<string, mixed>  $parameters
      */
+    #[\Override]
     public function call(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
         $parameters = $parameters instanceof TelegramBotRequestData ? $parameters->parameters : $parameters;

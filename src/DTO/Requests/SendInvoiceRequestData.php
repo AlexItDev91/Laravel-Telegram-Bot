@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class SendInvoiceRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'sendInvoice';
+    public const string METHOD = 'sendInvoice';
 
     /**
      * @param  array<string|int, mixed>  $prices

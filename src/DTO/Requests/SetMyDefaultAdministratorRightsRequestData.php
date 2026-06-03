@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class SetMyDefaultAdministratorRightsRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'setMyDefaultAdministratorRights';
+    public const string METHOD = 'setMyDefaultAdministratorRights';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>|null  $rights

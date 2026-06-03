@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
  */
 final readonly class ForwardMessageRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'forwardMessage';
+    public const string METHOD = 'forwardMessage';
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>|null  $suggestedPostParameters

@@ -54,6 +54,7 @@ final readonly class PassportScopeElement implements TelegramBotData
     /**
      * @return array<string, mixed>
      */
+    #[\Override]
     public function toArray(): array
     {
         $payload = [

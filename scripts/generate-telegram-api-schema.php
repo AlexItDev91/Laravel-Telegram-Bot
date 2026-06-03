@@ -55,12 +55,12 @@ use AlexItDev91\\LaravelTelegramBot\\Enums\\TelegramBotApiMethod;
  */
 final class TelegramBotApiMethodSchema
 {
-    public const CHECKSUM = '$checksum';
+    public const string CHECKSUM = '$checksum';
 
     /**
      * @var array<string, list<array{name: string, type: string, required: bool}>>
      */
-    private const PARAMETERS = $export;
+    private const array PARAMETERS = $export;
 
     public static function supports(string|TelegramBotApiMethod \$method): bool
     {
@@ -182,7 +182,7 @@ use InvalidArgumentException;
  */
 abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData implements TelegramBotMethodRequest
 {
-    public const METHOD = '';
+    public const string METHOD = '';
 
     /**
      * @param  array<string, mixed>  $parameters
@@ -214,11 +214,13 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
         return new static(array_merge($this->parameters, [$parameter => $value]), $this->validatesRequiredParameters());
     }
 
+    #[\Override]
     public function method(): string
     {
         return static::METHOD;
     }
 
+    #[\Override]
     public function validatesRequiredParameters(): bool
     {
         return $this->validateRequiredParameters;
@@ -227,6 +229,7 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
     /**
      * @return list<array{name: string, type: string, required: bool}>
      */
+    #[\Override]
     public function schema(): array
     {
         return TelegramBotApiMethodSchema::parameters($this->method());
@@ -235,6 +238,7 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
     /**
      * @return list<string>
      */
+    #[\Override]
     public function requiredParameters(): array
     {
         return TelegramBotApiMethodSchema::requiredParameters($this->method());
@@ -324,7 +328,7 @@ $useLines
  */
 final readonly class $className extends TelegramBotApiRequestData
 {
-    public const METHOD = '$method';
+    public const string METHOD = '$method';
 
 $docblock
     public static function make(
@@ -456,7 +460,7 @@ final class TelegramBotApiRequestRegistry
     /**
      * @var array<string, class-string<TelegramBotApiRequestData>>
      */
-    private const REQUESTS = $export;
+    private const array REQUESTS = $export;
 
     /**
      * @return class-string<TelegramBotApiRequestData>|null
@@ -722,7 +726,7 @@ final class TelegramBotApiResultSchema
     /**
      * @var array<string, array{type: string, data_class: class-string<TelegramBotData>|null, list: bool, allows_bool: bool}>
      */
-    private const RESULTS = $export;
+    private const array RESULTS = $export;
 
     /**
      * @return array{type: string, data_class: class-string<TelegramBotData>|null, list: bool, allows_bool: bool}

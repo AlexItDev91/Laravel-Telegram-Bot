@@ -41,6 +41,7 @@ class TelegramBot extends Facade
         return $fake;
     }
 
+    #[\Override]
     protected static function getFacadeAccessor(): string
     {
         return 'telegram-bot';

@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class RepostStoryRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'repostStory';
+    public const string METHOD = 'repostStory';
 
     /**
      * @param  array<string, mixed>  $extra

@@ -9,7 +9,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
  */
 final readonly class UnbanChatMemberRequestData extends TelegramBotApiRequestData
 {
-    public const METHOD = 'unbanChatMember';
+    public const string METHOD = 'unbanChatMember';
 
     /**
      * @param  array<string, mixed>  $extra

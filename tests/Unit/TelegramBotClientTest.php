@@ -425,6 +425,7 @@ final class TelegramBotTestLogger extends AbstractLogger
     /**
      * @param  array<string, mixed>  $context
      */
+    #[\Override]
     public function log($level, string|Stringable $message, array $context = []): void
     {
         $this->records[] = [
@@ -442,6 +443,7 @@ final class TelegramBotTestObserver implements TelegramBotObserver
      */
     public array $records = [];
 
+    #[\Override]
     public function record(TelegramBotRequestTelemetryData $telemetry): void
     {
         $this->records[] = $telemetry;
@@ -450,6 +452,7 @@ final class TelegramBotTestObserver implements TelegramBotObserver
 
 final class TelegramBotBlockingRateLimiter implements TelegramBotRateLimiter
 {
+    #[\Override]
     public function throttle(string $method, Closure $_next): mixed
     {
         throw new TelegramBotRateLimitException("Blocked $method.", 1);

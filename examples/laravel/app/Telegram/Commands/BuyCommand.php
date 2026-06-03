@@ -16,6 +16,7 @@ readonly class BuyCommand implements TelegramWebhookCommandHandler
         //
     }
 
+    #[\Override]
     public function handle(TelegramWebhookCommand $command, TelegramWebhookUpdate $update, string $botName): mixed
     {
         $chatId = $command->message()->chat()?->id();

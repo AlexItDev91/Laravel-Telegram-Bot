@@ -16,6 +16,7 @@ use Stringable;
 
 class TelegramWebhookDispatcherTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -264,6 +265,7 @@ final class TelegramWebhookStartCommandHandler implements TelegramWebhookCommand
     /**
      * @return array<string, mixed>
      */
+    #[\Override]
     public function handle(TelegramWebhookCommand $command, TelegramWebhookUpdate $update, string $botName): array
     {
         self::$update = $update;
@@ -290,6 +292,7 @@ final class TelegramWebhookMessageUpdateHandler implements TelegramWebhookHandle
     /**
      * @return array<string, mixed>
      */
+    #[\Override]
     public function handle(TelegramWebhookUpdate $update, string $_botName): array
     {
         self::$update = $update;
@@ -314,6 +317,7 @@ final class TelegramWebhookFallbackHandler implements TelegramWebhookHandler
     /**
      * @return array<string, mixed>
      */
+    #[\Override]
     public function handle(TelegramWebhookUpdate $update, string $botName): array
     {
         self::$update = $update;
@@ -335,6 +339,7 @@ final class TelegramWebhookDispatcherTestLogger extends AbstractLogger
     /**
      * @param  array<string, mixed>  $context
      */
+    #[\Override]
     public function log($level, string|Stringable $message, array $context = []): void
     {
         $this->records[] = [
@@ -357,6 +362,7 @@ final class TelegramWebhookRecordingMiddleware implements TelegramWebhookMiddlew
         self::$events = [];
     }
 
+    #[\Override]
     public function process(TelegramWebhookUpdate $update, string $botName, Closure $next): mixed
     {
         self::$events[] = 'before:'.$update->updateId().':'.$botName;
@@ -377,6 +383,7 @@ final class TelegramWebhookShortCircuitMiddleware implements TelegramWebhookMidd
     /**
      * @return array<string, mixed>
      */
+    #[\Override]
     public function process(TelegramWebhookUpdate $update, string $botName, Closure $next): array
     {
         return [
@@ -392,6 +399,7 @@ final class TelegramWebhookDiscoveredMessageHandler implements TelegramWebhookHa
     /**
      * @return array<string, mixed>
      */
+    #[\Override]
     public function handle(TelegramWebhookUpdate $update, string $botName): array
     {
         return [

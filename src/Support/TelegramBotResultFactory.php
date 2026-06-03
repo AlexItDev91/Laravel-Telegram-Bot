@@ -39,7 +39,7 @@ final class TelegramBotResultFactory
         }
 
         if (array_is_list($result)) {
-            if (array_filter($result, static fn (mixed $item): bool => ! is_array($item)) !== []) {
+            if (! array_all($result, static fn (mixed $item): bool => is_array($item))) {
                 return $result;
             }
 

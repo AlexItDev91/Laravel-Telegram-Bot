@@ -12,6 +12,7 @@ abstract class TestCase extends OrchestraTestCase
      * @param  Application  $app
      * @return list<class-string>
      */
+    #[\Override]
     protected function getPackageProviders($app): array
     {
         return [

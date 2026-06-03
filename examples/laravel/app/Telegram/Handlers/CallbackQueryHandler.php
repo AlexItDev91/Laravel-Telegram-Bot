@@ -14,6 +14,7 @@ readonly class CallbackQueryHandler implements TelegramWebhookHandler
         //
     }
 
+    #[\Override]
     public function handle(TelegramWebhookUpdate $update, string $botName): mixed
     {
         $callbackQuery = $update->callbackQuery();

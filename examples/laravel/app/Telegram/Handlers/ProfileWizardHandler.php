@@ -18,6 +18,7 @@ readonly class ProfileWizardHandler implements TelegramWebhookHandler
         //
     }
 
+    #[\Override]
     public function handle(TelegramWebhookUpdate $update, string $botName): mixed
     {
         $message = $update->effectiveMessage();

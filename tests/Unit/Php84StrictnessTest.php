@@ -10,6 +10,26 @@ use SplFileInfo;
 
 class Php84StrictnessTest extends TestCase
 {
+    public function test_source_uses_php84_array_helpers_in_validation_paths(): void
+    {
+        $root = dirname(__DIR__, 2);
+
+        foreach ([
+            'src/DTO/TelegramBotRequestData.php' => 'array_any(',
+            'src/DTO/TelegramWebhookUpdate.php' => 'array_find(',
+            'src/Support/TelegramBotResultFactory.php' => 'array_all(',
+        ] as $path => $helper) {
+            $source = file_get_contents($root.'/'.$path);
+
+            $this->assertIsString($source);
+            $this->assertStringContainsString(
+                $helper,
+                $source,
+                "Expected [$path] to keep using the PHP 8.4 [$helper] helper in its validation path.",
+            );
+        }
+    }
+
     public function test_source_class_constants_are_typed(): void
     {
         $untypedConstants = [];

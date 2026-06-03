@@ -119,21 +119,12 @@ readonly class TelegramBotRequestData implements TelegramBotData
      */
     private function containsInputFile(array $parameters): bool
     {
-        foreach ($parameters as $value) {
-            if ($value instanceof InputFile) {
-                return true;
-            }
-
-            if ($value instanceof TelegramBotData) {
-                return $this->containsInputFile($value->toArray());
-            }
-
-            if (is_array($value) && $this->containsInputFile($value)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $parameters,
+            fn (mixed $value): bool => $value instanceof InputFile
+                || ($value instanceof TelegramBotData && $this->containsInputFile($value->toArray()))
+                || (is_array($value) && $this->containsInputFile($value)),
+        );
     }
 
     private function stringifyMultipartValue(mixed $value): string

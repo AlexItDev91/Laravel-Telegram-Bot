@@ -32,6 +32,7 @@ use RuntimeException;
 
 class TelegramBotServiceProvider extends ServiceProvider
 {
+    #[\Override]
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../../config/telegram-bot.php', 'telegram-bot');

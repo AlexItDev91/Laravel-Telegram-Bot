@@ -64,13 +64,10 @@ final readonly class TelegramWebhookUpdate implements TelegramBotData
 
     public function type(): ?string
     {
-        foreach (self::UPDATE_TYPES as $type) {
-            if (array_key_exists($type, $this->payload)) {
-                return $type;
-            }
-        }
-
-        return null;
+        return array_find(
+            self::UPDATE_TYPES,
+            fn (string $type): bool => array_key_exists($type, $this->payload),
+        );
     }
 
     public function has(string $type): bool

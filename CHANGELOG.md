@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.0.2] - 2026-06-03
+
+- Moved selected validation paths onto PHP 8.4 `array_any`, `array_all`, and `array_find` helpers.
+- Expanded `#[\Override]` guards across package service-provider registration, test doubles, and example webhook handlers.
+- Extended PHP 8.4 strictness coverage so key production validation paths keep using PHP 8.4 array helpers.
+
 ## [2.0.1] - 2026-06-03
 
 - Added PHP 8.4 strictness hardening with typed class constants across generated request DTOs, schema registries, webhook update metadata, and Laravel internals.

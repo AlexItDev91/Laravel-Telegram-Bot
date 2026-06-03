@@ -192,6 +192,7 @@ final class TelegramBotServiceProviderTestLogger extends AbstractLogger
     /**
      * @param  array<string, mixed>  $context
      */
+    #[\Override]
     public function log($level, string|Stringable $message, array $context = []): void
     {
         $this->records[] = [

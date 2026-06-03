@@ -170,3 +170,53 @@ try {
 
 Telegram user, chat, message, and topic identifiers can exceed 32-bit integer range.
 Keep them as strings or 64-bit safe values in application code, config, databases, and logs.
+
+## Testing With The Fake
+
+In Laravel tests, replace the facade/manager with a recording fake:
+
+```php
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+$fake = TelegramBot::fake()
+    ->result(['message_id' => 10], 'sendMessage');
+
+TelegramBot::sendMessage([
+    'chat_id' => '123456789',
+    'text' => 'Hello',
+]);
+
+$fake->assertSentMessage(function (array $parameters): bool {
+    return $parameters['chat_id'] === '123456789'
+        && $parameters['text'] === 'Hello';
+});
+```
+
+Named bot calls are recorded with the bot name:
+
+```php
+TelegramBot::bot('support')->sendMessage([
+    'chat_id' => '123456789',
+    'text' => 'Hello support',
+]);
+
+$fake->assertCalled('sendMessage', function (array $parameters, string $botName): bool {
+    return $botName === 'support';
+});
+```
+
+Configured channel calls merge the channel `chat_id`, `message_thread_id`, and `direct_messages_topic_id` defaults before recording the API call:
+
+```php
+TelegramBot::channel('alerts')->sendMessage([
+    'text' => 'Deploy finished',
+]);
+
+$fake->assertSentMessageToChannel('alerts', function (array $parameters, string $botName): bool {
+    return $botName === 'support'
+        && $parameters['chat_id'] === '-1001234567890'
+        && $parameters['text'] === 'Deploy finished';
+});
+```
+
+Use `assertNothingSent()` when a code path must not call Telegram.

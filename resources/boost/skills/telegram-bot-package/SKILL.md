@@ -40,6 +40,7 @@ TELEGRAM_INBOX_DIRECT_MESSAGES_TOPIC_ID=
 TELEGRAM_WEBHOOK_SECRET_TOKEN=change-this-secret
 TELEGRAM_WEBHOOK_REQUIRE_SECRET=true
 TELEGRAM_WEBHOOK_ROUTE_URI=telegram-bot/webhook
+TELEGRAM_WEBHOOK_BOT_USERNAME=
 ```
 
 `config/telegram-bot.php`:
@@ -59,6 +60,7 @@ Keep real tokens, webhook secrets, and private identifiers out of git.
 
 Use `php artisan telegram-bot:updates --bot=default` after sending a test message in the target chat or topic to discover parsed `chat_id`, `message_thread_id`, and `direct_messages_topic_id` values.
 Use `php artisan telegram-bot:me --bot=default` to verify the configured bot identity.
+Use `php artisan telegram-bot:doctor --bot=default` before deploys to check config, webhook secret policy, route registration, and Telegram API reachability.
 Use `php artisan telegram-bot:send-test --channel=inbox` to verify delivery to a configured Laravel channel.
 
 ## Use
@@ -127,7 +129,7 @@ php artisan telegram-bot:webhook:info --bot=default
 php artisan telegram-bot:webhook:delete --bot=default --yes
 ```
 
-Handle incoming updates with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler` or listen for `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived`. See `docs/WEBHOOKS.md` for the full receiver setup.
+Handle incoming updates with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler` or listen for `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived`. For larger bots, configure `telegram-bot.webhook.commands`, `telegram-bot.webhook.handlers`, and `telegram-bot.webhook.fallback_handler`. Command handlers implement `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookCommandHandler` and receive `AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookCommand`. Use `Route::telegramBotWebhook()` when manually registering webhook routes. See `docs/WEBHOOKS.md` for the full receiver setup.
 
 Use typed update accessors instead of ad hoc nested arrays when the object is covered:
 
@@ -189,3 +191,4 @@ composer test:coverage-surface
 ```
 
 In Laravel apps, add focused tests for provider registration, facade resolution, bot/channel config, payloads, and errors.
+Use `TelegramBot::fake()`, `assertCalled()`, `assertSentMessage()`, `assertSentMessageToChannel()`, and `assertNothingSent()` to test application code without calling Telegram.

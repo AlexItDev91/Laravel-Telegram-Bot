@@ -14,6 +14,7 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('alexitdev91/laravel-telegram-bot', $guidelines);
         $this->assertStringContainsString('vendor:publish --provider="AlexItDev91\\\\LaravelTelegramBot\\\\Laravel\\\\TelegramBotServiceProvider" --tag=telegram-bot-config', $guidelines);
         $this->assertStringContainsString('telegram-bot:install', $guidelines);
+        $this->assertStringContainsString('telegram-bot:doctor', $guidelines);
         $this->assertStringContainsString('telegram-bot:me', $guidelines);
         $this->assertStringContainsString('telegram-bot:updates', $guidelines);
         $this->assertStringContainsString('telegram-bot:send-test', $guidelines);
@@ -21,6 +22,11 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('https://core.telegram.org/bots/api', $guidelines);
         $this->assertStringContainsString('https://core.telegram.org/bots/api-changelog', $guidelines);
         $this->assertStringContainsString('TelegramWebhookReceived', $guidelines);
+        $this->assertStringContainsString('TelegramWebhookCommandHandler', $guidelines);
+        $this->assertStringContainsString('TelegramWebhookCommand', $guidelines);
+        $this->assertStringContainsString('Route::telegramBotWebhook()', $guidelines);
+        $this->assertStringContainsString('TelegramBot::fake()', $guidelines);
+        $this->assertStringContainsString('assertSentMessage()', $guidelines);
         $this->assertStringContainsString('effectiveMessage()', $guidelines);
         $this->assertStringContainsString('callbackQuery()', $guidelines);
         $this->assertStringContainsString('preCheckoutQueryData()', $guidelines);
@@ -45,6 +51,7 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('composer require alexitdev91/laravel-telegram-bot', $skill);
         $this->assertStringContainsString('vendor:publish --provider="AlexItDev91\\\\LaravelTelegramBot\\\\Laravel\\\\TelegramBotServiceProvider" --tag=telegram-bot-config', $skill);
         $this->assertStringContainsString('telegram-bot:install', $skill);
+        $this->assertStringContainsString('telegram-bot:doctor', $skill);
         $this->assertStringContainsString('telegram-bot:me', $skill);
         $this->assertStringContainsString('telegram-bot:updates', $skill);
         $this->assertStringContainsString('telegram-bot:send-test', $skill);
@@ -53,7 +60,13 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TELEGRAM_INBOX_DIRECT_MESSAGES_TOPIC_ID', $skill);
         $this->assertStringContainsString('TELEGRAM_WEBHOOK_SECRET_TOKEN', $skill);
         $this->assertStringContainsString('TELEGRAM_WEBHOOK_REQUIRE_SECRET', $skill);
+        $this->assertStringContainsString('TELEGRAM_WEBHOOK_BOT_USERNAME', $skill);
         $this->assertStringContainsString('TELEGRAM_BOT_LOGGING_ENABLED', $skill);
+        $this->assertStringContainsString('TelegramWebhookCommandHandler', $skill);
+        $this->assertStringContainsString('TelegramWebhookCommand', $skill);
+        $this->assertStringContainsString('Route::telegramBotWebhook()', $skill);
+        $this->assertStringContainsString('TelegramBot::fake()', $skill);
+        $this->assertStringContainsString('assertSentMessage()', $skill);
         $this->assertStringContainsString('effectiveMessage()', $skill);
         $this->assertStringContainsString('callbackQuery()', $skill);
         $this->assertStringContainsString('preCheckoutQueryData()', $skill);

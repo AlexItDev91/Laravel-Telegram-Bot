@@ -7,6 +7,7 @@ This package ships interactive Artisan commands for Laravel applications. They u
 | Command | Purpose |
 | --- | --- |
 | `telegram-bot:install` | Publish package config and print copy-ready Laravel env/config snippets. |
+| `telegram-bot:doctor` | Diagnose bot config, webhook secret policy, route registration, and Telegram API reachability. |
 | `telegram-bot:me` | Verify a configured bot token and print Telegram bot identity fields. |
 | `telegram-bot:send-test` | Send a delivery test message to a configured channel, chat, forum topic, or direct messages topic. |
 | `telegram-bot:webhook:set` | Register a Telegram webhook with optional secret token and allowed update types. |
@@ -60,6 +61,27 @@ For raw Telegram JSON:
 
 ```bash
 php artisan telegram-bot:me --bot=default --raw
+```
+
+## Doctor
+
+Use `telegram-bot:doctor` when checking a host application before or after deploy:
+
+```bash
+php artisan telegram-bot:doctor --bot=default
+```
+
+The command checks:
+
+- configured bot resolution;
+- webhook secret policy, including fail-closed production settings;
+- package webhook route registration;
+- live `getMe` and `getWebhookInfo` calls.
+
+For CI jobs or offline config checks, skip Telegram network calls:
+
+```bash
+php artisan telegram-bot:doctor --bot=default --skip-telegram
 ```
 
 ## Set Webhook

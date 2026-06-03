@@ -15,6 +15,7 @@ Developed by Aptenova as an independent open-source package. The package is not 
 ## Requirements
 
 - PHP `^8.2`
+- PHP extension `openssl`
 - Laravel `^12.0|^13.0`
 - Guzzle `^7.8`
 
@@ -147,7 +148,7 @@ Typed DTOs validate required fields, empty lists, selected numeric constraints, 
 
 ## Webhooks
 
-The package includes a Laravel webhook receiver at `POST /telegram-bot/webhook` by default. It validates `X-Telegram-Bot-Api-Secret-Token` when `TELEGRAM_WEBHOOK_SECRET_TOKEN` is configured, dispatches a `TelegramWebhookReceived` event, and can call a configured `TelegramWebhookHandler`. In production, `TELEGRAM_WEBHOOK_REQUIRE_SECRET` defaults to `true`, so missing webhook secrets fail closed.
+The package includes a Laravel webhook receiver at `POST /telegram-bot/webhook` by default. It validates `X-Telegram-Bot-Api-Secret-Token` when `TELEGRAM_WEBHOOK_SECRET_TOKEN` is configured, dispatches a `TelegramWebhookReceived` event, and can call a configured `TelegramWebhookHandler`. For larger bots, configure command handlers, update-type handlers, and a fallback handler through the built-in webhook dispatcher. In production, `TELEGRAM_WEBHOOK_REQUIRE_SECRET` defaults to `true`, so missing webhook secrets fail closed.
 
 Webhook handlers receive `TelegramWebhookUpdate`, which keeps the raw payload and exposes typed convenience accessors for common Telegram objects:
 
@@ -177,7 +178,7 @@ TelegramBot::bot('default')->setWebhook([
 
 See [Webhooks](https://alexitdev91.github.io/Laravel-Telegram-Bot/webhooks.html) for the full setup and handler examples.
 
-The package also provides Artisan commands for bot identity checks, delivery test messages, webhook registration, deletion, status checks, and parsed `chat_id` / `message_thread_id` discovery. See [Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html).
+The package also provides Artisan commands for bot identity checks, deployment diagnostics, delivery test messages, webhook registration, deletion, status checks, and parsed `chat_id` / `message_thread_id` discovery. See [Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html).
 
 ## Logging
 
@@ -228,3 +229,34 @@ composer test:coverage-surface
 `analyse` runs PHPStan over package source and release scripts.
 `check:telegram-api-surface` compares the local SDK method surface, documented method parameters, and update-type surface with the current official Telegram Bot API documentation and changelog.
 `test:coverage-surface` verifies that every registered Telegram Bot API method is exposed as a native SDK method and calls the matching Telegram endpoint path.
+
+For Laravel application tests, use the facade fake instead of mocking HTTP transport:
+
+```php
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+$fake = TelegramBot::fake();
+
+TelegramBot::bot('support')->sendMessage([
+    'chat_id' => '123456789',
+    'text' => 'Hello support',
+]);
+
+$fake->assertCalled('sendMessage', function (array $parameters, string $botName): bool {
+    return $botName === 'support'
+        && $parameters['text'] === 'Hello support';
+});
+```
+
+Configured Laravel channels are supported by the fake as well. Channel defaults are merged before the call is recorded:
+
+```php
+TelegramBot::channel('alerts')->sendMessage([
+    'text' => 'Deploy finished',
+]);
+
+$fake->assertSentMessageToChannel('alerts', function (array $parameters): bool {
+    return $parameters['chat_id'] === '-1001234567890'
+        && $parameters['text'] === 'Deploy finished';
+});
+```

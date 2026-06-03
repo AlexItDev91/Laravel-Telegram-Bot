@@ -1,0 +1,216 @@
+<?php
+
+namespace AlexItDev91\LaravelTelegramBot\Tests\Feature;
+
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookCommandHandler;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
+use AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookCommand;
+use AlexItDev91\LaravelTelegramBot\Tests\TestCase;
+use Psr\Log\AbstractLogger;
+use Psr\Log\LoggerInterface;
+use Stringable;
+
+class TelegramWebhookDispatcherTest extends TestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        TelegramWebhookStartCommandHandler::reset();
+        TelegramWebhookMessageUpdateHandler::reset();
+        TelegramWebhookFallbackHandler::reset();
+    }
+
+    public function test_dispatches_configured_command_handlers_before_update_type_handlers(): void
+    {
+        config()->set('telegram-bot.webhook.bot', 'support');
+        config()->set('telegram-bot.webhook.bot_username', 'support_bot');
+        config()->set('telegram-bot.webhook.commands.start', TelegramWebhookStartCommandHandler::class);
+        config()->set('telegram-bot.webhook.handlers.message', TelegramWebhookMessageUpdateHandler::class);
+
+        $this->postJson('/telegram-bot/webhook', [
+            'update_id' => 2001,
+            'message' => [
+                'message_id' => 10,
+                'text' => '/start onboarding fast',
+                'from' => ['id' => 123, 'is_bot' => false, 'first_name' => 'Alex'],
+                'chat' => ['id' => 456, 'type' => 'private'],
+            ],
+        ])->assertOk()->assertExactJson([
+            'arguments' => 'onboarding fast',
+            'bot' => 'support',
+            'command' => 'start',
+            'message_id' => 10,
+        ]);
+
+        $this->assertSame(2001, TelegramWebhookStartCommandHandler::$update?->updateId());
+        $this->assertSame('start', TelegramWebhookStartCommandHandler::$command?->name());
+        $this->assertNull(TelegramWebhookMessageUpdateHandler::$update);
+    }
+
+    public function test_ignores_commands_addressed_to_another_bot_and_uses_update_handler(): void
+    {
+        config()->set('telegram-bot.webhook.bot_username', 'support_bot');
+        config()->set('telegram-bot.webhook.commands.start', TelegramWebhookStartCommandHandler::class);
+        config()->set('telegram-bot.webhook.handlers.message', TelegramWebhookMessageUpdateHandler::class);
+
+        $this->postJson('/telegram-bot/webhook', [
+            'update_id' => 2002,
+            'message' => [
+                'message_id' => 11,
+                'text' => '/start@other_bot ignored',
+                'chat' => ['id' => 456, 'type' => 'private'],
+            ],
+        ])->assertOk()->assertExactJson([
+            'message_id' => 11,
+            'text' => '/start@other_bot ignored',
+            'type' => 'message',
+        ]);
+
+        $this->assertNull(TelegramWebhookStartCommandHandler::$update);
+        $this->assertSame(2002, TelegramWebhookMessageUpdateHandler::$update?->updateId());
+    }
+
+    public function test_dispatches_fallback_handler_when_no_command_or_update_handler_matches(): void
+    {
+        config()->set('telegram-bot.webhook.fallback_handler', TelegramWebhookFallbackHandler::class);
+
+        $this->postJson('/telegram-bot/webhook', [
+            'update_id' => 2003,
+            'poll' => [
+                'id' => 'poll-id',
+                'question' => 'Ship it?',
+                'options' => [],
+                'total_voter_count' => 0,
+                'is_closed' => false,
+                'is_anonymous' => true,
+                'type' => 'regular',
+                'allows_multiple_answers' => false,
+            ],
+        ])->assertOk()->assertExactJson([
+            'fallback' => true,
+            'type' => 'poll',
+        ]);
+
+        $this->assertSame(2003, TelegramWebhookFallbackHandler::$update?->updateId());
+    }
+
+    public function test_logs_invalid_dispatcher_handlers_without_payload_values(): void
+    {
+        $logger = new TelegramWebhookDispatcherTestLogger();
+        $this->app->instance(LoggerInterface::class, $logger);
+
+        config()->set('telegram-bot.webhook.handlers.message', ['not-callable']);
+
+        $this->postJson('/telegram-bot/webhook', [
+            'update_id' => 2004,
+            'message' => [
+                'message_id' => 12,
+                'text' => 'Private payload',
+            ],
+        ])->assertOk()->assertExactJson(['ok' => true]);
+
+        $this->assertSame('warning', $logger->records[0]['level']);
+        $this->assertSame('Telegram webhook dispatcher handler is configured but is not resolvable or callable.', $logger->records[0]['message']);
+        $this->assertSame(2004, $logger->records[0]['context']['update_id']);
+        $this->assertSame('message', $logger->records[0]['context']['update_type']);
+        $this->assertStringNotContainsString('Private payload', json_encode($logger->records[0], JSON_THROW_ON_ERROR));
+    }
+}
+
+final class TelegramWebhookStartCommandHandler implements TelegramWebhookCommandHandler
+{
+    public static ?TelegramWebhookUpdate $update = null;
+
+    public static ?TelegramWebhookCommand $command = null;
+
+    public static function reset(): void
+    {
+        self::$update = null;
+        self::$command = null;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function handle(TelegramWebhookCommand $command, TelegramWebhookUpdate $update, string $botName): array
+    {
+        self::$update = $update;
+        self::$command = $command;
+
+        return [
+            'bot' => $botName,
+            'command' => $command->name(),
+            'arguments' => $command->arguments(),
+            'message_id' => $command->message()->messageId(),
+        ];
+    }
+}
+
+final class TelegramWebhookMessageUpdateHandler implements TelegramWebhookHandler
+{
+    public static ?TelegramWebhookUpdate $update = null;
+
+    public static function reset(): void
+    {
+        self::$update = null;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function handle(TelegramWebhookUpdate $update, string $botName): array
+    {
+        self::$update = $update;
+
+        return [
+            'type' => $update->type(),
+            'message_id' => $update->effectiveMessage()?->messageId(),
+            'text' => $update->effectiveMessage()?->text(),
+        ];
+    }
+}
+
+final class TelegramWebhookFallbackHandler implements TelegramWebhookHandler
+{
+    public static ?TelegramWebhookUpdate $update = null;
+
+    public static function reset(): void
+    {
+        self::$update = null;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function handle(TelegramWebhookUpdate $update, string $botName): array
+    {
+        self::$update = $update;
+
+        return [
+            'fallback' => true,
+            'type' => $update->type(),
+        ];
+    }
+}
+
+final class TelegramWebhookDispatcherTestLogger extends AbstractLogger
+{
+    /**
+     * @var list<array{level: string, message: string, context: array<string, mixed>}>
+     */
+    public array $records = [];
+
+    /**
+     * @param  array<string, mixed>  $context
+     */
+    public function log($level, string|Stringable $message, array $context = []): void
+    {
+        $this->records[] = [
+            'level' => (string) $level,
+            'message' => (string) $message,
+            'context' => $context,
+        ];
+    }
+}

@@ -378,9 +378,13 @@ Add a channel mapping:
 
 'webhook' => [
     'bot' => env('TELEGRAM_WEBHOOK_BOT', env('TELEGRAM_BOT', 'default')),
+    'bot_username' => env('TELEGRAM_WEBHOOK_BOT_USERNAME'),
     'secret_token' => env('TELEGRAM_WEBHOOK_SECRET_TOKEN'),
     'require_secret' => env('TELEGRAM_WEBHOOK_REQUIRE_SECRET', env('APP_ENV') === 'production'),
     'handler' => null,
+    'handlers' => [],
+    'commands' => [],
+    'fallback_handler' => null,
     'dispatch_event' => true,
     'route' => [
         'enabled' => env('TELEGRAM_WEBHOOK_ROUTE_ENABLED', true),
@@ -430,6 +434,12 @@ First verify that Laravel loads the expected bot token:
 
 ```bash
 php artisan telegram-bot:me --bot=default
+```
+
+Run deploy diagnostics before registering webhooks or shipping the integration:
+
+```bash
+php artisan telegram-bot:doctor --bot=default
 ```
 
 Then send an end-to-end delivery test through a configured channel:

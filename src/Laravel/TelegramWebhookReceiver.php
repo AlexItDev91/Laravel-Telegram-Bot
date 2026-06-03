@@ -80,7 +80,11 @@ class TelegramWebhookReceiver
         $handler = config('telegram-bot.webhook.handler');
 
         if ($handler === null || $handler === '') {
-            return null;
+            if (! $this->hasDispatcherConfiguration()) {
+                return null;
+            }
+
+            $handler = TelegramWebhookDispatcher::class;
         }
 
         if (is_string($handler) && class_exists($handler)) {
@@ -106,6 +110,22 @@ class TelegramWebhookReceiver
         ]);
 
         return null;
+    }
+
+    private function hasDispatcherConfiguration(): bool
+    {
+        foreach ([
+            config('telegram-bot.webhook.commands', []),
+            config('telegram-bot.webhook.handlers', []),
+        ] as $handlers) {
+            if (is_array($handlers) && $handlers !== []) {
+                return true;
+            }
+        }
+
+        $fallback = config('telegram-bot.webhook.fallback_handler');
+
+        return $fallback !== null && $fallback !== '';
     }
 
     private function response(mixed $handlerResult): Response

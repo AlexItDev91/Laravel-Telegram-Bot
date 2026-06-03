@@ -17,6 +17,7 @@ class TelegramBotConsoleCommandsGuideTest extends TestCase
 
         foreach ([
             'telegram-bot:install',
+            'telegram-bot:doctor',
             'telegram-bot:me',
             'telegram-bot:send-test',
             'telegram-bot:webhook:set',
@@ -34,6 +35,7 @@ class TelegramBotConsoleCommandsGuideTest extends TestCase
             '--direct-messages-topic-id=77',
             '--delete-webhook',
             '--raw',
+            '--skip-telegram',
         ] as $requiredInstruction) {
             $this->assertStringContainsString($requiredInstruction, $guide);
         }

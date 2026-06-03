@@ -5,6 +5,7 @@ namespace AlexItDev91\LaravelTelegramBot\Laravel;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
+use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotDoctorCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotInstallCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotMeCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotSendTestCommand;
@@ -14,6 +15,7 @@ use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotWebhookIn
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotWebhookSetCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Http\Controllers\TelegramWebhookController;
 use AlexItDev91\LaravelTelegramBot\Laravel\Http\Middleware\VerifyTelegramWebhookSecret;
+use AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookDispatcher;
 use AlexItDev91\LaravelTelegramBot\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\TelegramBotManager;
@@ -63,6 +65,8 @@ class TelegramBotServiceProvider extends ServiceProvider
                 ? $client
                 : throw new \RuntimeException('The default Telegram Bot client is not a concrete TelegramBotClient instance.');
         });
+
+        $this->app->singleton(TelegramWebhookDispatcher::class);
     }
 
     public function boot(): void
@@ -73,6 +77,7 @@ class TelegramBotServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
+                TelegramBotDoctorCommand::class,
                 TelegramBotInstallCommand::class,
                 TelegramBotMeCommand::class,
                 TelegramBotSendTestCommand::class,
@@ -83,7 +88,25 @@ class TelegramBotServiceProvider extends ServiceProvider
             ]);
         }
 
+        $this->registerRouteMacro();
         $this->registerWebhookRoute();
+    }
+
+    private function registerRouteMacro(): void
+    {
+        Route::macro('telegramBotWebhook', function (
+            string $uri = 'telegram-bot/webhook',
+            ?string $name = 'telegram-bot.webhook',
+            array|string $middleware = [],
+        ) {
+            $middleware = is_array($middleware) ? $middleware : [$middleware];
+            $middleware[] = VerifyTelegramWebhookSecret::class;
+
+            $route = Route::post(trim($uri, '/'), TelegramWebhookController::class)
+                ->middleware($middleware);
+
+            return $name !== null && $name !== '' ? $route->name($name) : $route;
+        });
     }
 
     private function registerWebhookRoute(): void
@@ -92,14 +115,21 @@ class TelegramBotServiceProvider extends ServiceProvider
             return;
         }
 
-        $middleware = config('telegram-bot.webhook.route.middleware', []);
+        $this->registerWebhookRouteAt(
+            trim((string) config('telegram-bot.webhook.route.uri', 'telegram-bot/webhook'), '/'),
+            (string) config('telegram-bot.webhook.route.name', 'telegram-bot.webhook'),
+            config('telegram-bot.webhook.route.middleware', []),
+        );
+    }
+
+    private function registerWebhookRouteAt(string $uri, ?string $name, array|string $middleware): \Illuminate\Routing\Route
+    {
         $middleware = is_array($middleware) ? $middleware : [$middleware];
         $middleware[] = VerifyTelegramWebhookSecret::class;
 
-        Route::post(
-            trim((string) config('telegram-bot.webhook.route.uri', 'telegram-bot/webhook'), '/'),
-            TelegramWebhookController::class,
-        )->name((string) config('telegram-bot.webhook.route.name', 'telegram-bot.webhook'))
+        $route = Route::post(trim($uri, '/'), TelegramWebhookController::class)
             ->middleware($middleware);
+
+        return $name !== null && $name !== '' ? $route->name($name) : $route;
     }
 }

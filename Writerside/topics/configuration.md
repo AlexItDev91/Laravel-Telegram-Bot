@@ -13,6 +13,7 @@ Publish it during installation, then store real values in the host application's
 | `TELEGRAM_BOT_TIMEOUT` | No | HTTP timeout in seconds. Defaults to `10`. |
 | `TELEGRAM_BOT_LOGGING_ENABLED` | No | Enables safe package logs. Defaults to `true`. |
 | `TELEGRAM_WEBHOOK_BOT` | No | Bot used by the incoming webhook receiver. |
+| `TELEGRAM_WEBHOOK_BOT_USERNAME` | No | Bot username used to ignore commands addressed to another bot. |
 | `TELEGRAM_WEBHOOK_SECRET_TOKEN` | Recommended for webhooks | Secret Telegram sends in `X-Telegram-Bot-Api-Secret-Token`. |
 | `TELEGRAM_WEBHOOK_REQUIRE_SECRET` | Recommended in production | Fails closed when the webhook secret is missing. |
 | `TELEGRAM_WEBHOOK_ROUTE_ENABLED` | No | Enables the package route. Defaults to `true`. |
@@ -84,9 +85,18 @@ $telegram->channel('inbox')->sendMessage([
 ```php
 'webhook' => [
     'bot' => env('TELEGRAM_WEBHOOK_BOT', env('TELEGRAM_BOT', 'default')),
+    'bot_username' => env('TELEGRAM_WEBHOOK_BOT_USERNAME'),
     'secret_token' => env('TELEGRAM_WEBHOOK_SECRET_TOKEN'),
     'require_secret' => env('TELEGRAM_WEBHOOK_REQUIRE_SECRET', env('APP_ENV') === 'production'),
     'handler' => App\Telegram\TelegramWebhookHandler::class,
+    'handlers' => [
+        'message' => App\Telegram\Handlers\MessageHandler::class,
+        'callback_query' => App\Telegram\Handlers\CallbackQueryHandler::class,
+    ],
+    'commands' => [
+        'start' => App\Telegram\Commands\StartCommand::class,
+    ],
+    'fallback_handler' => App\Telegram\Handlers\FallbackHandler::class,
     'dispatch_event' => true,
     'route' => [
         'enabled' => env('TELEGRAM_WEBHOOK_ROUTE_ENABLED', true),

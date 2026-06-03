@@ -33,11 +33,24 @@ return [
     'webhook' => [
         'bot' => env('TELEGRAM_WEBHOOK_BOT', env('TELEGRAM_BOT', 'default')),
 
+        'bot_username' => env('TELEGRAM_WEBHOOK_BOT_USERNAME'),
+
         'secret_token' => env('TELEGRAM_WEBHOOK_SECRET_TOKEN'),
 
         'require_secret' => env('TELEGRAM_WEBHOOK_REQUIRE_SECRET', env('APP_ENV') === 'production'),
 
         'handler' => null,
+
+        'handlers' => [
+            // 'message' => App\Telegram\Handlers\MessageHandler::class,
+            // 'callback_query' => App\Telegram\Handlers\CallbackQueryHandler::class,
+        ],
+
+        'commands' => [
+            // 'start' => App\Telegram\Commands\StartCommand::class,
+        ],
+
+        'fallback_handler' => null,
 
         'dispatch_event' => true,
 

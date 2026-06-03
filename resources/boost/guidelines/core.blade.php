@@ -29,6 +29,7 @@ php artisan telegram-bot:install
 - Use `TelegramBot::bot('name')` for a named bot.
 - Use `TelegramBot::channel('name')` for a configured destination with `chat_id` and optional `message_thread_id` or `direct_messages_topic_id`.
 - Use `php artisan telegram-bot:me --bot=default` to verify the configured bot token and Telegram identity.
+- Use `php artisan telegram-bot:doctor --bot=default` before deploys to check config, webhook secret policy, route registration, and Telegram API reachability.
 - Use `php artisan telegram-bot:updates` to discover parsed `chat_id`, `message_thread_id`, and `direct_messages_topic_id` values from Telegram updates.
 - Use `php artisan telegram-bot:send-test --channel=name` to verify Laravel can send to the configured chat or topic.
 - Use `php artisan telegram-bot:webhook:set`, `telegram-bot:webhook:info`, and `telegram-bot:webhook:delete` for webhook management.
@@ -38,6 +39,9 @@ php artisan telegram-bot:install
 - Protect webhooks with `TELEGRAM_WEBHOOK_SECRET_TOKEN`; the package validates `X-Telegram-Bot-Api-Secret-Token` and fails closed when `TELEGRAM_WEBHOOK_REQUIRE_SECRET=true`.
 - Keep `TELEGRAM_BOT_LOGGING_ENABLED=true` for safe operational warning/error logs without tokens, secret headers, request payloads, response bodies, chat IDs, or message text.
 - Handle incoming updates with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler` or listen for `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived`.
+- For larger bots, prefer webhook dispatcher maps: `telegram-bot.webhook.commands`, `telegram-bot.webhook.handlers`, and `telegram-bot.webhook.fallback_handler`.
+- Implement command handlers with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookCommandHandler` and `AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookCommand`.
+- Use `Route::telegramBotWebhook()` when the host app disables the package auto route and wants to register the webhook route manually.
 - Prefer typed webhook accessors for common inbound objects: `effectiveMessage()`, `effectiveChat()`, `effectiveUser()`, `callbackQuery()`, `inlineQuery()`, `shippingQueryData()`, `preCheckoutQueryData()`, `chatMember()`, and `chatJoinRequest()`.
 - Use typed accessors for official non-message update families as well: `businessConnection()`, `deletedBusinessMessages()`, `purchasedPaidMediaData()`, `poll()`, `pollAnswer()`, `messageReaction()`, `messageReactionCount()`, `chatBoost()`, `removedChatBoost()`, and `managedBot()`.
 - Prefer nested typed object accessors where available: `photoData()`, `documentData()`, `entitiesData()`, `captionEntitiesData()`, `successfulPaymentData()`, `orderInfoData()`, `oldChatMemberData()`, and `newChatMemberData()`.
@@ -65,4 +69,4 @@ If Telegram changed the Bot API, update methods, enum values, docs, tests, and i
 ## Testing
 
 - Package: `composer analyse`, `composer test`, and `composer test:coverage-surface`.
-- Laravel app: test provider/facade/config/channel behavior with focused tests.
+- Laravel app: use `TelegramBot::fake()`, `assertCalled()`, `assertSentMessage()`, `assertSentMessageToChannel()`, and `assertNothingSent()` for focused tests without hitting Telegram.

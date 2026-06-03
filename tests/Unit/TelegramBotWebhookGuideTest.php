@@ -17,6 +17,8 @@ class TelegramBotWebhookGuideTest extends TestCase
 
         foreach ([
             'TelegramWebhookHandler',
+            'TelegramWebhookCommandHandler',
+            'TelegramWebhookCommand',
             'TelegramWebhookReceived',
             'TelegramWebhookUpdate',
             'effectiveMessage()',
@@ -44,6 +46,10 @@ class TelegramBotWebhookGuideTest extends TestCase
             'orderInfoData()',
             'newChatMemberData()',
             'Common Handler Patterns',
+            'Dispatcher, Commands, And Fallbacks',
+            'Route::telegramBotWebhook',
+            'fallback_handler',
+            'TELEGRAM_WEBHOOK_BOT_USERNAME',
             'X-Telegram-Bot-Api-Secret-Token',
             'TELEGRAM_WEBHOOK_SECRET_TOKEN',
             'TELEGRAM_WEBHOOK_REQUIRE_SECRET',

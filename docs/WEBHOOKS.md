@@ -34,9 +34,18 @@ TELEGRAM_WEBHOOK_ROUTE_NAME=telegram-bot.webhook
 
 'webhook' => [
     'bot' => env('TELEGRAM_WEBHOOK_BOT', env('TELEGRAM_BOT', 'default')),
+    'bot_username' => env('TELEGRAM_WEBHOOK_BOT_USERNAME'),
     'secret_token' => env('TELEGRAM_WEBHOOK_SECRET_TOKEN'),
     'require_secret' => env('TELEGRAM_WEBHOOK_REQUIRE_SECRET', env('APP_ENV') === 'production'),
     'handler' => App\Telegram\TelegramWebhookHandler::class,
+    'handlers' => [
+        'message' => App\Telegram\Handlers\MessageHandler::class,
+        'callback_query' => App\Telegram\Handlers\CallbackQueryHandler::class,
+    ],
+    'commands' => [
+        'start' => App\Telegram\Commands\StartCommand::class,
+    ],
+    'fallback_handler' => App\Telegram\Handlers\FallbackHandler::class,
     'dispatch_event' => true,
     'route' => [
         'enabled' => env('TELEGRAM_WEBHOOK_ROUTE_ENABLED', true),
@@ -169,6 +178,80 @@ The handler may return:
 - a Symfony/Laravel `Response`: the package returns it directly.
 
 Telegram only requires a successful `2xx` response. Keep webhook handlers fast; dispatch jobs for slow work.
+
+## Dispatcher, Commands, And Fallbacks
+
+For larger bots, leave `webhook.handler` as `null` and use the built-in dispatcher maps:
+
+```php
+'webhook' => [
+    'bot_username' => env('TELEGRAM_WEBHOOK_BOT_USERNAME'),
+    'handler' => null,
+    'handlers' => [
+        'message' => App\Telegram\Handlers\MessageHandler::class,
+        'callback_query' => App\Telegram\Handlers\CallbackQueryHandler::class,
+        'pre_checkout_query' => App\Telegram\Handlers\PreCheckoutHandler::class,
+    ],
+    'commands' => [
+        'start' => App\Telegram\Commands\StartCommand::class,
+        'help' => App\Telegram\Commands\HelpCommand::class,
+    ],
+    'fallback_handler' => App\Telegram\Handlers\FallbackHandler::class,
+],
+```
+
+Command handlers implement `TelegramWebhookCommandHandler`:
+
+```php
+namespace App\Telegram\Commands;
+
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookCommandHandler;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
+use AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookCommand;
+use AlexItDev91\LaravelTelegramBot\TelegramBot;
+
+final readonly class StartCommand implements TelegramWebhookCommandHandler
+{
+    public function __construct(
+        private TelegramBot $telegram,
+    ) {
+    }
+
+    public function handle(TelegramWebhookCommand $command, TelegramWebhookUpdate $update, string $botName): mixed
+    {
+        $chatId = $command->message()->chat()?->id();
+
+        if ($chatId !== null) {
+            $this->telegram->bot($botName)->sendMessage([
+                'chat_id' => (string) $chatId,
+                'text' => 'Ready.',
+            ]);
+        }
+
+        return ['ok' => true];
+    }
+}
+```
+
+The dispatcher checks commands before update-type handlers. It understands `/start`, `/start arguments`, and `/start@YourBot arguments`; when `bot_username` is configured, commands addressed to another bot are ignored and normal update dispatch continues.
+
+Update-type and fallback handlers implement `TelegramWebhookHandler`, the same contract used by the single-handler mode. The `handlers` map uses Telegram update field names such as `message`, `callback_query`, `pre_checkout_query`, `poll`, and `chat_member`. A `*` key may be used as a catch-all command or update handler.
+
+## Manual Route Registration
+
+The package auto-registers the configured webhook route by default. If you disable auto-registration, use the Laravel route macro from your own route file:
+
+```php
+use Illuminate\Support\Facades\Route;
+
+Route::telegramBotWebhook(
+    uri: 'telegram/custom-webhook',
+    name: 'telegram.custom-webhook',
+    middleware: ['api'],
+);
+```
+
+The macro attaches the same `VerifyTelegramWebhookSecret` middleware as the default package route.
 
 ## Events
 

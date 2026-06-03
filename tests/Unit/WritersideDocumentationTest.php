@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="1.12.3"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="1.13.0"/>', $config);
 
         foreach ([
             'overview.md',
@@ -98,6 +98,9 @@ class WritersideDocumentationTest extends TestCase
             'Facade',
             'configured channel',
             'InputFile::fromPath',
+            'TelegramBot::fake()',
+            'assertSentMessage',
+            'assertNothingSent()',
             'retryAfter()',
             'migrateToChatId()',
         ] as $requiredUsageText) {
@@ -108,6 +111,8 @@ class WritersideDocumentationTest extends TestCase
             'X-Telegram-Bot-Api-Secret-Token',
             'TELEGRAM_WEBHOOK_REQUIRE_SECRET',
             'TelegramWebhookUpdate',
+            'TelegramWebhookCommandHandler',
+            'TelegramWebhookCommand',
             'effectiveMessage()',
             'effectiveChat()',
             'effectiveUser()',
@@ -133,6 +138,9 @@ class WritersideDocumentationTest extends TestCase
             'orderInfoData()',
             'newChatMemberData()',
             'Common Handler Patterns',
+            'Dispatcher, Commands, And Fallbacks',
+            'Route::telegramBotWebhook',
+            'fallback_handler',
         ] as $requiredWebhookText) {
             $this->assertStringContainsString($requiredWebhookText, $webhooks);
         }
@@ -148,10 +156,9 @@ class WritersideDocumentationTest extends TestCase
         }
 
         foreach ([
-            '.github/workflows/qodana.yml',
-            'QODANA_TOKEN',
-            'qodana.yaml',
-            'JetBrains/qodana-action@v2026.1',
+            'paid static-analysis token',
+            'composer check:telegram-api-surface',
+            'Packagist reads versions from Git tags.',
         ] as $requiredMaintenanceText) {
             $this->assertStringContainsString($requiredMaintenanceText, $maintenance);
         }

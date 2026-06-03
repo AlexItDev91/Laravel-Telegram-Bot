@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\Tests\Feature;
 
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotInstallCommand;
+use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotDoctorCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotMeCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotSendTestCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotUpdatesCommand;
@@ -27,6 +28,7 @@ class TelegramBotConsoleCommandsTest extends TestCase
 
         foreach ([
             'telegram-bot:install' => TelegramBotInstallCommand::class,
+            'telegram-bot:doctor' => TelegramBotDoctorCommand::class,
             'telegram-bot:me' => TelegramBotMeCommand::class,
             'telegram-bot:send-test' => TelegramBotSendTestCommand::class,
             'telegram-bot:webhook:set' => TelegramBotWebhookSetCommand::class,
@@ -276,6 +278,56 @@ class TelegramBotConsoleCommandsTest extends TestCase
             'timeout' => 0,
             'allowed_updates' => ['message'],
         ], $this->jsonRequestPayload($history[0]['request']));
+    }
+
+    public function test_doctor_command_checks_laravel_config_route_and_telegram_status(): void
+    {
+        config()->set('telegram-bot.webhook.secret_token', 'secret-token');
+        config()->set('telegram-bot.webhook.require_secret', true);
+
+        $history = [];
+        $this->configureBotHttpClient($history, [
+            new Response(200, [], json_encode([
+                'ok' => true,
+                'result' => [
+                    'id' => 123456,
+                    'is_bot' => true,
+                    'first_name' => 'Support Bot',
+                    'username' => 'support_bot',
+                ],
+            ], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode([
+                'ok' => true,
+                'result' => [
+                    'url' => 'https://example.test/telegram-bot/webhook',
+                    'pending_update_count' => 0,
+                ],
+            ], JSON_THROW_ON_ERROR)),
+        ]);
+
+        $this->artisan('telegram-bot:doctor', ['--bot' => 'default'])
+            ->expectsOutputToContain('Telegram Bot doctor for bot [default]')
+            ->expectsOutputToContain('Bot config')
+            ->expectsOutputToContain('Webhook route')
+            ->expectsOutputToContain('@support_bot')
+            ->expectsOutputToContain('https://example.test/telegram-bot/webhook')
+            ->assertSuccessful();
+
+        $this->assertSame('/bot123456:test-token/getMe', $history[0]['request']->getUri()->getPath());
+        $this->assertSame('/bot123456:test-token/getWebhookInfo', $history[1]['request']->getUri()->getPath());
+    }
+
+    public function test_doctor_command_fails_closed_when_required_webhook_secret_is_missing(): void
+    {
+        config()->set('telegram-bot.webhook.secret_token', null);
+        config()->set('telegram-bot.webhook.require_secret', true);
+
+        $this->artisan('telegram-bot:doctor', [
+            '--bot' => 'default',
+            '--skip-telegram' => true,
+        ])
+            ->expectsOutputToContain('Webhook secret: missing while required')
+            ->assertFailed();
     }
 
     /**

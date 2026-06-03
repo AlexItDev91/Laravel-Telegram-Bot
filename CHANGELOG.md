@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.13.0] - 2026-06-03
+
+- Added a Laravel webhook dispatcher for command handlers, update-type handlers, fallback handlers, and manual webhook route registration through `Route::telegramBotWebhook()`.
+- Added `TelegramWebhookCommand`, `TelegramWebhookCommandHandler`, and `TelegramBot::fake()` with bot/channel-aware assertions for Laravel application tests.
+- Removed the Qodana workflow/configuration path from the package because real GitHub enforcement requires paid Qodana Cloud access, and declared the `ext-openssl` runtime requirement used by Passport decryption.
+
 ## [1.12.3] - 2026-06-02
 
 - Added a dedicated Qodana GitHub Actions workflow with path filters, concurrency, pull request support, and a safe skip path when `QODANA_TOKEN` is not configured.

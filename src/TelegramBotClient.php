@@ -10,6 +10,7 @@ use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotApiException;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotConfigurationException;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotTransportException;
+use AlexItDev91\LaravelTelegramBot\Support\TelegramBotResultFactory;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
@@ -20,6 +21,7 @@ use Psr\Log\LoggerInterface;
 class TelegramBotClient implements TelegramBotClientContract
 {
     use TelegramBotApiMethods;
+    use TelegramBotTypedApiMethods;
 
     public function __construct(
         private readonly TelegramBotConfigData $config,
@@ -105,6 +107,14 @@ class TelegramBotClient implements TelegramBotClientContract
         }
 
         return $apiResponse->result;
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function callData(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return TelegramBotResultFactory::from($method, $this->call($method, $parameters));
     }
 
     /**

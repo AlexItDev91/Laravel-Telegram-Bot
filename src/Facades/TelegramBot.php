@@ -12,10 +12,13 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static mixed call(string $method, array $parameters = [])
+ * @method static mixed callData(string $method, array $parameters = [])
  * @method static TelegramBotClient bot(?string $name = null)
  * @method static TelegramBotChannel channel(string $name)
  * @method static mixed getMe(array|\AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData $parameters = [])
+ * @method static \AlexItDev91\LaravelTelegramBot\DTO\TelegramUserData getMeData()
  * @method static mixed sendMessage(array|\AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData $parameters = [])
+ * @method static \AlexItDev91\LaravelTelegramBot\DTO\TelegramMessageData sendMessageData(array|\AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData $parameters = [])
  * @method static mixed sendDocument(array|\AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData $parameters = [])
  *
  * @see TelegramBotManager

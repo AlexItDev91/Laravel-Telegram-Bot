@@ -67,6 +67,35 @@ class TelegramBotFakeTest extends TestCase
         });
     }
 
+    public function test_fake_returns_typed_response_data_for_typed_helpers(): void
+    {
+        config()->set('telegram-bot.channels.alerts', [
+            'bot' => 'support',
+            'chat_id' => '-1001234567890',
+        ]);
+
+        $fake = TelegramBot::fake()
+            ->result([
+                'message_id' => 20,
+                'date' => 1710000000,
+                'chat' => ['id' => '-1001234567890', 'type' => 'supergroup'],
+                'text' => 'Deploy finished',
+            ], 'sendMessage');
+
+        $message = TelegramBot::channel('alerts')->sendMessageData([
+            'text' => 'Deploy finished',
+        ]);
+
+        $this->assertSame(20, $message->messageId());
+        $this->assertSame('-1001234567890', $message->chat()?->id());
+
+        $fake->assertSentMessageToChannel('alerts', function (array $parameters, string $botName): bool {
+            return $botName === 'support'
+                && $parameters['chat_id'] === '-1001234567890'
+                && $parameters['text'] === 'Deploy finished';
+        });
+    }
+
     public function test_fake_asserts_nothing_was_sent(): void
     {
         $fake = new TelegramBotFake();

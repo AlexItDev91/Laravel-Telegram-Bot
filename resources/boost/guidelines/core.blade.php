@@ -30,6 +30,7 @@ php artisan telegram-bot:install
 - Use `TelegramBot::channel('name')` for a configured destination with `chat_id` and optional `message_thread_id` or `direct_messages_topic_id`.
 - Use `AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel` and `TelegramNotificationMessage` for Laravel notifications that should deliver through Telegram.
 - Route notification destinations with `routeNotificationForTelegram()` or `Notification::route('telegram', [...])`; return `channel`, `bot`, `chat_id`, `message_thread_id`, or `direct_messages_topic_id` values rather than hardcoding credentials in the notification class.
+- Use typed response helpers such as `getMeData()`, `sendMessageData()`, `getUpdatesData()`, `getFileData()`, and `getWebhookInfoData()` when application code needs DTO accessors. Use raw methods when it needs Telegram's unmodified `result`.
 - Use typed outbound DTOs for common payloads when validation helps: `SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
 - Use `php artisan telegram-bot:me --bot=default` to verify the configured bot token and Telegram identity.
 - Use `php artisan telegram-bot:doctor --bot=default` before deploys to check config, webhook secret policy, route registration, and Telegram API reachability.
@@ -54,7 +55,7 @@ php artisan telegram-bot:install
 - Keep raw update access available through `payload()`, `get()`, and the backward-compatible array helpers when Telegram adds fields before typed DTOs exist.
 - Use `TelegramBot::call('methodName', [...])` for new Telegram methods before typed helpers are updated.
 - For failed Telegram API responses, use `retryAfter()` and `migrateToChatId()` on `TelegramBotApiException` when handling rate limits or migrated groups.
-- Use `docs/RECIPES.md`, `docs/NOTIFICATIONS.md`, and `examples/laravel` for copy-ready Laravel notifications, jobs, handlers, listeners, and route snippets.
+- Use `docs/RECIPES.md`, `docs/NOTIFICATIONS.md`, `docs/RESPONSES.md`, and `examples/laravel` for copy-ready Laravel notifications, typed response accessors, jobs, handlers, listeners, and route snippets.
 - Keep Telegram IDs as strings or 64-bit safe values.
 
 ## API Currency
@@ -76,4 +77,4 @@ If Telegram changed the Bot API, update methods, enum values, docs, tests, and i
 ## Testing
 
 - Package: `composer analyse`, `composer test`, and `composer test:coverage-surface`.
-- Laravel app: use `TelegramBot::fake()`, `assertCalled()`, `assertSentMessage()`, `assertSentMessageToChannel()`, and `assertNothingSent()` for focused tests without hitting Telegram, including notification tests.
+- Laravel app: use `TelegramBot::fake()`, `assertCalled()`, `assertSentMessage()`, `assertSentMessageToChannel()`, and `assertNothingSent()` for focused tests without hitting Telegram, including notification and typed response tests.

@@ -55,6 +55,26 @@ TelegramBot::channel('alerts')->sendMessage([
 ]);
 ```
 
+## Typed Response Accessors
+
+Use typed response helpers when the host application needs stable DTO accessors for returned Telegram objects:
+
+```php
+$message = TelegramBot::channel('alerts')->sendMessageData([
+    'text' => 'Deploy finished',
+]);
+
+$messageId = $message->messageId();
+$chatId = $message->chat()?->id();
+$text = $message->text();
+
+$webhook = TelegramBot::getWebhookInfoData();
+$pendingUpdates = $webhook->pendingUpdateCount();
+```
+
+Raw methods such as `sendMessage()` and `getWebhookInfo()` still return Telegram's decoded `result` unchanged.
+Use the Typed Responses topic for the full typed response helper list.
+
 ## Laravel Notifications
 
 Use the notification channel when Telegram delivery belongs to a notifiable model or an on-demand Laravel notification:

@@ -6,10 +6,12 @@ use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
+use AlexItDev91\LaravelTelegramBot\Support\TelegramBotResultFactory;
 
 class TelegramBot implements TelegramBotManager
 {
     use TelegramBotApiMethods;
+    use TelegramBotTypedApiMethods;
 
     public function __construct(
         private readonly TelegramBotManager $manager,
@@ -32,5 +34,13 @@ class TelegramBot implements TelegramBotManager
     public function call(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
         return $this->bot()->call($method, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function callData(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return TelegramBotResultFactory::from($method, $this->call($method, $parameters));
     }
 }

@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="1.16.0"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="1.17.0"/>', $config);
 
         foreach ([
             'overview.md',
@@ -31,6 +31,7 @@ class WritersideDocumentationTest extends TestCase
             'console-commands.md',
             'webhooks.md',
             'notifications.md',
+            'typed-responses.md',
             'production-recipes.md',
             'files-and-http.md',
             'payments-passport-games.md',
@@ -74,6 +75,7 @@ class WritersideDocumentationTest extends TestCase
         $usage = file_get_contents($root.'/Writerside/topics/usage.md');
         $webhooks = file_get_contents($root.'/Writerside/topics/webhooks.md');
         $notifications = file_get_contents($root.'/Writerside/topics/notifications.md');
+        $typedResponses = file_get_contents($root.'/Writerside/topics/typed-responses.md');
         $recipes = file_get_contents($root.'/Writerside/topics/production-recipes.md');
         $apiSurface = file_get_contents($root.'/Writerside/topics/api-surface.md');
         $maintenance = file_get_contents($root.'/Writerside/topics/maintenance.md');
@@ -82,6 +84,7 @@ class WritersideDocumentationTest extends TestCase
         $this->assertIsString($usage);
         $this->assertIsString($webhooks);
         $this->assertIsString($notifications);
+        $this->assertIsString($typedResponses);
         $this->assertIsString($recipes);
         $this->assertIsString($apiSurface);
         $this->assertIsString($maintenance);
@@ -171,6 +174,19 @@ class WritersideDocumentationTest extends TestCase
         }
 
         foreach ([
+            'Typed Responses',
+            'callData()',
+            'getMeData()',
+            'sendMessageData()',
+            'getUpdatesData()',
+            'TelegramFileData',
+            'TelegramWebhookInfoData',
+            'TelegramBot::fake()',
+        ] as $requiredTypedResponsesText) {
+            $this->assertStringContainsString($requiredTypedResponsesText, $typedResponses);
+        }
+
+        foreach ([
             'Production Recipes',
             'SendMessageData',
             'EditMessageTextData',
@@ -181,6 +197,7 @@ class WritersideDocumentationTest extends TestCase
             'migrateToChatId()',
             'TelegramWebhookHandled',
             'TelegramBotNotificationChannel',
+            'Typed Response Accessors',
             'examples/laravel',
         ] as $requiredRecipesText) {
             $this->assertStringContainsString($requiredRecipesText, $recipes);
@@ -221,6 +238,7 @@ class WritersideDocumentationTest extends TestCase
             '[Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html)',
             '[Webhooks](https://alexitdev91.github.io/Laravel-Telegram-Bot/webhooks.html)',
             '[Notifications](https://alexitdev91.github.io/Laravel-Telegram-Bot/notifications.html)',
+            '[Typed Responses](https://alexitdev91.github.io/Laravel-Telegram-Bot/typed-responses.html)',
             '[Production Recipes](https://alexitdev91.github.io/Laravel-Telegram-Bot/production-recipes.html)',
             '[Files And HTTP](https://alexitdev91.github.io/Laravel-Telegram-Bot/files-and-http.html)',
             '[Payments, Passport, And Games](https://alexitdev91.github.io/Laravel-Telegram-Bot/payments-passport-games.html)',

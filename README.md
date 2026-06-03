@@ -33,6 +33,7 @@ Read the published documentation:
 - [Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html)
 - [Webhooks](https://alexitdev91.github.io/Laravel-Telegram-Bot/webhooks.html)
 - [Notifications](https://alexitdev91.github.io/Laravel-Telegram-Bot/notifications.html)
+- [Typed Responses](https://alexitdev91.github.io/Laravel-Telegram-Bot/typed-responses.html)
 - [Production Recipes](https://alexitdev91.github.io/Laravel-Telegram-Bot/production-recipes.html)
 - [Files And HTTP](https://alexitdev91.github.io/Laravel-Telegram-Bot/files-and-http.html)
 - [Payments, Passport, And Games](https://alexitdev91.github.io/Laravel-Telegram-Bot/payments-passport-games.html)
@@ -141,6 +142,20 @@ TelegramBot::channel('inbox')->sendMessage([
 ```
 
 The raw `call(method, parameters)` API remains available for newly released Telegram methods before the typed SDK surface is updated.
+
+Use typed response helpers when application code needs stable DTO accessors for common Telegram results:
+
+```php
+$user = TelegramBot::getMeData();
+$message = TelegramBot::channel('alerts')->sendMessageData([
+    'text' => 'Deploy finished',
+]);
+
+$messageId = $message->messageId();
+$chatId = $message->chat()?->id();
+```
+
+See [Typed Responses](https://alexitdev91.github.io/Laravel-Telegram-Bot/typed-responses.html) for `callData()`, `getUpdatesData()`, `getFileData()`, `getWebhookInfoData()`, message DTO helpers, and fake-based tests.
 
 ## Notifications
 

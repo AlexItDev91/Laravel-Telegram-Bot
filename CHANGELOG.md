@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.17.0] - 2026-06-03
+
+- Added an opt-in typed response layer through `callData()` and common `*Data()` response helpers while preserving raw Telegram `result` returns from existing methods.
+- Added typed response DTOs for Telegram `File` and `WebhookInfo` and made `TelegramWebhookUpdate` implement the shared data DTO contract.
+- Added typed response documentation, Writerside topic, Laravel Boost guidance, and fake coverage for typed response helpers.
+
 ## [1.16.0] - 2026-06-03
 
 - Added a Laravel notification channel with `TelegramNotificationMessage` for model and on-demand Telegram notifications.

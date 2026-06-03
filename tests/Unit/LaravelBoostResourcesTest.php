@@ -27,6 +27,9 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TelegramBotNotificationChannel', $guidelines);
         $this->assertStringContainsString('TelegramNotificationMessage', $guidelines);
         $this->assertStringContainsString('routeNotificationForTelegram()', $guidelines);
+        $this->assertStringContainsString('getMeData()', $guidelines);
+        $this->assertStringContainsString('sendMessageData()', $guidelines);
+        $this->assertStringContainsString('getWebhookInfoData()', $guidelines);
         $this->assertStringContainsString('Route::telegramBotWebhook()', $guidelines);
         $this->assertStringContainsString('TelegramBot::fake()', $guidelines);
         $this->assertStringContainsString('assertSentMessage()', $guidelines);
@@ -63,6 +66,9 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TelegramBotNotificationChannel', $skill);
         $this->assertStringContainsString('TelegramNotificationMessage', $skill);
         $this->assertStringContainsString("Notification::route('telegram'", $skill);
+        $this->assertStringContainsString('callData()', $skill);
+        $this->assertStringContainsString('getUpdatesData()', $skill);
+        $this->assertStringContainsString('sendMessageData()', $skill);
         $this->assertStringContainsString('SendMessageData', $skill);
         $this->assertStringContainsString('AnswerCallbackQueryData', $skill);
         $this->assertStringContainsString('TELEGRAM_INBOX_DIRECT_MESSAGES_TOPIC_ID', $skill);
@@ -76,6 +82,7 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TelegramWebhookDuplicateSkipped', $skill);
         $this->assertStringContainsString('docs/RECIPES.md', $skill);
         $this->assertStringContainsString('docs/NOTIFICATIONS.md', $skill);
+        $this->assertStringContainsString('docs/RESPONSES.md', $skill);
         $this->assertStringContainsString('examples/laravel', $skill);
         $this->assertStringContainsString('Route::telegramBotWebhook()', $skill);
         $this->assertStringContainsString('TelegramBot::fake()', $skill);

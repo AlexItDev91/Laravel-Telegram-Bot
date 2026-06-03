@@ -8,13 +8,16 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChannelConfigData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotChannelNotConfiguredException;
+use AlexItDev91\LaravelTelegramBot\Support\TelegramBotResultFactory;
 use AlexItDev91\LaravelTelegramBot\TelegramBotApiMethods;
+use AlexItDev91\LaravelTelegramBot\TelegramBotTypedApiMethods;
 use AlexItDev91\LaravelTelegramBot\TelegramBotChannel;
 use PHPUnit\Framework\Assert;
 
 class TelegramBotFake implements TelegramBotClient, TelegramBotManager
 {
     use TelegramBotApiMethods;
+    use TelegramBotTypedApiMethods;
 
     /**
      * @var list<array{bot: string, channel: string|null, method: string, parameters: array<string, mixed>}>
@@ -63,6 +66,14 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
         $this->selectedBot = null;
 
         return $this->recordCall($botName, null, $methodName, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function callData(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return TelegramBotResultFactory::from($method, $this->call($method, $parameters));
     }
 
     public function result(mixed $result, string|TelegramBotApiMethod $method = '*'): self

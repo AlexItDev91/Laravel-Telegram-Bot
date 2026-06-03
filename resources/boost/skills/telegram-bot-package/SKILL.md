@@ -107,6 +107,18 @@ Use `InputFile::fromPath()` for top-level and nested file uploads. Nested media 
 
 Use typed outbound DTOs for common payloads when validation helps: `AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
 
+Use typed response helpers when code needs DTO accessors for returned Telegram objects:
+
+```php
+$user = TelegramBot::getMeData();
+$message = TelegramBot::channel('inbox')->sendMessageData([
+    'text' => 'New inbound email',
+]);
+$webhook = TelegramBot::getWebhookInfoData();
+```
+
+Typed response helpers include `callData()`, `getMeData()`, `getChatData()`, `getChatMemberData()`, `getChatAdministratorsData()`, `getFileData()`, `getWebhookInfoData()`, `getUpdatesData()`, `sendMessageData()`, `sendPhotoData()`, `sendDocumentData()`, `forwardMessageData()`, and `editMessageTextData()`. Raw methods still return Telegram's decoded `result` unchanged.
+
 Use `TelegramBotNotificationChannel` for Laravel notifications:
 
 ```php
@@ -137,7 +149,7 @@ Keep `TELEGRAM_BOT_LOGGING_ENABLED=true` for safe operational warning/error logs
 
 For production handlers that do real work, set `TELEGRAM_WEBHOOK_QUEUE_ENABLED=true`, run Laravel queue workers for `AlexItDev91\LaravelTelegramBot\Laravel\Jobs\TelegramWebhookJob`, and enable `TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED=true` with a shared cache store when duplicate update processing is unsafe.
 
-Observe webhook processing with `TelegramWebhookReceived`, `TelegramWebhookHandled`, `TelegramWebhookFailed`, `TelegramWebhookQueued`, and `TelegramWebhookDuplicateSkipped`. Use `docs/RECIPES.md`, `docs/NOTIFICATIONS.md`, and `examples/laravel` for copy-ready notifications, jobs, handlers, listeners, and route snippets.
+Observe webhook processing with `TelegramWebhookReceived`, `TelegramWebhookHandled`, `TelegramWebhookFailed`, `TelegramWebhookQueued`, and `TelegramWebhookDuplicateSkipped`. Use `docs/RECIPES.md`, `docs/NOTIFICATIONS.md`, `docs/RESPONSES.md`, and `examples/laravel` for copy-ready notifications, typed response accessors, jobs, handlers, listeners, and route snippets.
 
 ```php
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;

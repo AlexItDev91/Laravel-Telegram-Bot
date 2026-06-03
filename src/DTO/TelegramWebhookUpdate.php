@@ -2,7 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO;
 
-final readonly class TelegramWebhookUpdate
+final readonly class TelegramWebhookUpdate implements TelegramBotData
 {
     private const UPDATE_TYPES = [
         'message',
@@ -94,6 +94,14 @@ final readonly class TelegramWebhookUpdate
      * @return array<string, mixed>
      */
     public function payload(): array
+    {
+        return $this->payload;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
     {
         return $this->payload;
     }

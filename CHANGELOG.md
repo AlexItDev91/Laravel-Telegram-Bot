@@ -8,6 +8,10 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.19.1] - 2026-06-03
+
+- Added a GitHub release notes generation command that renders the current changelog entry into release-ready markdown.
+
 ## [1.19.0] - 2026-06-03
 
 - Added generated IDE-friendly request builders for all 176 Telegram Bot API methods, plus request/result registries and schema checksums.

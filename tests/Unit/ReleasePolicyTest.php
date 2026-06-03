@@ -13,7 +13,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('1.19.0', $version);
+        $this->assertSame('1.19.1', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -34,6 +34,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [1.19.1] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [1.19.0] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [1.18.2] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [1.18.1] - 2026-06-03', $changelog);
@@ -150,8 +151,24 @@ class ReleasePolicyTest extends TestCase
         $this->assertIsArray($composer);
         $this->assertArrayNotHasKey('version', $composer);
         $this->assertSame('php scripts/check-release-readiness.php', $composer['scripts']['check:release-readiness'] ?? null);
+        $this->assertSame('php scripts/generate-github-release-notes.php', $composer['scripts']['generate:github-release-notes'] ?? null);
         $this->assertSame('php scripts/verify-packagist-release.php', $composer['scripts']['verify:packagist-release'] ?? null);
         $this->assertFileExists(__DIR__.'/../../scripts/check-release-readiness.php');
+        $this->assertFileExists(__DIR__.'/../../scripts/generate-github-release-notes.php');
         $this->assertFileExists(__DIR__.'/../../scripts/verify-packagist-release.php');
+    }
+
+    public function test_github_release_notes_generator_renders_current_changelog_entry(): void
+    {
+        $output = [];
+        $exitCode = 0;
+
+        exec('php '.escapeshellarg(__DIR__.'/../../scripts/generate-github-release-notes.php').' 2>&1', $output, $exitCode);
+
+        $notes = implode("\n", $output);
+
+        $this->assertSame(0, $exitCode, $notes);
+        $this->assertStringContainsString('# v1.19.1', $notes);
+        $this->assertStringContainsString('GitHub release notes generation command', $notes);
     }
 }

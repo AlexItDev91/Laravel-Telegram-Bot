@@ -122,10 +122,17 @@ trait ResolvesTelegramBotConsoleInput
 
         $values = is_array($value) ? $value : [$value];
 
-        return array_values(array_filter(
-            array_map(static fn (mixed $item): string => trim((string) $item), $values),
-            static fn (string $item): bool => $item !== '',
-        ));
+        $strings = [];
+
+        foreach ($values as $item) {
+            $string = $this->optionStringValue($item);
+
+            if ($string !== null) {
+                $strings[] = $string;
+            }
+        }
+
+        return $strings;
     }
 
     private function nullableStringOption(string $name): ?string
@@ -133,6 +140,15 @@ trait ResolvesTelegramBotConsoleInput
         $value = $this->option($name);
 
         if ($value === null || $value === false) {
+            return null;
+        }
+
+        return $this->optionStringValue($value);
+    }
+
+    private function optionStringValue(mixed $value): ?string
+    {
+        if (! is_string($value) && ! is_int($value) && ! is_float($value)) {
             return null;
         }
 

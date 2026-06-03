@@ -161,7 +161,7 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
     {
         $callback = match (true) {
             $expected instanceof TelegramBotRequestData => $this->payloadMatcher($expected->toArray()),
-            is_array($expected) => $this->payloadMatcher($expected),
+            is_array($expected) => $this->payloadMatcher($this->stringKeyedPayload($expected)),
             is_callable($expected) => $expected,
             default => null,
         };
@@ -270,7 +270,55 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
     {
         $expected = $this->normalizeParameters($expected);
 
-        return static fn (array $parameters): bool => array_intersect_assoc($expected, $parameters) === $expected;
+        return static fn (array $parameters): bool => self::arrayContainsSubset($expected, $parameters);
+    }
+
+    /**
+     * @param  array<int|string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    private function stringKeyedPayload(array $payload): array
+    {
+        $stringKeyed = [];
+
+        foreach ($payload as $key => $value) {
+            if (! is_string($key)) {
+                throw new InvalidArgumentException('Expected Telegram Bot fake payload keys to be strings.');
+            }
+
+            $stringKeyed[$key] = $value;
+        }
+
+        return $stringKeyed;
+    }
+
+    /**
+     * @param  array<int|string, mixed>  $expected
+     * @param  array<int|string, mixed>  $actual
+     */
+    private static function arrayContainsSubset(array $expected, array $actual): bool
+    {
+        foreach ($expected as $key => $expectedValue) {
+            if (! array_key_exists($key, $actual)) {
+                return false;
+            }
+
+            $actualValue = $actual[$key];
+
+            if (is_array($expectedValue)) {
+                if (! is_array($actualValue) || ! self::arrayContainsSubset($expectedValue, $actualValue)) {
+                    return false;
+                }
+
+                continue;
+            }
+
+            if ($actualValue !== $expectedValue) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

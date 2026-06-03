@@ -14,15 +14,15 @@ use AlexItDev91\LaravelTelegramBot\Testing\TelegramBotFake;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static mixed call(string $method, array $parameters = [])
- * @method static mixed callData(string $method, array $parameters = [])
+ * @method static mixed call(string $method, array<string, mixed> $parameters = [])
+ * @method static mixed callData(string $method, array<string, mixed> $parameters = [])
  * @method static TelegramBotClient bot(?string $name = null)
  * @method static TelegramBotChannel channel(string $name)
- * @method static mixed getMe(array|TelegramBotRequestData $parameters = [])
+ * @method static mixed getMe(array<string, mixed>|TelegramBotRequestData $parameters = [])
  * @method static TelegramUserData getMeData()
- * @method static mixed sendMessage(array|TelegramBotRequestData $parameters = [])
- * @method static TelegramMessageData sendMessageData(array|TelegramBotRequestData $parameters = [])
- * @method static mixed sendDocument(array|TelegramBotRequestData $parameters = [])
+ * @method static mixed sendMessage(array<string, mixed>|TelegramBotRequestData $parameters = [])
+ * @method static TelegramMessageData sendMessageData(array<string, mixed>|TelegramBotRequestData $parameters = [])
+ * @method static mixed sendDocument(array<string, mixed>|TelegramBotRequestData $parameters = [])
  *
  * @see TelegramBotManager
  */

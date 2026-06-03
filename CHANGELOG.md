@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.1.1] - 2026-06-03
+
+- Raised PHPStan analysis from level 5 to level 8 and fixed the newly exposed iterable, nullable-string, and mixed-return findings without suppressions.
+- Hardened Laravel console option normalization, cache repository resolution, facade method PHPDoc, fake payload assertions, and generated schema helper contracts.
+- Added an explicit string-key payload guard to typed Telegram request DTO payload builders.
+
 ## [2.1.0] - 2026-06-03
 
 - Added Telegram domain enums for chat actions, chat types, update types, poll types, sticker types/formats, menu buttons, message entities, inline query result types, paid media types, and bot command scope types.

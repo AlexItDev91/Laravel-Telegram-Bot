@@ -178,7 +178,7 @@ class TelegramBotInstallCommand extends Command
 
     private function envKey(string $value): string
     {
-        $key = strtoupper(preg_replace('/[^A-Za-z0-9]+/', '_', $value));
+        $key = strtoupper(preg_replace('/[^A-Za-z0-9]+/', '_', $value) ?? '');
         $key = trim($key, '_');
 
         return $key !== '' ? $key : 'INBOX';

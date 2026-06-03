@@ -21,9 +21,15 @@ trait BuildsTelegramBotPayload
 
         self::assertRequiredPayloadFields($parameters, $required);
 
-        return TelegramBotRequestData::normalizeValue(
+        $payload = TelegramBotRequestData::normalizeValue(
             TelegramBotRequestData::withoutNullValues($parameters),
         );
+
+        if (! is_array($payload)) {
+            throw new InvalidArgumentException('Telegram Bot payload normalization must return an array.');
+        }
+
+        return self::stringKeyedPayload($payload);
     }
 
     /**
@@ -40,6 +46,25 @@ trait BuildsTelegramBotPayload
                 implode(', ', $duplicates),
             ));
         }
+    }
+
+    /**
+     * @param  array<int|string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    private static function stringKeyedPayload(array $payload): array
+    {
+        $stringKeyed = [];
+
+        foreach ($payload as $key => $value) {
+            if (! is_string($key)) {
+                throw new InvalidArgumentException('Telegram Bot payload keys must be strings.');
+            }
+
+            $stringKeyed[$key] = $value;
+        }
+
+        return $stringKeyed;
     }
 
     /**

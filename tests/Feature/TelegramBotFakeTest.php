@@ -90,6 +90,38 @@ class TelegramBotFakeTest extends TestCase
         $this->assertSame('HTML', $calls[0]['parameters']['parse_mode'] ?? null);
     }
 
+    public function test_fake_asserts_nested_payload_subsets(): void
+    {
+        $fake = TelegramBot::fake();
+
+        TelegramBot::sendMessage([
+            'chat_id' => '123456789',
+            'text' => 'Deploy finished',
+            'reply_markup' => [
+                'inline_keyboard' => [
+                    [
+                        [
+                            'text' => 'Retry',
+                            'callback_data' => 'deploy:retry',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $fake->assertSent('sendMessage', [
+            'reply_markup' => [
+                'inline_keyboard' => [
+                    [
+                        [
+                            'text' => 'Retry',
+                        ],
+                    ],
+                ],
+            ],
+        ], times: 1);
+    }
+
     public function test_fake_returns_typed_response_data_for_typed_helpers(): void
     {
         config()->set('telegram-bot.channels.alerts', [

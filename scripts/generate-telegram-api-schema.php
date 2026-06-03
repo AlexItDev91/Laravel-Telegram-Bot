@@ -482,7 +482,7 @@ function requestClassName(string $method): string
 }
 
 /**
- * @param  array<string, class-string>  $requestClasses
+ * @param  array<string, string>  $requestClasses
  */
 function requestRegistryContent(array $requestClasses): string
 {

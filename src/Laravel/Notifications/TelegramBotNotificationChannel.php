@@ -176,6 +176,7 @@ readonly class TelegramBotNotificationChannel
     }
 
     /**
+     * @param  array<string, mixed>|TelegramBotRequestData  $parameters
      * @return array<string, mixed>
      */
     private function parameters(array|TelegramBotRequestData $parameters): array

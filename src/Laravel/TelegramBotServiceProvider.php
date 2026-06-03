@@ -151,6 +151,9 @@ class TelegramBotServiceProvider extends ServiceProvider
         );
     }
 
+    /**
+     * @param  list<string>|string  $middleware
+     */
     private function registerWebhookRouteAt(string $uri, ?string $name, array|string $middleware): void
     {
         $middleware = is_array($middleware) ? $middleware : [$middleware];

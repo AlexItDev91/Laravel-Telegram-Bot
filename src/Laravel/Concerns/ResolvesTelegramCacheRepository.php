@@ -16,7 +16,7 @@ trait ResolvesTelegramCacheRepository
         if (is_string($store) && $store !== '' && $container->bound('cache')) {
             $cache = $container->make('cache');
 
-            if (! method_exists($cache, 'store')) {
+            if (! is_object($cache) || ! method_exists($cache, 'store')) {
                 return null;
             }
 
@@ -39,7 +39,7 @@ trait ResolvesTelegramCacheRepository
             return $cache;
         }
 
-        if (method_exists($cache, 'store')) {
+        if (is_object($cache) && method_exists($cache, 'store')) {
             $repository = $cache->store();
 
             return $repository instanceof CacheRepository ? $repository : null;

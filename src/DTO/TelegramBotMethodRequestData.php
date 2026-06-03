@@ -21,7 +21,7 @@ readonly class TelegramBotMethodRequestData extends TelegramBotRequestData
         $this->methodName = $method instanceof TelegramBotApiMethod ? $method->value : $method;
 
         if (! TelegramBotApiMethodSchema::supports($this->methodName)) {
-            throw new InvalidArgumentException("Telegram Bot API method [{$this->methodName}] does not have a generated request schema.");
+            throw new InvalidArgumentException("Telegram Bot API method [$this->methodName] does not have a generated request schema.");
         }
 
         if ($this->validateRequiredParameters) {

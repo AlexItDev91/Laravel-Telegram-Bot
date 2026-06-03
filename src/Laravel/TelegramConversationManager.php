@@ -6,7 +6,7 @@ use AlexItDev91\LaravelTelegramBot\Contracts\TelegramConversationStore;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramConversationData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
 
-class TelegramConversationManager
+readonly class TelegramConversationManager
 {
     public function __construct(private readonly TelegramConversationStore $store)
     {
@@ -55,8 +55,8 @@ class TelegramConversationManager
         $userId = $update->effectiveUser()?->id();
         $updateId = $update->updateId();
         $subject = $chatId !== null || $userId !== null
-            ? sprintf('chat:%s:user:%s', (string) ($chatId ?? 'none'), (string) ($userId ?? 'none'))
-            : 'update:'.(string) ($updateId ?? 'unknown');
+            ? sprintf('chat:%s:user:%s', $chatId ?? 'none', $userId ?? 'none')
+            : sprintf('update:%s', $updateId ?? 'unknown');
 
         return implode(':', [
             $this->prefix(),

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-class VerifyTelegramWebhookSecret
+readonly class VerifyTelegramWebhookSecret
 {
     public function __construct(
         private readonly ?LoggerInterface $logger = null,
@@ -50,7 +50,7 @@ class VerifyTelegramWebhookSecret
 
     private function warning(string $message, Request $request): void
     {
-        if (! (bool) config('telegram-bot.logging.enabled', true)) {
+        if (! config('telegram-bot.logging.enabled', true)) {
             return;
         }
 

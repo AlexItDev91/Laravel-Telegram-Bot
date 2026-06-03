@@ -31,7 +31,7 @@ class TelegramBotManager implements TelegramBotManagerContract
         private readonly array $config,
         callable $clientFactory,
     ) {
-        $this->clientFactory = Closure::fromCallable($clientFactory);
+        $this->clientFactory = $clientFactory(...);
     }
 
     public function bot(?string $name = null): TelegramBotClientContract
@@ -46,7 +46,7 @@ class TelegramBotManager implements TelegramBotManagerContract
         $channels = $this->config['channels'] ?? [];
 
         if (! is_array($channels) || ! is_array($channels[$name] ?? null)) {
-            throw new TelegramBotChannelNotConfiguredException("Telegram Bot channel [{$name}] is not configured.");
+            throw new TelegramBotChannelNotConfiguredException("Telegram Bot channel [$name] is not configured.");
         }
 
         $config = $channels[$name];
@@ -63,10 +63,10 @@ class TelegramBotManager implements TelegramBotManagerContract
     public function __call(string $method, array $arguments): mixed
     {
         if (! method_exists($this->bot(), $method)) {
-            throw new BadMethodCallException("Telegram Bot method [{$method}] is not available.");
+            throw new BadMethodCallException("Telegram Bot method [$method] is not available.");
         }
 
-        return $this->bot()->{$method}(...$arguments);
+        return $this->bot()->$method(...$arguments);
     }
 
     /**
@@ -84,7 +84,7 @@ class TelegramBotManager implements TelegramBotManagerContract
             return $this->sharedBotConfig();
         }
 
-        throw new TelegramBotNotConfiguredException("Telegram Bot [{$name}] is not configured.");
+        throw new TelegramBotNotConfiguredException("Telegram Bot [$name] is not configured.");
     }
 
     /**

@@ -8,7 +8,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
 use AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookCommand;
 use AlexItDev91\LaravelTelegramBot\TelegramBot;
 
-class StartCommand implements TelegramWebhookCommandHandler
+readonly class StartCommand implements TelegramWebhookCommandHandler
 {
     public function __construct(private readonly TelegramBot $telegram)
     {

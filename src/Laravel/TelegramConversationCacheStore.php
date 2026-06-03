@@ -4,12 +4,15 @@ namespace AlexItDev91\LaravelTelegramBot\Laravel;
 
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramConversationStore;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramConversationData;
+use AlexItDev91\LaravelTelegramBot\Laravel\Concerns\ResolvesTelegramCacheRepository;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Container\Container;
 use Psr\Log\LoggerInterface;
 
-class TelegramConversationCacheStore implements TelegramConversationStore
+readonly class TelegramConversationCacheStore implements TelegramConversationStore
 {
+    use ResolvesTelegramCacheRepository;
+
     public function __construct(
         private readonly Container $container,
         private readonly ?LoggerInterface $logger = null,
@@ -78,7 +81,7 @@ class TelegramConversationCacheStore implements TelegramConversationStore
 
     private function enabled(): bool
     {
-        return (bool) config('telegram-bot.conversation.enabled', false);
+        return config('telegram-bot.conversation.enabled', false) ? true : false;
     }
 
     private function ttl(): int
@@ -90,41 +93,12 @@ class TelegramConversationCacheStore implements TelegramConversationStore
 
     private function cache(): ?CacheRepository
     {
-        $store = config('telegram-bot.conversation.store');
+        return $this->cacheRepository(config('telegram-bot.conversation.store'));
+    }
 
-        if (is_string($store) && $store !== '' && $this->container->bound('cache')) {
-            $cache = $this->container->make('cache');
-
-            if (! method_exists($cache, 'store')) {
-                return null;
-            }
-
-            $repository = $cache->store($store);
-
-            return $repository instanceof CacheRepository ? $repository : null;
-        }
-
-        if ($this->container->bound(CacheRepository::class)) {
-            return $this->container->make(CacheRepository::class);
-        }
-
-        if (! $this->container->bound('cache')) {
-            return null;
-        }
-
-        $cache = $this->container->make('cache');
-
-        if ($cache instanceof CacheRepository) {
-            return $cache;
-        }
-
-        if (method_exists($cache, 'store')) {
-            $repository = $cache->store();
-
-            return $repository instanceof CacheRepository ? $repository : null;
-        }
-
-        return null;
+    private function container(): Container
+    {
+        return $this->container;
     }
 
     /**
@@ -132,7 +106,7 @@ class TelegramConversationCacheStore implements TelegramConversationStore
      */
     private function warning(string $message, array $context): void
     {
-        if (! (bool) config('telegram-bot.logging.enabled', true)) {
+        if (! config('telegram-bot.logging.enabled', true)) {
             return;
         }
 

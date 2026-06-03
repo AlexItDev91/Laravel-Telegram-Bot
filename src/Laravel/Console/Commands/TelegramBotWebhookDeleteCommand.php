@@ -26,7 +26,7 @@ class TelegramBotWebhookDeleteCommand extends Command
     {
         $bot = $this->botName();
 
-        if (! (bool) $this->option('yes') && $this->input->isInteractive()) {
+        if (! $this->option('yes') && $this->input->isInteractive()) {
             $confirmed = confirm(
                 label: 'Delete the Telegram webhook for bot ['.$bot.']?',
                 default: false,
@@ -41,7 +41,7 @@ class TelegramBotWebhookDeleteCommand extends Command
 
         try {
             $manager->bot($bot)->call('deleteWebhook', [
-                'drop_pending_updates' => (bool) $this->option('drop-pending-updates'),
+                'drop_pending_updates' => $this->option('drop-pending-updates'),
             ]);
         } catch (Throwable $exception) {
             warning('Failed to delete Telegram webhook: '.$exception->getMessage());
@@ -51,7 +51,7 @@ class TelegramBotWebhookDeleteCommand extends Command
 
         info('Telegram webhook deleted.');
         $this->line('Bot: '.$bot);
-        $this->line('Dropped pending updates: '.((bool) $this->option('drop-pending-updates') ? 'yes' : 'no'));
+        $this->line('Dropped pending updates: '.($this->option('drop-pending-updates') ? 'yes' : 'no'));
 
         return self::SUCCESS;
     }

@@ -50,7 +50,7 @@ trait BuildsTelegramBotPayload
     {
         foreach ($required as $field) {
             if (! array_key_exists($field, $parameters) || self::isBlankPayloadValue($parameters[$field])) {
-                throw new InvalidArgumentException("Telegram Bot payload field [{$field}] must not be empty.");
+                throw new InvalidArgumentException("Telegram Bot payload field [$field] must not be empty.");
             }
         }
     }
@@ -58,14 +58,14 @@ trait BuildsTelegramBotPayload
     private static function assertPositiveInteger(string $field, int $value): void
     {
         if ($value <= 0) {
-            throw new InvalidArgumentException("Telegram Bot payload field [{$field}] must be greater than zero.");
+            throw new InvalidArgumentException("Telegram Bot payload field [$field] must be greater than zero.");
         }
     }
 
     private static function assertNonNegativeInteger(string $field, int $value): void
     {
         if ($value < 0) {
-            throw new InvalidArgumentException("Telegram Bot payload field [{$field}] must not be negative.");
+            throw new InvalidArgumentException("Telegram Bot payload field [$field] must not be negative.");
         }
     }
 

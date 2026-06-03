@@ -39,7 +39,7 @@ class TelegramBotWebhookInfoCommand extends Command
             return self::FAILURE;
         }
 
-        if ((bool) $this->option('raw')) {
+        if ($this->option('raw')) {
             $this->line(json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
 
             return self::SUCCESS;
@@ -66,7 +66,7 @@ class TelegramBotWebhookInfoCommand extends Command
 
     private function boolValue(mixed $value): string
     {
-        return (bool) $value ? 'yes' : 'no';
+        return $value ? 'yes' : 'no';
     }
 
     private function stringValue(mixed $value): string

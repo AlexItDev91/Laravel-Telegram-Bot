@@ -28,7 +28,7 @@ class TelegramBotInstallCommand extends Command
 
     public function handle(): int
     {
-        if (! (bool) $this->option('no-publish')) {
+        if (! $this->option('no-publish')) {
             $this->publishConfig();
         }
 
@@ -36,7 +36,7 @@ class TelegramBotInstallCommand extends Command
         $channel = $this->channelNameForSnippet();
         $token = $this->tokenForValidation();
 
-        if (! (bool) $this->option('skip-token-check')) {
+        if (! $this->option('skip-token-check')) {
             $this->validateToken($token);
         }
 
@@ -56,8 +56,8 @@ class TelegramBotInstallCommand extends Command
         info('Add or adjust this channel mapping in config/telegram-bot.php:');
         $this->line('');
         $this->line("'channels' => [");
-        $this->line("    '{$channel}' => [");
-        $this->line("        'bot' => '{$bot}',");
+        $this->line("    '$channel' => [");
+        $this->line("        'bot' => '$bot',");
         $this->line("        'chat_id' => env('TELEGRAM_".$this->envKey($channel)."_CHAT_ID'),");
         $this->line("        'message_thread_id' => env('TELEGRAM_".$this->envKey($channel)."_MESSAGE_THREAD_ID'),");
         $this->line("        'direct_messages_topic_id' => env('TELEGRAM_".$this->envKey($channel)."_DIRECT_MESSAGES_TOPIC_ID'),");
@@ -75,7 +75,7 @@ class TelegramBotInstallCommand extends Command
         $this->callSilent('vendor:publish', array_filter([
             '--provider' => TelegramBotServiceProvider::class,
             '--tag' => 'telegram-bot-config',
-            '--force' => (bool) $this->option('force') ? true : null,
+            '--force' => $this->option('force') ? true : null,
         ], static fn (mixed $value): bool => $value !== null));
 
         info('Published config/telegram-bot.php.');
@@ -133,7 +133,7 @@ class TelegramBotInstallCommand extends Command
             return trim($configured);
         }
 
-        if ($this->input->isInteractive() && ! (bool) $this->option('skip-token-check') && confirm('Validate a bot token now?', false)) {
+        if ($this->input->isInteractive() && ! $this->option('skip-token-check') && confirm('Validate a bot token now?', false)) {
             return password(
                 label: 'Bot token for validation only',
                 required: true,
@@ -171,7 +171,7 @@ class TelegramBotInstallCommand extends Command
 
         info(sprintf(
             'Validated bot: id=%s username=%s',
-            (string) ($result['id'] ?? ''),
+            $result['id'] ?? '',
             is_string($result['username'] ?? null) ? '@'.$result['username'] : '(no username)',
         ));
     }

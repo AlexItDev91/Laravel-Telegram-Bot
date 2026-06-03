@@ -155,7 +155,7 @@ readonly class TelegramBotRequestData implements TelegramBotData
             $attachmentName = $this->nextAttachmentName($attachmentIndex, $reservedNames);
             $fileParts[] = $value->toMultipartPart($attachmentName);
 
-            return "attach://{$attachmentName}";
+            return "attach://$attachmentName";
         }
 
         if ($value instanceof TelegramBotData) {

@@ -39,7 +39,7 @@ class TelegramBotDoctorCommand extends Command
         }
 
         $secret = config('telegram-bot.webhook.secret_token');
-        $requireSecret = (bool) config('telegram-bot.webhook.require_secret', config('app.env') === 'production');
+        $requireSecret = config('telegram-bot.webhook.require_secret', config('app.env') === 'production');
 
         if ($requireSecret && (! is_string($secret) || $secret === '')) {
             $failed = true;
@@ -52,7 +52,7 @@ class TelegramBotDoctorCommand extends Command
         }
 
         $routeName = config('telegram-bot.webhook.route.name', 'telegram-bot.webhook');
-        $routeEnabled = (bool) config('telegram-bot.webhook.route.enabled', true);
+        $routeEnabled = config('telegram-bot.webhook.route.enabled', true);
 
         if (! $routeEnabled) {
             $rows[] = ['Webhook route', 'skipped', 'Package route auto-registration is disabled.'];
@@ -63,7 +63,7 @@ class TelegramBotDoctorCommand extends Command
             $rows[] = ['Webhook route', 'failed', 'Configured webhook route is not registered.'];
         }
 
-        if (! (bool) $this->option('skip-telegram') && ! $failed) {
+        if (! $failed && ! $this->option('skip-telegram')) {
             $failed = $this->appendTelegramChecks($manager, $bot, $rows);
         }
 

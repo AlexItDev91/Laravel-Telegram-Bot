@@ -17,7 +17,6 @@ use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotWebhookSe
 use AlexItDev91\LaravelTelegramBot\Laravel\Http\Controllers\TelegramWebhookController;
 use AlexItDev91\LaravelTelegramBot\Laravel\Http\Middleware\VerifyTelegramWebhookSecret;
 use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel;
-use AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookDispatcher;
 use AlexItDev91\LaravelTelegramBot\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\TelegramBotManager;
@@ -26,6 +25,7 @@ use GuzzleHttp\ClientInterface;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 class TelegramBotServiceProvider extends ServiceProvider
 {
@@ -42,7 +42,7 @@ class TelegramBotServiceProvider extends ServiceProvider
                         'timeout' => $config->timeout,
                         'http_errors' => false,
                     ]),
-                    logger: (bool) config('telegram-bot.logging.enabled', true) && $app->bound(LoggerInterface::class)
+                    logger: config('telegram-bot.logging.enabled', true) && $app->bound(LoggerInterface::class)
                         ? $app->make(LoggerInterface::class)
                         : null,
                 ),
@@ -65,7 +65,7 @@ class TelegramBotServiceProvider extends ServiceProvider
 
             return $client instanceof TelegramBotClient
                 ? $client
-                : throw new \RuntimeException('The default Telegram Bot client is not a concrete TelegramBotClient instance.');
+                : throw new RuntimeException('The default Telegram Bot client is not a concrete TelegramBotClient instance.');
         });
 
         $this->app->singleton(TelegramWebhookDispatcher::class);
@@ -119,7 +119,7 @@ class TelegramBotServiceProvider extends ServiceProvider
 
     private function registerWebhookRoute(): void
     {
-        if (! (bool) config('telegram-bot.webhook.route.enabled', true)) {
+        if (! config('telegram-bot.webhook.route.enabled', true)) {
             return;
         }
 
@@ -130,7 +130,7 @@ class TelegramBotServiceProvider extends ServiceProvider
         );
     }
 
-    private function registerWebhookRouteAt(string $uri, ?string $name, array|string $middleware): \Illuminate\Routing\Route
+    private function registerWebhookRouteAt(string $uri, ?string $name, array|string $middleware): void
     {
         $middleware = is_array($middleware) ? $middleware : [$middleware];
         $middleware[] = VerifyTelegramWebhookSecret::class;
@@ -138,6 +138,8 @@ class TelegramBotServiceProvider extends ServiceProvider
         $route = Route::post(trim($uri, '/'), TelegramWebhookController::class)
             ->middleware($middleware);
 
-        return $name !== null && $name !== '' ? $route->name($name) : $route;
+        if ($name !== null && $name !== '') {
+            $route->name($name);
+        }
     }
 }

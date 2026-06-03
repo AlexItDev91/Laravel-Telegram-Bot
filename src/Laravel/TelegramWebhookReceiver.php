@@ -16,7 +16,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-class TelegramWebhookReceiver
+readonly class TelegramWebhookReceiver
 {
     public function __construct(
         private readonly Container $container,
@@ -120,7 +120,7 @@ class TelegramWebhookReceiver
             $job->onQueue($queue);
         }
 
-        if ((bool) config('telegram-bot.webhook.queue.after_commit', false)) {
+        if (config('telegram-bot.webhook.queue.after_commit', false)) {
             $job->afterCommit();
         }
 
@@ -131,7 +131,7 @@ class TelegramWebhookReceiver
 
     private function shouldQueue(): bool
     {
-        return (bool) config('telegram-bot.webhook.queue.enabled', false);
+        return config('telegram-bot.webhook.queue.enabled', false) ? true : false;
     }
 
     private function queueConnection(): ?string
@@ -150,7 +150,7 @@ class TelegramWebhookReceiver
 
     private function dispatchEvent(object $event): void
     {
-        if (! (bool) config('telegram-bot.webhook.dispatch_event', true)) {
+        if (! config('telegram-bot.webhook.dispatch_event', true)) {
             return;
         }
 
@@ -179,7 +179,7 @@ class TelegramWebhookReceiver
      */
     private function warning(string $message, array $context): void
     {
-        if (! (bool) config('telegram-bot.logging.enabled', true)) {
+        if (! config('telegram-bot.logging.enabled', true)) {
             return;
         }
 

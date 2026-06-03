@@ -13,6 +13,7 @@ use AlexItDev91\LaravelTelegramBot\Support\TelegramBotResultFactory;
 use AlexItDev91\LaravelTelegramBot\TelegramBotApiMethods;
 use AlexItDev91\LaravelTelegramBot\TelegramBotTypedApiMethods;
 use AlexItDev91\LaravelTelegramBot\TelegramBotChannel;
+use InvalidArgumentException;
 use PHPUnit\Framework\Assert;
 
 class TelegramBotFake implements TelegramBotClient, TelegramBotManager
@@ -44,7 +45,7 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
         $channels = config('telegram-bot.channels', []);
 
         if (! is_array($channels) || ! is_array($channels[$name] ?? null)) {
-            throw new TelegramBotChannelNotConfiguredException("Telegram Bot channel [{$name}] is not configured.");
+            throw new TelegramBotChannelNotConfiguredException("Telegram Bot channel [$name] is not configured.");
         }
 
         $config = TelegramChannelConfigData::fromArray($channels[$name]);
@@ -64,7 +65,11 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
     {
         $methodName = $method instanceof TelegramBotApiMethod ? $method->value : $method;
         if ($parameters instanceof TelegramBotMethodRequestData && $parameters->method() !== $methodName) {
-            throw new \InvalidArgumentException("Telegram Bot request DTO for method [{$parameters->method()}] cannot be used with method [{$methodName}].");
+            throw new InvalidArgumentException(sprintf(
+                'Telegram Bot request DTO for method [%s] cannot be used with method [%s].',
+                $parameters->method(),
+                $methodName,
+            ));
         }
 
         $botName = $this->selectedBot ?? 'default';
@@ -135,12 +140,12 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
         ));
 
         if ($times !== null) {
-            Assert::assertCount($times, $matching, "Expected Telegram Bot method [{$methodName}] to be called {$times} times.");
+            Assert::assertCount($times, $matching, "Expected Telegram Bot method [$methodName] to be called $times times.");
 
             return;
         }
 
-        Assert::assertNotSame([], $matching, "Expected Telegram Bot method [{$methodName}] to be called.");
+        Assert::assertNotSame([], $matching, "Expected Telegram Bot method [$methodName] to be called.");
     }
 
     /**
@@ -165,12 +170,12 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
         ));
 
         if ($times !== null) {
-            Assert::assertCount($times, $matching, "Expected Telegram Bot channel [{$channel}] to send a message {$times} times.");
+            Assert::assertCount($times, $matching, "Expected Telegram Bot channel [$channel] to send a message $times times.");
 
             return;
         }
 
-        Assert::assertNotSame([], $matching, "Expected Telegram Bot channel [{$channel}] to send a message.");
+        Assert::assertNotSame([], $matching, "Expected Telegram Bot channel [$channel] to send a message.");
     }
 
     public function assertNothingSent(): void

@@ -7,7 +7,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\Messages\AnswerCallbackQueryData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
 use AlexItDev91\LaravelTelegramBot\TelegramBot;
 
-class CallbackQueryHandler implements TelegramWebhookHandler
+readonly class CallbackQueryHandler implements TelegramWebhookHandler
 {
     public function __construct(private readonly TelegramBot $telegram)
     {

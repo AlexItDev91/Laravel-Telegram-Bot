@@ -93,7 +93,7 @@ function fetchOfficialPage(string $url): string
     $html = file_get_contents($url, false, $context);
 
     if ($html === false) {
-        fwrite(STDERR, "Failed to fetch {$url}.\n");
+        fwrite(STDERR, "Failed to fetch $url.\n");
         exit(1);
     }
 
@@ -108,14 +108,14 @@ function latestRelease(string $html, string $url): array
     $text = html_entity_decode(strip_tags($html));
 
     if (! preg_match('/([A-Z][a-z]+ \d{1,2}, \d{4})\s+Bot API\s+([0-9.]+)/', $text, $release)) {
-        fwrite(STDERR, "Failed to detect the latest Telegram Bot API release from {$url}.\n");
+        fwrite(STDERR, "Failed to detect the latest Telegram Bot API release from $url.\n");
         exit(1);
     }
 
     $releaseDate = DateTimeImmutable::createFromFormat('F j, Y', $release[1]);
 
     if (! $releaseDate instanceof DateTimeImmutable) {
-        fwrite(STDERR, "Failed to parse Telegram Bot API release date [{$release[1]}].\n");
+        fwrite(STDERR, "Failed to parse Telegram Bot API release date [$release[1]].\n");
         exit(1);
     }
 
@@ -170,7 +170,7 @@ function officialMethodParameters(string $html, array $methods): array
 
     foreach ($methods as $method) {
         if (! array_key_exists($method, $parameters)) {
-            fwrite(STDERR, "Failed to find official Telegram Bot API method section [{$method}].\n");
+            fwrite(STDERR, "Failed to find official Telegram Bot API method section [$method].\n");
             exit(1);
         }
     }
@@ -210,7 +210,7 @@ function documentedMethodParameters(string $path, array $methods): array
     $markdown = file_get_contents($path);
 
     if ($markdown === false) {
-        fwrite(STDERR, "Failed to read local method documentation [{$path}].\n");
+        fwrite(STDERR, "Failed to read local method documentation [$path].\n");
         exit(1);
     }
 
@@ -218,7 +218,7 @@ function documentedMethodParameters(string $path, array $methods): array
 
     foreach ($methods as $method) {
         if (! preg_match('/^### `'.preg_quote($method, '/').'`\R(.*?)(?=^### `|\z)/ms', $markdown, $section)) {
-            fwrite(STDERR, "Failed to find documented Telegram Bot API method section [{$method}].\n");
+            fwrite(STDERR, "Failed to find documented Telegram Bot API method section [$method].\n");
             exit(1);
         }
 
@@ -242,7 +242,7 @@ function documentedParametersFromSection(string $markdown, string $method): arra
             return [];
         }
 
-        fwrite(STDERR, "Failed to find documented parameter table for method [{$method}].\n");
+        fwrite(STDERR, "Failed to find documented parameter table for method [$method].\n");
         exit(1);
     }
 
@@ -326,7 +326,7 @@ function diffMethodParameters(array $official, array $documented): array
 
     foreach ($official as $method => $officialParameters) {
         if (! array_key_exists($method, $documented)) {
-            $failures[] = "Missing documented Telegram Bot API parameter matrix for method [{$method}].";
+            $failures[] = "Missing documented Telegram Bot API parameter matrix for method [$method].";
 
             continue;
         }

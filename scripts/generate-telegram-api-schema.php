@@ -12,7 +12,7 @@ $targetPath = $root.'/src/TelegramBotApiMethodSchema.php';
 $markdown = file_get_contents($methodsPath);
 
 if ($markdown === false) {
-    fwrite(STDERR, "Failed to read {$methodsPath}.\n");
+    fwrite(STDERR, "Failed to read $methodsPath.\n");
     exit(1);
 }
 
@@ -21,8 +21,7 @@ $schema = [];
 preg_match_all('/^### `([^`]+)`\R(.*?)(?=^### `|\z)/ms', $markdown, $sections, PREG_SET_ORDER);
 
 foreach ($sections as $section) {
-    $method = $section[1];
-    $body = $section[2];
+    [, $method, $body] = $section;
 
     preg_match_all('/^\| `([^`]+)` \| `([^`]+)` \| `(Yes|Optional)` \|$/m', $body, $rows, PREG_SET_ORDER);
 
@@ -54,7 +53,7 @@ final class TelegramBotApiMethodSchema
     /**
      * @var array<string, list<array{name: string, type: string, required: bool}>>
      */
-    private const PARAMETERS = {$export};
+    private const PARAMETERS = $export;
 
     public static function supports(string|TelegramBotApiMethod \$method): bool
     {
@@ -97,14 +96,14 @@ final class TelegramBotApiMethodSchema
 PHP;
 
 if (file_put_contents($targetPath, $content) === false) {
-    fwrite(STDERR, "Failed to write {$targetPath}.\n");
+    fwrite(STDERR, "Failed to write $targetPath.\n");
     exit(1);
 }
 
 printf("Generated %s with %d methods and %d parameters.\n", $targetPath, count($schema), array_sum(array_map('count', $schema)));
 
 /**
- * @param  array<mixed>  $value
+ * @param  array<string|int, mixed>  $value
  */
 function shortArrayExport(array $value, int $indent = 1): string
 {

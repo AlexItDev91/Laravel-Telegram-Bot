@@ -29,7 +29,7 @@ final readonly class InputFile
         $contents = @fopen($this->path, 'rb');
 
         if ($contents === false) {
-            throw new InvalidArgumentException("Telegram input file [{$this->path}] cannot be opened for reading.");
+            throw new InvalidArgumentException("Telegram input file [$this->path] cannot be opened for reading.");
         }
 
         fclose($contents);

@@ -44,8 +44,8 @@ class TelegramBotSendTestCommand extends Command
             $parameters = array_filter(array_merge($parameters, [
                 'text' => $this->messageText(),
                 'parse_mode' => $this->parseMode(),
-                'disable_notification' => (bool) $this->option('disable-notification') ?: null,
-                'protect_content' => (bool) $this->option('protect-content') ?: null,
+                'disable_notification' => $this->option('disable-notification') ?: null,
+                'protect_content' => $this->option('protect-content') ?: null,
             ]), static fn (mixed $value): bool => $value !== null && $value !== '');
 
             $result = $client->call('sendMessage', $parameters);

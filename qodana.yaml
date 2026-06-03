@@ -7,6 +7,14 @@ linter: qodana-php
 profile:
   name: qodana.recommended
 
+exclude:
+  - name: PhpSameParameterValueInspection
+  - name: PhpUnhandledExceptionInspection
+  - name: PhpDocMissingThrowsInspection
+  - name: PhpNotInstalledPackagesInspection
+  - name: PhpRedundantOptionalArgumentInspection
+  - name: PhpLoopCanBeConvertedToArrayMapInspection
+
 php:
   version: "8.2"
 

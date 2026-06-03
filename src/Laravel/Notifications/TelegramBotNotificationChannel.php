@@ -8,7 +8,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use InvalidArgumentException;
 
-class TelegramBotNotificationChannel
+readonly class TelegramBotNotificationChannel
 {
     public function __construct(private readonly TelegramBotManager $telegram)
     {

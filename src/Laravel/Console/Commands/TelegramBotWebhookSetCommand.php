@@ -42,7 +42,7 @@ class TelegramBotWebhookSetCommand extends Command
             'allowed_updates' => $this->allowedUpdates(),
             'max_connections' => $this->positiveIntOption('max-connections'),
             'ip_address' => $this->nullableStringOption('ip-address'),
-            'drop_pending_updates' => (bool) $this->option('drop-pending-updates') ?: null,
+            'drop_pending_updates' => $this->option('drop-pending-updates') ?: null,
         ];
         $parameters = array_filter($parameters, static fn (mixed $value): bool => $value !== null && $value !== []);
 
@@ -86,7 +86,7 @@ class TelegramBotWebhookSetCommand extends Command
 
     private function secretToken(): ?string
     {
-        if ((bool) $this->option('no-secret')) {
+        if ($this->option('no-secret')) {
             return null;
         }
 
@@ -133,7 +133,7 @@ class TelegramBotWebhookSetCommand extends Command
 
         foreach ($updates as $update) {
             if (! isset($known[$update])) {
-                throw new InvalidArgumentException("Unknown Telegram update type [{$update}].");
+                throw new InvalidArgumentException("Unknown Telegram update type [$update].");
             }
         }
 

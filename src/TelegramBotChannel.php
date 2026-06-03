@@ -8,6 +8,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChannelConfigData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\Support\TelegramBotResultFactory;
+use InvalidArgumentException;
 
 class TelegramBotChannel implements TelegramBotClient
 {
@@ -30,7 +31,11 @@ class TelegramBotChannel implements TelegramBotClient
             $methodName = $method instanceof TelegramBotApiMethod ? $method->value : $method;
 
             if ($parameters->method() !== $methodName) {
-                throw new \InvalidArgumentException("Telegram Bot request DTO for method [{$parameters->method()}] cannot be used with method [{$methodName}].");
+                throw new InvalidArgumentException(sprintf(
+                    'Telegram Bot request DTO for method [%s] cannot be used with method [%s].',
+                    $parameters->method(),
+                    $methodName,
+                ));
             }
         }
 

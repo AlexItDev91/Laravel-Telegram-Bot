@@ -165,7 +165,7 @@ final class TelegramPassportDecryptor
     private function decodeBase64Field(array $payload, string $field): string
     {
         if (! isset($payload[$field]) || ! is_string($payload[$field])) {
-            throw new TelegramPassportDecryptionException("Telegram Passport field [{$field}] is missing or invalid.");
+            throw new TelegramPassportDecryptionException("Telegram Passport field [$field] is missing or invalid.");
         }
 
         return $this->decodeBase64String($payload[$field], $field);
@@ -176,7 +176,7 @@ final class TelegramPassportDecryptor
         $decoded = base64_decode($value, true);
 
         if ($decoded === false) {
-            throw new TelegramPassportDecryptionException("Telegram Passport field [{$field}] is not valid base64.");
+            throw new TelegramPassportDecryptionException("Telegram Passport field [$field] is not valid base64.");
         }
 
         return $decoded;

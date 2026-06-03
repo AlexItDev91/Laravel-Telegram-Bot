@@ -8,7 +8,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
 use Illuminate\Contracts\Container\Container;
 use Psr\Log\LoggerInterface;
 
-class TelegramWebhookDispatcher implements TelegramWebhookHandler
+readonly class TelegramWebhookDispatcher implements TelegramWebhookHandler
 {
     public function __construct(
         private readonly Container $container,
@@ -150,7 +150,7 @@ class TelegramWebhookDispatcher implements TelegramWebhookHandler
      */
     private function warning(string $message, array $context): void
     {
-        if (! (bool) config('telegram-bot.logging.enabled', true)) {
+        if (! config('telegram-bot.logging.enabled', true)) {
             return;
         }
 

@@ -150,7 +150,7 @@ trait ResolvesTelegramBotConsoleInput
         }
 
         if (filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false) {
-            throw new InvalidArgumentException("The [--{$name}] option must be a positive integer.");
+            throw new InvalidArgumentException("The [--$name] option must be a positive integer.");
         }
 
         return (int) $value;
@@ -165,7 +165,7 @@ trait ResolvesTelegramBotConsoleInput
         }
 
         if (filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) === false) {
-            throw new InvalidArgumentException("The [--{$name}] option must be a non-negative integer.");
+            throw new InvalidArgumentException("The [--$name] option must be a non-negative integer.");
         }
 
         return (int) $value;

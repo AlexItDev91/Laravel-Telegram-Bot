@@ -18,7 +18,7 @@ final class TelegramBotFakeChannel extends TelegramBotChannel
         private readonly string $bot,
         private readonly TelegramChannelConfigData $config,
     ) {
-        //
+        parent::__construct($fake, $config);
     }
 
     /**

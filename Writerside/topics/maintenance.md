@@ -34,6 +34,7 @@ No package token, bot token, webhook secret, paid static-analysis token, or Algo
 
 The repository keeps `qodana.yaml` for local or manually triggered Qodana analysis.
 There is no `.github/workflows/qodana.yml` workflow in the current package release, so GitHub Actions does not require a paid Qodana Cloud token.
+The config keeps a zero-problem quality gate and excludes only noisy inspections that conflict with deliberate SDK patterns, such as fixed-key DTO accessors, Laravel container exception flow, and environment-specific package installation checks.
 
 ## Local Editing
 

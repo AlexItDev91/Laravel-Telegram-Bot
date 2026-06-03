@@ -15,9 +15,6 @@ use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 
 final class TelegramBotResultFactory
 {
-    /**
-     * @return mixed
-     */
     public static function from(string|TelegramBotApiMethod $method, mixed $result): mixed
     {
         if ($result instanceof TelegramBotData) {
@@ -100,25 +97,16 @@ final class TelegramBotResultFactory
         return is_bool($result) ? $result : self::message($result);
     }
 
-    /**
-     * @return mixed
-     */
     private static function updates(mixed $result): mixed
     {
         return self::mapList($result, static fn (array $payload): TelegramWebhookUpdate => TelegramWebhookUpdate::fromPayload($payload));
     }
 
-    /**
-     * @return mixed
-     */
     private static function messages(mixed $result): mixed
     {
         return self::mapList($result, static fn (array $payload): TelegramMessageData => TelegramMessageData::fromPayload($payload));
     }
 
-    /**
-     * @return mixed
-     */
     private static function chatMembers(mixed $result): mixed
     {
         return self::mapList($result, static fn (array $payload): TelegramChatMemberData => TelegramChatMemberData::fromPayload($payload));
@@ -142,8 +130,11 @@ final class TelegramBotResultFactory
     }
 
     /**
-     * @param  callable(array<string, mixed>): TelegramBotData  $mapper
-     * @return mixed
+     * @template T of TelegramBotData
+     *
+     * @param  mixed  $result
+     * @param  callable(array<string, mixed>): T  $mapper
+     * @return list<T>|mixed
      */
     private static function mapList(mixed $result, callable $mapper): mixed
     {

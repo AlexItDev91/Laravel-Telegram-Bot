@@ -38,7 +38,7 @@ class TelegramBotUpdatesCommand extends Command
         $bot = $this->botName();
         $client = $manager->bot($bot);
 
-        if (! (bool) $this->option('skip-webhook-check')) {
+        if (! $this->option('skip-webhook-check')) {
             $this->handleActiveWebhook($manager, $bot);
         }
 
@@ -59,7 +59,7 @@ class TelegramBotUpdatesCommand extends Command
         /** @var list<array<string, mixed>> $updates */
         $updates = array_values(array_filter($updates, 'is_array'));
 
-        if ((bool) $this->option('raw')) {
+        if ($this->option('raw')) {
             $this->line(json_encode($updates, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
         }
 
@@ -129,7 +129,7 @@ class TelegramBotUpdatesCommand extends Command
 
         warning('Telegram getUpdates and webhooks are mutually exclusive. Active webhook: '.$webhook['url']);
 
-        $delete = (bool) $this->option('delete-webhook');
+        $delete = $this->option('delete-webhook');
 
         if (! $delete && $this->input->isInteractive()) {
             $delete = confirm('Delete this webhook before polling updates?', false);
@@ -168,7 +168,7 @@ class TelegramBotUpdatesCommand extends Command
 
         foreach ($updates as $update) {
             if (! isset($known[$update])) {
-                throw new InvalidArgumentException("Unknown Telegram update type [{$update}].");
+                throw new InvalidArgumentException("Unknown Telegram update type [$update].");
             }
         }
 

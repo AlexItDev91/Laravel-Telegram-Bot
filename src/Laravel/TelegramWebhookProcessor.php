@@ -14,7 +14,7 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-class TelegramWebhookProcessor
+readonly class TelegramWebhookProcessor
 {
     public function __construct(
         private readonly Container $container,
@@ -161,7 +161,7 @@ class TelegramWebhookProcessor
 
     private function dispatchEvent(object $event): void
     {
-        if (! (bool) config('telegram-bot.webhook.dispatch_event', true)) {
+        if (! config('telegram-bot.webhook.dispatch_event', true)) {
             return;
         }
 
@@ -173,7 +173,7 @@ class TelegramWebhookProcessor
      */
     private function warning(string $message, array $context): void
     {
-        if (! (bool) config('telegram-bot.logging.enabled', true)) {
+        if (! config('telegram-bot.logging.enabled', true)) {
             return;
         }
 
@@ -185,7 +185,7 @@ class TelegramWebhookProcessor
      */
     private function error(string $message, array $context): void
     {
-        if (! (bool) config('telegram-bot.logging.enabled', true)) {
+        if (! config('telegram-bot.logging.enabled', true)) {
             return;
         }
 

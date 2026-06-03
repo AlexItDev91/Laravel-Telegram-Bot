@@ -8,6 +8,11 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [1.18.2] - 2026-06-03
+
+- Addressed Qodana SARIF findings for the Telegram fake channel constructor, duplicated cache repository resolution, readonly Laravel services, redundant casts/interpolation, facade imports, and documentation signatures.
+- Tuned the local Qodana configuration to exclude noisy inspections that conflict with deliberate SDK and Laravel container patterns while keeping the zero-problem quality gate.
+
 ## [1.18.1] - 2026-06-03
 
 - Restored the local `qodana.yaml` configuration for manual Qodana analysis without restoring the paid GitHub Qodana workflow.

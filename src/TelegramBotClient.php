@@ -169,7 +169,11 @@ class TelegramBotClient implements TelegramBotClientContract
             return;
         }
 
-        throw new InvalidArgumentException("Telegram Bot request DTO for method [{$request->method()}] cannot be used with method [{$method}].");
+        throw new InvalidArgumentException(sprintf(
+            'Telegram Bot request DTO for method [%s] cannot be used with method [%s].',
+            $request->method(),
+            $method,
+        ));
     }
 
     private function sanitizeTransportMessage(string $message): string

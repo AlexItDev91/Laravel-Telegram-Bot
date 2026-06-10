@@ -11,6 +11,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequest;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestTelemetryData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChannelConfigData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotApiException;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotConfigurationException;
@@ -59,6 +60,22 @@ class TelegramBotClient implements TelegramBotClientContract
             retryPolicy: $retryPolicy,
             rateLimiter: $rateLimiter,
             observer: $observer,
+        );
+    }
+
+    public function to(
+        string|int $chatId,
+        string|int|null $messageThreadId = null,
+        string|int|null $directMessagesTopicId = null,
+    ): TelegramBotChannel {
+        return new TelegramBotChannel(
+            bot: $this,
+            config: new TelegramChannelConfigData(
+                bot: null,
+                chatId: $chatId,
+                messageThreadId: $messageThreadId,
+                directMessagesTopicId: $directMessagesTopicId,
+            ),
         );
     }
 

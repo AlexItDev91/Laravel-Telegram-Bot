@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="2.1.4"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.2.0"/>', $config);
 
         foreach ([
             'overview.md',
@@ -106,6 +106,9 @@ class WritersideDocumentationTest extends TestCase
             'constructor injection',
             'Facade',
             'configured channel',
+            'Dynamic Bots And Destinations',
+            'TelegramBot::to($chatId, token: $token)',
+            'botToken($token)',
             'InputFile::fromPath',
             'LinkPreviewOptions::disabled()',
             'InlineKeyboardMarkup::singleButton',
@@ -174,6 +177,8 @@ class WritersideDocumentationTest extends TestCase
             'routeNotificationForTelegram',
             "Notification::route('telegram'",
             'TelegramBotRequestData',
+            '`token` or `bot_token`',
+            'botToken()',
             'TelegramBot::fake()',
             'TelegramParseMode::HTML',
         ] as $requiredNotificationText) {

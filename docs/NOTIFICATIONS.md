@@ -53,12 +53,16 @@ public function routeNotificationForTelegram(Notification $notification): array|
 The route may be a plain `chat_id` string or an array containing:
 
 - `bot`
+- `token` or `bot_token`
 - `channel`
 - `chat_id`
 - `message_thread_id`
 - `direct_messages_topic_id`
+- `api_url`
+- `timeout`
 
 When `channel` is present, the package sends through the configured Telegram channel and merges the channel defaults exactly like `TelegramBot::channel('alerts')`.
+When `token` is present, the package creates a short-lived client for that bot token without changing global configuration. Do not return both `bot` and `token` for the same notification route.
 Route fields are only used when the notification payload does not already define the same field.
 
 For on-demand notifications, use Laravel's anonymous routes:
@@ -74,6 +78,11 @@ Notification::route('telegram', [
 
 Notification::route(TelegramBotNotificationChannel::class, [
     'channel' => 'alerts',
+])->notify(new DeployFinished());
+
+Notification::route('telegram', [
+    'token' => $tenant->telegram_bot_token,
+    'chat_id' => (string) $tenant->telegram_chat_id,
 ])->notify(new DeployFinished());
 ```
 
@@ -134,6 +143,17 @@ class BuildFailed extends Notification
 }
 ```
 
+For a dynamic bot token inside the notification payload, use `botToken()`:
+
+```php
+public function toTelegram(object $notifiable): TelegramNotificationMessage
+{
+    return TelegramNotificationMessage::text('Tenant alert')
+        ->botToken($notifiable->telegram_bot_token)
+        ->to((string) $notifiable->telegram_chat_id);
+}
+```
+
 Use `forMethod()` for methods other than `sendMessage`:
 
 ```php
@@ -185,13 +205,12 @@ use Illuminate\Support\Facades\Notification;
 $fake = TelegramBot::fake();
 
 Notification::route('telegram', [
-    'bot' => 'support',
+    'token' => '222:fake-token',
     'chat_id' => '123456789',
 ])->notify(new DeployFinished());
 
-$fake->assertSentMessage(function (array $parameters, string $botName): bool {
-    return $botName === 'support'
-        && $parameters['chat_id'] === '123456789'
+$fake->assertSentMessageUsingToken('222:fake-token', function (array $parameters): bool {
+    return $parameters['chat_id'] === '123456789'
         && $parameters['text'] === 'Deploy finished';
 });
 ```

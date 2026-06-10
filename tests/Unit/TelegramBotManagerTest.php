@@ -10,6 +10,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 
@@ -63,6 +64,71 @@ class TelegramBotManagerTest extends TestCase
         $manager->bot()->getMe();
 
         $this->assertSame('/bot111:shared/getMe', $history[0]['request']->getUri()->getPath());
+    }
+
+    public function test_sends_to_dynamic_chat_with_dynamic_bot_token_without_configured_bot(): void
+    {
+        $history = [];
+        $http = $this->fakeHttpClient([
+            new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+        ], $history);
+
+        $manager = new TelegramBotManager([
+            'api_url' => 'https://api.telegram.test',
+        ], static fn (TelegramBotConfigData $config): TelegramBotClient => new TelegramBotClient($config, $http));
+
+        $manager->to('-1001234567890', token: '222:dynamic-token')->sendMessage([
+            'text' => 'Dynamic message',
+        ]);
+
+        $body = json_decode((string) $history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+
+        $this->assertSame('/bot222:dynamic-token/sendMessage', $history[0]['request']->getUri()->getPath());
+        $this->assertSame('-1001234567890', $body['chat_id']);
+        $this->assertSame('Dynamic message', $body['text']);
+    }
+
+    public function test_dynamic_bot_token_can_override_configured_channel_bot(): void
+    {
+        $history = [];
+        $http = $this->fakeHttpClient([
+            new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+        ], $history);
+
+        $manager = new TelegramBotManager([
+            'api_url' => 'https://api.telegram.test',
+            'bots' => [
+                'support' => ['token' => '111:support'],
+            ],
+            'channels' => [
+                'alerts' => [
+                    'bot' => 'support',
+                    'chat_id' => '-1001234567890',
+                ],
+            ],
+        ], static fn (TelegramBotConfigData $config): TelegramBotClient => new TelegramBotClient($config, $http));
+
+        $manager->channel('alerts', token: '222:dynamic-token')->sendMessage([
+            'text' => 'Channel override',
+        ]);
+
+        $body = json_decode((string) $history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+
+        $this->assertSame('/bot222:dynamic-token/sendMessage', $history[0]['request']->getUri()->getPath());
+        $this->assertSame('-1001234567890', $body['chat_id']);
+        $this->assertSame('Channel override', $body['text']);
+    }
+
+    public function test_dynamic_destination_rejects_mixed_named_bot_and_token(): void
+    {
+        $manager = new TelegramBotManager([
+            'api_url' => 'https://api.telegram.test',
+        ], static fn (TelegramBotConfigData $config): TelegramBotClient => new TelegramBotClient($config));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Use either a configured Telegram bot name or a dynamic bot token, not both.');
+
+        $manager->to('-1001234567890', bot: 'support', token: '222:dynamic-token');
     }
 
     /**

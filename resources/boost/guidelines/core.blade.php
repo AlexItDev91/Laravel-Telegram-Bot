@@ -28,8 +28,10 @@ php artisan telegram-bot:install
 - Use concrete `TelegramBot` or `TelegramBotClient` when IDE autocomplete for every native Telegram helper is important; contracts expose the stable core surface.
 - Use `TelegramBot::bot('name')` for a named bot.
 - Use `TelegramBot::channel('name')` for a configured destination with `chat_id` and optional `message_thread_id` or `direct_messages_topic_id`.
+- Use `TelegramBot::to($chatId, token: $botToken)->sendMessage([...])` when the bot token and destination are resolved dynamically at runtime.
+- Use `TelegramBot::channel('name', token: $botToken)` only when a configured destination should be reused with a runtime bot token.
 - Use `AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel` and `TelegramNotificationMessage` for Laravel notifications that should deliver through Telegram.
-- Route notification destinations with `routeNotificationForTelegram()` or `Notification::route('telegram', [...])`; return `channel`, `bot`, `chat_id`, `message_thread_id`, or `direct_messages_topic_id` values rather than hardcoding credentials in the notification class.
+- Route notification destinations with `routeNotificationForTelegram()` or `Notification::route('telegram', [...])`; return `channel`, `bot`, `token`, `chat_id`, `message_thread_id`, or `direct_messages_topic_id` values rather than hardcoding credentials in the notification class.
 - Use typed response helpers such as `getMeData()`, `sendMessageData()`, `getUpdatesData()`, `getFileData()`, and `getWebhookInfoData()` when application code needs DTO accessors. Use raw methods when it needs Telegram's unmodified `result`.
 - Use `callData()` for typed response mapping. When no dedicated result DTO exists, associative Telegram objects are returned as `TelegramBotResultData` and lists of objects as `list<TelegramBotResultData>`.
 - Use typed outbound DTOs for common payloads when validation helps: `SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.

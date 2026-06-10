@@ -77,6 +77,38 @@ class TelegramBotServiceProviderTest extends TestCase
         $this->assertSame('/bot123456:test-token/getMe', $history[0]['request']->getUri()->getPath());
     }
 
+    public function test_facade_and_di_support_dynamic_bot_tokens_and_destinations(): void
+    {
+        $history = [];
+
+        config()->set('telegram-bot.api_url', 'https://api.telegram.test');
+
+        $this->app->bind(ClientInterface::class, function () use (&$history): ClientInterface {
+            return $this->fakeHttpClient([
+                new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+                new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+            ], $history);
+        });
+
+        TelegramBot::to('-1001234567890', token: '222:facade-token')->sendMessage([
+            'text' => 'Facade dynamic send',
+        ]);
+
+        app(TelegramBotService::class)->to('-1009876543210', token: '333:di-token')->sendMessage([
+            'text' => 'DI dynamic send',
+        ]);
+
+        $firstBody = json_decode((string) $history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        $secondBody = json_decode((string) $history[1]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+
+        $this->assertSame('/bot222:facade-token/sendMessage', $history[0]['request']->getUri()->getPath());
+        $this->assertSame('-1001234567890', $firstBody['chat_id']);
+        $this->assertSame('Facade dynamic send', $firstBody['text']);
+        $this->assertSame('/bot333:di-token/sendMessage', $history[1]['request']->getUri()->getPath());
+        $this->assertSame('-1009876543210', $secondBody['chat_id']);
+        $this->assertSame('DI dynamic send', $secondBody['text']);
+    }
+
     public function test_laravel_resolved_client_logs_api_failures_when_logging_is_enabled(): void
     {
         $history = [];

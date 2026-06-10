@@ -17,6 +17,12 @@ class TelegramNotificationMessage
 
     private ?string $botName = null;
 
+    private ?string $botToken = null;
+
+    private ?string $apiUrl = null;
+
+    private ?float $timeout = null;
+
     private ?string $channelName = null;
 
     /**
@@ -46,6 +52,15 @@ class TelegramNotificationMessage
     public function bot(string $name): self
     {
         $this->botName = $name;
+
+        return $this;
+    }
+
+    public function botToken(string $token, ?string $apiUrl = null, ?float $timeout = null): self
+    {
+        $this->botToken = $token;
+        $this->apiUrl = $apiUrl;
+        $this->timeout = $timeout;
 
         return $this;
     }
@@ -138,6 +153,21 @@ class TelegramNotificationMessage
     public function botName(): ?string
     {
         return $this->botName;
+    }
+
+    public function botTokenValue(): ?string
+    {
+        return $this->botToken;
+    }
+
+    public function apiUrl(): ?string
+    {
+        return $this->apiUrl;
+    }
+
+    public function timeout(): ?float
+    {
+        return $this->timeout;
     }
 
     public function channelName(): ?string

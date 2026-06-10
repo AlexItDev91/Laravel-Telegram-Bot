@@ -8,9 +8,11 @@ use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotMa
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChannelConfigData;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotChannelNotConfiguredException;
+use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotConfigurationException;
 use AlexItDev91\LaravelTelegramBot\Support\TelegramBotConfigResolver;
 use BadMethodCallException;
 use Closure;
+use InvalidArgumentException;
 
 class TelegramBotManager implements TelegramBotManagerContract
 {
@@ -43,8 +45,27 @@ class TelegramBotManager implements TelegramBotManagerContract
         return $this->clients[$name] ??= ($this->clientFactory)(TelegramBotConfigData::fromArray($this->botConfig($name)));
     }
 
+    public function botToken(string $token, ?string $apiUrl = null, ?float $timeout = null): TelegramBotClientContract
+    {
+        if (trim($token) === '') {
+            throw new TelegramBotConfigurationException('Telegram Bot token is not configured.');
+        }
+
+        return ($this->clientFactory)(new TelegramBotConfigData(
+            token: $token,
+            apiUrl: $apiUrl ?? (string) ($this->config['api_url'] ?? 'https://api.telegram.org'),
+            timeout: $timeout ?? (float) ($this->config['timeout'] ?? 10),
+        ));
+    }
+
     #[Override]
-    public function channel(string $name): TelegramBotChannel
+    public function channel(
+        string $name,
+        ?string $bot = null,
+        ?string $token = null,
+        ?string $apiUrl = null,
+        ?float $timeout = null,
+    ): TelegramBotChannel
     {
         $channels = $this->config['channels'] ?? [];
 
@@ -53,10 +74,37 @@ class TelegramBotManager implements TelegramBotManagerContract
         }
 
         $config = $channels[$name];
+        $configuredBot = isset($config['bot']) ? (string) $config['bot'] : null;
+        $hasDynamicToken = $token !== null && trim($token) !== '';
 
         return new TelegramBotChannel(
-            bot: $this->bot(isset($config['bot']) ? (string) $config['bot'] : null),
+            bot: $this->clientFor(
+                bot: $hasDynamicToken ? $bot : ($bot ?? $configuredBot),
+                token: $token,
+                apiUrl: $apiUrl,
+                timeout: $timeout,
+            ),
             config: TelegramChannelConfigData::fromArray($config),
+        );
+    }
+
+    public function to(
+        string|int $chatId,
+        ?string $bot = null,
+        ?string $token = null,
+        string|int|null $messageThreadId = null,
+        string|int|null $directMessagesTopicId = null,
+        ?string $apiUrl = null,
+        ?float $timeout = null,
+    ): TelegramBotChannel {
+        return new TelegramBotChannel(
+            bot: $this->clientFor($bot, $token, $apiUrl, $timeout),
+            config: new TelegramChannelConfigData(
+                bot: $bot,
+                chatId: $chatId,
+                messageThreadId: $messageThreadId,
+                directMessagesTopicId: $directMessagesTopicId,
+            ),
         );
     }
 
@@ -78,5 +126,25 @@ class TelegramBotManager implements TelegramBotManagerContract
     private function botConfig(string $name): array
     {
         return TelegramBotConfigResolver::botConfig($this->config, $name);
+    }
+
+    private function clientFor(
+        ?string $bot,
+        ?string $token,
+        ?string $apiUrl = null,
+        ?float $timeout = null,
+    ): TelegramBotClientContract {
+        $bot = $bot !== null && trim($bot) !== '' ? $bot : null;
+        $token = $token !== null && trim($token) !== '' ? $token : null;
+
+        if ($bot !== null && $token !== null) {
+            throw new InvalidArgumentException('Use either a configured Telegram bot name or a dynamic bot token, not both.');
+        }
+
+        if ($token !== null) {
+            return $this->botToken($token, $apiUrl, $timeout);
+        }
+
+        return $this->bot($bot);
     }
 }

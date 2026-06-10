@@ -70,6 +70,41 @@ class TelegramBotFakeTest extends TestCase
         });
     }
 
+    public function test_fake_records_dynamic_token_destinations_without_leaking_token(): void
+    {
+        $fake = TelegramBot::fake();
+
+        TelegramBot::to('123456789', token: '222:secret-token')->sendMessage([
+            'text' => 'Dynamic hello',
+        ]);
+
+        $fake->assertSentMessageUsingToken('222:secret-token', function (array $parameters): bool {
+            return $parameters['chat_id'] === '123456789'
+                && $parameters['text'] === 'Dynamic hello';
+        });
+        $fake->assertNoTokenLeakage('222:secret-token');
+    }
+
+    public function test_fake_records_configured_channel_with_dynamic_token_override(): void
+    {
+        config()->set('telegram-bot.channels.alerts', [
+            'bot' => 'support',
+            'chat_id' => '-1001234567890',
+        ]);
+
+        $fake = TelegramBot::fake();
+
+        TelegramBot::channel('alerts', token: '222:secret-token')->sendMessage([
+            'text' => 'Override channel bot',
+        ]);
+
+        $fake->assertSentMessageUsingToken('222:secret-token', function (array $parameters): bool {
+            return $parameters['chat_id'] === '-1001234567890'
+                && $parameters['text'] === 'Override channel bot';
+        });
+        $fake->assertNoTokenLeakage('222:secret-token');
+    }
+
     public function test_fake_normalizes_backed_enum_payloads_for_calls_and_assertions(): void
     {
         $fake = TelegramBot::fake();

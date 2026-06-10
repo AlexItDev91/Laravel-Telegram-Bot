@@ -11,6 +11,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramChannelConfigData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotChannelNotConfiguredException;
+use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotConfigurationException;
 use AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager;
 use AlexItDev91\LaravelTelegramBot\Support\TelegramBotResultFactory;
 use AlexItDev91\LaravelTelegramBot\TelegramBotApiMethods;
@@ -37,6 +38,13 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
 
     private ?string $selectedBot = null;
 
+    /**
+     * @var array<string, string>
+     */
+    private array $dynamicBotAliases = [];
+
+    private int $dynamicBotSequence = 0;
+
     #[Override]
     public function bot(?string $name = null): TelegramBotClient
     {
@@ -45,8 +53,21 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
         return $this;
     }
 
+    public function botToken(string $token, ?string $apiUrl = null, ?float $timeout = null): TelegramBotClient
+    {
+        $this->selectedBot = $this->dynamicBotAlias($token);
+
+        return $this;
+    }
+
     #[Override]
-    public function channel(string $name): TelegramBotChannel
+    public function channel(
+        string $name,
+        ?string $bot = null,
+        ?string $token = null,
+        ?string $apiUrl = null,
+        ?float $timeout = null,
+    ): TelegramBotChannel
     {
         $channels = config('telegram-bot.channels', []);
 
@@ -55,12 +76,45 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
         }
 
         $config = TelegramChannelConfigData::fromArray($channels[$name]);
+        if ($bot !== null && trim($bot) !== '' && $token !== null && trim($token) !== '') {
+            throw new InvalidArgumentException('Use either a configured Telegram bot name or a dynamic bot token, not both.');
+        }
+
+        $botName = $token !== null && trim($token) !== ''
+            ? $this->dynamicBotAlias($token)
+            : ($bot !== null && trim($bot) !== '' ? $bot : ($config->bot ?? 'default'));
 
         return new TelegramBotFakeChannel(
             fake: $this,
             channel: $name,
-            bot: $config->bot ?? 'default',
+            bot: $botName,
             config: $config,
+        );
+    }
+
+    public function to(
+        string|int $chatId,
+        ?string $bot = null,
+        ?string $token = null,
+        string|int|null $messageThreadId = null,
+        string|int|null $directMessagesTopicId = null,
+        ?string $apiUrl = null,
+        ?float $timeout = null,
+    ): TelegramBotChannel {
+        if ($bot !== null && trim($bot) !== '' && $token !== null && trim($token) !== '') {
+            throw new InvalidArgumentException('Use either a configured Telegram bot name or a dynamic bot token, not both.');
+        }
+
+        return new TelegramBotFakeChannel(
+            fake: $this,
+            channel: null,
+            bot: $token !== null && trim($token) !== '' ? $this->dynamicBotAlias($token) : ($bot ?? 'default'),
+            config: new TelegramChannelConfigData(
+                bot: $bot,
+                chatId: $chatId,
+                messageThreadId: $messageThreadId,
+                directMessagesTopicId: $directMessagesTopicId,
+            ),
         );
     }
 
@@ -258,6 +312,41 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
         Assert::assertNotSame([], $matching, "Expected Telegram Bot channel [$channel] to send a message.");
     }
 
+    /**
+     * @param  callable(array<string, mixed>, string): bool|null  $callback
+     */
+    public function assertCalledUsingToken(
+        string $token,
+        string|TelegramBotApiMethod $method,
+        ?callable $callback = null,
+        ?int $times = null,
+    ): void {
+        $botAlias = $this->dynamicBotAlias($token);
+        $methodName = $method instanceof TelegramBotApiMethod ? $method->value : $method;
+        $matching = array_values(array_filter(
+            $this->calls,
+            static fn (array $call): bool => $call['method'] === $methodName
+                && $call['bot'] === $botAlias
+                && ($callback === null || $callback($call['parameters'], $call['bot']) === true),
+        ));
+
+        if ($times !== null) {
+            Assert::assertCount($times, $matching, "Expected Telegram Bot token-authenticated method [$methodName] to be called $times times.");
+
+            return;
+        }
+
+        Assert::assertNotSame([], $matching, "Expected Telegram Bot token-authenticated method [$methodName] to be called.");
+    }
+
+    /**
+     * @param  callable(array<string, mixed>, string): bool|null  $callback
+     */
+    public function assertSentMessageUsingToken(string $token, ?callable $callback = null, ?int $times = null): void
+    {
+        $this->assertCalledUsingToken($token, TelegramBotApiMethod::sendMessage, $callback, $times);
+    }
+
     public function assertNothingSent(): void
     {
         Assert::assertSame([], $this->calls, 'Expected no Telegram Bot API calls to be recorded.');
@@ -356,5 +445,14 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
         }
 
         return $tokens;
+    }
+
+    private function dynamicBotAlias(string $token): string
+    {
+        if (trim($token) === '') {
+            throw new TelegramBotConfigurationException('Telegram Bot token is not configured.');
+        }
+
+        return $this->dynamicBotAliases[$token] ??= 'dynamic-token-'.(++$this->dynamicBotSequence);
     }
 }

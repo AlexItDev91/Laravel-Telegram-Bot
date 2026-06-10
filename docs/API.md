@@ -31,12 +31,22 @@ $result = TelegramBot::channel('inbox')->sendMessage([
     'text' => 'New inbound email',
 ]);
 
+$result = TelegramBot::to('-1001234567890', token: $tenant->telegram_bot_token)->sendMessage([
+    'text' => 'Tenant alert',
+]);
+
+$result = TelegramBot::botToken($tenant->telegram_bot_token)->sendMessage([
+    'chat_id' => '-1001234567890',
+    'text' => 'Direct dynamic payload',
+]);
+
 $result = TelegramBot::call('newTelegramMethod', [
     'parameter' => 'value',
 ]);
 ```
 
 The raw `call(method, parameters)` API is intentionally retained so newly released Telegram methods can be used before the typed SDK surface is updated.
+Dynamic token calls create a short-lived client for the supplied token; they do not write to or mutate `config/telegram-bot.php`.
 
 ## Supported Methods
 

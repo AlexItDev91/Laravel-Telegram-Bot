@@ -83,6 +83,59 @@ TelegramBot::channel('inbox')->sendMessage([
 ]);
 ```
 
+## Dynamic Bots And Destinations
+
+Use `to()` when the bot token or destination belongs to a tenant, customer, or runtime choice instead of package config:
+
+```php
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+$token = $tenant->telegram_bot_token;
+$chatId = (string) $tenant->telegram_channel_id;
+
+TelegramBot::to($chatId, token: $token)->sendMessage([
+    'text' => 'Tenant alert',
+]);
+```
+
+The same flow works through constructor injection:
+
+```php
+use AlexItDev91\LaravelTelegramBot\TelegramBot;
+
+final readonly class TenantAlert
+{
+    public function __construct(private TelegramBot $telegram)
+    {
+    }
+
+    public function send(Tenant $tenant): mixed
+    {
+        return $this->telegram->to(
+            chatId: (string) $tenant->telegram_channel_id,
+            token: $tenant->telegram_bot_token,
+        )->sendMessage([
+            'text' => 'Tenant alert',
+        ]);
+    }
+}
+```
+
+Use `botToken($token)` for full payload control, or override only the bot used by a configured channel:
+
+```php
+TelegramBot::botToken($token)->sendMessage([
+    'chat_id' => $chatId,
+    'text' => 'Direct dynamic payload',
+]);
+
+TelegramBot::channel('inbox', token: $token)->sendMessage([
+    'text' => 'Configured destination, dynamic bot',
+]);
+```
+
+Dynamic token calls create a short-lived client for the supplied token; they do not write to or mutate `config/telegram-bot.php`.
+
 ## Configured Channel
 
 A configured channel injects the destination fields before calling Telegram:

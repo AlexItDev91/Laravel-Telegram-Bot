@@ -56,6 +56,42 @@ class TelegramBotNotificationChannelTest extends TestCase
         });
     }
 
+    public function test_notification_channel_sends_to_dynamic_bot_token_route(): void
+    {
+        $fake = TelegramBot::fake();
+        $notifiable = new AnonymousNotifiable();
+        $notifiable->route(TelegramBotNotificationChannel::class, [
+            'token' => '222:secret-token',
+            'chat_id' => '123456789',
+        ]);
+
+        $notifiable->notify(new TelegramStringNotification());
+
+        $fake->assertSentMessageUsingToken('222:secret-token', function (array $parameters): bool {
+            return $parameters['chat_id'] === '123456789'
+                && $parameters['text'] === 'Plain notification text';
+        });
+        $fake->assertNoTokenLeakage('222:secret-token');
+    }
+
+    public function test_notification_message_can_use_dynamic_bot_token_with_configured_channel(): void
+    {
+        config()->set('telegram-bot.channels.alerts', [
+            'bot' => 'support',
+            'chat_id' => '-1001234567890',
+        ]);
+
+        $fake = TelegramBot::fake();
+
+        (new TelegramNotificationMissingRouteNotifiable())->notify(new TelegramDynamicTokenChannelNotification());
+
+        $fake->assertSentMessageUsingToken('222:secret-token', function (array $parameters): bool {
+            return $parameters['chat_id'] === '-1001234567890'
+                && $parameters['text'] === 'Dynamic channel notification';
+        });
+        $fake->assertNoTokenLeakage('222:secret-token');
+    }
+
     public function test_notification_channel_accepts_array_method_payloads(): void
     {
         $fake = TelegramBot::fake();
@@ -190,6 +226,24 @@ final class TelegramStringNotification extends Notification
     public function toTelegram(object $notifiable): string
     {
         return 'Plain notification text';
+    }
+}
+
+final class TelegramDynamicTokenChannelNotification extends Notification
+{
+    /**
+     * @return list<class-string>
+     */
+    public function via(object $notifiable): array
+    {
+        return [TelegramBotNotificationChannel::class];
+    }
+
+    public function toTelegram(object $notifiable): TelegramNotificationMessage
+    {
+        return TelegramNotificationMessage::text('Dynamic channel notification')
+            ->channel('alerts')
+            ->botToken('222:secret-token');
     }
 }
 

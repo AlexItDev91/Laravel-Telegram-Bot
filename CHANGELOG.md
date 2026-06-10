@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.2.0] - 2026-06-10
+
+- Added dynamic bot token routing through `botToken()`, `to()`, and configured channel token overrides so runtime code can send to any explicit Telegram `chat_id` without mutating global package config.
+- Added Laravel notification routing support for dynamic `token`/`bot_token` values, including `TelegramNotificationMessage::botToken()` and fake assertions that avoid leaking tokens in recorded calls.
+- Documented dynamic facade, DI, notification, and Boost usage paths while retaining configured bots, configured channels, typed helpers, and the raw `call(method, parameters)` API.
+
 ## [2.1.4] - 2026-06-03
 
 - Updated the end-to-end setup guide to prefer the package `telegram-bot:me` command for bot identity checks while keeping raw Telegram `getMe` as a fallback.

@@ -15,7 +15,7 @@ final class TelegramBotFakeChannel extends TelegramBotChannel
 
     public function __construct(
         private readonly TelegramBotFake $fake,
-        private readonly string $channel,
+        private readonly ?string $channel,
         private readonly string $bot,
         private readonly TelegramChannelConfigData $config,
     ) {

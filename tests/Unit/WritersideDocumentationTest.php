@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="2.7.3"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.8.0"/>', $config);
 
         foreach ([
             'overview.md',
@@ -115,6 +115,9 @@ class WritersideDocumentationTest extends TestCase
             'Dynamic Bots And Destinations',
             'TelegramBot::to($chatId, token: $token)',
             'botToken($token)',
+            "TelegramBot::channel('alerts')->text",
+            '->photo(',
+            'TelegramBot::document',
             'TelegramMessage::text',
             'TelegramMessage::photo',
             'TelegramMessage::document',
@@ -265,6 +268,7 @@ class WritersideDocumentationTest extends TestCase
             'Scenario Recipes',
             'Operations Alerts',
             'Ecommerce Order Updates',
+            '->text(sprintf(',
             'Support Intake',
             'Admin-Channel Notifications',
             'assertSentMessageToChannel',

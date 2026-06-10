@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.8.0] - 2026-06-10
+
+- Added `text()`, `photo()`, and `document()` outbound shortcut methods on concrete bot clients, the Laravel service wrapper, configured channels, dynamic destinations, the facade, and the Telegram fake.
+- Covered shortcut sends through configured channels, dynamic bot tokens, default destinations, HTTP client requests, and fake assertions.
+- Documented shortcut usage while keeping the fluent `TelegramMessage` builder, typed request DTOs, and raw `call(method, parameters)` API available for advanced payloads and newly released Telegram methods.
+
 ## [2.7.3] - 2026-06-10
 
 - Added a modern Business and monetization cookbook for Business connections, Business messages, managed bot tokens/access settings, Stars subscriptions, paid media, suggested posts, guest replies, and raw `call()` fallbacks.

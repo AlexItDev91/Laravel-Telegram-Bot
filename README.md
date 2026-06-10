@@ -207,6 +207,17 @@ TelegramBot::channel('inbox', token: $token)->sendMessage([
 
 The raw `call(method, parameters)` API remains available for newly released Telegram methods before the typed SDK surface is updated.
 
+Use shortcut methods for the most common outbound messages when you do not need to customize the builder:
+
+```php
+TelegramBot::channel('alerts')->text('Deploy finished');
+
+TelegramBot::to('-1001234567890', token: $tenantBotToken)
+    ->photo('photo-file-id', caption: 'Daily report');
+
+TelegramBot::document('document-file-id', caption: 'Invoice', to: '-1001234567890');
+```
+
 Use the fluent `TelegramMessage` builder when the send flow is common and the destination is explicit:
 
 ```php

@@ -3,7 +3,6 @@
 namespace AlexItDev91\LaravelTelegramBot\Tests\Unit;
 
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
-use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\TelegramBotManager;
 use GuzzleHttp\Client;
@@ -154,13 +153,9 @@ class TelegramBotManagerTest extends TestCase
             ],
         ], static fn (TelegramBotConfigData $config): TelegramBotClient => new TelegramBotClient($config, $http));
 
-        $manager->channel('alerts')->send(TelegramMessage::text('Deploy finished'));
-        $manager->to('-1009876543210', token: '222:dynamic-token')->send(
-            TelegramMessage::photo('photo-file-id')->caption('Daily report'),
-        );
-        $manager->botToken('333:direct-token')->send(
-            TelegramMessage::document('document-file-id')->to('-1005555555555')->caption('Invoice'),
-        );
+        $manager->channel('alerts')->text('Deploy finished');
+        $manager->to('-1009876543210', token: '222:dynamic-token')->photo('photo-file-id', 'Daily report');
+        $manager->botToken('333:direct-token')->document('document-file-id', 'Invoice', to: '-1005555555555');
 
         $firstBody = json_decode((string) $history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
         $secondBody = json_decode((string) $history[1]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);

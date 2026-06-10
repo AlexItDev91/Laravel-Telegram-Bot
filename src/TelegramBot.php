@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot;
 
 use Override;
+use AlexItDev91\LaravelTelegramBot\Concerns\SendsTelegramMessageShortcuts;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
@@ -18,6 +19,7 @@ class TelegramBot implements TelegramBotManager
 {
     use TelegramBotApiMethods;
     use TelegramBotTypedApiMethods;
+    use SendsTelegramMessageShortcuts;
 
     public function __construct(
         private readonly TelegramBotManager $manager,

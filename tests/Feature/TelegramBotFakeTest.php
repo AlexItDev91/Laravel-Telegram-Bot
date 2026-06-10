@@ -144,6 +144,37 @@ class TelegramBotFakeTest extends TestCase
         $fake->assertNoTokenLeakage('222:secret-token');
     }
 
+    public function test_fake_records_common_shortcut_messages(): void
+    {
+        config()->set('telegram-bot.channels.alerts', [
+            'bot' => 'support',
+            'chat_id' => '-1001234567890',
+        ]);
+
+        $fake = TelegramBot::fake();
+
+        TelegramBot::channel('alerts')->text('Shortcut deploy');
+        TelegramBot::to('123456789', token: '222:secret-token')->photo('photo-file-id', 'Daily report');
+        TelegramBot::document('document-file-id', 'Invoice', to: '987654321');
+
+        $fake->assertSentMessageToChannel('alerts', function (array $parameters, string $botName): bool {
+            return $botName === 'support'
+                && $parameters['chat_id'] === '-1001234567890'
+                && $parameters['text'] === 'Shortcut deploy';
+        });
+        $fake->assertCalledUsingToken('222:secret-token', 'sendPhoto', function (array $parameters): bool {
+            return $parameters['chat_id'] === '123456789'
+                && $parameters['photo'] === 'photo-file-id'
+                && $parameters['caption'] === 'Daily report';
+        });
+        $fake->assertSent('sendDocument', [
+            'chat_id' => '987654321',
+            'document' => 'document-file-id',
+            'caption' => 'Invoice',
+        ], times: 1);
+        $fake->assertNoTokenLeakage('222:secret-token');
+    }
+
     public function test_fake_normalizes_backed_enum_payloads_for_calls_and_assertions(): void
     {
         $fake = TelegramBot::fake();

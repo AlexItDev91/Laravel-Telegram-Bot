@@ -392,25 +392,24 @@ $fake->assertNoTokenLeakage();
 
 ### Ecommerce Order Updates
 
-Use dynamic destinations when each merchant, store, or tenant owns a bot token. Keep the token in tenant secret storage, send order status updates through the fluent builder, and use typed payment DTOs for invoices and pre-checkout paths.
+Use dynamic destinations when each merchant, store, or tenant owns a bot token. Keep the token in tenant secret storage, send simple order status updates through shortcuts, and use typed payment DTOs for invoices and pre-checkout paths.
 
 ```php
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
-use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
 
 TelegramBot::to($order->telegram_chat_id, token: $order->store->telegram_bot_token)
-    ->send(TelegramMessage::text(sprintf(
+    ->text(sprintf(
         'Order %s is now %s.',
         $order->public_id,
         $order->status,
-    ))->silent());
+    ));
 ```
 
 ```php
 $fake = TelegramBot::fake();
 
 TelegramBot::to('123456789', token: '111:tenant-token')
-    ->send(TelegramMessage::text('Order ORD-1001 is now shipped.'));
+    ->text('Order ORD-1001 is now shipped.');
 
 $fake->assertSent('sendMessage', ['text' => 'Order ORD-1001 is now shipped.']);
 $fake->assertNoTokenLeakage();

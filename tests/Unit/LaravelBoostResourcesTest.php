@@ -42,6 +42,8 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TelegramDeepLink', $guidelines);
         $this->assertStringContainsString('TelegramStartPayloadSigner', $guidelines);
         $this->assertStringContainsString('Outbound\TelegramMessage', $guidelines);
+        $this->assertStringContainsString("TelegramBot::channel('alerts')->text", $guidelines);
+        $this->assertStringContainsString('->photo($photo, caption: $caption)', $guidelines);
         $this->assertStringContainsString('TelegramMessage::text', $guidelines);
         $this->assertStringContainsString('Route::telegramBotWebhook()', $guidelines);
         $this->assertStringContainsString('TelegramBot::fake()', $guidelines);
@@ -99,6 +101,8 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TelegramDeepLink', $skill);
         $this->assertStringContainsString('TelegramStartPayloadSigner', $skill);
         $this->assertStringContainsString('Outbound\TelegramMessage', $skill);
+        $this->assertStringContainsString("TelegramBot::channel('inbox')->text", $skill);
+        $this->assertStringContainsString("->photo('photo-file-id', caption: 'Daily report')", $skill);
         $this->assertStringContainsString('TelegramMessage::photo', $skill);
         $this->assertStringContainsString('getUpdatesData()', $skill);
         $this->assertStringContainsString('sendMessageData()', $skill);

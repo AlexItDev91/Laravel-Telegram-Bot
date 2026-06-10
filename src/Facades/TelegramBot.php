@@ -9,6 +9,7 @@ use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotMa
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramMessageData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserData;
+use AlexItDev91\LaravelTelegramBot\InputFile;
 use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
 use AlexItDev91\LaravelTelegramBot\TelegramBotChannel;
 use AlexItDev91\LaravelTelegramBot\TelegramBotManager;
@@ -23,6 +24,9 @@ use Illuminate\Support\Facades\Facade;
  * @method static TelegramBotChannel channel(string $name, ?string $bot = null, ?string $token = null, ?string $apiUrl = null, ?float $timeout = null)
  * @method static TelegramBotChannel to(string|int $chatId, ?string $bot = null, ?string $token = null, string|int|null $messageThreadId = null, string|int|null $directMessagesTopicId = null, ?string $apiUrl = null, ?float $timeout = null)
  * @method static mixed send(TelegramMessage $message)
+ * @method static mixed text(string $text, string|int|null $to = null, string|int|null $messageThreadId = null, string|int|null $directMessagesTopicId = null)
+ * @method static mixed photo(string|InputFile $photo, ?string $caption = null, string|int|null $to = null, string|int|null $messageThreadId = null, string|int|null $directMessagesTopicId = null)
+ * @method static mixed document(string|InputFile $document, ?string $caption = null, string|int|null $to = null, string|int|null $messageThreadId = null, string|int|null $directMessagesTopicId = null)
  * @method static mixed getMe(array<string, mixed>|TelegramBotRequestData $parameters = [])
  * @method static TelegramUserData getMeData()
  * @method static mixed sendMessage(array<string, mixed>|TelegramBotRequestData $parameters = [])

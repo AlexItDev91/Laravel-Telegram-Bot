@@ -49,6 +49,13 @@ $result = TelegramBot::to('-1001234567890', token: $tenant->telegram_bot_token)-
     TelegramMessage::photo('photo-file-id')->caption('Daily report'),
 );
 
+$result = TelegramBot::channel('inbox')->text('New inbound email');
+
+$result = TelegramBot::to('-1001234567890', token: $tenant->telegram_bot_token)
+    ->photo('photo-file-id', caption: 'Daily report');
+
+$result = TelegramBot::document('document-file-id', caption: 'Invoice', to: '-1001234567890');
+
 $result = TelegramBot::call('newTelegramMethod', [
     'parameter' => 'value',
 ]);
@@ -56,7 +63,7 @@ $result = TelegramBot::call('newTelegramMethod', [
 
 The raw `call(method, parameters)` API is intentionally retained so newly released Telegram methods can be used before the typed SDK surface is updated.
 Dynamic token calls create a short-lived client for the supplied token; they do not write to or mutate `config/telegram-bot.php`.
-The fluent `Outbound\TelegramMessage` builder is a convenience layer for common text, photo, and document sends; typed request DTOs and raw arrays remain available for stricter validation and full API coverage.
+The `text()`, `photo()`, and `document()` shortcuts cover the shortest common sends. The fluent `Outbound\TelegramMessage` builder is available when a message needs reply markup, parse mode, notification flags, content protection, or extra Telegram fields; typed request DTOs and raw arrays remain available for stricter validation and full API coverage.
 
 ## Supported Methods
 

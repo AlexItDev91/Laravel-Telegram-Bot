@@ -68,6 +68,17 @@ final readonly class DeployNotifier
 }
 ```
 
+For common text, photo, and document sends, use outbound shortcuts on the facade, an injected manager, a configured channel, or a dynamic destination:
+
+```php
+TelegramBot::channel('alerts')->text('Deploy finished');
+
+TelegramBot::to('-1001234567890', token: $tenantBotToken)
+    ->photo('photo-file-id', caption: 'Daily report');
+
+TelegramBot::document('document-file-id', caption: 'Invoice', to: '-1001234567890');
+```
+
 Use the fluent `TelegramMessage` builder when the send flow is common and the destination is explicit:
 
 ```php

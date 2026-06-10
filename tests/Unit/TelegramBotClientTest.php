@@ -74,6 +74,43 @@ class TelegramBotClientTest extends TestCase
         $this->assertTrue($body['disable_notification']);
     }
 
+    public function test_sends_common_shortcut_messages_directly_when_chat_id_is_present(): void
+    {
+        $history = [];
+        $client = TelegramBotClient::make(
+            token: '123456:test-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new Response(200, [], json_encode(['ok' => true, 'result' => ['message_id' => 1]], JSON_THROW_ON_ERROR)),
+                new Response(200, [], json_encode(['ok' => true, 'result' => ['message_id' => 2]], JSON_THROW_ON_ERROR)),
+                new Response(200, [], json_encode(['ok' => true, 'result' => ['message_id' => 3]], JSON_THROW_ON_ERROR)),
+            ], $history),
+        );
+
+        $client->text('Direct hello', to: '123456789', messageThreadId: '42');
+        $client->photo('photo-file-id', 'Daily report', to: '123456789');
+        $client->document('document-file-id', 'Invoice', to: '123456789');
+
+        $firstBody = json_decode((string) $history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        $secondBody = json_decode((string) $history[1]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        $thirdBody = json_decode((string) $history[2]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+
+        $this->assertSame('/bot123456:test-token/sendMessage', $history[0]['request']->getUri()->getPath());
+        $this->assertSame('123456789', $firstBody['chat_id']);
+        $this->assertSame('42', $firstBody['message_thread_id']);
+        $this->assertSame('Direct hello', $firstBody['text']);
+
+        $this->assertSame('/bot123456:test-token/sendPhoto', $history[1]['request']->getUri()->getPath());
+        $this->assertSame('123456789', $secondBody['chat_id']);
+        $this->assertSame('photo-file-id', $secondBody['photo']);
+        $this->assertSame('Daily report', $secondBody['caption']);
+
+        $this->assertSame('/bot123456:test-token/sendDocument', $history[2]['request']->getUri()->getPath());
+        $this->assertSame('123456789', $thirdBody['chat_id']);
+        $this->assertSame('document-file-id', $thirdBody['document']);
+        $this->assertSame('Invoice', $thirdBody['caption']);
+    }
+
     public function test_direct_fluent_messages_require_a_chat_id(): void
     {
         $client = TelegramBotClient::make(

@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\Testing;
 
 use Override;
+use AlexItDev91\LaravelTelegramBot\Concerns\SendsTelegramMessageShortcuts;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequest;
@@ -26,6 +27,7 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
 {
     use TelegramBotApiMethods;
     use TelegramBotTypedApiMethods;
+    use SendsTelegramMessageShortcuts;
 
     /**
      * @var list<array{bot: string, channel: string|null, method: string, parameters: array<string, mixed>}>

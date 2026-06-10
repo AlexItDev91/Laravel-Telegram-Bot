@@ -6,7 +6,7 @@ use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMessageRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
-use AlexItDev91\LaravelTelegramBot\Laravel\Conversation\TelegramConversationTransition;
+use AlexItDev91\LaravelTelegramBot\Laravel\Conversation\TelegramConversationWizard;
 use AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager;
 use AlexItDev91\LaravelTelegramBot\TelegramBot;
 
@@ -30,37 +30,23 @@ readonly class ProfileWizardHandler implements TelegramWebhookHandler
             return null;
         }
 
-        $workflow = $this->conversations->workflowForUpdate($update, $botName);
+        $wizard = TelegramConversationWizard::for($this->conversations->workflowForUpdate($update, $botName))
+            ->timeout(600)
+            ->cancelledMessage('Profile setup cancelled.');
 
-        if ($workflow->current() === null) {
-            $workflow->start('awaiting_email', timeoutSeconds: 600);
+        $wizard->step('awaiting_email', 'email')
+            ->prompt('Send your support email address.')
+            ->invalid('That does not look like an email address. Try again.')
+            ->validate(static fn (mixed $value): bool => is_string($value) && str_contains($value, '@'))
+            ->complete('Profile email saved.');
 
-            return $this->telegram->bot($botName)->sendMessage(SendMessageRequestData::make(
+        $result = $wizard->handle($update);
+
+        return $result->hasMessage()
+            ? $this->telegram->bot($botName)->sendMessage(SendMessageRequestData::make(
                 chatId: $chatId,
-                text: 'Send your support email address.',
-            ));
-        }
-
-        $confirmed = $workflow->transition(TelegramConversationTransition::guarded(
-            from: 'awaiting_email',
-            to: 'confirmed',
-            guard: static fn (mixed $_context, mixed $_update): bool => str_contains($text, '@'),
-        ), [
-            'email' => $text,
-        ], $update);
-
-        if ($confirmed === null) {
-            return $this->telegram->bot($botName)->sendMessage(SendMessageRequestData::make(
-                chatId: $chatId,
-                text: 'That does not look like an email address. Try again.',
-            ));
-        }
-
-        $workflow->reset();
-
-        return $this->telegram->bot($botName)->sendMessage(SendMessageRequestData::make(
-            chatId: $chatId,
-            text: 'Profile email saved.',
-        ));
+                text: $result->message() ?? '',
+            ))
+            : null;
     }
 }

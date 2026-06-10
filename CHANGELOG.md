@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.6.0] - 2026-06-10
+
+- Added `TelegramConversationWizard`, `TelegramConversationStep`, and `TelegramConversationWizardResult` for Laravel-friendly multi-step forms on top of existing conversation workflows.
+- Added wizard support for prompts, typed stored step values, validation callbacks, `/cancel`, `/back`, resume behavior, timeout handling, and callback-query data transitions.
+- Updated conversation tests, Laravel examples, README, Markdown docs, Writerside docs, and Boost guidance with profile setup, order intake, and support request collection patterns.
+
 ## [2.5.0] - 2026-06-10
 
 - Added `TelegramDeepLink` helpers for bot `/start`, `startgroup`, Mini App `startapp`, named Mini App, and attachment-menu `startattach` links with Telegram payload validation.

@@ -508,10 +508,11 @@ TELEGRAM_CONVERSATION_TTL=86400
 TELEGRAM_CONVERSATION_KEY_PREFIX=telegram-bot:conversation
 ```
 
-Resolve `TelegramConversationManager` in a handler or middleware:
+Resolve `TelegramConversationManager` in a handler or middleware. For guided forms, build a `TelegramConversationWizard` on the update-scoped workflow:
 
 ```php
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
+use AlexItDev91\LaravelTelegramBot\Laravel\Conversation\TelegramConversationWizard;
 use AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager;
 
 final readonly class ProfileWizardHandler
@@ -522,22 +523,32 @@ final readonly class ProfileWizardHandler
 
     public function handle(TelegramWebhookUpdate $update, string $botName): mixed
     {
-        $conversation = $this->conversations->forUpdate($update, $botName);
+        $chatId = $update->effectiveChat()?->id();
 
-        if ($conversation?->state() === 'awaiting_email') {
-            $this->conversations->forgetForUpdate($update, $botName);
-
+        if ($chatId === null) {
             return ['ok' => true];
         }
 
-        $this->conversations->putForUpdate($update, $botName, 'awaiting_email', [
-            'started_at' => now()->toISOString(),
-        ]);
+        $wizard = TelegramConversationWizard::for($this->conversations->workflowForUpdate($update, $botName))
+            ->timeout(600)
+            ->cancelledMessage('Profile setup cancelled.');
 
-        return ['ok' => true];
+        $wizard->step('email', 'email')
+            ->prompt('Send your support email address.')
+            ->invalid('That does not look like an email address. Try again.')
+            ->validate(static fn (mixed $value): bool => is_string($value) && str_contains($value, '@'))
+            ->complete('Profile email saved.');
+
+        $result = $wizard->handle($update);
+
+        return $result->hasMessage()
+            ? ['method' => 'sendMessage', 'chat_id' => $chatId, 'text' => $result->message()]
+            : ['ok' => true];
     }
 }
 ```
+
+`TelegramConversationWizard` starts the first step automatically, stores validated values in `TelegramConversationContext`, returns a result object with reply text, supports `/cancel` and `/back`, and uses callback-query `data` for inline keyboard steps. Use `TelegramConversationWorkflow` directly when you need a custom state machine with guarded transitions or non-linear storage rules.
 
 Conversation keys are namespaced by bot and the effective chat/user when Telegram provides them. If a cache repository is unavailable, the manager returns DTOs for the current call but does not persist state, and the package logs a safe warning when logging is enabled.
 

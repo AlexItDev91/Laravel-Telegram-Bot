@@ -335,10 +335,11 @@ TELEGRAM_CONVERSATION_TTL=86400
 TELEGRAM_CONVERSATION_KEY_PREFIX=telegram-bot:conversation
 ```
 
-Use `TelegramConversationManager` from handlers:
+Use `TelegramConversationWizard` from handlers when the flow is a form or guided sequence:
 
 ```php
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
+use AlexItDev91\LaravelTelegramBot\Laravel\Conversation\TelegramConversationWizard;
 use AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager;
 
 final readonly class ProfileWizardHandler
@@ -349,22 +350,44 @@ final readonly class ProfileWizardHandler
 
     public function handle(TelegramWebhookUpdate $update, string $botName): mixed
     {
-        $conversation = $this->conversations->forUpdate($update, $botName);
+        $chatId = $update->effectiveChat()?->id();
 
-        if ($conversation?->state() === 'awaiting_email') {
-            $this->conversations->forgetForUpdate($update, $botName);
-
+        if ($chatId === null) {
             return ['ok' => true];
         }
 
-        $this->conversations->putForUpdate($update, $botName, 'awaiting_email');
+        $wizard = TelegramConversationWizard::for($this->conversations->workflowForUpdate($update, $botName))
+            ->timeout(600)
+            ->cancelledMessage('Profile setup cancelled.');
 
-        return ['ok' => true];
+        $wizard->step('email', 'email')
+            ->prompt('Send your support email address.')
+            ->invalid('That does not look like an email address. Try again.')
+            ->validate(static fn (mixed $value): bool => is_string($value) && str_contains($value, '@'))
+            ->next('summary');
+
+        $wizard->step('summary', 'summary')
+            ->prompt('Describe the support request.')
+            ->complete('Support request saved.');
+
+        $result = $wizard->handle($update);
+
+        return $result->hasMessage()
+            ? ['method' => 'sendMessage', 'chat_id' => $chatId, 'text' => $result->message()]
+            : ['ok' => true];
     }
 }
 ```
 
-Conversation keys are namespaced by bot and the effective chat/user when Telegram provides them. The store is disabled by default so existing webhook handlers keep their current stateless behavior.
+The wizard starts the first step when no state exists, stores typed step values in the conversation context, keeps state across webhook retries, validates input with callbacks, supports `/cancel` and `/back` by default, and reads callback-query `data` before message text for inline keyboard transitions.
+
+Common form shapes:
+
+- Profile setup: `email -> timezone -> complete`.
+- Order intake: `product -> quantity -> delivery window -> confirmation`.
+- Support request collection: `category callback button -> free-text summary -> priority callback button`.
+
+Use the lower-level `TelegramConversationManager` and `TelegramConversationWorkflow` APIs directly when a flow needs custom state machines, cross-chat keys, or transitions that do not map to linear form steps. Conversation keys are namespaced by bot and the effective chat/user when Telegram provides them. The store is disabled by default so existing webhook handlers keep their current stateless behavior.
 
 ## Example Files
 

@@ -75,7 +75,7 @@ class ExampleRecipesTest extends TestCase
         $this->assertStringContainsString('TelegramWebhookCommandHandler', $command);
         $this->assertStringContainsString('SendMessageData', $command);
         $this->assertStringContainsString('SendInvoiceData', $payment);
-        $this->assertStringContainsString('TelegramConversationTransition', $conversation);
+        $this->assertStringContainsString('TelegramConversationWizard', $conversation);
         $this->assertStringContainsString('TelegramWebhookMiddleware', $middleware);
         $this->assertStringContainsString('AnswerCallbackQueryData', $handler);
         $this->assertStringContainsString('TelegramBotNotificationChannel', $notification);

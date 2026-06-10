@@ -229,7 +229,7 @@ For production handlers that do real work, set `TELEGRAM_WEBHOOK_QUEUE_ENABLED=t
 
 Use `telegram-bot.webhook.middleware` with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookMiddleware` for parsed-update pipeline concerns such as tenant resolution, authorization, tracing, and conversation bootstrap. Middleware can short-circuit by returning a response without calling `$next`.
 
-Use `TELEGRAM_CONVERSATION_ENABLED=true` and inject `AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager` for cache-backed stateful webhook flows. Configure `TELEGRAM_CONVERSATION_STORE`, `TELEGRAM_CONVERSATION_TTL`, and `TELEGRAM_CONVERSATION_KEY_PREFIX` in the host app.
+Use `TELEGRAM_CONVERSATION_ENABLED=true` and inject `AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager` for cache-backed stateful webhook flows. Configure `TELEGRAM_CONVERSATION_STORE`, `TELEGRAM_CONVERSATION_TTL`, and `TELEGRAM_CONVERSATION_KEY_PREFIX` in the host app. Prefer `AlexItDev91\LaravelTelegramBot\Laravel\Conversation\TelegramConversationWizard` on top of `workflowForUpdate()` for form-style flows that need prompts, validation callbacks, `/cancel`, `/back`, resume behavior, and callback-query button transitions.
 
 Observe webhook processing with `TelegramWebhookReceived`, `TelegramWebhookHandled`, `TelegramWebhookFailed`, `TelegramWebhookQueued`, and `TelegramWebhookDuplicateSkipped`. Use `docs/DEEP_LINKS.md`, `docs/MINI_APPS.md`, `docs/RECIPES.md`, `docs/NOTIFICATIONS.md`, `docs/RESPONSES.md`, and `examples/laravel` for copy-ready deep links, Mini Apps validation, notifications, typed response accessors, jobs, handlers, listeners, and route snippets.
 

@@ -34,7 +34,7 @@ Version `v1.19.1` is the final 1.x release for older host applications. Starting
 | Artisan install, identity, webhook, update discovery, and delivery-test commands | [Console commands](console-commands.md) |
 | Incoming Telegram webhook route, secret validation, handlers, and events | [Webhooks](webhooks.md) |
 | File uploads and custom HTTP clients | [Files and HTTP](files-and-http.md) |
-| Payments, Stars, paid media, Telegram Passport, and Games DTOs | [Payments, Passport, and Games](payments-passport-games.md) |
+| Business, managed bots, Stars, paid media, Passport, and Games DTOs | [Payments, Passport, and Games](payments-passport-games.md) |
 | Supported method matrix | [API method support](api-surface.md) |
 | Full native method reference | [API method reference](method-reference.md) |
 
@@ -59,7 +59,7 @@ Version `v1.19.1` is the final 1.x release for older host applications. Starting
 | Reusable destination such as alerts, deployments, or inbox | `channel('name')` from config |
 | Multiple bots with different tokens | `bot('support')`, `bot('shop')`, or channel-specific `bot` values |
 | Newly released Telegram method | `call('methodName', [...])` |
-| Payments, Stars, Passport, paid media, or Games payloads | Typed DTOs under `AlexItDev91\LaravelTelegramBot\DTO` |
+| Business, managed bot, Stars, Passport, paid media, or Games payloads | Typed DTOs under `AlexItDev91\LaravelTelegramBot\DTO` |
 
 ## Source Of Truth
 

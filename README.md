@@ -359,7 +359,7 @@ See [Notifications](https://alexitdev91.github.io/Laravel-Telegram-Bot/notificat
 
 ## Validation And DTOs
 
-The package keeps the full Telegram Bot API available through native methods and the raw `call()` API. Typed DTOs are provided for the higher-risk Laravel workflows where structured payloads improve correctness: common outbound messages, Payments, Stars, paid media, Telegram Passport, Games, package config, channels, and webhook updates.
+The package keeps the full Telegram Bot API available through native methods and the raw `call()` API. Typed DTOs are provided for the higher-risk Laravel workflows where structured payloads improve correctness: common outbound messages, Business connections, managed bots, Payments, Stars, paid media, suggested posts, guest replies, Telegram Passport, Games, package config, channels, and webhook updates.
 
 Typed DTOs validate required fields, empty lists, selected numeric constraints, and documented Telegram conditions before the HTTP request is sent. DTO `extra` arrays are reserved for additional Telegram fields and may not duplicate typed constructor fields. Laravel channel config requires a non-empty `chat_id`; bot config requires a valid `api_url` and positive `timeout`. Generic array calls remain intentionally flexible for newly released Telegram methods and less common API objects.
 

@@ -188,6 +188,135 @@ $typedPayment?->telegramPaymentChargeId();
 $typedPayment?->orderInfoData()?->name();
 ```
 
+## Business, Managed Bots, Stars, And Paid Media Cookbook
+
+Modern Telegram monetization and Business features usually combine webhook updates, typed request DTOs, tenant-owned secrets, and a few raw Bot API escape hatches.
+
+### Business Connections And Business Messages
+
+Use business update accessors to detect a connected account, persist the `business_connection_id` in host app storage, and send replies with the same business connection when the bot has the required rights.
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetBusinessConnectionRequestData;
+use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
+
+$connection = $update->businessConnection();
+
+if ($connection?->id() !== null && $connection->isEnabled() === true) {
+    $telegram->bot('support')->getBusinessConnection(
+        GetBusinessConnectionRequestData::make($connection->id()),
+    );
+}
+
+$businessConnectionId = $update->get('business_message.business_connection_id');
+$chatId = $update->businessMessage()?->chat()?->id();
+
+if (is_string($businessConnectionId) && $chatId !== null) {
+    $telegram->bot('support')->send(
+        TelegramMessage::text('A teammate will reply shortly.')
+            ->businessConnection($businessConnectionId)
+            ->to($chatId),
+    );
+}
+```
+
+Use `readBusinessMessage`, `deleteBusinessMessages`, `setBusinessAccountName`, `setBusinessAccountBio`, `setBusinessAccountUsername`, `setBusinessAccountProfilePhoto`, `removeBusinessAccountProfilePhoto`, `getBusinessAccountStarBalance`, and `getBusinessAccountGifts` through generated request DTOs when the host app has the corresponding Business rights.
+
+### Managed Bots
+
+Managed bot tokens are real bot tokens. Store them encrypted, scope access to the tenant or owner, never log them, and rotate them with `replaceManagedBotToken` when access is revoked or suspected to be exposed.
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetManagedBotTokenRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetManagedBotAccessSettingsRequestData;
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+$managedBotToken = $telegram->bot('manager')->getManagedBotToken(
+    GetManagedBotTokenRequestData::make(userId: $managedBotUserId),
+);
+
+$telegram->bot('manager')->setManagedBotAccessSettings(
+    SetManagedBotAccessSettingsRequestData::make(
+        userId: $managedBotUserId,
+        isAccessRestricted: true,
+        addedUserIds: [$tenantOwnerTelegramId],
+    ),
+);
+
+$tenant->forceFill([
+    'telegram_bot_token' => encrypt((string) $managedBotToken),
+])->save();
+
+TelegramBot::botToken((string) $managedBotToken)->getMe();
+```
+
+Use `replaceManagedBotToken` before removing a tenant integration, and update any queued jobs that still carry the old encrypted token.
+
+### Stars, Subscriptions, Paid Media, And Suggested Posts
+
+Use `XTR` and an empty provider token for Telegram Stars invoices. Persist your own order, subscription, paid media payload, and Telegram charge identifiers so refunds and subscription edits can be reconciled later.
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\SuggestedPostParameters;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\SuggestedPostPrice;
+use AlexItDev91\LaravelTelegramBot\DTO\Payments\InputPaidMediaPhoto;
+use AlexItDev91\LaravelTelegramBot\DTO\Payments\SendPaidMediaData;
+use AlexItDev91\LaravelTelegramBot\InputFile;
+
+$telegram->bot('shop')->sendPaidMedia(new SendPaidMediaData(
+    chatId: $creatorChatId,
+    starCount: 250,
+    media: [
+        new InputPaidMediaPhoto(InputFile::fromPath(storage_path('app/catalog/drop.jpg'))),
+    ],
+    payload: 'paid-media-drop-2026-06',
+    caption: 'Members-only product drop',
+    suggestedPostParameters: new SuggestedPostParameters(
+        price: SuggestedPostPrice::stars(250),
+    ),
+));
+```
+
+Handle `purchased_paid_media`, `successful_payment`, `refunded_payment`, shipping, and pre-checkout updates in webhook handlers. Use `TelegramBot::fake()` to assert payloads locally; real Stars settlement, paid media purchase delivery, and Business account behavior require Telegram-side test accounts and cannot be fully simulated by the package.
+
+### Guest And Secretary Modes
+
+Guest messages arrive as `guest_message`; reply with `answerGuestQuery` and an inline-query result payload. Use generated request DTOs when the shape is known, and fall back to raw `call()` when Telegram introduces a result shape before the SDK adds a dedicated helper.
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerGuestQueryRequestData;
+
+$guestQueryId = $update->guestMessage()?->guestQueryId();
+
+if ($guestQueryId !== null) {
+    $telegram->bot('support')->answerGuestQuery(AnswerGuestQueryRequestData::make(
+        guestQueryId: $guestQueryId,
+        result: [
+            'type' => 'article',
+            'id' => 'support-reply',
+            'title' => 'Support reply',
+            'input_message_content' => [
+                'message_text' => 'A teammate will reply here.',
+            ],
+        ],
+    ));
+}
+```
+
+### Raw Escape Hatch
+
+Every new or niche Telegram method remains available through `call(method, parameters)` while typed helpers catch up:
+
+```php
+$telegram->bot('manager')->call('setManagedBotAccessSettings', [
+    'user_id' => $managedBotUserId,
+    'is_access_restricted' => true,
+    'added_user_ids' => [$tenantOwnerTelegramId],
+]);
+```
+
+Keep Business connection IDs, managed bot tokens, payment charge IDs, and paid media payloads out of logs. Gate these flows behind explicit user permissions, document owner consent, and test with fakes for payload shape plus a small Telegram staging account for real capability checks.
+
 ## Telegram Passport
 
 ### Passport Methods And DTOs

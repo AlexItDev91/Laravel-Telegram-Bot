@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.7.3] - 2026-06-10
+
+- Added a modern Business and monetization cookbook for Business connections, Business messages, managed bot tokens/access settings, Stars subscriptions, paid media, suggested posts, guest replies, and raw `call()` fallbacks.
+- Documented operational risks for managed bot token storage, Business/payment identifiers, Telegram-side permission requirements, and testing limitations for real Stars, paid media, and Business capabilities.
+- Updated README, Writerside overview, Boost resources, and payments guide tests so modern Telegram Business, managed bot, Stars, and paid media workflows are easier to discover.
+
 ## [2.7.2] - 2026-06-10
 
 - Added scenario-first production recipes for operations alerts, ecommerce order updates, support intake, and admin-channel notifications.

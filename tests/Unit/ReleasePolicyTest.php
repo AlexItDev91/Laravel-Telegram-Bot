@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.7.2', $version);
+        $this->assertSame('2.7.3', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -35,6 +35,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.7.3] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.7.2] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.7.1] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.7.0] - 2026-06-10', $changelog);
@@ -202,7 +203,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.7.2', $notes);
-        $this->assertStringContainsString('Added scenario-first production recipes for operations alerts, ecommerce order updates, support intake, and admin-channel notifications.', $notes);
+        $this->assertStringContainsString('# v2.7.3', $notes);
+        $this->assertStringContainsString('Added a modern Business and monetization cookbook for Business connections, Business messages, managed bot tokens/access settings, Stars subscriptions, paid media, suggested posts, guest replies, and raw `call()` fallbacks.', $notes);
     }
 }

@@ -185,6 +185,8 @@ $url = TelegramDeepLink::start('CompanyBot', $payload)->url();
 
 Verify signed payloads with `$this->payloads->verify($command->arguments(), (string) config('app.key'))` before trusting referral, onboarding, support, or Mini App start parameters.
 
+Use `docs/PAYMENTS_PASSPORT_GAMES.md` for Business connections, managed bot token flows, Stars invoices/subscriptions, paid media, suggested posts, and guest replies. Store managed bot tokens encrypted, never log Business connection IDs or payment charge IDs, use generated request DTOs such as `GetManagedBotTokenRequestData`, `SetManagedBotAccessSettingsRequestData`, `SendPaidMediaData`, and `AnswerGuestQueryRequestData`, and keep raw `call(method, parameters)` available for newly released Telegram Business or monetization methods.
+
 Use `TelegramBotNotificationChannel` for Laravel notifications:
 
 ```php

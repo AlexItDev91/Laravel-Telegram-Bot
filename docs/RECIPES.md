@@ -490,6 +490,117 @@ if ($handoff !== null && $resumeState !== null) {
 
 Queue operator notifications when the support chat is busy, keep the original user workflow key or ticket ID in host app storage, and avoid copying raw message text, phone numbers, payment details, or documents into operator summaries unless the operator genuinely needs them. Prefer private groups or forum topics with limited members, keep bot tokens out of tickets and logs, and use `TelegramBot::fake()` assertions to verify that handoff messages do not leak secrets.
 
+## Scenario Recipes
+
+### Operations Alerts
+
+Use configured channels and queued jobs for infrastructure, deploy, billing, and security alerts. Keep alert text short, put links to internal dashboards in your own app, and let `SendTelegramAlert` own retries and failed-job visibility.
+
+```php
+final readonly class DispatchOpsAlert
+{
+    public function __invoke(Incident $incident): void
+    {
+        SendTelegramAlert::dispatch('alerts', sprintf(
+            'Incident %s: %s',
+            $incident->public_id,
+            $incident->status,
+        ));
+    }
+}
+```
+
+```php
+$fake = TelegramBot::fake();
+
+SendTelegramAlert::dispatchSync('alerts', 'Incident INC-1001: open');
+
+$fake->assertSentMessageToChannel('alerts', static function (array $parameters): bool {
+    return $parameters['text'] === 'Incident INC-1001: open';
+});
+$fake->assertNoTokenLeakage();
+```
+
+### Ecommerce Order Updates
+
+Use dynamic destinations when each merchant, store, or tenant owns a bot token. Keep the token in tenant secret storage, send order status updates through the fluent builder, and use typed payment DTOs for invoices and pre-checkout paths.
+
+```php
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
+
+TelegramBot::to($order->telegram_chat_id, token: $order->store->telegram_bot_token)
+    ->send(TelegramMessage::text(sprintf(
+        'Order %s is now %s.',
+        $order->public_id,
+        $order->status,
+    ))->silent());
+```
+
+```php
+$fake = TelegramBot::fake();
+
+TelegramBot::to('123456789', token: '111:tenant-token')
+    ->send(TelegramMessage::text('Order ORD-1001 is now shipped.'));
+
+$fake->assertSent('sendMessage', ['text' => 'Order ORD-1001 is now shipped.']);
+$fake->assertNoTokenLeakage();
+```
+
+### Support Intake
+
+Use `TelegramConversationWizard` for structured intake, then open `TelegramHumanHandoff` only when automation cannot resolve the case. Store a public ticket ID instead of raw private messages.
+
+```php
+$wizard = TelegramConversationWizard::for($this->conversations->workflowForUpdate($update, $botName));
+$wizard->step('category', 'category')->prompt('Choose a support category.')->next('summary');
+$wizard->step('summary', 'summary')->prompt('Describe the issue.')->complete('Support request saved.');
+
+$result = $wizard->handle($update);
+
+if ($result->completed() && $result->context()->string('category') === 'human') {
+    TelegramHumanHandoff::fromUpdate($update, 'support-intake', [
+        'ticket_id' => $ticket->public_id,
+    ])->open($this->conversations->workflowForUpdate($update, $botName));
+}
+```
+
+```php
+$this->assertSame(TelegramHumanHandoff::STATE, $workflow->state());
+$fake->assertNoTokenLeakage();
+```
+
+### Admin-Channel Notifications
+
+Use an admin channel or forum topic for moderation, approvals, and operational controls. Pair the message with callback buttons and handle callbacks through the webhook dispatcher with admin middleware.
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\InlineKeyboardButton;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\InlineKeyboardMarkup;
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
+
+private const string BUTTON_TEXT = 'Acknowledge';
+private const string BUTTON_DATA = 'incident:ack';
+
+TelegramBot::channel('admins')->send(
+    TelegramMessage::text('New admin action required.')
+        ->replyMarkup(InlineKeyboardMarkup::singleButton(
+            InlineKeyboardButton::callback(self::BUTTON_TEXT, self::BUTTON_DATA),
+        )),
+);
+```
+
+```php
+$fake = TelegramBot::fake();
+
+TelegramBot::channel('admins')->send(TelegramMessage::text('New admin action required.'));
+
+$fake->assertSentMessageToChannel('admins', static function (array $parameters): bool {
+    return $parameters['text'] === 'New admin action required.';
+});
+```
+
 ## Example Files
 
 Copy-ready examples are stored in `examples/laravel`:

@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.7.1', $version);
+        $this->assertSame('2.7.2', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -35,6 +35,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.7.2] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.7.1] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.7.0] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.6.0] - 2026-06-10', $changelog);
@@ -201,7 +202,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.7.1', $notes);
-        $this->assertStringContainsString('Expanded outbound reliability recipes for queued Laravel delivery with unique jobs, backoff, failed-job visibility, Telegram `retry_after`, migrated chat recovery, and local rate-limit backoff.', $notes);
+        $this->assertStringContainsString('# v2.7.2', $notes);
+        $this->assertStringContainsString('Added scenario-first production recipes for operations alerts, ecommerce order updates, support intake, and admin-channel notifications.', $notes);
     }
 }

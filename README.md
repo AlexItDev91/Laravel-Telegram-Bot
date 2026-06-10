@@ -433,6 +433,7 @@ TELEGRAM_CONVERSATION_KEY_PREFIX=telegram-bot:conversation
 Resolve `AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager` in handlers to read, write, and clear per-bot conversation state keyed by the effective chat and user.
 Use `AlexItDev91\LaravelTelegramBot\Laravel\Conversation\TelegramConversationWizard` on top of `workflowForUpdate()` for multi-step forms with prompts, validation callbacks, stored step values, `/cancel`, `/back`, resume behavior, and callback-query button transitions.
 Use `AlexItDev91\LaravelTelegramBot\Laravel\Handoff\TelegramHumanHandoff` when automation should pause, notify a private operator chat, and later close or resume the original user workflow without coupling the package to a support-system database.
+For scenario-first implementation paths, use the Production Recipes cookbook for operations alerts, ecommerce order updates, support intake, and admin-channel notifications with fake-testing examples.
 
 Webhook handlers receive `TelegramWebhookUpdate`, which keeps the raw payload and exposes typed convenience accessors for common Telegram objects:
 

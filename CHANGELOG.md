@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.7.2] - 2026-06-10
+
+- Added scenario-first production recipes for operations alerts, ecommerce order updates, support intake, and admin-channel notifications.
+- Documented dynamic bot and destination routing, conversation wizard handoff flows, admin callback buttons, and fake-testing assertions for each common scenario.
+- Updated README, Writerside docs, Boost resources, and documentation tests so new users can start from practical Laravel bot workflows instead of API primitives only.
+
 ## [2.7.1] - 2026-06-10
 
 - Expanded outbound reliability recipes for queued Laravel delivery with unique jobs, backoff, failed-job visibility, Telegram `retry_after`, migrated chat recovery, and local rate-limit backoff.

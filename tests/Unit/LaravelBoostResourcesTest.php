@@ -15,6 +15,7 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('vendor:publish --provider="AlexItDev91\\\\LaravelTelegramBot\\\\Laravel\\\\TelegramBotServiceProvider" --tag=telegram-bot-config', $guidelines);
         $this->assertStringContainsString('telegram-bot:install', $guidelines);
         $this->assertStringContainsString('telegram-bot:doctor', $guidelines);
+        $this->assertStringContainsString('telegram-bot:make-handler', $guidelines);
         $this->assertStringContainsString('telegram-bot:me', $guidelines);
         $this->assertStringContainsString('telegram-bot:updates', $guidelines);
         $this->assertStringContainsString('telegram-bot:send-test', $guidelines);
@@ -83,6 +84,7 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('vendor:publish --provider="AlexItDev91\\\\LaravelTelegramBot\\\\Laravel\\\\TelegramBotServiceProvider" --tag=telegram-bot-config', $skill);
         $this->assertStringContainsString('telegram-bot:install', $skill);
         $this->assertStringContainsString('telegram-bot:doctor', $skill);
+        $this->assertStringContainsString('telegram-bot:make-handler', $skill);
         $this->assertStringContainsString('telegram-bot:me', $skill);
         $this->assertStringContainsString('telegram-bot:updates', $skill);
         $this->assertStringContainsString('telegram-bot:send-test', $skill);

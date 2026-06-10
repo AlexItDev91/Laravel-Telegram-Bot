@@ -4,6 +4,7 @@ namespace AlexItDev91\LaravelTelegramBot\Tests\Feature;
 
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotInstallCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotDoctorCommand;
+use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotMakeHandlerCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotMeCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotSendTestCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotUpdatesCommand;
@@ -29,6 +30,7 @@ class TelegramBotConsoleCommandsTest extends TestCase
         foreach ([
             'telegram-bot:install' => TelegramBotInstallCommand::class,
             'telegram-bot:doctor' => TelegramBotDoctorCommand::class,
+            'telegram-bot:make-handler' => TelegramBotMakeHandlerCommand::class,
             'telegram-bot:me' => TelegramBotMeCommand::class,
             'telegram-bot:send-test' => TelegramBotSendTestCommand::class,
             'telegram-bot:webhook:set' => TelegramBotWebhookSetCommand::class,
@@ -55,6 +57,98 @@ class TelegramBotConsoleCommandsTest extends TestCase
             ->expectsOutputToContain("'alerts' => [")
             ->doesntExpectOutputToContain('123456:test-token')
             ->assertSuccessful();
+    }
+
+    public function test_make_handler_command_scaffolds_command_handler(): void
+    {
+        $path = app_path('Telegram/Commands/StartCommand.php');
+        $this->deleteGeneratedHandler($path);
+
+        try {
+            $this->artisan('telegram-bot:make-handler', [
+                'name' => 'StartCommand',
+                '--command' => 'start',
+            ])
+                ->expectsOutputToContain('Telegram webhook command handler created')
+                ->expectsOutputToContain("Register in config: 'commands' => ['start' => App\\Telegram\\Commands\\StartCommand::class]")
+                ->assertSuccessful();
+
+            $contents = file_get_contents($path);
+
+            $this->assertIsString($contents);
+            $this->assertStringContainsString('namespace App\\Telegram\\Commands;', $contents);
+            $this->assertStringContainsString('implements TelegramWebhookCommandHandler', $contents);
+            $this->assertStringContainsString("#[TelegramCommand('start')]", $contents);
+            $this->assertStringContainsString('TelegramWebhookReply::fromUpdate($update)->text', $contents);
+        } finally {
+            $this->deleteGeneratedHandler($path);
+        }
+    }
+
+    public function test_make_handler_command_scaffolds_update_and_fallback_handlers(): void
+    {
+        $updatePath = app_path('Telegram/Handlers/CallbackQueryHandler.php');
+        $fallbackPath = app_path('Telegram/Handlers/FallbackHandler.php');
+        $this->deleteGeneratedHandler($updatePath);
+        $this->deleteGeneratedHandler($fallbackPath);
+
+        try {
+            $this->artisan('telegram-bot:make-handler', [
+                'name' => 'Telegram/Handlers/CallbackQueryHandler',
+                '--update' => 'callback_query',
+            ])
+                ->expectsOutputToContain('Telegram webhook update handler created')
+                ->expectsOutputToContain("Register in config: 'handlers' => ['callback_query' => App\\Telegram\\Handlers\\CallbackQueryHandler::class]")
+                ->assertSuccessful();
+
+            $this->artisan('telegram-bot:make-handler', [
+                'name' => 'FallbackHandler',
+                '--fallback' => true,
+            ])
+                ->expectsOutputToContain('Telegram webhook fallback handler created')
+                ->expectsOutputToContain("Register in config: 'fallback_handler' => App\\Telegram\\Handlers\\FallbackHandler::class")
+                ->assertSuccessful();
+
+            $updateContents = file_get_contents($updatePath);
+            $fallbackContents = file_get_contents($fallbackPath);
+
+            $this->assertIsString($updateContents);
+            $this->assertIsString($fallbackContents);
+            $this->assertStringContainsString("#[TelegramUpdateHandler('callback_query')]", $updateContents);
+            $this->assertStringContainsString('if ($update->type() !== \'callback_query\')', $updateContents);
+            $this->assertStringContainsString('implements TelegramWebhookHandler', $fallbackContents);
+        } finally {
+            $this->deleteGeneratedHandler($updatePath);
+            $this->deleteGeneratedHandler($fallbackPath);
+        }
+    }
+
+    public function test_make_handler_command_refuses_to_overwrite_without_force(): void
+    {
+        $path = app_path('Telegram/Handlers/MessageHandler.php');
+        $this->deleteGeneratedHandler($path);
+
+        try {
+            $this->artisan('telegram-bot:make-handler', [
+                'name' => 'MessageHandler',
+                '--update' => 'message',
+            ])->assertSuccessful();
+
+            $this->artisan('telegram-bot:make-handler', [
+                'name' => 'MessageHandler',
+                '--update' => 'message',
+            ])
+                ->expectsOutputToContain('already exists')
+                ->assertFailed();
+
+            $this->artisan('telegram-bot:make-handler', [
+                'name' => 'MessageHandler',
+                '--update' => 'message',
+                '--force' => true,
+            ])->assertSuccessful();
+        } finally {
+            $this->deleteGeneratedHandler($path);
+        }
     }
 
     public function test_me_command_prints_bot_identity(): void
@@ -328,6 +422,13 @@ class TelegramBotConsoleCommandsTest extends TestCase
         ])
             ->expectsOutputToContain('Webhook secret: missing while required')
             ->assertFailed();
+    }
+
+    private function deleteGeneratedHandler(string $path): void
+    {
+        if (is_file($path)) {
+            unlink($path);
+        }
     }
 
     /**

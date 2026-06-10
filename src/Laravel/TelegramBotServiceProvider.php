@@ -12,6 +12,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
 use AlexItDev91\LaravelTelegramBot\DeepLinks\TelegramStartPayloadSigner;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotDoctorCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotInstallCommand;
+use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotMakeHandlerCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotMeCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotSendTestCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotUpdatesCommand;
@@ -113,6 +114,7 @@ class TelegramBotServiceProvider extends ServiceProvider
             $this->commands([
                 TelegramBotDoctorCommand::class,
                 TelegramBotInstallCommand::class,
+                TelegramBotMakeHandlerCommand::class,
                 TelegramBotMeCommand::class,
                 TelegramBotSendTestCommand::class,
                 TelegramBotUpdatesCommand::class,

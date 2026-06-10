@@ -8,6 +8,7 @@ This package ships interactive Artisan commands for Laravel applications. They u
 | --- | --- |
 | `telegram-bot:install` | Publish package config and print copy-ready Laravel env/config snippets. |
 | `telegram-bot:doctor` | Diagnose bot config, webhook secret policy, route registration, and Telegram API reachability. |
+| `telegram-bot:make-handler` | Scaffold webhook command, update-type, or fallback handler classes. |
 | `telegram-bot:me` | Verify a configured bot token and print Telegram bot identity fields. |
 | `telegram-bot:send-test` | Send a delivery test message to a configured channel, chat, forum topic, or direct messages topic. |
 | `telegram-bot:webhook:set` | Register a Telegram webhook with optional secret token and allowed update types. |
@@ -46,6 +47,18 @@ php artisan telegram-bot:install --bot=support --channel=inbox --skip-token-chec
 ```
 
 The command does not write secrets into `.env`. Store real bot tokens and webhook secrets in the host application's environment or secret manager.
+
+## Make Handler
+
+Scaffold webhook handlers directly into the host Laravel app:
+
+```bash
+php artisan telegram-bot:make-handler StartCommand --command=start
+php artisan telegram-bot:make-handler Telegram/Handlers/CallbackQueryHandler --update=callback_query
+php artisan telegram-bot:make-handler FallbackHandler --fallback
+```
+
+The command creates classes under `app/Telegram/Commands` or `app/Telegram/Handlers`, adds the matching webhook contract, and prints the `config/telegram-bot.php` registration snippet. Use `--force` only when you intentionally want to overwrite an existing handler file.
 
 ## Bot Identity
 

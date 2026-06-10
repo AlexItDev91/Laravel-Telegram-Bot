@@ -490,7 +490,7 @@ TelegramBot::bot('default')->setWebhook([
 
 See [Webhooks](https://alexitdev91.github.io/Laravel-Telegram-Bot/webhooks.html) for the full setup and handler examples.
 
-The package also provides Artisan commands for bot identity checks, deployment diagnostics, delivery test messages, webhook registration, deletion, status checks, and parsed `chat_id` / `message_thread_id` discovery. See [Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html).
+The package also provides Artisan commands for bot identity checks, deployment diagnostics, handler scaffolding, delivery test messages, webhook registration, deletion, status checks, and parsed `chat_id` / `message_thread_id` discovery. Use `php artisan telegram-bot:make-handler StartCommand --command=start` to create a command handler in the host app. See [Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html).
 
 ## Logging
 

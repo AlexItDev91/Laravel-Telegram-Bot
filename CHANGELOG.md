@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.11.0] - 2026-06-10
+
+- Added `telegram-bot:make-handler` for scaffolding host application webhook command, update-type, and fallback handler classes.
+- Generated handlers include the matching webhook contract, dispatcher discovery attribute where applicable, and copy-ready registration hints for `config/telegram-bot.php`.
+- Updated console command registration, feature tests, README, Markdown docs, Writerside docs, and Boost resources for handler scaffolding workflows.
+
 ## [2.10.0] - 2026-06-10
 
 - Added `TelegramCallbackData` for compact, parseable inline keyboard callback payloads with Telegram's 64-byte limit enforced.

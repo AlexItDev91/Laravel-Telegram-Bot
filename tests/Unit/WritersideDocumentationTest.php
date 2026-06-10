@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="2.10.0"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.11.0"/>', $config);
 
         foreach ([
             'overview.md',

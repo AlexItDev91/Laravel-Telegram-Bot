@@ -43,6 +43,7 @@ php artisan telegram-bot:install
 - Inject `AlexItDev91\LaravelTelegramBot\MiniApps\TelegramMiniAppInitDataValidator` to validate raw `Telegram.WebApp.initData` in Mini App controllers before trusting user, chat, or start parameters. Pass `maxAgeSeconds` for freshness checks and the runtime tenant token when Mini Apps are tenant-owned.
 - Use `AlexItDev91\LaravelTelegramBot\DeepLinks\TelegramDeepLink` to build `start`, `startgroup`, `startapp`, and `startattach` URLs, and inject `TelegramStartPayloadSigner` to sign and verify short deep-link payloads with optional TTLs.
 - Use `docs/PAYMENTS_PASSPORT_GAMES.md` for Business connections, managed bot token flows, Stars invoices/subscriptions, paid media, suggested posts, and guest replies. Store managed bot tokens encrypted, avoid logging Business/payment identifiers, and use raw `call(method, parameters)` for newly released Telegram Business or monetization methods before typed helpers are updated.
+- Use `php artisan telegram-bot:make-handler StartCommand --command=start`, `--update=message`, or `--fallback` to scaffold host app webhook handlers before hand-writing boilerplate.
 - Use `php artisan telegram-bot:me --bot=default` to verify the configured bot token and Telegram identity.
 - Use `php artisan telegram-bot:doctor --bot=default` before deploys to check config, webhook secret policy, route registration, and Telegram API reachability.
 - Use `php artisan telegram-bot:updates` to discover parsed `chat_id`, `message_thread_id`, and `direct_messages_topic_id` values from Telegram updates.

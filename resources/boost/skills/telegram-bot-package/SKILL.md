@@ -62,6 +62,7 @@ TELEGRAM_CONVERSATION_TTL=86400
 Keep real tokens, webhook secrets, and private identifiers out of git.
 
 Use `php artisan telegram-bot:updates --bot=default` after sending a test message in the target chat or topic to discover parsed `chat_id`, `message_thread_id`, and `direct_messages_topic_id` values.
+Use `php artisan telegram-bot:make-handler StartCommand --command=start`, `--update=message`, or `--fallback` to scaffold host app webhook handlers before hand-writing boilerplate.
 Use `php artisan telegram-bot:me --bot=default` to verify the configured bot identity.
 Use `php artisan telegram-bot:doctor --bot=default` before deploys to check config, webhook secret policy, route registration, and Telegram API reachability.
 Use `php artisan telegram-bot:send-test --channel=inbox` to verify delivery to a configured Laravel channel.

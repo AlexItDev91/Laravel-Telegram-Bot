@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.10.0', $version);
+        $this->assertSame('2.11.0', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -35,6 +35,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.11.0] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.10.0] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.9.0] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.8.0] - 2026-06-10', $changelog);
@@ -206,7 +207,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.10.0', $notes);
-        $this->assertStringContainsString('Added `TelegramCallbackData` for compact, parseable inline keyboard callback payloads with Telegram\'s 64-byte limit enforced.', $notes);
+        $this->assertStringContainsString('# v2.11.0', $notes);
+        $this->assertStringContainsString('Added `telegram-bot:make-handler` for scaffolding host application webhook command, update-type, and fallback handler classes.', $notes);
     }
 }

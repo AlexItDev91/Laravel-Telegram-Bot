@@ -469,6 +469,7 @@ The package also provides Artisan commands for bot identity checks, deployment d
 Laravel integrations log webhook security rejections, invalid webhook payloads, invalid handler configuration, handler failures, Telegram API failures, and transport-level response failures when `TELEGRAM_BOT_LOGGING_ENABLED` is true. Logs include method names, status/error codes, update IDs, update types, and exception classes, but do not include bot tokens, secret headers, request payloads, response bodies, chat IDs, or message text.
 
 `TelegramBotApiException` exposes Telegram response parameters through `parameters()`, `retryAfter()`, and `migrateToChatId()` for rate-limit and group-upgrade recovery paths.
+For reliable outbound queues, combine Laravel unique jobs, `retryAfter()` release handling, `TelegramBotRateLimitException::availableIn()`, SDK `retry` config, local `rate_limit` config, failed-job visibility, and `TelegramBot::fake()` assertions. See [Production Recipes](https://alexitdev91.github.io/Laravel-Telegram-Bot/production-recipes.html).
 
 ## Files And HTTP Client
 

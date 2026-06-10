@@ -58,6 +58,11 @@ class ExampleRecipesTest extends TestCase
             'retryAfter()',
             'migrateToChatId()',
             '$this->release($exception->retryAfter())',
+            'TelegramBotRateLimitException',
+            '$this->release($exception->availableIn())',
+            'ShouldBeUnique',
+            'uniqueId()',
+            'failed(Throwable $exception)',
         ] as $requiredJobText) {
             $this->assertStringContainsString($requiredJobText, $job);
         }

@@ -68,6 +68,7 @@ php artisan telegram-bot:install
 - Keep raw update access available through `payload()`, `get()`, and the backward-compatible array helpers when Telegram adds fields before typed DTOs exist.
 - Use `TelegramBot::call('methodName', [...])` for new Telegram methods before typed helpers are updated.
 - For failed Telegram API responses, use `retryAfter()` and `migrateToChatId()` on `TelegramBotApiException` when handling rate limits or migrated groups.
+- For reliable outbound jobs, use stable queue uniqueness keys, release on `retryAfter()` and `TelegramBotRateLimitException::availableIn()`, leave non-retryable failures visible in failed jobs, and enable SDK `retry` plus local `rate_limit` config for bursty workers.
 - Use `docs/DEEP_LINKS.md`, `docs/MINI_APPS.md`, `docs/RECIPES.md`, `docs/NOTIFICATIONS.md`, `docs/RESPONSES.md`, and `examples/laravel` for copy-ready deep links, Mini Apps validation, Laravel notifications, typed response accessors, jobs, handlers, listeners, and route snippets.
 - Keep Telegram IDs as strings or 64-bit safe values.
 - For package maintenance, run `composer generate:telegram-api-schema` after refreshing `docs/METHODS.md` so method-scoped request DTO validation stays aligned with Telegram.

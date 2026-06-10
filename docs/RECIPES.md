@@ -220,22 +220,39 @@ Use a Laravel job for outbound messages that may hit rate limits:
 
 ```php
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotApiException;
+use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotRateLimitException;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
-class SendTelegramAlert implements ShouldQueue
+class SendTelegramAlert implements ShouldQueue, ShouldBeUnique
 {
     use InteractsWithQueue;
     use Queueable;
+
+    public int $tries = 5;
+    public int $maxExceptions = 3;
+    public int $uniqueFor = 300;
 
     public function __construct(
         private readonly string $channel,
         private readonly string $text,
     ) {
         //
+    }
+
+    public function uniqueId(): string
+    {
+        return hash('sha256', $this->channel.'|'.$this->text);
+    }
+
+    public function backoff(): array
+    {
+        return [10, 60, 300];
     }
 
     public function handle(): void
@@ -259,10 +276,40 @@ class SendTelegramAlert implements ShouldQueue
             }
 
             throw $exception;
+        } catch (TelegramBotRateLimitException $exception) {
+            $this->release($exception->availableIn());
         }
+    }
+
+    public function failed(Throwable $exception): void
+    {
+        Log::error('Telegram alert delivery failed.', [
+            'channel' => $this->channel,
+            'exception' => $exception::class,
+        ]);
     }
 }
 ```
+
+Use queue-level uniqueness when the same alert can be dispatched repeatedly by retries, monitors, or domain events. Keep `uniqueId()` free of tokens and raw private text when possible; use a stable domain ID such as an order ID, alert ID, or ticket ID for customer-facing systems. Let failed jobs remain visible in Laravel Horizon, failed_jobs, or your queue backend instead of swallowing non-retryable Telegram errors.
+
+Enable SDK retry and local rate limiting when one worker can send bursts:
+
+```php
+'retry' => [
+    'enabled' => true,
+    'max_attempts' => 2,
+    'sleep' => false,
+],
+'rate_limit' => [
+    'enabled' => true,
+    'store' => 'redis',
+    'max_attempts' => 30,
+    'decay_seconds' => 1,
+],
+```
+
+Use `TelegramBot::fake()` in job tests to assert `sendMessage`, `assertSentSequence()`, `assertSentTypedPayload()`, and `assertNoTokenLeakage()` for queue paths without calling Telegram.
 
 ## Observe Webhook Processing
 

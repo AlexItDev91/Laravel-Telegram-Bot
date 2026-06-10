@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.7.1] - 2026-06-10
+
+- Expanded outbound reliability recipes for queued Laravel delivery with unique jobs, backoff, failed-job visibility, Telegram `retry_after`, migrated chat recovery, and local rate-limit backoff.
+- Updated the copy-ready `SendTelegramAlert` job to handle `TelegramBotRateLimitException::availableIn()`, expose retry/backoff settings, avoid duplicate alert jobs, and log failures without message text.
+- Documented SDK `retry`, local `rate_limit`, idempotency keys, failed-job monitoring, and `TelegramBot::fake()` assertions across README, Markdown docs, Writerside docs, and Boost resources.
+
 ## [2.7.0] - 2026-06-10
 
 - Added `TelegramHumanHandoff` as an optional Laravel handoff contract for pausing automation, storing support context in conversation state, and notifying private operator chats.

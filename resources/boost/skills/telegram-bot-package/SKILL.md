@@ -219,6 +219,8 @@ Return `channel`, `bot`, `chat_id`, `message_thread_id`, or `direct_messages_top
 
 Bind `GuzzleHttp\ClientInterface` in the host app when custom transport, retries, proxy, tracing, or HTTP fakes are needed. Keep `http_errors` disabled so Telegram API error payloads remain available to the SDK.
 
+For reliable outbound delivery, queue messages in Laravel jobs, make duplicate-prone jobs unique by a stable domain key, release jobs on `TelegramBotApiException::retryAfter()` and `TelegramBotRateLimitException::availableIn()`, keep non-retryable failures visible in failed jobs, enable SDK `retry` and local `rate_limit` config for bursty workers, and cover queue paths with `TelegramBot::fake()` plus `assertNoTokenLeakage()`.
+
 ## Webhooks
 
 The package registers `POST /telegram-bot/webhook` when `telegram-bot.webhook.route.enabled` is true. Protect it with `TELEGRAM_WEBHOOK_SECRET_TOKEN`; the package validates `X-Telegram-Bot-Api-Secret-Token` and fails closed when `TELEGRAM_WEBHOOK_REQUIRE_SECRET=true`.

@@ -20,13 +20,14 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="2.2.0"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.3.0"/>', $config);
 
         foreach ([
             'overview.md',
             'installation.md',
             'configuration.md',
             'usage.md',
+            'mini-apps.md',
             'telegram-setup.md',
             'console-commands.md',
             'webhooks.md',
@@ -73,6 +74,7 @@ class WritersideDocumentationTest extends TestCase
         $root = dirname(__DIR__, 2);
         $overview = file_get_contents($root.'/Writerside/topics/overview.md');
         $usage = file_get_contents($root.'/Writerside/topics/usage.md');
+        $miniApps = file_get_contents($root.'/Writerside/topics/mini-apps.md');
         $webhooks = file_get_contents($root.'/Writerside/topics/webhooks.md');
         $notifications = file_get_contents($root.'/Writerside/topics/notifications.md');
         $typedResponses = file_get_contents($root.'/Writerside/topics/typed-responses.md');
@@ -82,6 +84,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertIsString($overview);
         $this->assertIsString($usage);
+        $this->assertIsString($miniApps);
         $this->assertIsString($webhooks);
         $this->assertIsString($notifications);
         $this->assertIsString($typedResponses);
@@ -119,6 +122,18 @@ class WritersideDocumentationTest extends TestCase
             'migrateToChatId()',
         ] as $requiredUsageText) {
             $this->assertStringContainsString($requiredUsageText, $usage);
+        }
+
+        foreach ([
+            'Mini Apps',
+            'TelegramMiniAppInitDataValidator',
+            'Telegram.WebApp.initData',
+            'maxAgeSeconds',
+            'TelegramMiniAppUserData',
+            'TelegramMiniAppChatData',
+            'core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app',
+        ] as $requiredMiniAppText) {
+            $this->assertStringContainsString($requiredMiniAppText, $miniApps);
         }
 
         foreach ([
@@ -259,6 +274,7 @@ class WritersideDocumentationTest extends TestCase
             '[Installation](https://alexitdev91.github.io/Laravel-Telegram-Bot/installation.html)',
             '[Configuration](https://alexitdev91.github.io/Laravel-Telegram-Bot/configuration.html)',
             '[Usage](https://alexitdev91.github.io/Laravel-Telegram-Bot/usage.html)',
+            '[Mini Apps](https://alexitdev91.github.io/Laravel-Telegram-Bot/mini-apps.html)',
             '[End-To-End Setup Guide](https://alexitdev91.github.io/Laravel-Telegram-Bot/telegram-setup.html)',
             '[Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html)',
             '[Webhooks](https://alexitdev91.github.io/Laravel-Telegram-Bot/webhooks.html)',

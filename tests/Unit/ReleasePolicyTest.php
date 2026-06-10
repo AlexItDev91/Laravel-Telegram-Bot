@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.2.0', $version);
+        $this->assertSame('2.3.0', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -35,6 +35,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.3.0] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.2.0] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.1.4] - 2026-06-03', $changelog);
         $this->assertStringContainsString('## [2.1.3] - 2026-06-03', $changelog);
@@ -195,7 +196,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.2.0', $notes);
-        $this->assertStringContainsString('Added dynamic bot token routing through `botToken()`, `to()`, and configured channel token overrides so runtime code can send to any explicit Telegram `chat_id` without mutating global package config.', $notes);
+        $this->assertStringContainsString('# v2.3.0', $notes);
+        $this->assertStringContainsString('Added `TelegramMiniAppInitDataValidator` for server-side validation of `Telegram.WebApp.initData` using Telegram\'s official bot-token HMAC flow, constant-time hash comparison, and optional `auth_date` freshness checks.', $notes);
     }
 }

@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.3.0] - 2026-06-10
+
+- Added `TelegramMiniAppInitDataValidator` for server-side validation of `Telegram.WebApp.initData` using Telegram's official bot-token HMAC flow, constant-time hash comparison, and optional `auth_date` freshness checks.
+- Added `TelegramMiniAppInitData`, `TelegramMiniAppUserData`, and `TelegramMiniAppChatData` accessors for common Mini App user, chat, query, start parameter, and freshness fields.
+- Registered the Mini Apps validator in Laravel DI and documented controller, framework-agnostic, runtime tenant token, Writerside, README, and Boost usage.
+
 ## [2.2.0] - 2026-06-10
 
 - Added dynamic bot token routing through `botToken()`, `to()`, and configured channel token overrides so runtime code can send to any explicit Telegram `chat_id` without mutating global package config.

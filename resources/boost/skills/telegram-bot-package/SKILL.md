@@ -73,6 +73,7 @@ use AlexItDev91\LaravelTelegramBot\TelegramBot as TelegramBotService;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel;
 use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramNotificationMessage;
+use AlexItDev91\LaravelTelegramBot\MiniApps\TelegramMiniAppInitDataValidator;
 use AlexItDev91\LaravelTelegramBot\InputFile;
 
 public function __construct(
@@ -136,6 +137,23 @@ Typed response helpers include `callData()`, `getMeData()`, `getChatData()`, `ge
 
 Use `TelegramBotRequestData::forMethod()` for less common Bot API methods that need generated method/required-parameter validation through `TelegramBotApiMethodSchema`. Pass `validateRequiredParameters: false` only when configured channels supply required defaults such as `chat_id` later.
 
+Use `TelegramMiniAppInitDataValidator` to validate raw `Telegram.WebApp.initData` before trusting Mini App user, chat, or start-parameter values:
+
+```php
+public function __construct(
+    private TelegramMiniAppInitDataValidator $telegramMiniApps,
+) {
+}
+
+$data = $this->telegramMiniApps->validate(
+    initData: (string) $request->string('initData'),
+    botToken: (string) config('telegram-bot.token'),
+    maxAgeSeconds: 300,
+);
+```
+
+Pass the tenant-owned runtime bot token when the Mini App belongs to a tenant, and keep the raw `Telegram.WebApp.initData` string instead of sending `initDataUnsafe` to the backend.
+
 Use `TelegramBotNotificationChannel` for Laravel notifications:
 
 ```php
@@ -182,7 +200,7 @@ Use `telegram-bot.webhook.middleware` with `AlexItDev91\LaravelTelegramBot\Contr
 
 Use `TELEGRAM_CONVERSATION_ENABLED=true` and inject `AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager` for cache-backed stateful webhook flows. Configure `TELEGRAM_CONVERSATION_STORE`, `TELEGRAM_CONVERSATION_TTL`, and `TELEGRAM_CONVERSATION_KEY_PREFIX` in the host app.
 
-Observe webhook processing with `TelegramWebhookReceived`, `TelegramWebhookHandled`, `TelegramWebhookFailed`, `TelegramWebhookQueued`, and `TelegramWebhookDuplicateSkipped`. Use `docs/RECIPES.md`, `docs/NOTIFICATIONS.md`, `docs/RESPONSES.md`, and `examples/laravel` for copy-ready notifications, typed response accessors, jobs, handlers, listeners, and route snippets.
+Observe webhook processing with `TelegramWebhookReceived`, `TelegramWebhookHandled`, `TelegramWebhookFailed`, `TelegramWebhookQueued`, and `TelegramWebhookDuplicateSkipped`. Use `docs/MINI_APPS.md`, `docs/RECIPES.md`, `docs/NOTIFICATIONS.md`, `docs/RESPONSES.md`, and `examples/laravel` for copy-ready Mini Apps validation, notifications, typed response accessors, jobs, handlers, listeners, and route snippets.
 
 ```php
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;

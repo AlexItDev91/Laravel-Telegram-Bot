@@ -10,6 +10,7 @@ use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotApiException;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotRateLimitException;
 use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramBotApiRequestRecorded;
 use AlexItDev91\LaravelTelegramBot\Laravel\TelegramBotLaravelConfig;
+use AlexItDev91\LaravelTelegramBot\MiniApps\TelegramMiniAppInitDataValidator;
 use AlexItDev91\LaravelTelegramBot\TelegramBot as TelegramBotService;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\TelegramBotManager;
@@ -57,6 +58,7 @@ class TelegramBotServiceProviderTest extends TestCase
         $this->assertTrue(method_exists($consumer->telegram, 'sendMessage'));
         $this->assertSame(app(TelegramBotClientContract::class), $consumer->clientContract);
         $this->assertSame(app(TelegramBotClient::class), $consumer->client);
+        $this->assertSame(app(TelegramMiniAppInitDataValidator::class), $consumer->miniAppValidator);
     }
 
     public function test_uses_container_bound_http_client_for_laravel_di(): void
@@ -235,6 +237,7 @@ final readonly class TelegramBotDiConsumer
         public TelegramBotManagerContract $managerContract,
         public TelegramBotClientContract $clientContract,
         public TelegramBotClient $client,
+        public TelegramMiniAppInitDataValidator $miniAppValidator,
     ) {
         //
     }

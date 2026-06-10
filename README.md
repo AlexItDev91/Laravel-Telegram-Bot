@@ -42,6 +42,7 @@ Read the published documentation:
 - [Installation](https://alexitdev91.github.io/Laravel-Telegram-Bot/installation.html)
 - [Configuration](https://alexitdev91.github.io/Laravel-Telegram-Bot/configuration.html)
 - [Usage](https://alexitdev91.github.io/Laravel-Telegram-Bot/usage.html)
+- [Mini Apps](https://alexitdev91.github.io/Laravel-Telegram-Bot/mini-apps.html)
 - [End-To-End Setup Guide](https://alexitdev91.github.io/Laravel-Telegram-Bot/telegram-setup.html)
 - [Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html)
 - [Webhooks](https://alexitdev91.github.io/Laravel-Telegram-Bot/webhooks.html)
@@ -220,6 +221,40 @@ $chatId = $message->chat()?->id();
 When `callData()` does not have a dedicated result DTO yet, associative Telegram objects are wrapped in `TelegramBotResultData` so application code can still use typed `get()`, `string()`, `int()`, `bool()`, and `array()` accessors without losing the raw payload.
 
 See [Typed Responses](https://alexitdev91.github.io/Laravel-Telegram-Bot/typed-responses.html) for `callData()`, `TelegramBotResultData`, `getUpdatesData()`, `getFileData()`, `getWebhookInfoData()`, message DTO helpers, and fake-based tests.
+
+## Mini Apps
+
+Validate `Telegram.WebApp.initData` on the server before trusting Mini App user, chat, or start payloads:
+
+```php
+use AlexItDev91\LaravelTelegramBot\MiniApps\TelegramMiniAppInitDataValidator;
+use Illuminate\Http\Request;
+
+final readonly class TelegramMiniAppSessionController
+{
+    public function __construct(
+        private TelegramMiniAppInitDataValidator $telegramMiniApps,
+    ) {
+    }
+
+    public function __invoke(Request $request): array
+    {
+        $data = $this->telegramMiniApps->validate(
+            initData: (string) $request->string('initData'),
+            botToken: (string) config('telegram-bot.token'),
+            maxAgeSeconds: 300,
+        );
+
+        return [
+            'telegram_user_id' => (string) $data->user()?->id(),
+            'start_param' => $data->startParam(),
+        ];
+    }
+}
+```
+
+The same `TelegramMiniAppInitDataValidator` works outside Laravel and with runtime tenant bot tokens.
+See [Mini Apps](https://alexitdev91.github.io/Laravel-Telegram-Bot/mini-apps.html) for HMAC validation, freshness checks, and typed accessors.
 
 ## Notifications
 

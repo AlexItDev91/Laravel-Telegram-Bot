@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.7.0] - 2026-06-10
+
+- Added `TelegramHumanHandoff` as an optional Laravel handoff contract for pausing automation, storing support context in conversation state, and notifying private operator chats.
+- Added typed operator message helpers, workflow open/restore/close helpers, and tests covering context restoration, state transitions, and safe operator payload generation.
+- Documented forwarding context to operator chats, closing handoffs, resuming automation, queue usage, privacy boundaries, and security guidance across README, Markdown docs, Writerside docs, and Boost resources.
+
 ## [2.6.0] - 2026-06-10
 
 - Added `TelegramConversationWizard`, `TelegramConversationStep`, and `TelegramConversationWizardResult` for Laravel-friendly multi-step forms on top of existing conversation workflows.

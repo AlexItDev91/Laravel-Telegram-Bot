@@ -552,6 +552,43 @@ final readonly class ProfileWizardHandler
 
 Conversation keys are namespaced by bot and the effective chat/user when Telegram provides them. If a cache repository is unavailable, the manager returns DTOs for the current call but does not persist state, and the package logs a safe warning when logging is enabled.
 
+### Human Handoff
+
+`TelegramHumanHandoff` is an optional conversation contract for pausing automation while a support operator works with the user in a private chat, group, forum topic, or external ticket system.
+
+```php
+use AlexItDev91\LaravelTelegramBot\Laravel\Handoff\TelegramHumanHandoff;
+
+$workflow = $this->conversations->workflowForUpdate($update, $botName);
+
+if (TelegramHumanHandoff::fromWorkflow($workflow) !== null) {
+    return ['ok' => true];
+}
+
+$handoff = TelegramHumanHandoff::fromUpdate($update, 'needs-human', [
+    'ticket_id' => $ticket->public_id,
+]);
+
+$handoff->open($workflow, ['resume_state' => 'support-summary'], ttl: 86400);
+
+$this->telegram->channel('support')->sendMessage([
+    'text' => $handoff->operatorText('Support handoff'),
+]);
+```
+
+Close the handoff from the original user workflow after the operator resolves it:
+
+```php
+$resumeState = $workflow->context()->string('resume_state');
+TelegramHumanHandoff::close($workflow);
+
+if ($resumeState !== null) {
+    $workflow->start($resumeState);
+}
+```
+
+Store the original workflow key or ticket ID in the host app when operators resolve cases from another chat. Queue operator notifications for busy support inboxes, keep raw customer text and attachments out of summaries unless necessary, restrict operator chat membership, and keep bot tokens, webhook secrets, and payment data out of tickets and logs.
+
 ## Observability Events
 
 When `telegram-bot.webhook.dispatch_event` is true, the Laravel integration dispatches:

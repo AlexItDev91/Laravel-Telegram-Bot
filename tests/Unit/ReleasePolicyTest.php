@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.6.0', $version);
+        $this->assertSame('2.7.0', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -35,6 +35,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.7.0] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.6.0] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.5.0] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.4.0] - 2026-06-10', $changelog);
@@ -199,7 +200,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.6.0', $notes);
-        $this->assertStringContainsString('Added `TelegramConversationWizard`, `TelegramConversationStep`, and `TelegramConversationWizardResult` for Laravel-friendly multi-step forms on top of existing conversation workflows.', $notes);
+        $this->assertStringContainsString('# v2.7.0', $notes);
+        $this->assertStringContainsString('Added `TelegramHumanHandoff` as an optional Laravel handoff contract for pausing automation, storing support context in conversation state, and notifying private operator chats.', $notes);
     }
 }

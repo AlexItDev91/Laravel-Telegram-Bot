@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="2.6.0"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.7.0"/>', $config);
 
         foreach ([
             'overview.md',
@@ -195,6 +195,7 @@ class WritersideDocumentationTest extends TestCase
             'TELEGRAM_WEBHOOK_QUEUE_ENABLED',
             'TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED',
             'TelegramConversationManager',
+            'TelegramHumanHandoff',
             'TELEGRAM_CONVERSATION_ENABLED',
             '{"ok": true, "duplicate": true}',
             'TelegramWebhookHandled',
@@ -256,6 +257,8 @@ class WritersideDocumentationTest extends TestCase
             'Webhook Middleware',
             'Conversations',
             'TelegramConversationWizard',
+            'Human Handoff',
+            'TelegramHumanHandoff',
             'examples/laravel',
             'TelegramParseMode::HTML',
         ] as $requiredRecipesText) {

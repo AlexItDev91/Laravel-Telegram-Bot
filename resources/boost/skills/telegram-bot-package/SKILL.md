@@ -231,6 +231,8 @@ Use `telegram-bot.webhook.middleware` with `AlexItDev91\LaravelTelegramBot\Contr
 
 Use `TELEGRAM_CONVERSATION_ENABLED=true` and inject `AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager` for cache-backed stateful webhook flows. Configure `TELEGRAM_CONVERSATION_STORE`, `TELEGRAM_CONVERSATION_TTL`, and `TELEGRAM_CONVERSATION_KEY_PREFIX` in the host app. Prefer `AlexItDev91\LaravelTelegramBot\Laravel\Conversation\TelegramConversationWizard` on top of `workflowForUpdate()` for form-style flows that need prompts, validation callbacks, `/cancel`, `/back`, resume behavior, and callback-query button transitions.
 
+Use `AlexItDev91\LaravelTelegramBot\Laravel\Handoff\TelegramHumanHandoff` when automation should pause and a human operator needs a private support chat summary. Store the original workflow key or ticket ID in the host app, queue operator notifications for busy support inboxes, and keep raw customer text, attachments, bot tokens, webhook secrets, and payment data out of handoff summaries unless they are genuinely required.
+
 Observe webhook processing with `TelegramWebhookReceived`, `TelegramWebhookHandled`, `TelegramWebhookFailed`, `TelegramWebhookQueued`, and `TelegramWebhookDuplicateSkipped`. Use `docs/DEEP_LINKS.md`, `docs/MINI_APPS.md`, `docs/RECIPES.md`, `docs/NOTIFICATIONS.md`, `docs/RESPONSES.md`, and `examples/laravel` for copy-ready deep links, Mini Apps validation, notifications, typed response accessors, jobs, handlers, listeners, and route snippets.
 
 ```php

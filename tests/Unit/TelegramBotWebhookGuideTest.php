@@ -54,6 +54,7 @@ class TelegramBotWebhookGuideTest extends TestCase
             'TELEGRAM_WEBHOOK_SECRET_TOKEN',
             'TELEGRAM_WEBHOOK_REQUIRE_SECRET',
             'TELEGRAM_BOT_LOGGING_ENABLED',
+            'TelegramHumanHandoff',
             'route(\'telegram-bot.webhook\')',
             'setWebhook',
             'getWebhookInfo',

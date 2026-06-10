@@ -305,6 +305,60 @@ Common form shapes:
 
 Use the lower-level `TelegramConversationManager` and `TelegramConversationWorkflow` APIs directly when a flow needs custom state machines, cross-chat keys, or transitions that do not map to linear form steps. Conversation keys are namespaced by bot and the effective chat/user when Telegram provides them. The store is disabled by default so existing webhook handlers keep their current stateless behavior.
 
+## Human Handoff
+
+Use `TelegramHumanHandoff` when automation should pause and a human operator needs enough context to continue in a private support chat, forum topic, or external ticket system. The helper is only a contract around conversation state and operator summaries; it does not require a CRM or support database.
+
+```php
+use AlexItDev91\LaravelTelegramBot\Laravel\Handoff\TelegramHumanHandoff;
+
+$workflow = $this->conversations->workflowForUpdate($update, $botName);
+
+if (TelegramHumanHandoff::fromWorkflow($workflow) !== null) {
+    return ['ok' => true];
+}
+
+$handoff = TelegramHumanHandoff::fromUpdate($update, 'billing-question', [
+    'ticket_id' => $ticket->public_id,
+    'summary' => $ticket->summary,
+]);
+
+$handoff->open($workflow, [
+    'resume_state' => 'support-summary',
+], ttl: 86400);
+
+$this->telegram->channel('support')->sendMessage([
+    'text' => $handoff->operatorText('Support handoff'),
+]);
+```
+
+When the operator destination is not configured as a package channel, send the typed payload directly:
+
+```php
+$this->telegram->bot($botName)->sendMessage(
+    $handoff->toOperatorMessage(
+        chatId: '-1001234567890',
+        messageThreadId: 42,
+        title: 'Support handoff',
+    ),
+);
+```
+
+To close a handoff, load the original user workflow from your ticket or conversation mapping, then reset or resume automation:
+
+```php
+$handoff = TelegramHumanHandoff::fromWorkflow($workflow);
+$resumeState = $workflow->context()->string('resume_state');
+
+TelegramHumanHandoff::close($workflow);
+
+if ($handoff !== null && $resumeState !== null) {
+    $workflow->start($resumeState, ['handoff_closed_at' => now()->toISOString()]);
+}
+```
+
+Queue operator notifications when the support chat is busy, keep the original user workflow key or ticket ID in host app storage, and avoid copying raw message text, phone numbers, payment details, or documents into operator summaries unless the operator genuinely needs them. Prefer private groups or forum topics with limited members, keep bot tokens out of tickets and logs, and use `TelegramBot::fake()` assertions to verify that handoff messages do not leak secrets.
+
 Routes can return a configured package `channel`, a named `bot` plus `chat_id`, or a plain `chat_id`.
 Use the Notifications topic for the full routing and payload guide.
 

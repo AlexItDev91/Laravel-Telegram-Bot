@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.9.0] - 2026-06-10
+
+- Added `TelegramWebhookReply` and `TelegramWebhookReplyBuilder` for returning Telegram-compatible method payloads directly from synchronous Laravel webhook handlers.
+- Added builder helpers for text, photo, document, raw method, typed request, fluent message, and callback-query replies, including `fromUpdate($update)` chat/callback discovery.
+- Updated the webhook receiver, tests, README, webhook docs, Writerside docs, and Boost resources to cover reply return values, queued-handler caveats, and file-upload limitations.
+
 ## [2.8.0] - 2026-06-10
 
 - Added `text()`, `photo()`, and `document()` outbound shortcut methods on concrete bot clients, the Laravel service wrapper, configured channels, dynamic destinations, the facade, and the Telegram fake.

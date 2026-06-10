@@ -60,6 +60,7 @@ php artisan telegram-bot:install
 - Use `AlexItDev91\LaravelTelegramBot\Laravel\Handoff\TelegramHumanHandoff` when automation should pause for a human operator. Store the original workflow key or ticket ID in the host app and keep raw customer text, attachments, bot tokens, webhook secrets, and payment data out of handoff summaries unless they are required.
 - Observe webhook processing with `TelegramWebhookReceived`, `TelegramWebhookHandled`, `TelegramWebhookFailed`, `TelegramWebhookQueued`, and `TelegramWebhookDuplicateSkipped`.
 - Handle incoming updates with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler` or listen for `AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived`.
+- Return `AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookReply::fromUpdate($update)->text($text)` or `TelegramWebhookReply::fromUpdate($update)->answerCallback($text)` from synchronous webhook handlers when Telegram can receive the reply directly in the webhook response. Use injected bot clients or queued jobs for files and slow work.
 - For larger bots, prefer webhook dispatcher maps: `telegram-bot.webhook.commands`, `telegram-bot.webhook.handlers`, and `telegram-bot.webhook.fallback_handler`.
 - Implement command handlers with `AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookCommandHandler` and `AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookCommand`.
 - Use `Route::telegramBotWebhook()` when the host app disables the package auto route and wants to register the webhook route manually.

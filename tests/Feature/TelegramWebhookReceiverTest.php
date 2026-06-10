@@ -12,6 +12,7 @@ use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookQueued;
 use AlexItDev91\LaravelTelegramBot\Laravel\Events\TelegramWebhookReceived;
 use AlexItDev91\LaravelTelegramBot\Laravel\Jobs\TelegramWebhookJob;
 use AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookProcessor;
+use AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookReply;
 use AlexItDev91\LaravelTelegramBot\Tests\TestCase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Bus;
@@ -29,6 +30,7 @@ class TelegramWebhookReceiverTest extends TestCase
         TelegramWebhookTestHandler::reset();
         TelegramWebhookTypedAccessorHandler::reset();
         TelegramWebhookCallbackQueryHandler::reset();
+        TelegramWebhookReplyingHandler::reset();
         TelegramWebhookPaymentQueryHandler::reset();
         TelegramWebhookMembershipHandler::reset();
         TelegramWebhookCountingHandler::reset();
@@ -109,6 +111,35 @@ class TelegramWebhookReceiverTest extends TestCase
         $this->assertSame(1002, TelegramWebhookTestHandler::$update?->updateId());
         $this->assertSame('callback_query', TelegramWebhookTestHandler::$update?->type());
         $this->assertSame('support', TelegramWebhookTestHandler::$botName);
+    }
+
+    public function test_webhook_handler_may_return_telegram_webhook_reply(): void
+    {
+        config()->set('telegram-bot.webhook.handler', TelegramWebhookReplyingHandler::class);
+        config()->set('telegram-bot.webhook.bot', 'support');
+
+        $response = $this->postJson('/telegram-bot/webhook', [
+            'update_id' => 1009,
+            'message' => [
+                'message_id' => 55,
+                'message_thread_id' => 9,
+                'text' => '/start',
+                'chat' => [
+                    'id' => -1001234567890,
+                    'type' => 'supergroup',
+                ],
+            ],
+        ]);
+
+        $response->assertOk()->assertExactJson([
+            'method' => 'sendMessage',
+            'chat_id' => -1001234567890,
+            'message_thread_id' => 9,
+            'text' => 'Ready.',
+        ]);
+
+        $this->assertSame(1009, TelegramWebhookReplyingHandler::$update?->updateId());
+        $this->assertSame('support', TelegramWebhookReplyingHandler::$botName);
     }
 
     public function test_webhook_handler_can_use_typed_effective_update_accessors(): void
@@ -488,6 +519,28 @@ final class TelegramWebhookFailingHandler implements TelegramWebhookHandler
     public function handle(TelegramWebhookUpdate $update, string $botName): mixed
     {
         throw new \RuntimeException('Handler failed.');
+    }
+}
+
+final class TelegramWebhookReplyingHandler implements TelegramWebhookHandler
+{
+    public static ?TelegramWebhookUpdate $update = null;
+
+    public static ?string $botName = null;
+
+    public static function reset(): void
+    {
+        self::$update = null;
+        self::$botName = null;
+    }
+
+    #[Override]
+    public function handle(TelegramWebhookUpdate $update, string $botName): TelegramWebhookReply
+    {
+        self::$update = $update;
+        self::$botName = $botName;
+
+        return TelegramWebhookReply::fromUpdate($update)->text('Ready.');
     }
 }
 

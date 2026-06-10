@@ -163,6 +163,10 @@ readonly class TelegramWebhookReceiver
             return $handlerResult;
         }
 
+        if ($handlerResult instanceof TelegramWebhookReply) {
+            return new JsonResponse($handlerResult->toArray());
+        }
+
         if (is_array($handlerResult)) {
             return new JsonResponse($handlerResult);
         }

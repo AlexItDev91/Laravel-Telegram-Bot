@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.8.0', $version);
+        $this->assertSame('2.9.0', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -35,6 +35,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.9.0] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.8.0] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.7.3] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.7.2] - 2026-06-10', $changelog);
@@ -204,7 +205,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.8.0', $notes);
-        $this->assertStringContainsString('Added `text()`, `photo()`, and `document()` outbound shortcut methods on concrete bot clients, the Laravel service wrapper, configured channels, dynamic destinations, the facade, and the Telegram fake.', $notes);
+        $this->assertStringContainsString('# v2.9.0', $notes);
+        $this->assertStringContainsString('Added `TelegramWebhookReply` and `TelegramWebhookReplyBuilder` for returning Telegram-compatible method payloads directly from synchronous Laravel webhook handlers.', $notes);
     }
 }

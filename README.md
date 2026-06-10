@@ -462,6 +462,16 @@ $documentName = $message?->documentData()?->fileName();
 $paymentCharge = $message?->successfulPaymentData()?->telegramPaymentChargeId();
 ```
 
+Handlers may also return `AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookReply` for synchronous Telegram webhook replies:
+
+```php
+use AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookReply;
+
+return TelegramWebhookReply::fromUpdate($update)->text('Ready.');
+return TelegramWebhookReply::fromUpdate($update)->answerCallback('Saved.');
+return TelegramWebhookReply::method('sendChatAction', ['chat_id' => $chatId, 'action' => 'typing']);
+```
+
 ```php
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 

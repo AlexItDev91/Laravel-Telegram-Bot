@@ -144,32 +144,23 @@ namespace App\Telegram;
 
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramWebhookHandler as TelegramWebhookHandlerContract;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
-use AlexItDev91\LaravelTelegramBot\TelegramBot;
+use AlexItDev91\LaravelTelegramBot\Laravel\TelegramWebhookReply;
 
 final readonly class TelegramWebhookHandler implements TelegramWebhookHandlerContract
 {
-    public function __construct(
-        private TelegramBot $telegram,
-    ) {
-    }
-
     public function handle(TelegramWebhookUpdate $update, string $botName): mixed
     {
         if ($update->type() !== 'message') {
             return null;
         }
 
-        $chatId = $update->get('message.chat.id');
         $text = $update->get('message.text');
 
-        if ($chatId !== null && $text === '/start') {
-            $this->telegram->bot($botName)->sendMessage([
-                'chat_id' => (string) $chatId,
-                'text' => 'Ready.',
-            ]);
+        if ($text === '/start') {
+            return TelegramWebhookReply::fromUpdate($update)->text('Ready.');
         }
 
-        return ['ok' => true];
+        return null;
     }
 }
 ```
@@ -183,9 +174,12 @@ Then register it in `config/telegram-bot.php`:
 The handler may return:
 
 - `null` or `true`: the package returns `{"ok": true}`;
+- `TelegramWebhookReply`: the package returns Telegram-compatible JSON such as `{"method":"sendMessage","chat_id":"123","text":"Ready."}`;
 - an array: the package returns it as JSON;
 - a string: the package returns it as a plain response;
 - a Symfony/Laravel `Response`: the package returns it directly.
+
+Use `TelegramWebhookReply::text($text, chatId: $chatId)`, `TelegramWebhookReply::method('sendChatAction', [...])`, or `TelegramWebhookReply::fromUpdate($update)->answerCallback('Saved.')` when the reply can be sent as Telegram's synchronous webhook response. Webhook replies cannot upload `InputFile` objects; send files and slow work through an injected bot client or queued job instead. When webhook queueing is enabled, handler return values are processed by the queued job after Telegram already received `{"ok": true, "queued": true}`, so use the bot client for outbound messages in queued handlers.
 
 Telegram only requires a successful `2xx` response. Keep webhook handlers fast; dispatch jobs for slow work.
 

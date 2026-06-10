@@ -24,6 +24,8 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TelegramWebhookReceived', $guidelines);
         $this->assertStringContainsString('TelegramWebhookCommandHandler', $guidelines);
         $this->assertStringContainsString('TelegramWebhookCommand', $guidelines);
+        $this->assertStringContainsString('TelegramWebhookReply', $guidelines);
+        $this->assertStringContainsString('answerCallback', $guidelines);
         $this->assertStringContainsString('TelegramBotNotificationChannel', $guidelines);
         $this->assertStringContainsString('TelegramNotificationMessage', $guidelines);
         $this->assertStringContainsString('routeNotificationForTelegram()', $guidelines);
@@ -116,6 +118,8 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TELEGRAM_BOT_LOGGING_ENABLED', $skill);
         $this->assertStringContainsString('TelegramWebhookCommandHandler', $skill);
         $this->assertStringContainsString('TelegramWebhookCommand', $skill);
+        $this->assertStringContainsString('TelegramWebhookReply', $skill);
+        $this->assertStringContainsString('answerCallback', $skill);
         $this->assertStringContainsString('TelegramWebhookHandled', $skill);
         $this->assertStringContainsString('TelegramWebhookDuplicateSkipped', $skill);
         $this->assertStringContainsString('TelegramWebhookMiddleware', $skill);

@@ -378,11 +378,11 @@ Common outbound DTOs include `SendMessageData`, `EditMessageTextData`, `SendPhot
 Nested input DTOs are available for common structured payloads such as `LinkPreviewOptions`, `ReplyParameters`, `SuggestedPostParameters`, `SuggestedPostPrice`, `InlineKeyboardButton`, and `InlineKeyboardMarkup`.
 
 ```php
-use AlexItDev91\LaravelTelegramBot\DTO\Messages\InlineKeyboardButton;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\InlineKeyboardMarkup;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\LinkPreviewOptions;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+use AlexItDev91\LaravelTelegramBot\Support\TelegramCallbackData;
 
 final class DeployAlert
 {
@@ -390,9 +390,15 @@ final class DeployAlert
 
     private const string BUTTON_RETRY = 'Retry';
 
+    private const string BUTTON_OPEN = 'Open run';
+
     private const string CALLBACK_RETRY = 'deploy:retry';
 
     private const string CHAT_ID = '-1001234567890';
+
+    private const int RUN_ID = 42;
+
+    private const string RUN_URL = 'https://example.test/runs/42';
 
     private const string TEXT = 'Build failed';
 
@@ -402,9 +408,9 @@ final class DeployAlert
             chatId: self::CHAT_ID,
             text: self::TEXT,
             linkPreviewOptions: LinkPreviewOptions::disabled(),
-            replyMarkup: InlineKeyboardMarkup::singleButton(
-                InlineKeyboardButton::callback(self::BUTTON_RETRY, self::CALLBACK_RETRY),
-            ),
+            replyMarkup: InlineKeyboardMarkup::make()
+                ->callback(self::BUTTON_RETRY, TelegramCallbackData::action(self::CALLBACK_RETRY)->with('run', self::RUN_ID))
+                ->url(self::BUTTON_OPEN, self::RUN_URL),
         ));
     }
 }

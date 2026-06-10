@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.10.0] - 2026-06-10
+
+- Added `TelegramCallbackData` for compact, parseable inline keyboard callback payloads with Telegram's 64-byte limit enforced.
+- Added immutable `InlineKeyboardMarkup::make()`, `row()`, `button()`, `callback()`, `url()`, and `fromButtons(..., columns: ...)` helpers for building inline keyboards without nested arrays.
+- Added additional `InlineKeyboardButton` named constructors and validation for callback data, plus docs, tests, Writerside, README, and Boost updates for the new keyboard ergonomics.
+
 ## [2.9.0] - 2026-06-10
 
 - Added `TelegramWebhookReply` and `TelegramWebhookReplyBuilder` for returning Telegram-compatible method payloads directly from synchronous Laravel webhook handlers.

@@ -574,18 +574,20 @@ $fake->assertNoTokenLeakage();
 Use an admin channel or forum topic for moderation, approvals, and operational controls. Pair the message with callback buttons and handle callbacks through the webhook dispatcher with admin middleware.
 
 ```php
-use AlexItDev91\LaravelTelegramBot\DTO\Messages\InlineKeyboardButton;
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\InlineKeyboardMarkup;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
+use AlexItDev91\LaravelTelegramBot\Support\TelegramCallbackData;
 
 private const string BUTTON_TEXT = 'Acknowledge';
 private const string BUTTON_DATA = 'incident:ack';
+private const int INCIDENT_ID = 42;
 
 TelegramBot::channel('admins')->send(
     TelegramMessage::text('New admin action required.')
-        ->replyMarkup(InlineKeyboardMarkup::singleButton(
-            InlineKeyboardButton::callback(self::BUTTON_TEXT, self::BUTTON_DATA),
+        ->replyMarkup(InlineKeyboardMarkup::make()->callback(
+            self::BUTTON_TEXT,
+            TelegramCallbackData::action(self::BUTTON_DATA)->with('incident', self::INCIDENT_ID),
         )),
 );
 ```

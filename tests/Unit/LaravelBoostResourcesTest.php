@@ -37,6 +37,7 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TelegramBotApiMethodSchema', $guidelines);
         $this->assertStringContainsString('LinkPreviewOptions', $guidelines);
         $this->assertStringContainsString('InlineKeyboardMarkup', $guidelines);
+        $this->assertStringContainsString('TelegramCallbackData::action', $guidelines);
         $this->assertStringContainsString('TelegramChatAction', $guidelines);
         $this->assertStringContainsString('TelegramBotLaravelConfig', $guidelines);
         $this->assertStringContainsString('TelegramMiniAppInitDataValidator', $guidelines);
@@ -96,6 +97,7 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TelegramBotApiMethodSchema', $skill);
         $this->assertStringContainsString('LinkPreviewOptions', $skill);
         $this->assertStringContainsString('InlineKeyboardMarkup', $skill);
+        $this->assertStringContainsString('TelegramCallbackData::action', $skill);
         $this->assertStringContainsString('TelegramChatAction', $skill);
         $this->assertStringContainsString('TelegramBotLaravelConfig', $skill);
         $this->assertStringContainsString('TelegramMiniAppInitDataValidator', $skill);

@@ -135,7 +135,7 @@ Use `text()`, `photo()`, and `document()` for the shortest common outbound sends
 Use `InputFile::fromPath()` for top-level and nested file uploads. Nested media files are converted to Telegram `attach://` multipart references automatically.
 
 Use typed outbound DTOs for common payloads when validation helps: `AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
-Prefer nested input DTOs over raw arrays for common structured payloads: `LinkPreviewOptions`, `ReplyParameters`, `SuggestedPostParameters`, `SuggestedPostPrice`, `InlineKeyboardButton`, and `InlineKeyboardMarkup`.
+Prefer nested input DTOs over raw arrays for common structured payloads: `LinkPreviewOptions`, `ReplyParameters`, `SuggestedPostParameters`, `SuggestedPostPrice`, `InlineKeyboardButton`, and `InlineKeyboardMarkup`. Use `InlineKeyboardMarkup::make()->callback($text, TelegramCallbackData::action($action)->with($key, $value))` when callback buttons need compact, parseable action payloads.
 Prefer package enums over magic strings for known Telegram domains: `TelegramParseMode`, `TelegramChatAction`, `TelegramPollType`, `TelegramStickerType`, `TelegramStickerFormat`, and `TelegramUpdateType`.
 Inject `TelegramBotLaravelConfig` when a host app needs typed access to bot, channel, webhook route, or webhook secret configuration.
 

@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.4.0] - 2026-06-10
+
+- Added the fluent `Outbound\TelegramMessage` builder for common text, photo, and document sends without requiring low-level arrays at call sites.
+- Added `send(TelegramMessage::...)` support on concrete bot clients, configured channels, dynamic destinations, the Laravel service wrapper, and the Telegram fake.
+- Documented facade, DI, manager, client, dynamic token, channel, and testing examples while keeping typed request DTOs and raw `call(method, parameters)` available as lower-level escape hatches.
+
 ## [2.3.0] - 2026-06-10
 
 - Added `TelegramMiniAppInitDataValidator` for server-side validation of `Telegram.WebApp.initData` using Telegram's official bot-token HMAC flow, constant-time hash comparison, and optional `auth_date` freshness checks.

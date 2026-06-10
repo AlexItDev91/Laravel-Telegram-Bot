@@ -206,6 +206,42 @@ TelegramBot::channel('inbox', token: $token)->sendMessage([
 
 The raw `call(method, parameters)` API remains available for newly released Telegram methods before the typed SDK surface is updated.
 
+Use the fluent `TelegramMessage` builder when the send flow is common and the destination is explicit:
+
+```php
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
+
+final class TelegramOpsAlert
+{
+    private const string TEXT_DEPLOY_FINISHED = 'Deploy finished';
+
+    private const string PHOTO_FILE_ID = 'photo-file-id';
+
+    private const string DOCUMENT_FILE_ID = 'document-file-id';
+
+    public function send(string $tenantBotToken): void
+    {
+        TelegramBot::channel('alerts')->send(
+            TelegramMessage::text(self::TEXT_DEPLOY_FINISHED),
+        );
+
+        TelegramBot::to('-1001234567890', token: $tenantBotToken)->send(
+            TelegramMessage::photo(self::PHOTO_FILE_ID)->caption('Daily report'),
+        );
+
+        TelegramBot::botToken($tenantBotToken)->send(
+            TelegramMessage::document(self::DOCUMENT_FILE_ID)
+                ->to('-1001234567890')
+                ->caption('Invoice'),
+        );
+    }
+}
+```
+
+The builder supports `text()`, `photo()`, `document()`, `to()`, `caption()`, `parseMode()`, `replyMarkup()`, `silent()`, `protectContent()`, and `extra()` for less common fields.
+Use typed request DTOs or raw arrays when you need stricter method-specific validation or the full Telegram surface.
+
 Use typed response helpers when application code needs stable DTO accessors for common Telegram results:
 
 ```php

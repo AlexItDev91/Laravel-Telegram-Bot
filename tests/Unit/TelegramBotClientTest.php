@@ -12,6 +12,7 @@ use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotApiException;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotRateLimitException;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotTransportException;
 use AlexItDev91\LaravelTelegramBot\InputFile;
+use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
 use AlexItDev91\LaravelTelegramBot\Support\TelegramBotRetryPolicy;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use Closure;
@@ -22,9 +23,10 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\AbstractLogger;
 use Psr\Http\Message\RequestInterface;
+use Psr\Log\AbstractLogger;
 use Stringable;
 
 class TelegramBotClientTest extends TestCase
@@ -44,6 +46,45 @@ class TelegramBotClientTest extends TestCase
 
         $this->assertSame(['id' => 1], $result);
         $this->assertSame('/bot123456:test-token/getMe', $history[0]['request']->getUri()->getPath());
+    }
+
+    public function test_sends_fluent_messages_directly_when_chat_id_is_present(): void
+    {
+        $history = [];
+        $client = TelegramBotClient::make(
+            token: '123456:test-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new Response(200, [], json_encode(['ok' => true, 'result' => ['message_id' => 1]], JSON_THROW_ON_ERROR)),
+            ], $history),
+        );
+
+        $result = $client->send(
+            TelegramMessage::text('Direct hello')
+                ->to('123456789')
+                ->silent(),
+        );
+
+        $body = json_decode((string) $history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+
+        $this->assertSame(['message_id' => 1], $result);
+        $this->assertSame('/bot123456:test-token/sendMessage', $history[0]['request']->getUri()->getPath());
+        $this->assertSame('123456789', $body['chat_id']);
+        $this->assertSame('Direct hello', $body['text']);
+        $this->assertTrue($body['disable_notification']);
+    }
+
+    public function test_direct_fluent_messages_require_a_chat_id(): void
+    {
+        $client = TelegramBotClient::make(
+            token: '123456:test-token',
+            apiUrl: 'https://api.telegram.test',
+        );
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('must define a chat_id with to()');
+
+        $client->send(TelegramMessage::text('Missing destination'));
     }
 
     public function test_sends_multipart_requests_for_input_files(): void

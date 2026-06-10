@@ -30,6 +30,7 @@ php artisan telegram-bot:install
 - Use `TelegramBot::channel('name')` for a configured destination with `chat_id` and optional `message_thread_id` or `direct_messages_topic_id`.
 - Use `TelegramBot::to($chatId, token: $botToken)->sendMessage([...])` when the bot token and destination are resolved dynamically at runtime.
 - Use `TelegramBot::channel('name', token: $botToken)` only when a configured destination should be reused with a runtime bot token.
+- Use `AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage` with `TelegramBot::channel('alerts')->send(TelegramMessage::text($text))`, `TelegramBot::to($chatId, token: $token)->send(TelegramMessage::photo($photo))`, or `TelegramBot::botToken($token)->send(TelegramMessage::document($document)->to($chatId))` for simple fluent outbound messages.
 - Use `AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel` and `TelegramNotificationMessage` for Laravel notifications that should deliver through Telegram.
 - Route notification destinations with `routeNotificationForTelegram()` or `Notification::route('telegram', [...])`; return `channel`, `bot`, `token`, `chat_id`, `message_thread_id`, or `direct_messages_topic_id` values rather than hardcoding credentials in the notification class.
 - Use typed response helpers such as `getMeData()`, `sendMessageData()`, `getUpdatesData()`, `getFileData()`, and `getWebhookInfoData()` when application code needs DTO accessors. Use raw methods when it needs Telegram's unmodified `result`.

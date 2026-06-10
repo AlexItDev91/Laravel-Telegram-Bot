@@ -74,6 +74,7 @@ use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel;
 use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramNotificationMessage;
 use AlexItDev91\LaravelTelegramBot\MiniApps\TelegramMiniAppInitDataValidator;
+use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
 use AlexItDev91\LaravelTelegramBot\InputFile;
 
 public function __construct(
@@ -102,6 +103,14 @@ TelegramBot::channel('inbox', token: $botToken)->sendMessage([
     'text' => 'Configured destination, runtime bot',
 ]);
 
+TelegramBot::channel('inbox')->send(
+    TelegramMessage::text('New inbound email'),
+);
+
+TelegramBot::to($chatId, token: $botToken)->send(
+    TelegramMessage::photo('photo-file-id')->caption('Daily report'),
+);
+
 $this->telegram->bot('support')->sendMediaGroup([
     'chat_id' => '-1001234567890',
     'media' => [
@@ -115,6 +124,7 @@ $this->telegram->bot('support')->sendMediaGroup([
 
 Prefer constructor injection with `AlexItDev91\LaravelTelegramBot\TelegramBot` or `AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager` in Laravel services, controllers, jobs, listeners, and commands. Use concrete `TelegramBot` or `TelegramBotClient` when IDE autocomplete for every native Telegram helper is important. Use the facade where a facade fits the host app style.
 Use `to($chatId, token: $botToken)` when the bot token and destination are resolved dynamically at runtime, and keep those values in host app secrets or tenant-owned storage rather than committed package config.
+Use `Outbound\TelegramMessage` for simple fluent text/photo/document sends. Use typed request DTOs or raw arrays when method-specific validation or the full Telegram surface is needed.
 
 Use `InputFile::fromPath()` for top-level and nested file uploads. Nested media files are converted to Telegram `attach://` multipart references automatically.
 

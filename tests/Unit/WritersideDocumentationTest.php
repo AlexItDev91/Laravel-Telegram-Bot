@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="2.3.0"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.4.0"/>', $config);
 
         foreach ([
             'overview.md',
@@ -112,6 +112,9 @@ class WritersideDocumentationTest extends TestCase
             'Dynamic Bots And Destinations',
             'TelegramBot::to($chatId, token: $token)',
             'botToken($token)',
+            'TelegramMessage::text',
+            'TelegramMessage::photo',
+            'TelegramMessage::document',
             'InputFile::fromPath',
             'LinkPreviewOptions::disabled()',
             'InlineKeyboardMarkup::singleButton',
@@ -226,6 +229,9 @@ class WritersideDocumentationTest extends TestCase
             'TelegramWebhookHandled',
             'TelegramBotNotificationChannel',
             'Typed Response Accessors',
+            'Fluent Outbound Messages',
+            'Outbound\TelegramMessage',
+            'TelegramMessage::text',
             'Method-Scoped Request DTOs',
             'TelegramBotRequestData::forMethod()',
             'TelegramChatAction',

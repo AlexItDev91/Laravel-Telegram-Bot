@@ -8,6 +8,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequest;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChannelConfigData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
+use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
 use AlexItDev91\LaravelTelegramBot\Support\TelegramBotResultFactory;
 use InvalidArgumentException;
 
@@ -55,5 +56,10 @@ class TelegramBotChannel implements TelegramBotClient
     public function callData(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
         return TelegramBotResultFactory::from($method, $this->call($method, $parameters));
+    }
+
+    public function send(TelegramMessage $message): mixed
+    {
+        return $this->call($message->method(), $message->payload());
     }
 }

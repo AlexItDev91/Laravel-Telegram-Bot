@@ -13,6 +13,7 @@ use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotChannelNotConfiguredException;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotConfigurationException;
 use AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager;
+use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
 use AlexItDev91\LaravelTelegramBot\Support\TelegramBotResultFactory;
 use AlexItDev91\LaravelTelegramBot\TelegramBotApiMethods;
 use AlexItDev91\LaravelTelegramBot\TelegramBotTypedApiMethods;
@@ -145,6 +146,15 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
     public function callData(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
         return TelegramBotResultFactory::from($method, $this->call($method, $parameters));
+    }
+
+    public function send(TelegramMessage $message): mixed
+    {
+        if (! $message->hasChatId()) {
+            throw new InvalidArgumentException('Telegram fluent messages sent through a bot fake must define a chat_id with to().');
+        }
+
+        return $this->call($message->method(), $message->payload());
     }
 
     public function result(mixed $result, string|TelegramBotApiMethod $method = '*'): self

@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\Tests\Unit;
 
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
+use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\TelegramBotManager;
 use GuzzleHttp\Client;
@@ -129,6 +130,55 @@ class TelegramBotManagerTest extends TestCase
         $this->expectExceptionMessage('Use either a configured Telegram bot name or a dynamic bot token, not both.');
 
         $manager->to('-1001234567890', bot: 'support', token: '222:dynamic-token');
+    }
+
+    public function test_sends_fluent_messages_to_configured_and_dynamic_destinations(): void
+    {
+        $history = [];
+        $http = $this->fakeHttpClient([
+            new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+        ], $history);
+
+        $manager = new TelegramBotManager([
+            'api_url' => 'https://api.telegram.test',
+            'bots' => [
+                'support' => ['token' => '111:support'],
+            ],
+            'channels' => [
+                'alerts' => [
+                    'bot' => 'support',
+                    'chat_id' => '-1001234567890',
+                ],
+            ],
+        ], static fn (TelegramBotConfigData $config): TelegramBotClient => new TelegramBotClient($config, $http));
+
+        $manager->channel('alerts')->send(TelegramMessage::text('Deploy finished'));
+        $manager->to('-1009876543210', token: '222:dynamic-token')->send(
+            TelegramMessage::photo('photo-file-id')->caption('Daily report'),
+        );
+        $manager->botToken('333:direct-token')->send(
+            TelegramMessage::document('document-file-id')->to('-1005555555555')->caption('Invoice'),
+        );
+
+        $firstBody = json_decode((string) $history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        $secondBody = json_decode((string) $history[1]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        $thirdBody = json_decode((string) $history[2]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+
+        $this->assertSame('/bot111:support/sendMessage', $history[0]['request']->getUri()->getPath());
+        $this->assertSame('-1001234567890', $firstBody['chat_id']);
+        $this->assertSame('Deploy finished', $firstBody['text']);
+
+        $this->assertSame('/bot222:dynamic-token/sendPhoto', $history[1]['request']->getUri()->getPath());
+        $this->assertSame('-1009876543210', $secondBody['chat_id']);
+        $this->assertSame('photo-file-id', $secondBody['photo']);
+        $this->assertSame('Daily report', $secondBody['caption']);
+
+        $this->assertSame('/bot333:direct-token/sendDocument', $history[2]['request']->getUri()->getPath());
+        $this->assertSame('-1005555555555', $thirdBody['chat_id']);
+        $this->assertSame('document-file-id', $thirdBody['document']);
+        $this->assertSame('Invoice', $thirdBody['caption']);
     }
 
     /**

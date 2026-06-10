@@ -16,6 +16,7 @@ use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotApiException;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotConfigurationException;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotTransportException;
+use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
 use AlexItDev91\LaravelTelegramBot\Support\TelegramBotResultFactory;
 use AlexItDev91\LaravelTelegramBot\Support\TelegramBotRetryPolicy;
 use GuzzleHttp\Client;
@@ -77,6 +78,13 @@ class TelegramBotClient implements TelegramBotClientContract
                 directMessagesTopicId: $directMessagesTopicId,
             ),
         );
+    }
+
+    public function send(TelegramMessage $message): mixed
+    {
+        $this->assertMessageHasDestination($message);
+
+        return $this->call($message->method(), $message->payload());
     }
 
     /**
@@ -205,6 +213,13 @@ class TelegramBotClient implements TelegramBotClientContract
     private function retryPolicy(): TelegramBotRetryPolicy
     {
         return $this->retryPolicy ?? new TelegramBotRetryPolicy();
+    }
+
+    private function assertMessageHasDestination(TelegramMessage $message): void
+    {
+        if (! $message->hasChatId()) {
+            throw new InvalidArgumentException('Telegram fluent messages sent through a bot client must define a chat_id with to().');
+        }
     }
 
     private function recordTelemetry(

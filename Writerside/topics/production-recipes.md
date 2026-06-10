@@ -92,6 +92,47 @@ TelegramBot::channel('alerts')->sendMessage([
 ]);
 ```
 
+## Fluent Outbound Messages
+
+Use `Outbound\TelegramMessage` when the application sends common text, photo, or document messages and the destination should remain explicit:
+
+```php
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
+
+final class TelegramFluentNotifier
+{
+    private const string TEXT_DEPLOY_FINISHED = 'Deploy finished';
+
+    private const string PHOTO_FILE_ID = 'photo-file-id';
+
+    private const string DOCUMENT_FILE_ID = 'document-file-id';
+
+    public function send(string $tenantBotToken): void
+    {
+        TelegramBot::channel('alerts')->send(
+            TelegramMessage::text(self::TEXT_DEPLOY_FINISHED),
+        );
+
+        TelegramBot::to('-1001234567890', token: $tenantBotToken)->send(
+            TelegramMessage::photo(self::PHOTO_FILE_ID)
+                ->caption('Daily report')
+                ->silent(),
+        );
+
+        TelegramBot::botToken($tenantBotToken)->send(
+            TelegramMessage::document(self::DOCUMENT_FILE_ID)
+                ->to('-1001234567890')
+                ->caption('Invoice')
+                ->protectContent(),
+        );
+    }
+}
+```
+
+The builder supports `text()`, `photo()`, `document()`, `to()`, `messageThread()`, `directMessagesTopic()`, `caption()`, `parseMode()`, `entities()`, `linkPreviewOptions()`, `replyParameters()`, `replyMarkup()`, `silent()`, `protectContent()`, `allowPaidBroadcast()`, and `extra()`.
+Use method-scoped request DTOs or raw `call(method, parameters)` when a flow needs fields outside the fluent convenience surface.
+
 ## Method-Scoped Request DTOs
 
 Use `TelegramBotRequestData::forMethod()` when a method does not have a dedicated outbound DTO yet, but the host application still wants generated Bot API parameter validation:

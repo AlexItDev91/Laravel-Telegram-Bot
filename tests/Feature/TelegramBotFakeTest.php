@@ -6,6 +6,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMessageRequestData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\Laravel\TelegramConversationManager;
+use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
 use AlexItDev91\LaravelTelegramBot\Tests\TestCase;
 use AlexItDev91\LaravelTelegramBot\Testing\TelegramBotFake;
 
@@ -101,6 +102,44 @@ class TelegramBotFakeTest extends TestCase
         $fake->assertSentMessageUsingToken('222:secret-token', function (array $parameters): bool {
             return $parameters['chat_id'] === '-1001234567890'
                 && $parameters['text'] === 'Override channel bot';
+        });
+        $fake->assertNoTokenLeakage('222:secret-token');
+    }
+
+    public function test_fake_records_fluent_messages(): void
+    {
+        config()->set('telegram-bot.channels.alerts', [
+            'bot' => 'support',
+            'chat_id' => '-1001234567890',
+        ]);
+
+        $fake = TelegramBot::fake();
+
+        TelegramBot::channel('alerts')->send(
+            TelegramMessage::text('Deploy finished')->parseMode(TelegramParseMode::HTML),
+        );
+        TelegramBot::to('123456789', token: '222:secret-token')->send(
+            TelegramMessage::photo('photo-file-id')->caption('Daily report'),
+        );
+        TelegramBot::send(
+            TelegramMessage::document('document-file-id')->to('987654321')->caption('Invoice'),
+        );
+
+        $fake->assertSentMessageToChannel('alerts', function (array $parameters, string $botName): bool {
+            return $botName === 'support'
+                && $parameters['chat_id'] === '-1001234567890'
+                && $parameters['text'] === 'Deploy finished'
+                && $parameters['parse_mode'] === 'HTML';
+        });
+        $fake->assertCalledUsingToken('222:secret-token', 'sendPhoto', function (array $parameters): bool {
+            return $parameters['chat_id'] === '123456789'
+                && $parameters['photo'] === 'photo-file-id'
+                && $parameters['caption'] === 'Daily report';
+        });
+        $fake->assertCalled('sendDocument', function (array $parameters): bool {
+            return $parameters['chat_id'] === '987654321'
+                && $parameters['document'] === 'document-file-id'
+                && $parameters['caption'] === 'Invoice';
         });
         $fake->assertNoTokenLeakage('222:secret-token');
     }

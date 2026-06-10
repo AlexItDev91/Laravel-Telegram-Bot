@@ -8,6 +8,7 @@ use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChannelConfigData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
+use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
 use AlexItDev91\LaravelTelegramBot\Support\TelegramBotResultFactory;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient as ConcreteTelegramBotClient;
 use InvalidArgumentException;
@@ -116,5 +117,14 @@ class TelegramBot implements TelegramBotManager
     public function callData(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
         return TelegramBotResultFactory::from($method, $this->call($method, $parameters));
+    }
+
+    public function send(TelegramMessage $message): mixed
+    {
+        if (! $message->hasChatId()) {
+            throw new InvalidArgumentException('Telegram fluent messages sent through the default bot must define a chat_id with to().');
+        }
+
+        return $this->call($message->method(), $message->payload());
     }
 }

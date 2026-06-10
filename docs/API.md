@@ -12,6 +12,7 @@ Every method below is exposed as:
 ```php
 use AlexItDev91\LaravelTelegramBot\TelegramBot as TelegramBotService;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
 
 public function __construct(
     private TelegramBotService $telegram,
@@ -40,6 +41,14 @@ $result = TelegramBot::botToken($tenant->telegram_bot_token)->sendMessage([
     'text' => 'Direct dynamic payload',
 ]);
 
+$result = TelegramBot::channel('inbox')->send(
+    TelegramMessage::text('New inbound email'),
+);
+
+$result = TelegramBot::to('-1001234567890', token: $tenant->telegram_bot_token)->send(
+    TelegramMessage::photo('photo-file-id')->caption('Daily report'),
+);
+
 $result = TelegramBot::call('newTelegramMethod', [
     'parameter' => 'value',
 ]);
@@ -47,6 +56,7 @@ $result = TelegramBot::call('newTelegramMethod', [
 
 The raw `call(method, parameters)` API is intentionally retained so newly released Telegram methods can be used before the typed SDK surface is updated.
 Dynamic token calls create a short-lived client for the supplied token; they do not write to or mutate `config/telegram-bot.php`.
+The fluent `Outbound\TelegramMessage` builder is a convenience layer for common text, photo, and document sends; typed request DTOs and raw arrays remain available for stricter validation and full API coverage.
 
 ## Supported Methods
 

@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="2.4.0"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.5.0"/>', $config);
 
         foreach ([
             'overview.md',
@@ -28,6 +28,7 @@ class WritersideDocumentationTest extends TestCase
             'configuration.md',
             'usage.md',
             'mini-apps.md',
+            'deep-links.md',
             'telegram-setup.md',
             'console-commands.md',
             'webhooks.md',
@@ -75,6 +76,7 @@ class WritersideDocumentationTest extends TestCase
         $overview = file_get_contents($root.'/Writerside/topics/overview.md');
         $usage = file_get_contents($root.'/Writerside/topics/usage.md');
         $miniApps = file_get_contents($root.'/Writerside/topics/mini-apps.md');
+        $deepLinks = file_get_contents($root.'/Writerside/topics/deep-links.md');
         $webhooks = file_get_contents($root.'/Writerside/topics/webhooks.md');
         $notifications = file_get_contents($root.'/Writerside/topics/notifications.md');
         $typedResponses = file_get_contents($root.'/Writerside/topics/typed-responses.md');
@@ -85,6 +87,7 @@ class WritersideDocumentationTest extends TestCase
         $this->assertIsString($overview);
         $this->assertIsString($usage);
         $this->assertIsString($miniApps);
+        $this->assertIsString($deepLinks);
         $this->assertIsString($webhooks);
         $this->assertIsString($notifications);
         $this->assertIsString($typedResponses);
@@ -137,6 +140,19 @@ class WritersideDocumentationTest extends TestCase
             'core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app',
         ] as $requiredMiniAppText) {
             $this->assertStringContainsString($requiredMiniAppText, $miniApps);
+        }
+
+        foreach ([
+            'Deep Links',
+            'TelegramDeepLink',
+            'TelegramStartPayloadSigner',
+            'startgroup',
+            'startapp',
+            'startattach',
+            '64-character start parameter limit',
+            'core.telegram.org/bots/features#deep-linking',
+        ] as $requiredDeepLinkText) {
+            $this->assertStringContainsString($requiredDeepLinkText, $deepLinks);
         }
 
         foreach ([
@@ -281,6 +297,7 @@ class WritersideDocumentationTest extends TestCase
             '[Configuration](https://alexitdev91.github.io/Laravel-Telegram-Bot/configuration.html)',
             '[Usage](https://alexitdev91.github.io/Laravel-Telegram-Bot/usage.html)',
             '[Mini Apps](https://alexitdev91.github.io/Laravel-Telegram-Bot/mini-apps.html)',
+            '[Deep Links](https://alexitdev91.github.io/Laravel-Telegram-Bot/deep-links.html)',
             '[End-To-End Setup Guide](https://alexitdev91.github.io/Laravel-Telegram-Bot/telegram-setup.html)',
             '[Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html)',
             '[Webhooks](https://alexitdev91.github.io/Laravel-Telegram-Bot/webhooks.html)',

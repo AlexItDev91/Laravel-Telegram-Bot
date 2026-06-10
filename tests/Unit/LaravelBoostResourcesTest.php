@@ -39,6 +39,8 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TelegramBotLaravelConfig', $guidelines);
         $this->assertStringContainsString('TelegramMiniAppInitDataValidator', $guidelines);
         $this->assertStringContainsString('Telegram.WebApp.initData', $guidelines);
+        $this->assertStringContainsString('TelegramDeepLink', $guidelines);
+        $this->assertStringContainsString('TelegramStartPayloadSigner', $guidelines);
         $this->assertStringContainsString('Outbound\TelegramMessage', $guidelines);
         $this->assertStringContainsString('TelegramMessage::text', $guidelines);
         $this->assertStringContainsString('Route::telegramBotWebhook()', $guidelines);
@@ -62,6 +64,7 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TelegramConversationManager', $guidelines);
         $this->assertStringContainsString('TELEGRAM_CONVERSATION_ENABLED', $guidelines);
         $this->assertStringContainsString('docs/MINI_APPS.md', $guidelines);
+        $this->assertStringContainsString('docs/DEEP_LINKS.md', $guidelines);
         $this->assertStringContainsString('composer generate:telegram-api-schema', $guidelines);
     }
 
@@ -93,6 +96,8 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TelegramBotLaravelConfig', $skill);
         $this->assertStringContainsString('TelegramMiniAppInitDataValidator', $skill);
         $this->assertStringContainsString('Telegram.WebApp.initData', $skill);
+        $this->assertStringContainsString('TelegramDeepLink', $skill);
+        $this->assertStringContainsString('TelegramStartPayloadSigner', $skill);
         $this->assertStringContainsString('Outbound\TelegramMessage', $skill);
         $this->assertStringContainsString('TelegramMessage::photo', $skill);
         $this->assertStringContainsString('getUpdatesData()', $skill);
@@ -134,6 +139,7 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('retryAfter()', $skill);
         $this->assertStringContainsString('migrateToChatId()', $skill);
         $this->assertStringContainsString('docs/MINI_APPS.md', $skill);
+        $this->assertStringContainsString('docs/DEEP_LINKS.md', $skill);
         $this->assertStringContainsString('composer generate:telegram-api-schema', $skill);
     }
 }

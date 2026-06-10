@@ -7,6 +7,7 @@
     <toc-element topic="configuration.md"/>
     <toc-element topic="usage.md"/>
     <toc-element topic="mini-apps.md"/>
+    <toc-element topic="deep-links.md"/>
     <toc-element topic="telegram-setup.md"/>
     <toc-element topic="console-commands.md"/>
     <toc-element topic="webhooks.md"/>

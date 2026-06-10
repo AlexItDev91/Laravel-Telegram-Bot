@@ -11,8 +11,10 @@ class DocumentationHardeningTest extends TestCase
         $root = dirname(__DIR__, 2);
         $files = [
             $root.'/README.md',
+            $root.'/docs/DEEP_LINKS.md',
             $root.'/docs/NOTIFICATIONS.md',
             $root.'/docs/RECIPES.md',
+            $root.'/Writerside/topics/deep-links.md',
             $root.'/Writerside/topics/notifications.md',
             $root.'/Writerside/topics/production-recipes.md',
             $root.'/Writerside/topics/usage.md',

@@ -43,6 +43,7 @@ Read the published documentation:
 - [Configuration](https://alexitdev91.github.io/Laravel-Telegram-Bot/configuration.html)
 - [Usage](https://alexitdev91.github.io/Laravel-Telegram-Bot/usage.html)
 - [Mini Apps](https://alexitdev91.github.io/Laravel-Telegram-Bot/mini-apps.html)
+- [Deep Links](https://alexitdev91.github.io/Laravel-Telegram-Bot/deep-links.html)
 - [End-To-End Setup Guide](https://alexitdev91.github.io/Laravel-Telegram-Bot/telegram-setup.html)
 - [Console Commands](https://alexitdev91.github.io/Laravel-Telegram-Bot/console-commands.html)
 - [Webhooks](https://alexitdev91.github.io/Laravel-Telegram-Bot/webhooks.html)
@@ -291,6 +292,37 @@ final readonly class TelegramMiniAppSessionController
 
 The same `TelegramMiniAppInitDataValidator` works outside Laravel and with runtime tenant bot tokens.
 See [Mini Apps](https://alexitdev91.github.io/Laravel-Telegram-Bot/mini-apps.html) for HMAC validation, freshness checks, and typed accessors.
+
+## Deep Links
+
+Generate Telegram `/start`, group install, Mini App, and attachment-menu links without hand-building URLs:
+
+```php
+use AlexItDev91\LaravelTelegramBot\DeepLinks\TelegramDeepLink;
+use AlexItDev91\LaravelTelegramBot\DeepLinks\TelegramStartPayloadSigner;
+
+final readonly class ReferralLinkFactory
+{
+    public function __construct(
+        private TelegramStartPayloadSigner $payloads,
+    ) {
+    }
+
+    public function link(string $referralCode): string
+    {
+        $payload = $this->payloads->sign(
+            payload: $referralCode,
+            secret: (string) config('app.key'),
+            ttlSeconds: 3600,
+        );
+
+        return TelegramDeepLink::start('CompanyBot', $payload)->url();
+    }
+}
+```
+
+Use `TelegramStartPayloadSigner::verify()` in `/start` command handlers or Mini App controllers before trusting signed `start`, `startgroup`, `startapp`, or `startattach` values.
+See [Deep Links](https://alexitdev91.github.io/Laravel-Telegram-Bot/deep-links.html) for payload limits, Mini App links, attachment-menu links, and TTL examples.
 
 ## Notifications
 

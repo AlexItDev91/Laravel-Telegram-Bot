@@ -9,6 +9,7 @@ use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotObserver as TelegramBotO
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotRateLimiter as TelegramBotRateLimiterContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramConversationStore as TelegramConversationStoreContract;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
+use AlexItDev91\LaravelTelegramBot\DeepLinks\TelegramStartPayloadSigner;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotDoctorCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotInstallCommand;
 use AlexItDev91\LaravelTelegramBot\Laravel\Console\Commands\TelegramBotMeCommand;
@@ -99,6 +100,7 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->singleton(TelegramConversationManager::class);
         $this->app->singleton(TelegramBotNotificationChannel::class);
         $this->app->singleton(TelegramMiniAppInitDataValidator::class);
+        $this->app->singleton(TelegramStartPayloadSigner::class);
     }
 
     public function boot(): void

@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.5.0] - 2026-06-10
+
+- Added `TelegramDeepLink` helpers for bot `/start`, `startgroup`, Mini App `startapp`, named Mini App, and attachment-menu `startattach` links with Telegram payload validation.
+- Added `TelegramStartPayloadSigner` and `TelegramSignedStartPayload` for compact signed start parameters with optional TTL verification, tamper rejection, and Laravel DI support.
+- Documented referral, onboarding, support, Mini App start parameter, webhook verification, README, Writerside, and Boost usage patterns.
+
 ## [2.4.0] - 2026-06-10
 
 - Added the fluent `Outbound\TelegramMessage` builder for common text, photo, and document sends without requiring low-level arrays at call sites.

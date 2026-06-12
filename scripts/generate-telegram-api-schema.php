@@ -621,8 +621,10 @@ function resultSchema(array $schema): array
         'getManagedBotToken' => 'String',
         'replaceManagedBotToken' => 'String',
         'sendChatAction' => 'Boolean',
+        'sendChatJoinRequestWebApp' => 'Boolean',
         'sendGift' => 'Boolean',
         'sendMessageDraft' => 'Boolean',
+        'sendRichMessageDraft' => 'Boolean',
     ] as $method => $type) {
         setScalarResult($results, $method, $type);
     }
@@ -754,6 +756,7 @@ function messageMethods(): array
         'sendPaidMedia',
         'sendPhoto',
         'sendPoll',
+        'sendRichMessage',
         'sendSticker',
         'sendVenue',
         'sendVideo',

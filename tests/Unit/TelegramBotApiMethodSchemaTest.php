@@ -9,6 +9,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendChatActionRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMessageRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendPollRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\TelegramBotApiRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramChatAction;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
@@ -30,15 +31,17 @@ class TelegramBotApiMethodSchemaTest extends TestCase
     {
         $schema = TelegramBotApiMethodSchema::all();
 
-        $this->assertCount(176, $schema);
+        $this->assertCount(180, $schema);
 
         foreach (TelegramBotApiMethod::cases() as $method) {
             $this->assertArrayHasKey($method->value, $schema);
         }
 
-        $this->assertCount(863, array_merge(...array_values($schema)));
+        $this->assertCount(884, array_merge(...array_values($schema)));
         $this->assertSame(64, strlen(TelegramBotApiMethodSchema::checksum()));
         $this->assertSame(['chat_id', 'text'], TelegramBotApiMethodSchema::requiredParameters(TelegramBotApiMethod::sendMessage));
+        $this->assertSame(['chat_id', 'rich_message'], TelegramBotApiMethodSchema::requiredParameters(TelegramBotApiMethod::sendRichMessage));
+        $this->assertSame([], TelegramBotApiMethodSchema::requiredParameters(TelegramBotApiMethod::editMessageText));
         $this->assertSame([], TelegramBotApiMethodSchema::parameters(TelegramBotApiMethod::getMe));
     }
 
@@ -46,7 +49,7 @@ class TelegramBotApiMethodSchemaTest extends TestCase
     {
         $requests = TelegramBotApiRequestRegistry::all();
 
-        $this->assertCount(176, $requests);
+        $this->assertCount(180, $requests);
 
         foreach (TelegramBotApiMethod::cases() as $method) {
             $requestClass = TelegramBotApiRequestRegistry::requestClass($method);
@@ -90,19 +93,34 @@ class TelegramBotApiMethodSchemaTest extends TestCase
             type: TelegramPollType::Quiz,
         );
         $updates = GetUpdatesRequestData::make(
-            allowedUpdates: [TelegramUpdateType::Message, TelegramUpdateType::CallbackQuery],
+            allowedUpdates: [TelegramUpdateType::Message, TelegramUpdateType::GuestMessage, TelegramUpdateType::ManagedBot],
         );
 
         $this->assertSame('upload_photo', $chatAction->toArray()['action']);
         $this->assertSame('quiz', $poll->toArray()['type']);
-        $this->assertSame(['message', 'callback_query'], $updates->toArray()['allowed_updates']);
+        $this->assertSame(['message', 'guest_message', 'managed_bot'], $updates->toArray()['allowed_updates']);
+    }
+
+    public function test_update_type_enum_matches_webhook_update_detection_surface(): void
+    {
+        $enumTypes = array_map(
+            static fn (TelegramUpdateType $type): string => $type->value,
+            TelegramUpdateType::cases(),
+        );
+
+        sort($enumTypes);
+
+        $webhookTypes = TelegramWebhookUpdate::updateTypes();
+        sort($webhookTypes);
+
+        $this->assertSame($webhookTypes, $enumTypes);
     }
 
     public function test_generated_result_schema_covers_every_method(): void
     {
         $results = TelegramBotApiResultSchema::all();
 
-        $this->assertCount(176, $results);
+        $this->assertCount(180, $results);
 
         foreach (TelegramBotApiMethod::cases() as $method) {
             $this->assertArrayHasKey($method->value, $results);
@@ -116,8 +134,11 @@ class TelegramBotApiMethodSchemaTest extends TestCase
         $this->assertSame('Array<MessageId>', TelegramBotApiResultSchema::type(TelegramBotApiMethod::copyMessages));
         $this->assertSame('Poll', TelegramBotApiResultSchema::type(TelegramBotApiMethod::stopPoll));
         $this->assertSame('Boolean', TelegramBotApiResultSchema::type(TelegramBotApiMethod::sendChatAction));
+        $this->assertSame('Boolean', TelegramBotApiResultSchema::type(TelegramBotApiMethod::sendChatJoinRequestWebApp));
         $this->assertSame('Boolean', TelegramBotApiResultSchema::type(TelegramBotApiMethod::sendGift));
         $this->assertSame('Boolean', TelegramBotApiResultSchema::type(TelegramBotApiMethod::sendMessageDraft));
+        $this->assertSame('Message', TelegramBotApiResultSchema::type(TelegramBotApiMethod::sendRichMessage));
+        $this->assertSame('Boolean', TelegramBotApiResultSchema::type(TelegramBotApiMethod::sendRichMessageDraft));
         $this->assertTrue(TelegramBotApiResultSchema::allowsBool(TelegramBotApiMethod::editMessageText));
         $this->assertTrue(TelegramBotApiResultSchema::allowsBool(TelegramBotApiMethod::setGameScore));
         $this->assertFalse(TelegramBotApiResultSchema::allowsBool(TelegramBotApiMethod::editMessageChecklist));

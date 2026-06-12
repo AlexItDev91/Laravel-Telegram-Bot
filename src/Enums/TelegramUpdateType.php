@@ -12,6 +12,7 @@ enum TelegramUpdateType: string
     case BusinessMessage = 'business_message';
     case EditedBusinessMessage = 'edited_business_message';
     case DeletedBusinessMessages = 'deleted_business_messages';
+    case GuestMessage = 'guest_message';
     case MessageReaction = 'message_reaction';
     case MessageReactionCount = 'message_reaction_count';
     case InlineQuery = 'inline_query';
@@ -27,4 +28,5 @@ enum TelegramUpdateType: string
     case ChatJoinRequest = 'chat_join_request';
     case ChatBoost = 'chat_boost';
     case RemovedChatBoost = 'removed_chat_boost';
+    case ManagedBot = 'managed_bot';
 }

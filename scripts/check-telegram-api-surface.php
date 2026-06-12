@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramUpdateType;
 use AlexItDev91\LaravelTelegramBot\TelegramBotApiMethodRegistry;
 
 require __DIR__.'/../vendor/autoload.php';
@@ -23,7 +24,8 @@ $localMethods = array_map(
 $officialMethodParameters = officialMethodParameters($html, $officialMethods);
 $documentedMethodParameters = documentedMethodParameters(__DIR__.'/../docs/METHODS.md', $localMethods);
 $officialUpdateTypes = officialUpdateTypes($html);
-$localUpdateTypes = localUpdateTypes();
+$localWebhookUpdateTypes = localWebhookUpdateTypes();
+$localUpdateEnumTypes = localUpdateEnumTypes();
 
 $failures = [];
 
@@ -61,7 +63,11 @@ foreach (diffMethodParameters($officialMethodParameters, $documentedMethodParame
     $failures[] = $failure;
 }
 
-foreach (diffLists('update type', $officialUpdateTypes, $localUpdateTypes) as $failure) {
+foreach (diffLists('webhook update type', $officialUpdateTypes, $localWebhookUpdateTypes) as $failure) {
+    $failures[] = $failure;
+}
+
+foreach (diffLists('update enum type', $officialUpdateTypes, $localUpdateEnumTypes) as $failure) {
     $failures[] = $failure;
 }
 
@@ -79,7 +85,7 @@ printf(
     $officialReleaseDate,
     count($localMethods),
     countMethodParameters($documentedMethodParameters),
-    count($localUpdateTypes),
+    count($localWebhookUpdateTypes),
 );
 
 function fetchOfficialPage(string $url): string
@@ -277,7 +283,7 @@ function officialUpdateTypes(string $html): array
 /**
  * @return list<string>
  */
-function localUpdateTypes(): array
+function localWebhookUpdateTypes(): array
 {
     $reflection = new ReflectionClass(TelegramWebhookUpdate::class);
     $constant = $reflection->getReflectionConstant('UPDATE_TYPES');
@@ -291,6 +297,17 @@ function localUpdateTypes(): array
     $updateTypes = $constant->getValue();
 
     return sortedUnique($updateTypes);
+}
+
+/**
+ * @return list<string>
+ */
+function localUpdateEnumTypes(): array
+{
+    return sortedUnique(array_map(
+        static fn (TelegramUpdateType $type): string => $type->value,
+        TelegramUpdateType::cases(),
+    ));
 }
 
 /**

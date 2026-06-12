@@ -34,7 +34,7 @@ The `2.x` source uses PHP 8.4-era strictness, including typed class constants, i
 
 ## Documentation
 
-The package targets Telegram Bot API `10.0`, released on `2026-05-08`.
+The package targets Telegram Bot API `10.1`, released on `2026-06-11`.
 
 Read the published documentation:
 
@@ -418,7 +418,7 @@ final class DeployAlert
 
 Generated request builders also bind well-known Telegram string domains to enums, including `TelegramParseMode`, `TelegramChatAction`, `TelegramPollType`, `TelegramStickerType`, `TelegramStickerFormat`, and `TelegramUpdateType`.
 
-For less common methods, use `TelegramBotRequestData::forMethod()` to create a method-scoped DTO backed by the generated `TelegramBotApiMethodSchema`. The schema currently covers all 176 Bot API 10.0 methods and 863 documented parameters, validates required parameters, and prevents a request DTO for one method from being passed to another method. Pass `validateRequiredParameters: false` when a Laravel channel supplies required defaults such as `chat_id`.
+For less common methods, use `TelegramBotRequestData::forMethod()` to create a method-scoped DTO backed by the generated `TelegramBotApiMethodSchema`. The schema currently covers all 180 Bot API 10.1 methods and 884 documented parameters, validates required parameters, and prevents a request DTO for one method from being passed to another method. Pass `validateRequiredParameters: false` when a Laravel channel supplies required defaults such as `chat_id`.
 
 Laravel hosts can inject `AlexItDev91\LaravelTelegramBot\Laravel\TelegramBotLaravelConfig` when application code needs typed access to the configured default bot, named bots, channels, webhook route, and webhook secret validation state. The `telegram-bot:doctor` command uses the same accessor for local configuration checks before live Telegram calls.
 

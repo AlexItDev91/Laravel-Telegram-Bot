@@ -315,7 +315,7 @@ Use either a configured handler, events, or both. If both are enabled, the event
 
 ## TelegramWebhookUpdate
 
-`TelegramWebhookUpdate` keeps the raw payload and detects all Bot API 10.0 update fields:
+`TelegramWebhookUpdate` keeps the raw payload and detects all Bot API 10.1 update fields:
 
 ```php
 $update->updateId();          // 123456

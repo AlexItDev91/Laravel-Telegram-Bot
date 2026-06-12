@@ -4,6 +4,7 @@ namespace AlexItDev91\LaravelTelegramBot;
 
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\AddStickerToSetRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerCallbackQueryRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerChatJoinRequestQueryRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerGuestQueryRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerInlineQueryRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerPreCheckoutQueryRequestData;
@@ -111,6 +112,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\Requests\SavePreparedKeyboardButtonReques
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendAnimationRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendAudioRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendChatActionRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendChatJoinRequestWebAppRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendChecklistRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendContactRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendDiceRequestData;
@@ -126,6 +128,8 @@ use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMessageRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendPaidMediaRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendPhotoRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendPollRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendRichMessageDraftRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendRichMessageRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendStickerRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendVenueRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendVideoNoteRequestData;
@@ -192,6 +196,7 @@ final class TelegramBotApiRequestRegistry
     private const array REQUESTS = [
         'addStickerToSet' => AddStickerToSetRequestData::class,
         'answerCallbackQuery' => AnswerCallbackQueryRequestData::class,
+        'answerChatJoinRequestQuery' => AnswerChatJoinRequestQueryRequestData::class,
         'answerGuestQuery' => AnswerGuestQueryRequestData::class,
         'answerInlineQuery' => AnswerInlineQueryRequestData::class,
         'answerPreCheckoutQuery' => AnswerPreCheckoutQueryRequestData::class,
@@ -299,6 +304,7 @@ final class TelegramBotApiRequestRegistry
         'sendAnimation' => SendAnimationRequestData::class,
         'sendAudio' => SendAudioRequestData::class,
         'sendChatAction' => SendChatActionRequestData::class,
+        'sendChatJoinRequestWebApp' => SendChatJoinRequestWebAppRequestData::class,
         'sendChecklist' => SendChecklistRequestData::class,
         'sendContact' => SendContactRequestData::class,
         'sendDice' => SendDiceRequestData::class,
@@ -314,6 +320,8 @@ final class TelegramBotApiRequestRegistry
         'sendPaidMedia' => SendPaidMediaRequestData::class,
         'sendPhoto' => SendPhotoRequestData::class,
         'sendPoll' => SendPollRequestData::class,
+        'sendRichMessage' => SendRichMessageRequestData::class,
+        'sendRichMessageDraft' => SendRichMessageDraftRequestData::class,
         'sendSticker' => SendStickerRequestData::class,
         'sendVenue' => SendVenueRequestData::class,
         'sendVideo' => SendVideoRequestData::class,

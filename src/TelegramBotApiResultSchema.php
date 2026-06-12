@@ -60,6 +60,12 @@ final class TelegramBotApiResultSchema
             'list' => false,
             'allows_bool' => false,
         ],
+        'answerChatJoinRequestQuery' => [
+            'type' => 'Boolean',
+            'data_class' => NULL,
+            'list' => false,
+            'allows_bool' => false,
+        ],
         'answerGuestQuery' => [
             'type' => 'SentGuestMessage',
             'data_class' => TelegramSentGuestMessageData::class,
@@ -702,6 +708,12 @@ final class TelegramBotApiResultSchema
             'list' => false,
             'allows_bool' => false,
         ],
+        'sendChatJoinRequestWebApp' => [
+            'type' => 'Boolean',
+            'data_class' => NULL,
+            'list' => false,
+            'allows_bool' => false,
+        ],
         'sendChecklist' => [
             'type' => 'Message',
             'data_class' => TelegramMessageData::class,
@@ -789,6 +801,18 @@ final class TelegramBotApiResultSchema
         'sendPoll' => [
             'type' => 'Message',
             'data_class' => TelegramMessageData::class,
+            'list' => false,
+            'allows_bool' => false,
+        ],
+        'sendRichMessage' => [
+            'type' => 'Message',
+            'data_class' => TelegramMessageData::class,
+            'list' => false,
+            'allows_bool' => false,
+        ],
+        'sendRichMessageDraft' => [
+            'type' => 'Boolean',
+            'data_class' => NULL,
             'list' => false,
             'allows_bool' => false,
         ],

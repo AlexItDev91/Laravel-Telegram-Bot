@@ -2,7 +2,7 @@
 
 This document describes every Telegram Bot API method exposed by this package.
 
-Package target: Telegram Bot API `10.0`, released on `2026-05-08`.
+Package target: Telegram Bot API `10.1`, released on `2026-06-11`.
 
 Primary sources:
 
@@ -65,6 +65,7 @@ TelegramBot::call('newTelegramMethod', [
 | --- | --- | --- |
 | [`addStickerToSet`](#addstickertoset) | `addStickerToSet(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#addstickertoset) |
 | [`answerCallbackQuery`](#answercallbackquery) | `answerCallbackQuery(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#answercallbackquery) |
+| [`answerChatJoinRequestQuery`](#answerchatjoinrequestquery) | `answerChatJoinRequestQuery(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#answerchatjoinrequestquery) |
 | [`answerGuestQuery`](#answerguestquery) | `answerGuestQuery(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#answerguestquery) |
 | [`answerInlineQuery`](#answerinlinequery) | `answerInlineQuery(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#answerinlinequery) |
 | [`answerPreCheckoutQuery`](#answerprecheckoutquery) | `answerPreCheckoutQuery(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#answerprecheckoutquery) |
@@ -172,6 +173,7 @@ TelegramBot::call('newTelegramMethod', [
 | [`sendAnimation`](#sendanimation) | `sendAnimation(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendanimation) |
 | [`sendAudio`](#sendaudio) | `sendAudio(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendaudio) |
 | [`sendChatAction`](#sendchataction) | `sendChatAction(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendchataction) |
+| [`sendChatJoinRequestWebApp`](#sendchatjoinrequestwebapp) | `sendChatJoinRequestWebApp(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendchatjoinrequestwebapp) |
 | [`sendChecklist`](#sendchecklist) | `sendChecklist(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendchecklist) |
 | [`sendContact`](#sendcontact) | `sendContact(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendcontact) |
 | [`sendDice`](#senddice) | `sendDice(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#senddice) |
@@ -187,6 +189,8 @@ TelegramBot::call('newTelegramMethod', [
 | [`sendPaidMedia`](#sendpaidmedia) | `sendPaidMedia(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendpaidmedia) |
 | [`sendPhoto`](#sendphoto) | `sendPhoto(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendphoto) |
 | [`sendPoll`](#sendpoll) | `sendPoll(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendpoll) |
+| [`sendRichMessage`](#sendrichmessage) | `sendRichMessage(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendrichmessage) |
+| [`sendRichMessageDraft`](#sendrichmessagedraft) | `sendRichMessageDraft(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendrichmessagedraft) |
 | [`sendSticker`](#sendsticker) | `sendSticker(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendsticker) |
 | [`sendVenue`](#sendvenue) | `sendVenue(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendvenue) |
 | [`sendVideo`](#sendvideo) | `sendVideo(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendvideo) |
@@ -269,6 +273,18 @@ TelegramBot::call('newTelegramMethod', [
 | `show_alert` | `Boolean` | `Optional` |
 | `url` | `String` | `Optional` |
 | `cache_time` | `Integer` | `Optional` |
+
+### `answerChatJoinRequestQuery`
+
+- SDK call: `answerChatJoinRequestQuery(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('answerChatJoinRequestQuery', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/answerChatJoinRequestQuery`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#answerchatjoinrequestquery)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `chat_join_request_query_id` | `String` | `Yes` |
+| `result` | `String` | `Yes` |
 
 ### `answerGuestQuery`
 
@@ -901,10 +917,11 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Optional` |
 | `message_id` | `Integer` | `Optional` |
 | `inline_message_id` | `String` | `Optional` |
-| `text` | `String` | `Yes` |
+| `text` | `String` | `Optional` |
 | `parse_mode` | `String` | `Optional` |
 | `entities` | `Array of MessageEntity` | `Optional` |
 | `link_preview_options` | `LinkPreviewOptions` | `Optional` |
+| `rich_message` | `InputRichMessage` | `Optional` |
 | `reply_markup` | `InlineKeyboardMarkup` | `Optional` |
 
 ### `editStory`
@@ -1741,6 +1758,18 @@ Parameters: none.
 | `message_thread_id` | `Integer` | `Optional` |
 | `action` | `String` | `Yes` |
 
+### `sendChatJoinRequestWebApp`
+
+- SDK call: `sendChatJoinRequestWebApp(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('sendChatJoinRequestWebApp', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/sendChatJoinRequestWebApp`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#sendchatjoinrequestwebapp)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `chat_join_request_query_id` | `String` | `Yes` |
+| `web_app_url` | `String` | `Yes` |
+
 ### `sendChecklist`
 
 - SDK call: `sendChecklist(array|TelegramBotRequestData $parameters = [])`
@@ -2124,6 +2153,42 @@ Parameters: none.
 | `message_effect_id` | `String` | `Optional` |
 | `reply_parameters` | `ReplyParameters` | `Optional` |
 | `reply_markup` | `InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply` | `Optional` |
+
+### `sendRichMessage`
+
+- SDK call: `sendRichMessage(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('sendRichMessage', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/sendRichMessage`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#sendrichmessage)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `business_connection_id` | `String` | `Optional` |
+| `chat_id` | `Integer or String` | `Yes` |
+| `message_thread_id` | `Integer` | `Optional` |
+| `direct_messages_topic_id` | `Integer` | `Optional` |
+| `rich_message` | `InputRichMessage` | `Yes` |
+| `disable_notification` | `Boolean` | `Optional` |
+| `protect_content` | `Boolean` | `Optional` |
+| `allow_paid_broadcast` | `Boolean` | `Optional` |
+| `message_effect_id` | `String` | `Optional` |
+| `suggested_post_parameters` | `SuggestedPostParameters` | `Optional` |
+| `reply_parameters` | `ReplyParameters` | `Optional` |
+| `reply_markup` | `InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply` | `Optional` |
+
+### `sendRichMessageDraft`
+
+- SDK call: `sendRichMessageDraft(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('sendRichMessageDraft', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/sendRichMessageDraft`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#sendrichmessagedraft)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `chat_id` | `Integer` | `Yes` |
+| `message_thread_id` | `Integer` | `Optional` |
+| `draft_id` | `Integer` | `Yes` |
+| `rich_message` | `InputRichMessage` | `Yes` |
 
 ### `sendSticker`
 

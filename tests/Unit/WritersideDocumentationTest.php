@@ -98,7 +98,7 @@ class WritersideDocumentationTest extends TestCase
         foreach ([
             'Laravel 13',
             'Version `v1.19.1` is the final 1.x release',
-            'Telegram Bot API 10.0',
+            'Telegram Bot API 10.1',
             'raw `call(method, parameters)` API',
             '![Laravel Telegram Bot package cover](package-cover.png){ width="700" }',
         ] as $requiredOverviewText) {

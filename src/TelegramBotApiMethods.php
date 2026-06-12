@@ -26,6 +26,14 @@ trait TelegramBotApiMethods
     /**
      * @param  array<string, mixed>  $parameters
      */
+    public function answerChatJoinRequestQuery(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::answerChatJoinRequestQuery, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
     public function answerGuestQuery(array|TelegramBotRequestData $parameters = []): mixed
     {
         return $this->call(TelegramBotApiMethod::answerGuestQuery, $parameters);
@@ -882,6 +890,14 @@ trait TelegramBotApiMethods
     /**
      * @param  array<string, mixed>  $parameters
      */
+    public function sendChatJoinRequestWebApp(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::sendChatJoinRequestWebApp, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
     public function sendChecklist(array|TelegramBotRequestData $parameters = []): mixed
     {
         return $this->call(TelegramBotApiMethod::sendChecklist, $parameters);
@@ -997,6 +1013,22 @@ trait TelegramBotApiMethods
     public function sendPoll(array|TelegramBotRequestData $parameters = []): mixed
     {
         return $this->call(TelegramBotApiMethod::sendPoll, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function sendRichMessage(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::sendRichMessage, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function sendRichMessageDraft(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::sendRichMessageDraft, $parameters);
     }
 
     /**

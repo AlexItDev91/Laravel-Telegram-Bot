@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
  */
 final class TelegramBotApiMethodSchema
 {
-    public const string CHECKSUM = '530ff42016e193d4d7348a53709fa53cb5e131b1db545e22227c98484432f7ec';
+    public const string CHECKSUM = '260d46b8f3942c39a983c94c33ea8c92f785bdecad00030522bb476cff6e0c8c';
 
     /**
      * @var array<string, list<array{name: string, type: string, required: bool}>>
@@ -57,6 +57,18 @@ final class TelegramBotApiMethodSchema
                 'name' => 'cache_time',
                 'type' => 'Integer',
                 'required' => false,
+            ],
+        ],
+        'answerChatJoinRequestQuery' => [
+            [
+                'name' => 'chat_join_request_query_id',
+                'type' => 'String',
+                'required' => true,
+            ],
+            [
+                'name' => 'result',
+                'type' => 'String',
+                'required' => true,
             ],
         ],
         'answerGuestQuery' => [
@@ -1066,7 +1078,7 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'text',
                 'type' => 'String',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'name' => 'parse_mode',
@@ -1081,6 +1093,11 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'link_preview_options',
                 'type' => 'LinkPreviewOptions',
+                'required' => false,
+            ],
+            [
+                'name' => 'rich_message',
+                'type' => 'InputRichMessage',
                 'required' => false,
             ],
             [
@@ -2318,6 +2335,18 @@ final class TelegramBotApiMethodSchema
                 'required' => true,
             ],
         ],
+        'sendChatJoinRequestWebApp' => [
+            [
+                'name' => 'chat_join_request_query_id',
+                'type' => 'String',
+                'required' => true,
+            ],
+            [
+                'name' => 'web_app_url',
+                'type' => 'String',
+                'required' => true,
+            ],
+        ],
         'sendChecklist' => [
             [
                 'name' => 'business_connection_id',
@@ -3516,6 +3545,90 @@ final class TelegramBotApiMethodSchema
                 'name' => 'reply_markup',
                 'type' => 'InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply',
                 'required' => false,
+            ],
+        ],
+        'sendRichMessage' => [
+            [
+                'name' => 'business_connection_id',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'chat_id',
+                'type' => 'Integer or String',
+                'required' => true,
+            ],
+            [
+                'name' => 'message_thread_id',
+                'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'direct_messages_topic_id',
+                'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'rich_message',
+                'type' => 'InputRichMessage',
+                'required' => true,
+            ],
+            [
+                'name' => 'disable_notification',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'protect_content',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'allow_paid_broadcast',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'message_effect_id',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'suggested_post_parameters',
+                'type' => 'SuggestedPostParameters',
+                'required' => false,
+            ],
+            [
+                'name' => 'reply_parameters',
+                'type' => 'ReplyParameters',
+                'required' => false,
+            ],
+            [
+                'name' => 'reply_markup',
+                'type' => 'InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply',
+                'required' => false,
+            ],
+        ],
+        'sendRichMessageDraft' => [
+            [
+                'name' => 'chat_id',
+                'type' => 'Integer',
+                'required' => true,
+            ],
+            [
+                'name' => 'message_thread_id',
+                'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'draft_id',
+                'type' => 'Integer',
+                'required' => true,
+            ],
+            [
+                'name' => 'rich_message',
+                'type' => 'InputRichMessage',
+                'required' => true,
             ],
         ],
         'sendSticker' => [

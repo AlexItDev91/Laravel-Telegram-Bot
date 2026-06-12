@@ -1,6 +1,6 @@
 # API Method Support
 
-This package targets Telegram Bot API 10.0, released on 2026-05-08.
+This package targets Telegram Bot API 10.1, released on 2026-06-11.
 
 Primary sources:
 
@@ -54,6 +54,7 @@ Dynamic token calls create a short-lived client for the supplied token; they do 
 | --- | --- | --- |
 | `addStickerToSet` | `addStickerToSet(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#addstickertoset) |
 | `answerCallbackQuery` | `answerCallbackQuery(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#answercallbackquery) |
+| `answerChatJoinRequestQuery` | `answerChatJoinRequestQuery(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#answerchatjoinrequestquery) |
 | `answerGuestQuery` | `answerGuestQuery(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#answerguestquery) |
 | `answerInlineQuery` | `answerInlineQuery(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#answerinlinequery) |
 | `answerPreCheckoutQuery` | `answerPreCheckoutQuery(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#answerprecheckoutquery) |
@@ -161,6 +162,7 @@ Dynamic token calls create a short-lived client for the supplied token; they do 
 | `sendAnimation` | `sendAnimation(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendanimation) |
 | `sendAudio` | `sendAudio(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendaudio) |
 | `sendChatAction` | `sendChatAction(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendchataction) |
+| `sendChatJoinRequestWebApp` | `sendChatJoinRequestWebApp(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendchatjoinrequestwebapp) |
 | `sendChecklist` | `sendChecklist(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendchecklist) |
 | `sendContact` | `sendContact(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendcontact) |
 | `sendDice` | `sendDice(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#senddice) |
@@ -176,6 +178,8 @@ Dynamic token calls create a short-lived client for the supplied token; they do 
 | `sendPaidMedia` | `sendPaidMedia(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendpaidmedia) |
 | `sendPhoto` | `sendPhoto(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendphoto) |
 | `sendPoll` | `sendPoll(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendpoll) |
+| `sendRichMessage` | `sendRichMessage(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendrichmessage) |
+| `sendRichMessageDraft` | `sendRichMessageDraft(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendrichmessagedraft) |
 | `sendSticker` | `sendSticker(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendsticker) |
 | `sendVenue` | `sendVenue(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendvenue) |
 | `sendVideo` | `sendVideo(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendvideo) |

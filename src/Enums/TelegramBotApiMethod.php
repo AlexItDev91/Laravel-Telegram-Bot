@@ -6,6 +6,7 @@ enum TelegramBotApiMethod: string
 {
     case addStickerToSet = 'addStickerToSet';
     case answerCallbackQuery = 'answerCallbackQuery';
+    case answerChatJoinRequestQuery = 'answerChatJoinRequestQuery';
     case answerGuestQuery = 'answerGuestQuery';
     case answerInlineQuery = 'answerInlineQuery';
     case answerPreCheckoutQuery = 'answerPreCheckoutQuery';
@@ -113,6 +114,7 @@ enum TelegramBotApiMethod: string
     case sendAnimation = 'sendAnimation';
     case sendAudio = 'sendAudio';
     case sendChatAction = 'sendChatAction';
+    case sendChatJoinRequestWebApp = 'sendChatJoinRequestWebApp';
     case sendChecklist = 'sendChecklist';
     case sendContact = 'sendContact';
     case sendDice = 'sendDice';
@@ -128,6 +130,8 @@ enum TelegramBotApiMethod: string
     case sendPaidMedia = 'sendPaidMedia';
     case sendPhoto = 'sendPhoto';
     case sendPoll = 'sendPoll';
+    case sendRichMessage = 'sendRichMessage';
+    case sendRichMessageDraft = 'sendRichMessageDraft';
     case sendSticker = 'sendSticker';
     case sendVenue = 'sendVenue';
     case sendVideo = 'sendVideo';

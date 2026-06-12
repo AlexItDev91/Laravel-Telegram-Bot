@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.12.0] - 2026-06-12
+
+- Updated the SDK target to Telegram Bot API 10.1, released on 2026-06-11.
+- Added native methods, enum cases, generated request DTOs, schema coverage, result metadata, and documentation for `answerChatJoinRequestQuery`, `sendChatJoinRequestWebApp`, `sendRichMessage`, and `sendRichMessageDraft`.
+- Updated `editMessageText` rich-message support, regenerated the 180-method API surface with 884 documented parameters, and hardened API surface checks so `TelegramUpdateType` stays synchronized with webhook update detection.
+
 ## [2.11.0] - 2026-06-10
 
 - Added `telegram-bot:make-handler` for scaffolding host application webhook command, update-type, and fallback handler classes.

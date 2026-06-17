@@ -8,6 +8,11 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.12.4] - 2026-06-17
+
+- Added dependency-free static browser search to the published Writerside documentation workflow.
+- Added a local search index builder, client script, and styling for the generated GitHub Pages site.
+
 ## [2.12.3] - 2026-06-17
 
 - Changed `telegram-bot:updates` parsed chat reference output from a wide table to vertical key-value blocks.

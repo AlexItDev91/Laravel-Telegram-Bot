@@ -34,3 +34,101 @@
 .table__scroll-arrow {
     display: none !important;
 }
+
+.ltb-doc-search {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    width: min(420px, calc(100vw - 48px));
+    font-family: inherit;
+}
+
+.ltb-doc-search__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.ltb-doc-search__input {
+    width: 100%;
+    min-height: 40px;
+    border: 1px solid rgba(125, 125, 125, 0.45);
+    border-radius: 8px;
+    padding: 0 14px;
+    font: inherit;
+    background: color-mix(in srgb, Canvas 92%, transparent);
+    color: CanvasText;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+.ltb-doc-search__input:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.ltb-doc-search__results {
+    margin-top: 8px;
+    max-height: min(520px, calc(100vh - 92px));
+    overflow: auto;
+    border: 1px solid rgba(125, 125, 125, 0.35);
+    border-radius: 8px;
+    background: Canvas;
+    color: CanvasText;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+}
+
+.ltb-doc-search__empty,
+.ltb-doc-search__result {
+    display: block;
+    padding: 12px 14px;
+}
+
+.ltb-doc-search__empty {
+    color: color-mix(in srgb, CanvasText 68%, transparent);
+}
+
+.ltb-doc-search__result {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(125, 125, 125, 0.22);
+}
+
+.ltb-doc-search__result:hover,
+.ltb-doc-search__result:focus {
+    background: color-mix(in srgb, #3b82f6 12%, transparent);
+}
+
+.ltb-doc-search__result-title {
+    display: block;
+    font-weight: 700;
+}
+
+.ltb-doc-search__result-snippet {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.9em;
+    line-height: 1.45;
+    color: color-mix(in srgb, CanvasText 72%, transparent);
+}
+
+@media (max-width: 900px) {
+    .ltb-doc-search {
+        top: auto;
+        left: 16px;
+        transform: none;
+        bottom: 16px;
+        width: min(420px, calc(100vw - 32px));
+    }
+
+    .ltb-doc-search__results {
+        max-height: min(420px, calc(100vh - 92px));
+    }
+}

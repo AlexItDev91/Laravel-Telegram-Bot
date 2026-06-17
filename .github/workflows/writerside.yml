@@ -9,6 +9,7 @@ on:
       - "README.md"
       - "CHANGELOG.md"
       - "VERSION"
+      - "scripts/build-writerside-static-search.php"
       - ".github/workflows/writerside.yml"
   workflow_dispatch:
 
@@ -56,6 +57,9 @@ jobs:
 
       - name: Unpack Writerside website
         run: unzip -O UTF-8 -qq "artifacts/${ARTIFACT}" -d site
+
+      - name: Build static documentation search
+        run: php scripts/build-writerside-static-search.php site
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v6

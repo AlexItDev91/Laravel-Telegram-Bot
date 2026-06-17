@@ -20,9 +20,11 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="2.12.3"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.12.4"/>', $config);
         $this->assertFileExists($root.'/Writerside/cfg/buildprofiles.xml');
         $this->assertFileExists($root.'/Writerside/cfg/static/custom.css');
+        $this->assertFileExists($root.'/Writerside/cfg/static/local-search.js');
+        $this->assertFileExists($root.'/scripts/build-writerside-static-search.php');
 
         $buildProfiles = file_get_contents($root.'/Writerside/cfg/buildprofiles.xml');
         $customCss = file_get_contents($root.'/Writerside/cfg/static/custom.css');
@@ -33,6 +35,7 @@ class WritersideDocumentationTest extends TestCase
         $this->assertStringContainsString('<custom-css>custom.css</custom-css>', $buildProfiles);
         $this->assertStringContainsString('table-layout: fixed', $customCss);
         $this->assertStringContainsString('overflow-wrap: anywhere', $customCss);
+        $this->assertStringContainsString('.ltb-doc-search', $customCss);
 
         foreach ([
             'overview.md',
@@ -74,12 +77,16 @@ class WritersideDocumentationTest extends TestCase
         $this->assertStringContainsString('actions/deploy-pages@v5', $workflow);
         $this->assertStringContainsString('JetBrains/writerside-github-action@v4', $workflow);
         $this->assertStringContainsString('Generate docs using Writerside Docker builder', $workflow);
+        $this->assertStringContainsString('Build static documentation search', $workflow);
+        $this->assertStringContainsString('php scripts/build-writerside-static-search.php site', $workflow);
         $this->assertStringNotContainsString('JetBrains/writerside-checker-action@v1', $workflow);
         $this->assertStringNotContainsString('actions/checkout@v4', $workflow);
         $this->assertStringNotContainsString('actions/upload-artifact@v4', $workflow);
         $this->assertStringNotContainsString('actions/download-artifact@v4', $workflow);
         $this->assertStringNotContainsString('actions/upload-artifact@v7', $workflow);
         $this->assertStringNotContainsString('actions/download-artifact@v7', $workflow);
+        $this->assertStringNotContainsString('ALGOLIA_', $workflow);
+        $this->assertStringNotContainsString('algolia-publisher', $workflow);
     }
 
     public function test_writerside_documentation_covers_key_package_workflows(): void
@@ -318,6 +325,10 @@ class WritersideDocumentationTest extends TestCase
             'paid static-analysis token',
             'qodana.yaml',
             '.github/workflows/qodana.yml',
+            'Published documentation search is fully static.',
+            'scripts/build-writerside-static-search.php',
+            'local-search-index.json',
+            'external search service',
             'composer check:telegram-api-surface',
             'composer generate:telegram-api-schema',
             'TelegramBotApiMethodSchema',

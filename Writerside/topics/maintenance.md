@@ -19,7 +19,7 @@ Large reference topics can be re-imported from the matching `docs/*.md` file whe
 ## Writerside Deployment
 
 The GitHub Actions workflow generates the `Writerside/tg` instance with JetBrains Writerside Docker builder `2026.04.8711`.
-It unpacks the generated website archive in the same job and deploys the static site to GitHub Pages.
+It unpacks the generated website archive, adds a static browser-side search index, and deploys the static site to GitHub Pages.
 
 GitHub repository settings must use:
 
@@ -28,7 +28,16 @@ GitHub repository settings must use:
 | Pages source | `GitHub Actions` |
 | Workflow branch | `main` |
 
-No package token, bot token, webhook secret, paid static-analysis token, or Algolia secret is required by the current documentation workflow.
+No package token, bot token, webhook secret, paid static-analysis token, Algolia account, or external search service is required by the current documentation workflow.
+
+## Published Search
+
+Published documentation search is fully static.
+The workflow runs `scripts/build-writerside-static-search.php` after unpacking the Writerside website archive.
+That script reads `Writerside/tg.tree` and `Writerside/topics/*.md`, writes `local-search-index.json`, copies `local-search.js`, and injects the script into generated HTML pages before the GitHub Pages artifact is uploaded.
+
+Keep the static search implementation dependency-free.
+Do not add external search services or committed generated search indexes.
 
 ## Qodana Configuration
 

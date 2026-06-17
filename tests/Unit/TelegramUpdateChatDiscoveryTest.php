@@ -91,5 +91,29 @@ class TelegramUpdateChatDiscoveryTest extends TestCase
             'TELEGRAM_CHAT_ID_2=-1001234567890',
             'TELEGRAM_CHAT_ID_3=-1005555555555',
         ], $discovery->envLines($rows));
+
+        $this->assertSame([
+            'Update 1001 (message)',
+            '  source: message',
+            '  chat_id: -1009007199254740991',
+            '  message_thread_id: 42',
+            '  message_id: 10',
+            '  chat_type: supergroup',
+            '  chat_title: Operations',
+            '',
+            'Update 1002 (channel_post)',
+            '  source: channel_post',
+            '  chat_id: -1001234567890',
+            '  message_id: 11',
+            '  chat_type: channel',
+            '  chat_title: Alerts',
+            '',
+            'Update 1003 (callback_query)',
+            '  source: callback_query.message',
+            '  chat_id: -1005555555555',
+            '  message_id: 12',
+            '  chat_type: group',
+            '  chat_title: Support',
+        ], $discovery->referenceLines($rows));
     }
 }

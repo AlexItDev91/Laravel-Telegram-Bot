@@ -46,6 +46,39 @@ final class TelegramUpdateChatDiscovery
     }
 
     /**
+     * @param  list<array<string, string>>  $rows
+     * @return list<string>
+     */
+    public function referenceLines(array $rows): array
+    {
+        $lines = [];
+
+        foreach ($rows as $index => $row) {
+            if ($index > 0) {
+                $lines[] = '';
+            }
+
+            $heading = ($row['update_id'] ?? '') !== '' ? 'Update '.$row['update_id'] : 'Update';
+
+            if (($row['update_type'] ?? '') !== '') {
+                $heading .= ' ('.$row['update_type'].')';
+            }
+
+            $lines[] = $heading;
+
+            foreach (['source', 'chat_id', 'message_thread_id', 'direct_messages_topic_id', 'message_id', 'chat_type', 'chat_title'] as $key) {
+                if (($row[$key] ?? '') === '') {
+                    continue;
+                }
+
+                $lines[] = '  '.$key.': '.$row[$key];
+            }
+        }
+
+        return $lines;
+    }
+
+    /**
      * @param  array<string, mixed>  $update
      * @return list<array<string, string>>
      */

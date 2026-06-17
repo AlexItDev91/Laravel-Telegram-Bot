@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.12.3] - 2026-06-17
+
+- Changed `telegram-bot:updates` parsed chat reference output from a wide table to vertical key-value blocks.
+- Updated console command documentation and Writerside examples to show copy-ready values first and parsed identifiers as readable key-value lines.
+- Replaced the Writerside troubleshooting debug checklist table with a numbered list.
+
 ## [2.12.2] - 2026-06-17
 
 - Removed the separate Required column from the Writerside configuration environment values table.

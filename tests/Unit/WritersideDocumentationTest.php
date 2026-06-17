@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="2.12.2"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.12.3"/>', $config);
         $this->assertFileExists($root.'/Writerside/cfg/buildprofiles.xml');
         $this->assertFileExists($root.'/Writerside/cfg/static/custom.css');
 
@@ -94,6 +94,7 @@ class WritersideDocumentationTest extends TestCase
         $typedResponses = file_get_contents($root.'/Writerside/topics/typed-responses.md');
         $recipes = file_get_contents($root.'/Writerside/topics/production-recipes.md');
         $apiSurface = file_get_contents($root.'/Writerside/topics/api-surface.md');
+        $troubleshooting = file_get_contents($root.'/Writerside/topics/troubleshooting.md');
         $maintenance = file_get_contents($root.'/Writerside/topics/maintenance.md');
 
         $this->assertIsString($overview);
@@ -105,6 +106,7 @@ class WritersideDocumentationTest extends TestCase
         $this->assertIsString($typedResponses);
         $this->assertIsString($recipes);
         $this->assertIsString($apiSurface);
+        $this->assertIsString($troubleshooting);
         $this->assertIsString($maintenance);
 
         foreach ([
@@ -306,6 +308,11 @@ class WritersideDocumentationTest extends TestCase
         ] as $requiredApiText) {
             $this->assertStringContainsString($requiredApiText, $apiSurface);
         }
+
+        $this->assertStringContainsString('## Debug Checklist', $troubleshooting);
+        $this->assertStringContainsString('1. The host Laravel app has the expected env values loaded.', $troubleshooting);
+        $this->assertStringContainsString('8. Slow webhook work is dispatched to jobs instead of blocking Telegram\'s request.', $troubleshooting);
+        $this->assertStringNotContainsString('| Step | What to verify |', $troubleshooting);
 
         foreach ([
             'paid static-analysis token',

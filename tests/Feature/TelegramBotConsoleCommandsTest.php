@@ -362,8 +362,9 @@ class TelegramBotConsoleCommandsTest extends TestCase
             '--allowed-updates' => ['message'],
         ])
             ->expectsOutputToContain('Parsed Telegram chat references for bot [default]')
-            ->expectsOutputToContain('-1009007199254740991')
-            ->expectsOutputToContain('42')
+            ->expectsOutputToContain('Update 1001 (message)')
+            ->expectsOutputToContain('chat_id: -1009007199254740991')
+            ->expectsOutputToContain('message_thread_id: 42')
             ->assertSuccessful();
 
         $this->assertSame('/bot123456:test-token/getUpdates', $history[0]['request']->getUri()->getPath());

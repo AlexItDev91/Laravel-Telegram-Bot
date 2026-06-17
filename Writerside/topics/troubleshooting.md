@@ -62,13 +62,11 @@ Logs intentionally omit bot tokens, secret headers, request payloads, response b
 
 ## Debug Checklist
 
-| Step | What to verify |
-| --- | --- |
-| 1 | The host Laravel app has the expected env values loaded. |
-| 2 | `php artisan config:clear` has been run after env changes in local debugging. |
-| 3 | `telegram-bot:me` returns the expected bot username and ID. |
-| 4 | The bot is a member or admin of the target chat/channel. |
-| 5 | The destination ID includes the minus sign for groups and channels. |
-| 6 | Topic messages include the correct `message_thread_id`. |
-| 7 | Production webhooks use a valid secret token. |
-| 8 | Slow webhook work is dispatched to jobs instead of blocking Telegram's request. |
+1. The host Laravel app has the expected env values loaded.
+2. `php artisan config:clear` has been run after env changes in local debugging.
+3. `telegram-bot:me` returns the expected bot username and ID.
+4. The bot is a member or admin of the target chat/channel.
+5. The destination ID includes the minus sign for groups and channels.
+6. Topic messages include the correct `message_thread_id`.
+7. Production webhooks use a valid secret token.
+8. Slow webhook work is dispatched to jobs instead of blocking Telegram's request.

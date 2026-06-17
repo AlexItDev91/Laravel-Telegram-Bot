@@ -14,7 +14,6 @@ use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\info;
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\outro;
-use function Laravel\Prompts\table;
 use function Laravel\Prompts\warning;
 
 class TelegramBotUpdatesCommand extends Command
@@ -78,20 +77,9 @@ class TelegramBotUpdatesCommand extends Command
         }
 
         info('Parsed Telegram chat references for bot ['.$bot.']');
-        table(
-            ['Update', 'Type', 'Source', 'Chat ID', 'Thread ID', 'DM Topic ID', 'Message ID', 'Chat Type', 'Title'],
-            array_map(static fn (array $row): array => [
-                $row['update_id'],
-                $row['update_type'],
-                $row['source'],
-                $row['chat_id'],
-                $row['message_thread_id'],
-                $row['direct_messages_topic_id'],
-                $row['message_id'],
-                $row['chat_type'],
-                $row['chat_title'],
-            ], $rows),
-        );
+        foreach ($discovery->referenceLines($rows) as $line) {
+            $this->line($line);
+        }
 
         outro('Use chat_id with channel mappings, and message_thread_id when the destination is a forum topic.');
 

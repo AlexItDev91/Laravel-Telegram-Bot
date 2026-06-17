@@ -176,17 +176,24 @@ Telegram `getUpdates` and webhooks are mutually exclusive. If a webhook is activ
 php artisan telegram-bot:updates --bot=default
 ```
 
-The command prints parsed rows instead of raw JSON:
-
-| Update | Type | Source | Chat ID | Thread ID | DM Topic ID | Message ID | Chat Type | Title |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `1001` | `message` | `message` | `-1009007199254740991` | `42` |  | `10` | `supergroup` | `Operations` |
-
-It also prints copy-ready values:
+The command prints copy-ready values first:
 
 ```text
 TELEGRAM_CHAT_ID=-1009007199254740991
 TELEGRAM_MESSAGE_THREAD_ID=42
+```
+
+It also prints parsed key-value lines instead of raw JSON:
+
+```text
+Parsed Telegram chat references for bot [default]
+Update 1001 (message)
+  source: message
+  chat_id: -1009007199254740991
+  message_thread_id: 42
+  message_id: 10
+  chat_type: supergroup
+  chat_title: Operations
 ```
 
 Use `chat_id` for normal channel mappings. Use `message_thread_id` only when the destination is a forum topic. For direct messages topics, use `direct_messages_topic_id`.

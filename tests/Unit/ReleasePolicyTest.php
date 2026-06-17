@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.12.4', $version);
+        $this->assertSame('2.12.5', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -35,6 +35,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.12.5] - 2026-06-17', $changelog);
         $this->assertStringContainsString('## [2.12.4] - 2026-06-17', $changelog);
         $this->assertStringContainsString('## [2.12.3] - 2026-06-17', $changelog);
         $this->assertStringContainsString('## [2.12.2] - 2026-06-17', $changelog);
@@ -212,7 +213,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.12.4', $notes);
-        $this->assertStringContainsString('Added dependency-free static browser search to the published Writerside documentation workflow.', $notes);
+        $this->assertStringContainsString('# v2.12.5', $notes);
+        $this->assertStringContainsString('Fixed static documentation search to index individual Markdown sections, internal links, and API methods instead of whole pages.', $notes);
     }
 }

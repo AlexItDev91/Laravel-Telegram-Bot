@@ -34,7 +34,7 @@ No package token, bot token, webhook secret, paid static-analysis token, Algolia
 
 Published documentation search is fully static.
 The workflow runs `scripts/build-writerside-static-search.php` after unpacking the Writerside website archive.
-That script reads `Writerside/tg.tree` and `Writerside/topics/*.md`, writes `local-search-index.json`, copies `local-search.js`, and injects the script into generated HTML pages before the GitHub Pages artifact is uploaded.
+That script reads `Writerside/tg.tree` and `Writerside/topics/*.md`, indexes headings and internal links, writes `local-search-index.json`, copies `local-search.js`, and injects the script into generated HTML pages before the GitHub Pages artifact is uploaded.
 
 Keep the static search implementation dependency-free.
 Do not add external search services or committed generated search indexes.

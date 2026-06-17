@@ -111,12 +111,22 @@
     font-weight: 700;
 }
 
+.ltb-doc-search__result-page,
 .ltb-doc-search__result-snippet {
     display: block;
     margin-top: 4px;
     font-size: 0.9em;
     line-height: 1.45;
     color: color-mix(in srgb, CanvasText 72%, transparent);
+}
+
+.ltb-doc-search__result-url {
+    display: block;
+    margin-top: 6px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 0.78em;
+    color: color-mix(in srgb, #3b82f6 78%, CanvasText);
+    overflow-wrap: anywhere;
 }
 
 @media (max-width: 900px) {

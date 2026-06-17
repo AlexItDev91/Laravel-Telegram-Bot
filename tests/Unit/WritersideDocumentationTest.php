@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="2.12.4"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.12.5"/>', $config);
         $this->assertFileExists($root.'/Writerside/cfg/buildprofiles.xml');
         $this->assertFileExists($root.'/Writerside/cfg/static/custom.css');
         $this->assertFileExists($root.'/Writerside/cfg/static/local-search.js');

@@ -16,6 +16,10 @@
     return String(value || "").toLowerCase();
   }
 
+  function compact(value) {
+    return normalize(value).replace(/[^a-z0-9]+/g, "");
+  }
+
   function escapeHtml(value) {
     return String(value || "")
       .replace(/&/g, "&amp;")
@@ -78,22 +82,36 @@
     return prefix + source.slice(start, end) + suffix;
   }
 
-  function score(record, terms) {
+  function score(record, terms, query) {
+    var pageTitle = normalize(record.pageTitle);
     var title = normalize(record.title);
+    var url = normalize(record.url);
     var content = normalize(record.content);
+    var compactTitle = compact(record.title);
+    var compactQuery = compact(query);
     var value = 0;
 
     for (var index = 0; index < terms.length; index += 1) {
       var term = terms[index];
 
-      if (!title.includes(term) && !content.includes(term)) {
+      if (!pageTitle.includes(term) && !title.includes(term) && !url.includes(term) && !content.includes(term)) {
         return 0;
       }
 
-      if (title === term) {
-        value += 100;
+      if (title === term || compactTitle === compactQuery) {
+        value += 220;
       } else if (title.includes(term)) {
-        value += 35;
+        value += 80;
+      } else if (pageTitle.includes(term)) {
+        value += 18;
+      }
+
+      if (url.includes("#" + term) || url.endsWith("#" + compact(term))) {
+        value += 140;
+      }
+
+      if (content.includes(term)) {
+        value += 12;
       }
 
       value += Math.min(25, content.split(term).length - 1);
@@ -113,7 +131,7 @@
       .map(function (record) {
         return {
           record: record,
-          score: score(record, terms),
+          score: score(record, terms, query),
           snippet: snippet(record.content, terms)
         };
       })
@@ -147,7 +165,9 @@
       return (
         '<a class="ltb-doc-search__result" href="' + escapeHtml(href) + '">' +
         '<span class="ltb-doc-search__result-title">' + escapeHtml(record.title) + '</span>' +
+        '<span class="ltb-doc-search__result-page">' + escapeHtml(record.pageTitle || "") + '</span>' +
         '<span class="ltb-doc-search__result-snippet">' + escapeHtml(result.snippet) + '</span>' +
+        '<span class="ltb-doc-search__result-url">' + escapeHtml(record.url) + '</span>' +
         '</a>'
       );
     }).join("");

@@ -8,6 +8,11 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.12.5] - 2026-06-17
+
+- Fixed static documentation search to index individual Markdown sections, internal links, and API methods instead of whole pages.
+- Updated search results to show page context, snippets, and anchor URLs that jump directly to matching sections.
+
 ## [2.12.4] - 2026-06-17
 
 - Added dependency-free static browser search to the published Writerside documentation workflow.

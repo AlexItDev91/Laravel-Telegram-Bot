@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.12.0', $version);
+        $this->assertSame('2.12.1', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -35,6 +35,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.12.1] - 2026-06-17', $changelog);
         $this->assertStringContainsString('## [2.12.0] - 2026-06-12', $changelog);
         $this->assertStringContainsString('## [2.11.0] - 2026-06-10', $changelog);
         $this->assertStringContainsString('## [2.10.0] - 2026-06-10', $changelog);
@@ -208,7 +209,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.12.0', $notes);
-        $this->assertStringContainsString('Updated the SDK target to Telegram Bot API 10.1, released on 2026-06-11.', $notes);
+        $this->assertStringContainsString('# v2.12.1', $notes);
+        $this->assertStringContainsString('Hardened transport exceptions so Guzzle timeout and connection failures cannot leak bot tokens through retained previous exception chains in Laravel logs.', $notes);
     }
 }

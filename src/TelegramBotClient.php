@@ -181,7 +181,7 @@ class TelegramBotClient implements TelegramBotClientContract
                 'exception' => $exception::class,
             ]);
 
-            throw new TelegramBotTransportException($this->sanitizeTransportMessage($exception->getMessage()), previous: $exception);
+            throw new TelegramBotTransportException($this->sanitizeTransportMessage($exception->getMessage()));
         }
 
         try {

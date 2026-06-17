@@ -17,7 +17,7 @@ use AlexItDev91\LaravelTelegramBot\Support\TelegramBotRetryPolicy;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use Closure;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
@@ -293,8 +293,8 @@ class TelegramBotClientTest extends TestCase
             token: '123456:secret-token',
             apiUrl: 'https://api.telegram.test',
             httpClient: $this->fakeHttpClient([
-                new RequestException(
-                    'Network failure while requesting https://api.telegram.test/bot123456:secret-token/getMe or https://api.telegram.test/bot123456%3Asecret-token/getMe',
+                new ConnectException(
+                    'cURL error 28: Operation timed out for https://api.telegram.test/bot123456:secret-token/getMe or https://api.telegram.test/bot123456%3Asecret-token/getMe',
                     new Request('POST', 'https://api.telegram.test/bot123456:secret-token/getMe'),
                 ),
             ]),
@@ -307,7 +307,9 @@ class TelegramBotClientTest extends TestCase
             $this->assertStringNotContainsString('123456:secret-token', $exception->getMessage());
             $this->assertStringNotContainsString('123456%3Asecret-token', $exception->getMessage());
             $this->assertStringContainsString('<redacted-bot-token>', $exception->getMessage());
-            $this->assertInstanceOf(RequestException::class, $exception->getPrevious());
+            $this->assertStringNotContainsString('123456:secret-token', (string) $exception);
+            $this->assertStringNotContainsString('123456%3Asecret-token', (string) $exception);
+            $this->assertNull($exception->getPrevious());
         }
     }
 

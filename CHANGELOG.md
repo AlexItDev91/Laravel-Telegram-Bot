@@ -8,6 +8,11 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.12.1] - 2026-06-17
+
+- Hardened transport exceptions so Guzzle timeout and connection failures cannot leak bot tokens through retained previous exception chains in Laravel logs.
+- Kept transport failure messages actionable while continuing to redact raw and URL-encoded bot tokens.
+
 ## [2.12.0] - 2026-06-12
 
 - Updated the SDK target to Telegram Bot API 10.1, released on 2026-06-11.

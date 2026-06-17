@@ -5,31 +5,31 @@ Publish it during installation, then store real values in the host application's
 
 ## Environment Values
 
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `TELEGRAM_BOT` | No | Default bot name. Defaults to `default`. |
-| `TELEGRAM_BOT_TOKEN` | Yes for the default bot | BotFather token for the default bot. |
-| `TELEGRAM_BOT_API_URL` | No | Telegram API base URL. Defaults to `https://api.telegram.org`. |
-| `TELEGRAM_BOT_TIMEOUT` | No | HTTP timeout in seconds. Defaults to `10`. |
-| `TELEGRAM_BOT_LOGGING_ENABLED` | No | Enables safe package logs. Defaults to `true`. |
-| `TELEGRAM_WEBHOOK_BOT` | No | Bot used by the incoming webhook receiver. |
-| `TELEGRAM_WEBHOOK_BOT_USERNAME` | No | Bot username used to ignore commands addressed to another bot. |
-| `TELEGRAM_WEBHOOK_SECRET_TOKEN` | Recommended for webhooks | Secret Telegram sends in `X-Telegram-Bot-Api-Secret-Token`. |
-| `TELEGRAM_WEBHOOK_REQUIRE_SECRET` | Recommended in production | Fails closed when the webhook secret is missing. |
-| `TELEGRAM_WEBHOOK_QUEUE_ENABLED` | No | Dispatches accepted webhook updates to Laravel queue jobs. |
-| `TELEGRAM_WEBHOOK_QUEUE_CONNECTION` | No | Queue connection for webhook jobs. |
-| `TELEGRAM_WEBHOOK_QUEUE` | No | Queue name for webhook jobs. |
-| `TELEGRAM_WEBHOOK_QUEUE_AFTER_COMMIT` | No | Dispatches webhook jobs after open database transactions commit. |
-| `TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED` | No | Skips duplicate webhook `update_id` values for the same bot. |
-| `TELEGRAM_WEBHOOK_IDEMPOTENCY_STORE` | No | Cache store used by the duplicate-update guard. |
-| `TELEGRAM_WEBHOOK_IDEMPOTENCY_TTL` | No | Duplicate-update guard TTL in seconds. Defaults to `86400`. |
-| `TELEGRAM_CONVERSATION_ENABLED` | No | Enables cache-backed conversation state for webhook handlers. |
-| `TELEGRAM_CONVERSATION_STORE` | No | Cache store used by conversation state. |
-| `TELEGRAM_CONVERSATION_TTL` | No | Conversation state TTL in seconds. Defaults to `86400`. |
-| `TELEGRAM_CONVERSATION_KEY_PREFIX` | No | Cache key prefix for conversation state. |
-| `TELEGRAM_WEBHOOK_ROUTE_ENABLED` | No | Enables the package route. Defaults to `true`. |
-| `TELEGRAM_WEBHOOK_ROUTE_URI` | No | Defaults to `telegram-bot/webhook`. |
-| `TELEGRAM_WEBHOOK_ROUTE_NAME` | No | Defaults to `telegram-bot.webhook`. |
+| Variable | Purpose |
+| --- | --- |
+| `TELEGRAM_BOT` | Default bot name. Defaults to `default`. |
+| `TELEGRAM_BOT_TOKEN` | BotFather token for the default bot. Required for the default bot. |
+| `TELEGRAM_BOT_API_URL` | Telegram API base URL. Defaults to `https://api.telegram.org`. |
+| `TELEGRAM_BOT_TIMEOUT` | HTTP timeout in seconds. Defaults to `10`. |
+| `TELEGRAM_BOT_LOGGING_ENABLED` | Enables safe package logs. Defaults to `true`. |
+| `TELEGRAM_WEBHOOK_BOT` | Bot used by the incoming webhook receiver. |
+| `TELEGRAM_WEBHOOK_BOT_USERNAME` | Bot username used to ignore commands addressed to another bot. |
+| `TELEGRAM_WEBHOOK_SECRET_TOKEN` | Secret Telegram sends in `X-Telegram-Bot-Api-Secret-Token`. Recommended for webhooks. |
+| `TELEGRAM_WEBHOOK_REQUIRE_SECRET` | Fails closed when the webhook secret is missing. Recommended in production. |
+| `TELEGRAM_WEBHOOK_QUEUE_ENABLED` | Dispatches accepted webhook updates to Laravel queue jobs. |
+| `TELEGRAM_WEBHOOK_QUEUE_CONNECTION` | Queue connection for webhook jobs. |
+| `TELEGRAM_WEBHOOK_QUEUE` | Queue name for webhook jobs. |
+| `TELEGRAM_WEBHOOK_QUEUE_AFTER_COMMIT` | Dispatches webhook jobs after open database transactions commit. |
+| `TELEGRAM_WEBHOOK_IDEMPOTENCY_ENABLED` | Skips duplicate webhook `update_id` values for the same bot. |
+| `TELEGRAM_WEBHOOK_IDEMPOTENCY_STORE` | Cache store used by the duplicate-update guard. |
+| `TELEGRAM_WEBHOOK_IDEMPOTENCY_TTL` | Duplicate-update guard TTL in seconds. Defaults to `86400`. |
+| `TELEGRAM_CONVERSATION_ENABLED` | Enables cache-backed conversation state for webhook handlers. |
+| `TELEGRAM_CONVERSATION_STORE` | Cache store used by conversation state. |
+| `TELEGRAM_CONVERSATION_TTL` | Conversation state TTL in seconds. Defaults to `86400`. |
+| `TELEGRAM_CONVERSATION_KEY_PREFIX` | Cache key prefix for conversation state. |
+| `TELEGRAM_WEBHOOK_ROUTE_ENABLED` | Enables the package route. Defaults to `true`. |
+| `TELEGRAM_WEBHOOK_ROUTE_URI` | Defaults to `telegram-bot/webhook`. |
+| `TELEGRAM_WEBHOOK_ROUTE_NAME` | Defaults to `telegram-bot.webhook`. |
 
 ## Single Bot
 

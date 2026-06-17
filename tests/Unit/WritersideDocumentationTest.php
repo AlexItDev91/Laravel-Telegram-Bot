@@ -20,7 +20,19 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="2.11.0"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.12.2"/>', $config);
+        $this->assertFileExists($root.'/Writerside/cfg/buildprofiles.xml');
+        $this->assertFileExists($root.'/Writerside/cfg/static/custom.css');
+
+        $buildProfiles = file_get_contents($root.'/Writerside/cfg/buildprofiles.xml');
+        $customCss = file_get_contents($root.'/Writerside/cfg/static/custom.css');
+
+        $this->assertIsString($buildProfiles);
+        $this->assertIsString($customCss);
+        $this->assertStringContainsString('<code-soft-wrap>true</code-soft-wrap>', $buildProfiles);
+        $this->assertStringContainsString('<custom-css>custom.css</custom-css>', $buildProfiles);
+        $this->assertStringContainsString('table-layout: fixed', $customCss);
+        $this->assertStringContainsString('overflow-wrap: anywhere', $customCss);
 
         foreach ([
             'overview.md',

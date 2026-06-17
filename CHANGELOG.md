@@ -8,6 +8,11 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.12.2] - 2026-06-17
+
+- Removed the separate Required column from the Writerside configuration environment values table.
+- Added Writerside table wrapping styles so generated documentation tables fit the article column without horizontal scrolling.
+
 ## [2.12.1] - 2026-06-17
 
 - Hardened transport exceptions so Guzzle timeout and connection failures cannot leak bot tokens through retained previous exception chains in Laravel logs.

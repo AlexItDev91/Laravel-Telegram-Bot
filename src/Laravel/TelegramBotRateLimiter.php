@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\Laravel;
 
 use Override;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotContextualRateLimiter;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotRateLimiter as TelegramBotRateLimiterContract;
 use AlexItDev91\LaravelTelegramBot\Exceptions\TelegramBotRateLimitException;
 use AlexItDev91\LaravelTelegramBot\Laravel\Concerns\ResolvesTelegramCacheRepository;
@@ -10,7 +11,7 @@ use Closure;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Container\Container;
 
-readonly class TelegramBotRateLimiter implements TelegramBotRateLimiterContract
+readonly class TelegramBotRateLimiter implements TelegramBotRateLimiterContract, TelegramBotContextualRateLimiter
 {
     use ResolvesTelegramCacheRepository;
 
@@ -22,6 +23,15 @@ readonly class TelegramBotRateLimiter implements TelegramBotRateLimiterContract
     #[Override]
     public function throttle(string $method, Closure $next): mixed
     {
+        return $this->throttleWithContext($method, $next);
+    }
+
+    /**
+     * @param  array<string, string|int|null>  $context
+     */
+    #[Override]
+    public function throttleWithContext(string $method, Closure $next, array $context = []): mixed
+    {
         if (! $this->enabled()) {
             return $next();
         }
@@ -32,7 +42,7 @@ readonly class TelegramBotRateLimiter implements TelegramBotRateLimiterContract
             return $next();
         }
 
-        $key = $this->key($method);
+        $key = $this->key($method, $context);
         $window = $this->windowSeconds();
         $now = time();
         $bucket = $cache->get($key);
@@ -75,12 +85,30 @@ readonly class TelegramBotRateLimiter implements TelegramBotRateLimiterContract
         return max(1, (int) config('telegram-bot.rate_limit.decay_seconds', 1));
     }
 
-    private function key(string $method): string
+    /**
+     * @param  array<string, string|int|null>  $context
+     */
+    private function key(string $method, array $context): string
     {
         $prefix = config('telegram-bot.rate_limit.key_prefix', 'telegram-bot:rate-limit');
         $prefix = is_string($prefix) && $prefix !== '' ? $prefix : 'telegram-bot:rate-limit';
 
-        return $prefix.':'.preg_replace('/[^A-Za-z0-9:_-]+/', '_', $method);
+        return implode(':', array_filter([
+            $prefix,
+            $this->keySegment($context['bot'] ?? null),
+            $this->keySegment($context['business_connection_id'] ?? null),
+            $this->keySegment($context['chat_id'] ?? null),
+            $this->keySegment($method),
+        ], static fn (?string $segment): bool => $segment !== null && $segment !== ''));
+    }
+
+    private function keySegment(string|int|null $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return preg_replace('/[^A-Za-z0-9:_-]+/', '_', (string) $value);
     }
 
     private function cache(): ?CacheRepository

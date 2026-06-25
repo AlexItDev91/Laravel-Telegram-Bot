@@ -177,6 +177,36 @@ class TelegramBotApiMethodSchemaTest extends TestCase
         TelegramBotRequestData::forMethod(TelegramBotApiMethod::sendMessage, ['text' => 'Hello']);
     }
 
+    public function test_generated_request_data_rejects_blank_required_parameters(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Telegram Bot API method [sendMessage] requires parameter(s): chat_id.');
+
+        SendMessageRequestData::make(chatId: '', text: 'Hello');
+    }
+
+    public function test_generated_request_data_validates_conditional_message_references(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Telegram Bot API method [editMessageText] requires either [inline_message_id] or both [chat_id] and [message_id].');
+
+        TelegramBotRequestData::forMethod(TelegramBotApiMethod::editMessageText, [
+            'text' => 'Updated',
+        ]);
+    }
+
+    public function test_generated_request_data_validates_non_zero_rich_message_draft_id(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Telegram Bot API method [sendRichMessageDraft] requires parameter [draft_id] to be non-zero.');
+
+        TelegramBotRequestData::forMethod(TelegramBotApiMethod::sendRichMessageDraft, [
+            'chat_id' => 123456789,
+            'draft_id' => 0,
+            'rich_message' => ['html' => '<p>Thinking</p>'],
+        ]);
+    }
+
     public function test_client_rejects_method_scoped_request_data_used_with_another_method(): void
     {
         $client = TelegramBotClient::make(

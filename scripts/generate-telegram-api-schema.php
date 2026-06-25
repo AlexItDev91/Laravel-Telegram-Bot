@@ -57,6 +57,7 @@ $requestRegistryPath = $root.'/src/TelegramBotApiRequestRegistry.php';
 $resultSchemaPath = $root.'/src/TelegramBotApiResultSchema.php';
 $requestBasePath = $root.'/src/DTO/Requests/TelegramBotApiRequestData.php';
 $requestDirectory = $root.'/src/DTO/Requests';
+$skipOfficialCheck = in_array('--skip-official-check', $argv, true);
 
 $markdown = file_get_contents($methodsPath);
 
@@ -85,6 +86,10 @@ foreach ($sections as $section) {
 }
 
 ksort($schema);
+
+if (! $skipOfficialCheck) {
+    verifyLocalSchemaAgainstOfficial($schema);
+}
 
 $export = shortArrayExport($schema, 2);
 $checksum = hash('sha256', json_encode($schema, JSON_THROW_ON_ERROR));
@@ -184,6 +189,228 @@ printf(
     array_sum(array_map('count', $schema)),
 );
 
+/**
+ * @param  array<string, list<array{name: string, type: string, required: bool}>>  $localSchema
+ */
+function verifyLocalSchemaAgainstOfficial(array $localSchema): void
+{
+    $officialHtml = fetchOfficialApiPageForGeneration();
+    $officialMethods = officialMethodNamesForGeneration($officialHtml);
+    $officialSchema = officialMethodParametersForGeneration($officialHtml, $officialMethods);
+    $failures = [];
+    $localMethods = array_keys($localSchema);
+
+    foreach (diffListsForGeneration('method', $officialMethods, $localMethods) as $failure) {
+        $failures[] = $failure;
+    }
+
+    foreach (diffMethodParametersForGeneration($officialSchema, $localSchema) as $failure) {
+        $failures[] = $failure;
+    }
+
+    if ($failures === []) {
+        return;
+    }
+
+    fwrite(STDERR, "Local docs/METHODS.md is not synchronized with the official Telegram Bot API:\n");
+
+    foreach ($failures as $failure) {
+        fwrite(STDERR, "- $failure\n");
+    }
+
+    fwrite(STDERR, "Use --skip-official-check only for offline regeneration.\n");
+    exit(1);
+}
+
+function fetchOfficialApiPageForGeneration(): string
+{
+    $context = stream_context_create([
+        'http' => [
+            'timeout' => 15,
+        ],
+    ]);
+
+    $html = file_get_contents('https://core.telegram.org/bots/api', false, $context);
+
+    if ($html === false) {
+        fwrite(STDERR, "Failed to fetch https://core.telegram.org/bots/api. Use --skip-official-check for offline regeneration.\n");
+        exit(1);
+    }
+
+    return $html;
+}
+
+/**
+ * @return list<string>
+ */
+function officialMethodNamesForGeneration(string $html): array
+{
+    preg_match_all('/<h4><a class="anchor" name="([^"]+)"[^>]*>.*?<\/a>(.*?)<\/h4>/s', $html, $matches, PREG_SET_ORDER);
+
+    $methods = [];
+
+    foreach ($matches as $match) {
+        $title = trim(strip_tags($match[2]));
+
+        if (preg_match('/^[a-z][A-Za-z0-9]*$/', $title) === 1) {
+            $methods[] = $title;
+        }
+    }
+
+    return sortedUniqueForGeneration($methods);
+}
+
+/**
+ * @param  list<string>  $methods
+ * @return array<string, list<array{name: string, type: string, required: bool}>>
+ */
+function officialMethodParametersForGeneration(string $html, array $methods): array
+{
+    preg_match_all(
+        '/<h4><a class="anchor" name="([^"]+)"[^>]*>.*?<\/a>(.*?)<\/h4>(.*?)(?=<h4><a class="anchor" name="[^"]+"|$)/s',
+        $html,
+        $matches,
+        PREG_SET_ORDER,
+    );
+
+    $methodSet = array_fill_keys($methods, true);
+    $parameters = [];
+
+    foreach ($matches as $match) {
+        $method = trim(strip_tags($match[2]));
+
+        if (! isset($methodSet[$method])) {
+            continue;
+        }
+
+        $parameters[$method] = officialParametersFromBlockForGeneration($match[3]);
+    }
+
+    ksort($parameters);
+
+    return $parameters;
+}
+
+/**
+ * @return list<array{name: string, type: string, required: bool}>
+ */
+function officialParametersFromBlockForGeneration(string $html): array
+{
+    if (! preg_match('/<table class="table">\s*<thead>.*?<th>Parameter<\/th>.*?<th>Type<\/th>.*?<th>Required<\/th>.*?<\/thead>\s*<tbody>(.*?)<\/tbody>\s*<\/table>/s', $html, $table)) {
+        return [];
+    }
+
+    preg_match_all('/<tr>\s*<td>(.*?)<\/td>\s*<td>(.*?)<\/td>\s*<td>(.*?)<\/td>/s', $table[1], $rows, PREG_SET_ORDER);
+
+    $parameters = [];
+
+    foreach ($rows as $row) {
+        $parameters[] = [
+            'name' => htmlCellTextForGeneration($row[1]),
+            'type' => htmlCellTextForGeneration($row[2]),
+            'required' => htmlCellTextForGeneration($row[3]) === 'Yes',
+        ];
+    }
+
+    return $parameters;
+}
+
+/**
+ * @param  list<string>  $official
+ * @param  list<string>  $local
+ * @return list<string>
+ */
+function diffListsForGeneration(string $label, array $official, array $local): array
+{
+    $missing = array_values(array_diff($official, $local));
+    $extra = array_values(array_diff($local, $official));
+    $failures = [];
+
+    if ($missing !== []) {
+        $failures[] = sprintf('Missing official Telegram Bot API %ss: %s.', $label, implode(', ', $missing));
+    }
+
+    if ($extra !== []) {
+        $failures[] = sprintf('Local unknown Telegram Bot API %ss: %s.', $label, implode(', ', $extra));
+    }
+
+    return $failures;
+}
+
+/**
+ * @param  array<string, list<array{name: string, type: string, required: bool}>>  $official
+ * @param  array<string, list<array{name: string, type: string, required: bool}>>  $local
+ * @return list<string>
+ */
+function diffMethodParametersForGeneration(array $official, array $local): array
+{
+    $failures = [];
+
+    foreach ($official as $method => $officialParameters) {
+        if (! array_key_exists($method, $local)) {
+            continue;
+        }
+
+        $officialByName = parameterMapForGeneration($officialParameters);
+        $localByName = parameterMapForGeneration($local[$method]);
+        $missing = array_values(array_diff(array_keys($officialByName), array_keys($localByName)));
+        $extra = array_values(array_diff(array_keys($localByName), array_keys($officialByName)));
+
+        if ($missing !== []) {
+            $failures[] = sprintf('Missing documented parameters for [%s]: %s.', $method, implode(', ', $missing));
+        }
+
+        if ($extra !== []) {
+            $failures[] = sprintf('Local unknown documented parameters for [%s]: %s.', $method, implode(', ', $extra));
+        }
+
+        foreach (array_intersect(array_keys($officialByName), array_keys($localByName)) as $parameter) {
+            if ($officialByName[$parameter] !== $localByName[$parameter]) {
+                $failures[] = sprintf('Documented parameter mismatch for [%s.%s].', $method, $parameter);
+            }
+        }
+    }
+
+    return $failures;
+}
+
+/**
+ * @param  list<array{name: string, type: string, required: bool}>  $parameters
+ * @return array<string, array{name: string, type: string, required: bool}>
+ */
+function parameterMapForGeneration(array $parameters): array
+{
+    $mapped = [];
+
+    foreach ($parameters as $parameter) {
+        $mapped[$parameter['name']] = $parameter;
+    }
+
+    return $mapped;
+}
+
+/**
+ * @param  list<string>  $values
+ * @return list<string>
+ */
+function sortedUniqueForGeneration(array $values): array
+{
+    $values = array_values(array_unique($values));
+    sort($values);
+
+    return $values;
+}
+
+function htmlCellTextForGeneration(string $html): string
+{
+    return normalizeWhitespaceForGeneration(html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5));
+}
+
+function normalizeWhitespaceForGeneration(string $value): string
+{
+    return trim(preg_replace('/\s+/', ' ', $value) ?? '');
+}
+
 function ensureDirectory(string $directory): void
 {
     if (is_dir($directory)) {
@@ -237,6 +464,7 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
     {
         if ($this->validateRequiredParameters) {
             $this->assertRequiredParameters($parameters);
+            $this->assertMethodSpecificParameters($parameters);
         }
 
         parent::__construct($parameters);
@@ -297,7 +525,7 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
     {
         $missing = array_values(array_filter(
             $this->requiredParameters(),
-            static fn (string $parameter): bool => ! array_key_exists($parameter, $parameters) || $parameters[$parameter] === null,
+            fn (string $parameter): bool => ! array_key_exists($parameter, $parameters) || $this->isBlankParameterValue($parameters[$parameter]),
         ));
 
         if ($missing === []) {
@@ -309,6 +537,76 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
             $this->method(),
             implode(', ', $missing),
         ));
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    private function assertMethodSpecificParameters(array $parameters): void
+    {
+        if ($this->requiresMessageReference()) {
+            $this->assertMessageReference($parameters);
+        }
+
+        if ($this->method() === 'sendRichMessageDraft') {
+            $draftId = $parameters['draft_id'] ?? null;
+
+            if ($draftId === 0) {
+                throw new InvalidArgumentException('Telegram Bot API method [sendRichMessageDraft] requires parameter [draft_id] to be non-zero.');
+            }
+        }
+    }
+
+    private function requiresMessageReference(): bool
+    {
+        return in_array($this->method(), [
+            'editMessageCaption',
+            'editMessageChecklist',
+            'editMessageLiveLocation',
+            'editMessageMedia',
+            'editMessageReplyMarkup',
+            'editMessageText',
+            'getGameHighScores',
+            'setGameScore',
+            'stopMessageLiveLocation',
+            'stopPoll',
+        ], true);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    private function assertMessageReference(array $parameters): void
+    {
+        if (! $this->isBlankParameterValue($parameters['inline_message_id'] ?? null)) {
+            return;
+        }
+
+        if (! $this->isBlankParameterValue($parameters['chat_id'] ?? null) && ! $this->isBlankParameterValue($parameters['message_id'] ?? null)) {
+            return;
+        }
+
+        throw new InvalidArgumentException(sprintf(
+            'Telegram Bot API method [%s] requires either [inline_message_id] or both [chat_id] and [message_id].',
+            $this->method(),
+        ));
+    }
+
+    private function isBlankParameterValue(mixed $value): bool
+    {
+        if ($value === null) {
+            return true;
+        }
+
+        if ($value instanceof TelegramBotRequestData) {
+            return $value->toArray() === [];
+        }
+
+        if (is_string($value)) {
+            return trim($value) === '';
+        }
+
+        return is_array($value) && $value === [];
     }
 }
 

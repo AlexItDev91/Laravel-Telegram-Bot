@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.12.5', $version);
+        $this->assertSame('2.13.0', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -35,6 +35,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.13.0] - 2026-06-25', $changelog);
         $this->assertStringContainsString('## [2.12.5] - 2026-06-17', $changelog);
         $this->assertStringContainsString('## [2.12.4] - 2026-06-17', $changelog);
         $this->assertStringContainsString('## [2.12.3] - 2026-06-17', $changelog);
@@ -190,10 +191,16 @@ class ReleasePolicyTest extends TestCase
         $this->assertIsArray($composer);
         $this->assertArrayNotHasKey('version', $composer);
         $this->assertSame('^8.4', $composer['require']['php'] ?? null);
-        $this->assertSame('^13.0', $composer['require']['illuminate/console'] ?? null);
-        $this->assertSame('^13.0', $composer['require']['illuminate/notifications'] ?? null);
-        $this->assertSame('^13.0', $composer['require']['illuminate/routing'] ?? null);
-        $this->assertSame('^13.0', $composer['require']['illuminate/support'] ?? null);
+        $this->assertArrayNotHasKey('illuminate/console', $composer['require']);
+        $this->assertArrayNotHasKey('illuminate/notifications', $composer['require']);
+        $this->assertArrayNotHasKey('illuminate/routing', $composer['require']);
+        $this->assertArrayNotHasKey('illuminate/support', $composer['require']);
+        $this->assertSame('<13.0', $composer['conflict']['illuminate/console'] ?? null);
+        $this->assertSame('<13.0', $composer['conflict']['illuminate/notifications'] ?? null);
+        $this->assertSame('<13.0', $composer['conflict']['illuminate/routing'] ?? null);
+        $this->assertSame('<13.0', $composer['conflict']['illuminate/support'] ?? null);
+        $this->assertSame('<13.0', $composer['conflict']['laravel/framework'] ?? null);
+        $this->assertArrayHasKey('illuminate/support', $composer['suggest']);
         $this->assertSame('^11.0', $composer['require-dev']['orchestra/testbench'] ?? null);
         $this->assertSame('php scripts/check-release-readiness.php', $composer['scripts']['check:release-readiness'] ?? null);
         $this->assertSame('php scripts/generate-github-release-notes.php', $composer['scripts']['generate:github-release-notes'] ?? null);
@@ -213,7 +220,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.12.5', $notes);
-        $this->assertStringContainsString('Fixed static documentation search to index individual Markdown sections, internal links, and API methods instead of whole pages.', $notes);
+        $this->assertStringContainsString('# v2.13.0', $notes);
+        $this->assertStringContainsString('Added rich-message DTO helpers for Bot API 10.1', $notes);
     }
 }

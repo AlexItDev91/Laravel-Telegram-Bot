@@ -4,6 +4,7 @@ namespace AlexItDev91\LaravelTelegramBot\Laravel;
 
 use Override;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotContextualRateLimiter as TelegramBotContextualRateLimiterContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager as TelegramBotManagerContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotObserver as TelegramBotObserverContract;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotRateLimiter as TelegramBotRateLimiterContract;
@@ -94,6 +95,7 @@ class TelegramBotServiceProvider extends ServiceProvider
         $this->app->singleton(TelegramWebhookProcessor::class);
         $this->app->singleton(TelegramBotRateLimiter::class);
         $this->app->alias(TelegramBotRateLimiter::class, TelegramBotRateLimiterContract::class);
+        $this->app->alias(TelegramBotRateLimiter::class, TelegramBotContextualRateLimiterContract::class);
         $this->app->singleton(TelegramBotEventObserver::class);
         $this->app->alias(TelegramBotEventObserver::class, TelegramBotObserverContract::class);
         $this->app->singleton(TelegramConversationCacheStore::class);

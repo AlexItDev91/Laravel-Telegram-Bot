@@ -68,7 +68,8 @@ composer generate:telegram-api-schema
 ```
 
 `composer check:telegram-api-surface` verifies that the public method enum, native helpers, Markdown method reference, and Writerside method reference still match the documented Bot API methods.
-`composer generate:telegram-api-schema` refreshes the generated `TelegramBotApiMethodSchema` used by method-scoped request DTOs such as `TelegramBotRequestData::forMethod()`.
+`composer generate:telegram-api-schema` refreshes the generated `TelegramBotApiMethodSchema` used by method-scoped request DTOs such as `TelegramBotRequestData::forMethod()` and verifies the local method reference against the current official Telegram Bot API before rewriting generated files.
+Use `php scripts/generate-telegram-api-schema.php --skip-official-check` only for deliberate offline regeneration.
 
 When Telegram adds, changes, renames, or deprecates methods, objects, fields, parameters, webhook behavior, file behavior, payments, Mini Apps, or update types, update all relevant areas together:
 

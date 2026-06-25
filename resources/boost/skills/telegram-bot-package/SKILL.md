@@ -20,7 +20,7 @@ Interactive setup is also available:
 php artisan telegram-bot:install
 ```
 
-Laravel 12/13 auto-discovers the provider. If discovery is disabled, add this to `bootstrap/providers.php`:
+Laravel 13 auto-discovers the provider. If discovery is disabled, add this to `bootstrap/providers.php`:
 
 ```php
 AlexItDev91\LaravelTelegramBot\Laravel\TelegramBotServiceProvider::class,
@@ -73,6 +73,8 @@ Use `php artisan telegram-bot:send-test --channel=inbox` to verify delivery to a
 use AlexItDev91\LaravelTelegramBot\TelegramBot as TelegramBotService;
 use AlexItDev91\LaravelTelegramBot\DeepLinks\TelegramDeepLink;
 use AlexItDev91\LaravelTelegramBot\DeepLinks\TelegramStartPayloadSigner;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendRichMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Rich\InputRichMessage;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
 use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel;
 use AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramNotificationMessage;
@@ -127,17 +129,23 @@ $this->telegram->bot('support')->sendMediaGroup([
         ],
     ],
 ]);
+
+TelegramBot::bot('support')->sendRichMessage(SendRichMessageRequestData::make(
+    chatId: '-1001234567890',
+    richMessage: InputRichMessage::html('<h1>Deploy</h1><p>Finished</p>'),
+));
 ```
 
 Prefer constructor injection with `AlexItDev91\LaravelTelegramBot\TelegramBot` or `AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotManager` in Laravel services, controllers, jobs, listeners, and commands. Use concrete `TelegramBot` or `TelegramBotClient` when IDE autocomplete for every native Telegram helper is important. Use the facade where a facade fits the host app style.
 Use `to($chatId, token: $botToken)` when the bot token and destination are resolved dynamically at runtime, and keep those values in host app secrets or tenant-owned storage rather than committed package config.
 Use `text()`, `photo()`, and `document()` for the shortest common outbound sends. Use `Outbound\TelegramMessage` when the message needs reply markup, parse mode, notification flags, content protection, or extra Telegram fields. Use typed request DTOs or raw arrays when method-specific validation or the full Telegram surface is needed.
 
-Use `InputFile::fromPath()` for top-level and nested file uploads. Nested media files are converted to Telegram `attach://` multipart references automatically.
+Use `InputFile::fromPath()`, `fromContents()`, `fromStream()`, or `fromResource()` for top-level and nested file uploads. Nested media files are converted to Telegram `attach://` multipart references automatically.
 
 Use typed outbound DTOs for common payloads when validation helps: `AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
 Prefer nested input DTOs over raw arrays for common structured payloads: `LinkPreviewOptions`, `ReplyParameters`, `SuggestedPostParameters`, `SuggestedPostPrice`, `InlineKeyboardButton`, and `InlineKeyboardMarkup`. Use `InlineKeyboardMarkup::make()->callback($text, TelegramCallbackData::action($action)->with($key, $value))` when callback buttons need compact, parseable action payloads.
 Prefer package enums over magic strings for known Telegram domains: `TelegramParseMode`, `TelegramChatAction`, `TelegramPollType`, `TelegramStickerType`, `TelegramStickerFormat`, and `TelegramUpdateType`.
+Use `InputRichMessage::html()` or `InputRichMessage::markdown()` with generated `SendRichMessageRequestData` and `SendRichMessageDraftRequestData` for Bot API rich messages.
 Inject `TelegramBotLaravelConfig` when a host app needs typed access to bot, channel, webhook route, or webhook secret configuration.
 
 Use typed response helpers when code needs DTO accessors for returned Telegram objects:
@@ -226,7 +234,7 @@ Return `channel`, `bot`, `chat_id`, `message_thread_id`, or `direct_messages_top
 
 Bind `GuzzleHttp\ClientInterface` in the host app when custom transport, retries, proxy, tracing, or HTTP fakes are needed. Keep `http_errors` disabled so Telegram API error payloads remain available to the SDK.
 
-For reliable outbound delivery, queue messages in Laravel jobs, make duplicate-prone jobs unique by a stable domain key, release jobs on `TelegramBotApiException::retryAfter()` and `TelegramBotRateLimitException::availableIn()`, keep non-retryable failures visible in failed jobs, enable SDK `retry` and local `rate_limit` config for bursty workers, and cover queue paths with `TelegramBot::fake()` plus `assertNoTokenLeakage()`.
+For reliable outbound delivery, queue messages in Laravel jobs, make duplicate-prone jobs unique by a stable domain key, release jobs on `TelegramBotApiException::retryAfter()` and `TelegramBotRateLimitException::availableIn()`, keep non-retryable failures visible in failed jobs, enable SDK `retry` and local `rate_limit` config scoped by bot, method, business connection, and chat for bursty workers, and cover queue paths with `TelegramBot::fake()` plus `assertNoTokenLeakage()`.
 
 For scenario-first builds, start from `docs/RECIPES.md`: operations alerts use configured channels and queued jobs, ecommerce order updates use dynamic `TelegramBot::to($chatId, token: $tenantToken)` routing, support intake combines `TelegramConversationWizard` with `TelegramHumanHandoff`, and admin-channel notifications use configured admin channels plus callback handlers with admin middleware.
 
@@ -306,7 +314,7 @@ Before changing Telegram API behavior, check both official sources:
 - https://core.telegram.org/bots/api-changelog
 
 When Telegram changes the Bot API, update methods, enum values, docs, tests, and Laravel integration examples together.
-After refreshing the method reference, run `composer generate:telegram-api-schema` so `TelegramBotApiMethodSchema` and `TelegramBotRequestData::forMethod()` stay aligned with the official Bot API.
+After refreshing the method reference, run `composer generate:telegram-api-schema` so `TelegramBotApiMethodSchema` and `TelegramBotRequestData::forMethod()` stay aligned with the official Bot API. Use `--skip-official-check` only for deliberate offline regeneration.
 
 ## Version
 

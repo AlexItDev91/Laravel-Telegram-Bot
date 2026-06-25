@@ -22,6 +22,7 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
     {
         if ($this->validateRequiredParameters) {
             $this->assertRequiredParameters($parameters);
+            $this->assertMethodSpecificParameters($parameters);
         }
 
         parent::__construct($parameters);
@@ -82,7 +83,7 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
     {
         $missing = array_values(array_filter(
             $this->requiredParameters(),
-            static fn (string $parameter): bool => ! array_key_exists($parameter, $parameters) || $parameters[$parameter] === null,
+            fn (string $parameter): bool => ! array_key_exists($parameter, $parameters) || $this->isBlankParameterValue($parameters[$parameter]),
         ));
 
         if ($missing === []) {
@@ -94,5 +95,75 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
             $this->method(),
             implode(', ', $missing),
         ));
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    private function assertMethodSpecificParameters(array $parameters): void
+    {
+        if ($this->requiresMessageReference()) {
+            $this->assertMessageReference($parameters);
+        }
+
+        if ($this->method() === 'sendRichMessageDraft') {
+            $draftId = $parameters['draft_id'] ?? null;
+
+            if ($draftId === 0) {
+                throw new InvalidArgumentException('Telegram Bot API method [sendRichMessageDraft] requires parameter [draft_id] to be non-zero.');
+            }
+        }
+    }
+
+    private function requiresMessageReference(): bool
+    {
+        return in_array($this->method(), [
+            'editMessageCaption',
+            'editMessageChecklist',
+            'editMessageLiveLocation',
+            'editMessageMedia',
+            'editMessageReplyMarkup',
+            'editMessageText',
+            'getGameHighScores',
+            'setGameScore',
+            'stopMessageLiveLocation',
+            'stopPoll',
+        ], true);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    private function assertMessageReference(array $parameters): void
+    {
+        if (! $this->isBlankParameterValue($parameters['inline_message_id'] ?? null)) {
+            return;
+        }
+
+        if (! $this->isBlankParameterValue($parameters['chat_id'] ?? null) && ! $this->isBlankParameterValue($parameters['message_id'] ?? null)) {
+            return;
+        }
+
+        throw new InvalidArgumentException(sprintf(
+            'Telegram Bot API method [%s] requires either [inline_message_id] or both [chat_id] and [message_id].',
+            $this->method(),
+        ));
+    }
+
+    private function isBlankParameterValue(mixed $value): bool
+    {
+        if ($value === null) {
+            return true;
+        }
+
+        if ($value instanceof TelegramBotRequestData) {
+            return $value->toArray() === [];
+        }
+
+        if (is_string($value)) {
+            return trim($value) === '';
+        }
+
+        return is_array($value) && $value === [];
     }
 }

@@ -3,6 +3,8 @@
 namespace AlexItDev91\LaravelTelegramBot\DTO;
 
 use Override;
+use AlexItDev91\LaravelTelegramBot\DTO\Rich\RichMessageData;
+
 final readonly class TelegramMessageData implements TelegramBotData
 {
     /**
@@ -203,6 +205,21 @@ final readonly class TelegramMessageData implements TelegramBotData
     public function livePhoto(): ?array
     {
         return $this->arrayAt('live_photo');
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function richMessage(): ?array
+    {
+        return $this->arrayAt('rich_message');
+    }
+
+    public function richMessageData(): ?RichMessageData
+    {
+        $richMessage = $this->richMessage();
+
+        return $richMessage !== null ? RichMessageData::fromPayload($richMessage) : null;
     }
 
     public function isTopicMessage(): ?bool

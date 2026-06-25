@@ -5,6 +5,7 @@ namespace AlexItDev91\LaravelTelegramBot;
 use Override;
 use AlexItDev91\LaravelTelegramBot\Concerns\SendsTelegramMessageShortcuts;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient as TelegramBotClientContract;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotContextualRateLimiter;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotObserver;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotRateLimiter;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramApiResponseData;
@@ -107,6 +108,10 @@ class TelegramBotClient implements TelegramBotClientContract
         $execute = fn (): mixed => $this->sendWithRetries($method, $request);
 
         if ($this->rateLimiter !== null) {
+            if ($this->rateLimiter instanceof TelegramBotContextualRateLimiter) {
+                return $this->rateLimiter->throttleWithContext($method, $execute, $this->rateLimitContext($request));
+            }
+
             return $this->rateLimiter->throttle($method, $execute);
         }
 
@@ -222,6 +227,24 @@ class TelegramBotClient implements TelegramBotClientContract
         if (! $message->hasChatId()) {
             throw new InvalidArgumentException('Telegram fluent messages sent through a bot client must define a chat_id with to().');
         }
+    }
+
+    /**
+     * @return array<string, string|int|null>
+     */
+    private function rateLimitContext(TelegramBotRequestData $request): array
+    {
+        $parameters = $request->json();
+        $chatId = $parameters['chat_id'] ?? null;
+        $businessConnectionId = $parameters['business_connection_id'] ?? null;
+
+        return [
+            'bot' => $this->config->token !== null && $this->config->token !== ''
+                ? hash('sha256', $this->config->token)
+                : null,
+            'chat_id' => is_int($chatId) || is_string($chatId) ? $chatId : null,
+            'business_connection_id' => is_string($businessConnectionId) ? $businessConnectionId : null,
+        ];
     }
 
     private function recordTelemetry(

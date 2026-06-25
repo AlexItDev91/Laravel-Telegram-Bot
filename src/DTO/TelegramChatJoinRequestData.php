@@ -57,6 +57,13 @@ final readonly class TelegramChatJoinRequestData implements TelegramBotData
         return is_string($bio) ? $bio : null;
     }
 
+    public function queryId(): ?string
+    {
+        $queryId = $this->payload['query_id'] ?? null;
+
+        return is_string($queryId) ? $queryId : null;
+    }
+
     /**
      * @return array<string, mixed>|null
      */

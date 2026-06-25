@@ -64,6 +64,7 @@ $result = TelegramBot::call('newTelegramMethod', [
 The raw `call(method, parameters)` API is intentionally retained so newly released Telegram methods can be used before the typed SDK surface is updated.
 Dynamic token calls create a short-lived client for the supplied token; they do not write to or mutate `config/telegram-bot.php`.
 The `text()`, `photo()`, and `document()` shortcuts cover the shortest common sends. The fluent `Outbound\TelegramMessage` builder is available when a message needs reply markup, parse mode, notification flags, content protection, or extra Telegram fields; typed request DTOs and raw arrays remain available for stricter validation and full API coverage.
+For uploads, `InputFile` accepts local paths, in-memory contents, PSR-7 streams, and PHP stream resources.
 
 ## Supported Methods
 

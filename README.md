@@ -16,14 +16,14 @@ Developed by Aptenova as an independent open-source package. The package is not 
 
 - PHP `^8.4`
 - PHP extension `openssl`
-- Laravel `^13.0`
 - Guzzle `^7.8`
+- Laravel integration: Laravel `^13.0` or matching Illuminate `^13.0` components in the host app
 
 ## Version Support Policy
 
 The first major version line is closed. Version `v1.19.1` is the final 1.x release for older host applications.
 
-| Package line | PHP | Laravel | Status |
+| Package line | PHP | Laravel integration | Status |
 | --- | --- | --- | --- |
 | `2.x` | `^8.4` | `^13.0` | Current line. New features, fixes, and Telegram API updates land here. |
 | `1.x` | `^8.2` | `^12.0` or `^13.0` | Legacy ceiling. Pin to `^1.19.1` only if the host app cannot move to PHP 8.4 and Laravel 13 yet. |
@@ -68,7 +68,7 @@ Primary sources:
 composer require alexitdev91/laravel-telegram-bot
 ```
 
-Laravel 13 discovers the service provider and facade automatically through package discovery.
+The core `TelegramBotClient` can be constructed directly in non-Laravel PHP code. In Laravel 13 applications, package discovery registers the service provider and facade automatically.
 
 Publish the Laravel package configuration with the provider-qualified command:
 
@@ -420,6 +420,20 @@ Generated request builders also bind well-known Telegram string domains to enums
 
 For less common methods, use `TelegramBotRequestData::forMethod()` to create a method-scoped DTO backed by the generated `TelegramBotApiMethodSchema`. The schema currently covers all 180 Bot API 10.1 methods and 884 documented parameters, validates required parameters, and prevents a request DTO for one method from being passed to another method. Pass `validateRequiredParameters: false` when a Laravel channel supplies required defaults such as `chat_id`.
 
+Rich messages use the generated Bot API request DTOs with `InputRichMessage` helpers. The package validates that exactly one HTML or Markdown representation is sent:
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendRichMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Rich\InputRichMessage;
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+TelegramBot::bot('support')->sendRichMessage(SendRichMessageRequestData::make(
+    chatId: '-1001234567890',
+    richMessage: InputRichMessage::html('<h1>Deploy</h1><p>Finished</p>')
+        ->skipEntityDetection(),
+));
+```
+
 Laravel hosts can inject `AlexItDev91\LaravelTelegramBot\Laravel\TelegramBotLaravelConfig` when application code needs typed access to the configured default bot, named bots, channels, webhook route, and webhook secret validation state. The `telegram-bot:doctor` command uses the same accessor for local configuration checks before live Telegram calls.
 
 ## Webhooks
@@ -497,11 +511,11 @@ The package also provides Artisan commands for bot identity checks, deployment d
 Laravel integrations log webhook security rejections, invalid webhook payloads, invalid handler configuration, handler failures, Telegram API failures, and transport-level response failures when `TELEGRAM_BOT_LOGGING_ENABLED` is true. Logs include method names, status/error codes, update IDs, update types, and exception classes, but do not include bot tokens, secret headers, request payloads, response bodies, chat IDs, or message text.
 
 `TelegramBotApiException` exposes Telegram response parameters through `parameters()`, `retryAfter()`, and `migrateToChatId()` for rate-limit and group-upgrade recovery paths.
-For reliable outbound queues, combine Laravel unique jobs, `retryAfter()` release handling, `TelegramBotRateLimitException::availableIn()`, SDK `retry` config, local `rate_limit` config, failed-job visibility, and `TelegramBot::fake()` assertions. See [Production Recipes](https://alexitdev91.github.io/Laravel-Telegram-Bot/production-recipes.html).
+For reliable outbound queues, combine Laravel unique jobs, `retryAfter()` release handling, `TelegramBotRateLimitException::availableIn()`, SDK `retry` config, local `rate_limit` config scoped by bot, method, business connection, and chat, failed-job visibility, and `TelegramBot::fake()` assertions. See [Production Recipes](https://alexitdev91.github.io/Laravel-Telegram-Bot/production-recipes.html).
 
 ## Files And HTTP Client
 
-Use `InputFile::fromPath()` for uploads. Nested media arrays are converted to Telegram `attach://` multipart references automatically:
+Use `InputFile::fromPath()`, `fromContents()`, `fromStream()`, or `fromResource()` for uploads. Nested media arrays are converted to Telegram `attach://` multipart references automatically:
 
 ```php
 use AlexItDev91\LaravelTelegramBot\InputFile;
@@ -514,6 +528,11 @@ $telegram->bot('support')->sendMediaGroup([
             'media' => InputFile::fromPath(storage_path('app/photo.jpg')),
         ],
     ],
+]);
+
+$telegram->bot('support')->sendDocument([
+    'chat_id' => '-1001234567890',
+    'document' => InputFile::fromContents('generated report', 'report.txt', 'text/plain'),
 ]);
 ```
 

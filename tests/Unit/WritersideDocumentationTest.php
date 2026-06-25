@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="2.12.5"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.13.0"/>', $config);
         $this->assertFileExists($root.'/Writerside/cfg/buildprofiles.xml');
         $this->assertFileExists($root.'/Writerside/cfg/static/custom.css');
         $this->assertFileExists($root.'/Writerside/cfg/static/local-search.js');
@@ -145,6 +145,8 @@ class WritersideDocumentationTest extends TestCase
             'TelegramMessage::photo',
             'TelegramMessage::document',
             'InputFile::fromPath',
+            'InputFile::fromContents',
+            'InputRichMessage',
             'LinkPreviewOptions::disabled()',
             'InlineKeyboardMarkup::singleButton',
             'TelegramBot::fake()',
@@ -254,6 +256,8 @@ class WritersideDocumentationTest extends TestCase
             'callData()',
             'getMeData()',
             'sendMessageData()',
+            'richMessageData()',
+            'supportsJoinRequestQueries()',
             'getUpdatesData()',
             'TelegramBotResultData',
             'TelegramFileData',
@@ -273,6 +277,7 @@ class WritersideDocumentationTest extends TestCase
             'retryAfter()',
             'migrateToChatId()',
             'TelegramBotRateLimitException',
+            'scoped by bot, method, business connection, and chat',
             'ShouldBeUnique',
             'assertNoTokenLeakage()',
             'TelegramWebhookHandled',
@@ -331,6 +336,7 @@ class WritersideDocumentationTest extends TestCase
             'external search service',
             'composer check:telegram-api-surface',
             'composer generate:telegram-api-schema',
+            '--skip-official-check',
             'TelegramBotApiMethodSchema',
             'Packagist reads versions from Git tags.',
         ] as $requiredMaintenanceText) {

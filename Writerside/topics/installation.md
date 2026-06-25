@@ -1,21 +1,21 @@
 # Installation
 
-Install the package into a Laravel 13 application:
+Install the package into a Laravel 13 application or a PHP project that uses the core client directly:
 
 ```bash
 composer require alexitdev91/laravel-telegram-bot
 ```
 
-Laravel discovers the service provider and facade automatically through package discovery.
+Laravel discovers the service provider and facade automatically through package discovery. Non-Laravel code can instantiate `TelegramBotClient::make()` directly.
 
 ## Requirements
 
 | Dependency | Constraint |
 | --- | --- |
 | PHP | `^8.4` |
-| Laravel console/routing/support components | `^13.0` |
+| Laravel or Illuminate integration components | `^13.0` in the host app when Laravel features are used |
 | Guzzle | `^7.8` |
-| Laravel Prompts | `^0.3.0` |
+| Laravel Prompts | Required by interactive Laravel console commands |
 | PSR logger | `^3.0` |
 
 Version `v1.19.1` is the final 1.x release for older host applications. Starting with `v2.0.0`, the package supports only PHP 8.4 and Laravel 13.

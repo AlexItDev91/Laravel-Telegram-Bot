@@ -153,6 +153,24 @@ TelegramBot::bot('support')->sendMessage(
 The generated `TelegramBotApiMethodSchema` covers all 180 Bot API 10.1 methods and 884 documented parameters. It validates required parameters and prevents a DTO scoped to one method from being sent through another method. For configured channels that merge `chat_id` or topic defaults after DTO creation, pass `validateRequiredParameters: false`.
 Generated request builders bind well-known Telegram string domains to enums, including `TelegramParseMode`, `TelegramChatAction`, `TelegramPollType`, `TelegramStickerType`, `TelegramStickerFormat`, and `TelegramUpdateType`.
 
+## Rich Messages
+
+Use `InputRichMessage` with generated request builders for Telegram rich messages:
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendRichMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Rich\InputRichMessage;
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+TelegramBot::bot('support')->sendRichMessage(SendRichMessageRequestData::make(
+    chatId: '-1001234567890',
+    richMessage: InputRichMessage::html('<h1>Deploy</h1><p>Finished</p>')
+        ->skipEntityDetection(),
+));
+```
+
+Use `InputRichMessage::markdown()` for Markdown input, and use `richMessageData()` on returned `TelegramMessageData` objects when application code needs typed access to Telegram's parsed rich-message blocks.
+
 ## Typed Response Accessors
 
 Use typed response helpers when the host application needs stable DTO accessors for returned Telegram objects:
@@ -308,6 +326,8 @@ Enable SDK retry and local rate limiting when one worker can send bursts:
     'decay_seconds' => 1,
 ],
 ```
+
+The Laravel rate limiter scopes attempts by sanitized bot token hash, method, `business_connection_id`, and `chat_id` when those values are present, so one busy destination does not consume the whole package limit.
 
 Use `TelegramBot::fake()` in job tests to assert `sendMessage`, `assertSentSequence()`, `assertSentTypedPayload()`, and `assertNoTokenLeakage()` for queue paths without calling Telegram.
 
@@ -685,6 +705,8 @@ Enable the Laravel-friendly local rate limiter when outbound bursts should be ca
     'decay_seconds' => 1,
 ],
 ```
+
+Rate-limit keys are scoped by sanitized bot token hash, method, `business_connection_id`, and `chat_id` when available.
 
 Enable API observability to dispatch `TelegramBotApiRequestRecorded` events with method, status, duration, attempts, and file flag.
 The telemetry does not include chat IDs, message text, tokens, or webhook secrets.

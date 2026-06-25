@@ -66,6 +66,20 @@ $messageId = $message->messageId();
 $chatId = $message->chat()?->id();
 $text = $message->text();
 $senderUsername = $message->from()?->username();
+$richBlocks = $message->richMessageData()?->blocks();
+```
+
+Bot API 10.1 accessors are available for rich messages and join-request capabilities:
+
+```php
+$richMessage = $message->richMessageData();
+$isRtl = $richMessage?->isRtl();
+
+$user = TelegramBot::getMeData();
+$supportsJoinRequestQueries = $user->supportsJoinRequestQueries();
+
+$chat = TelegramBot::getChatData(['chat_id' => '-1001234567890']);
+$guardBot = $chat->guardBot();
 ```
 
 Generic result DTOs expose the raw payload and typed accessors for unmapped Telegram objects:

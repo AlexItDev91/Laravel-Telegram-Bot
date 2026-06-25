@@ -15,6 +15,34 @@ $telegram->bot('support')->sendDocument([
 ]);
 ```
 
+## Upload Generated Contents Or Streams
+
+Use `fromContents()` for generated reports or exports that already exist in memory:
+
+```php
+use AlexItDev91\LaravelTelegramBot\InputFile;
+
+$telegram->bot('support')->sendDocument([
+    'chat_id' => '-1001234567890',
+    'document' => InputFile::fromContents('generated report', 'report.txt', 'text/plain'),
+]);
+```
+
+Use `fromStream()` for PSR-7 streams and `fromResource()` for valid PHP stream resources:
+
+```php
+$resource = fopen(storage_path('app/reports/daily.pdf'), 'rb');
+
+if ($resource === false) {
+    throw new RuntimeException('Report file is not readable.');
+}
+
+$telegram->bot('support')->sendDocument([
+    'chat_id' => '-1001234567890',
+    'document' => InputFile::fromResource($resource, 'daily.pdf', 'application/pdf'),
+]);
+```
+
 ## Upload A Media Group
 
 ```php
@@ -37,7 +65,7 @@ $telegram->bot('support')->sendMediaGroup([
 ```
 
 The package converts nested files to Telegram `attach://` references and adds the file streams to the multipart body.
-Files are opened lazily by PSR-7 streams during the HTTP request.
+Local path files are opened lazily by PSR-7 streams during the HTTP request. Provided streams and resources are reused as-is.
 
 ## Use Existing Telegram File IDs
 

@@ -256,6 +256,22 @@ $result = $telegram->bot('support')->call('newTelegramMethod', [
 The raw call path validates the method name, sends the parameters, and applies the same response parsing as native helpers.
 It is intentionally retained so applications are not blocked when Telegram releases a method before this package adds a named helper.
 
+## Rich Messages
+
+Use generated request DTOs and `InputRichMessage` for Telegram rich messages:
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendRichMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Rich\InputRichMessage;
+
+$telegram->bot('support')->sendRichMessage(SendRichMessageRequestData::make(
+    chatId: '-1001234567890',
+    richMessage: InputRichMessage::html('<h1>Deploy</h1><p>Finished</p>'),
+));
+```
+
+Use `InputRichMessage::markdown()` for Markdown input. Returned rich-message payloads are available through `richMessageData()`.
+
 ## Enum Method Names
 
 ```php
@@ -269,7 +285,7 @@ $result = $telegram->bot('support')->call(TelegramBotApiMethod::sendMessage, [
 
 ## Files
 
-Use `InputFile::fromPath` for local uploads:
+Use `InputFile::fromPath`, `fromContents`, `fromStream`, or `fromResource` for uploads:
 
 ```php
 use AlexItDev91\LaravelTelegramBot\InputFile;
@@ -277,6 +293,10 @@ use AlexItDev91\LaravelTelegramBot\InputFile;
 $telegram->channel('inbox')->sendDocument([
     'document' => InputFile::fromPath(storage_path('app/report.pdf')),
     'caption' => 'Daily report',
+]);
+
+$telegram->channel('inbox')->sendDocument([
+    'document' => InputFile::fromContents('generated report', 'report.txt', 'text/plain'),
 ]);
 ```
 

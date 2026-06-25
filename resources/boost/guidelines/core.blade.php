@@ -4,7 +4,7 @@ This app uses `alexitdev91/laravel-telegram-bot` for Telegram Bot API calls.
 
 ## Essentials
 
-- Laravel 12/13 auto-discovers `AlexItDev91\LaravelTelegramBot\Laravel\TelegramBotServiceProvider`.
+- Laravel 13 auto-discovers `AlexItDev91\LaravelTelegramBot\Laravel\TelegramBotServiceProvider`.
 - Publish config with:
 
 ```bash
@@ -38,6 +38,7 @@ php artisan telegram-bot:install
 - Use typed outbound DTOs for common payloads when validation helps: `SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
 - Prefer nested input DTOs over raw arrays for common structured payloads: `LinkPreviewOptions`, `ReplyParameters`, `SuggestedPostParameters`, `SuggestedPostPrice`, `InlineKeyboardButton`, and `InlineKeyboardMarkup`. Use `InlineKeyboardMarkup::make()->callback($text, TelegramCallbackData::action($action)->with($key, $value))` when callback buttons need compact, parseable action payloads.
 - Prefer package enums over magic strings for known Telegram domains: `TelegramParseMode`, `TelegramChatAction`, `TelegramPollType`, `TelegramStickerType`, `TelegramStickerFormat`, and `TelegramUpdateType`.
+- Use `InputRichMessage::html()` or `InputRichMessage::markdown()` with generated `SendRichMessageRequestData` and `SendRichMessageDraftRequestData` for Bot API rich messages.
 - Inject `TelegramBotLaravelConfig` when the host app needs typed access to bot, channel, webhook route, or webhook secret configuration.
 - Use `TelegramBotRequestData::forMethod()` for less common Bot API methods that need generated required-parameter validation. It is backed by `TelegramBotApiMethodSchema`; pass `validateRequiredParameters: false` only when channel defaults supply required fields later.
 - Inject `AlexItDev91\LaravelTelegramBot\MiniApps\TelegramMiniAppInitDataValidator` to validate raw `Telegram.WebApp.initData` in Mini App controllers before trusting user, chat, or start parameters. Pass `maxAgeSeconds` for freshness checks and the runtime tenant token when Mini Apps are tenant-owned.
@@ -49,7 +50,7 @@ php artisan telegram-bot:install
 - Use `php artisan telegram-bot:updates` to discover parsed `chat_id`, `message_thread_id`, and `direct_messages_topic_id` values from Telegram updates.
 - Use `php artisan telegram-bot:send-test --channel=name` to verify Laravel can send to the configured chat or topic.
 - Use `php artisan telegram-bot:webhook:set`, `telegram-bot:webhook:info`, and `telegram-bot:webhook:delete` for webhook management.
-- Use `InputFile::fromPath()` for top-level and nested file uploads; nested media files are converted to Telegram `attach://` multipart references.
+- Use `InputFile::fromPath()`, `fromContents()`, `fromStream()`, or `fromResource()` for top-level and nested file uploads; nested media files are converted to Telegram `attach://` multipart references.
 - Bind `GuzzleHttp\ClientInterface` in the host app when custom transport, retries, proxy, tracing, or HTTP fakes are needed.
 - Use the built-in `POST /telegram-bot/webhook` Laravel receiver for incoming updates when `telegram-bot.webhook.route.enabled` is true.
 - Protect webhooks with `TELEGRAM_WEBHOOK_SECRET_TOKEN`; the package validates `X-Telegram-Bot-Api-Secret-Token` and fails closed when `TELEGRAM_WEBHOOK_REQUIRE_SECRET=true`.
@@ -71,11 +72,11 @@ php artisan telegram-bot:install
 - Keep raw update access available through `payload()`, `get()`, and the backward-compatible array helpers when Telegram adds fields before typed DTOs exist.
 - Use `TelegramBot::call('methodName', [...])` for new Telegram methods before typed helpers are updated.
 - For failed Telegram API responses, use `retryAfter()` and `migrateToChatId()` on `TelegramBotApiException` when handling rate limits or migrated groups.
-- For reliable outbound jobs, use stable queue uniqueness keys, release on `retryAfter()` and `TelegramBotRateLimitException::availableIn()`, leave non-retryable failures visible in failed jobs, and enable SDK `retry` plus local `rate_limit` config for bursty workers.
+- For reliable outbound jobs, use stable queue uniqueness keys, release on `retryAfter()` and `TelegramBotRateLimitException::availableIn()`, leave non-retryable failures visible in failed jobs, and enable SDK `retry` plus local `rate_limit` config scoped by bot, method, business connection, and chat for bursty workers.
 - For scenario-first builds, use `docs/RECIPES.md` patterns for operations alerts, ecommerce order updates, support intake, and admin-channel notifications before reaching for raw Bot API arrays.
 - Use `docs/DEEP_LINKS.md`, `docs/MINI_APPS.md`, `docs/RECIPES.md`, `docs/NOTIFICATIONS.md`, `docs/RESPONSES.md`, and `examples/laravel` for copy-ready deep links, Mini Apps validation, Laravel notifications, typed response accessors, jobs, handlers, listeners, and route snippets.
 - Keep Telegram IDs as strings or 64-bit safe values.
-- For package maintenance, run `composer generate:telegram-api-schema` after refreshing `docs/METHODS.md` so method-scoped request DTO validation stays aligned with Telegram.
+- For package maintenance, run `composer generate:telegram-api-schema` after refreshing `docs/METHODS.md` so method-scoped request DTO validation stays aligned with Telegram; use `--skip-official-check` only for deliberate offline regeneration.
 
 ## API Currency
 

@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot;
 
 use GuzzleHttp\Psr7\LazyOpenStream;
+use GuzzleHttp\Psr7\Utils;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 
@@ -12,6 +13,7 @@ final readonly class InputFile
         public string $path,
         public ?string $filename = null,
         public ?string $contentType = null,
+        private ?StreamInterface $stream = null,
     ) {
         //
     }
@@ -21,22 +23,39 @@ final readonly class InputFile
         return new self($path, $filename, $contentType);
     }
 
+    public static function fromContents(string $contents, ?string $filename = null, ?string $contentType = null): self
+    {
+        if ($contents === '') {
+            throw new InvalidArgumentException('Telegram input file contents must not be empty.');
+        }
+
+        return new self('', $filename, $contentType, Utils::streamFor($contents));
+    }
+
+    public static function fromStream(StreamInterface $stream, ?string $filename = null, ?string $contentType = null): self
+    {
+        return new self('', $filename, $contentType, $stream);
+    }
+
+    public static function fromResource(mixed $resource, ?string $filename = null, ?string $contentType = null): self
+    {
+        if (! is_resource($resource)) {
+            throw new InvalidArgumentException('Telegram input file resource must be a valid PHP stream resource.');
+        }
+
+        return new self('', $filename, $contentType, Utils::streamFor($resource));
+    }
+
     /**
      * @return array{name: string, contents: StreamInterface, filename?: string, headers?: array<string, string>}
      */
     public function toMultipartPart(string $name): array
     {
-        $contents = @fopen($this->path, 'rb');
-
-        if ($contents === false) {
-            throw new InvalidArgumentException("Telegram input file [$this->path] cannot be opened for reading.");
-        }
-
-        fclose($contents);
+        $stream = $this->stream ?? $this->pathStream();
 
         $part = [
             'name' => $name,
-            'contents' => new LazyOpenStream($this->path, 'rb'),
+            'contents' => $stream,
         ];
 
         if ($this->filename !== null) {
@@ -48,5 +67,18 @@ final readonly class InputFile
         }
 
         return $part;
+    }
+
+    private function pathStream(): StreamInterface
+    {
+        $contents = @fopen($this->path, 'rb');
+
+        if ($contents === false) {
+            throw new InvalidArgumentException("Telegram input file [$this->path] cannot be opened for reading.");
+        }
+
+        fclose($contents);
+
+        return new LazyOpenStream($this->path, 'rb');
     }
 }

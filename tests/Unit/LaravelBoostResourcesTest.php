@@ -36,6 +36,8 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TelegramBotResultData', $guidelines);
         $this->assertStringContainsString('TelegramBotRequestData::forMethod()', $guidelines);
         $this->assertStringContainsString('TelegramBotApiMethodSchema', $guidelines);
+        $this->assertStringContainsString('InputRichMessage::html()', $guidelines);
+        $this->assertStringContainsString('SendRichMessageRequestData', $guidelines);
         $this->assertStringContainsString('LinkPreviewOptions', $guidelines);
         $this->assertStringContainsString('InlineKeyboardMarkup', $guidelines);
         $this->assertStringContainsString('TelegramCallbackData::action', $guidelines);
@@ -72,6 +74,7 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('docs/MINI_APPS.md', $guidelines);
         $this->assertStringContainsString('docs/DEEP_LINKS.md', $guidelines);
         $this->assertStringContainsString('composer generate:telegram-api-schema', $guidelines);
+        $this->assertStringContainsString('--skip-official-check', $guidelines);
     }
 
     public function test_package_ships_laravel_boost_skill(): void
@@ -97,6 +100,8 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TelegramBotResultData', $skill);
         $this->assertStringContainsString('TelegramBotRequestData::forMethod()', $skill);
         $this->assertStringContainsString('TelegramBotApiMethodSchema', $skill);
+        $this->assertStringContainsString('InputRichMessage::html()', $skill);
+        $this->assertStringContainsString('SendRichMessageRequestData', $skill);
         $this->assertStringContainsString('LinkPreviewOptions', $skill);
         $this->assertStringContainsString('InlineKeyboardMarkup', $skill);
         $this->assertStringContainsString('TelegramCallbackData::action', $skill);
@@ -153,5 +158,6 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('docs/MINI_APPS.md', $skill);
         $this->assertStringContainsString('docs/DEEP_LINKS.md', $skill);
         $this->assertStringContainsString('composer generate:telegram-api-schema', $skill);
+        $this->assertStringContainsString('--skip-official-check', $skill);
     }
 }

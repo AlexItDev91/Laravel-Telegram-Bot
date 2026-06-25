@@ -62,6 +62,11 @@ final readonly class TelegramUserData implements TelegramBotData
         return $this->boolAt('supports_guest_queries');
     }
 
+    public function supportsJoinRequestQueries(): ?bool
+    {
+        return $this->boolAt('supports_join_request_queries');
+    }
+
     /**
      * @return array<string, mixed>
      */

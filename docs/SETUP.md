@@ -518,7 +518,7 @@ TelegramBot::bot('support')->sendMessage([
 
 Use `channel('inbox')` when the destination is configured in `config/telegram-bot.php`. Use `bot('support')` when the code should provide `chat_id` directly.
 
-For uploads, use `InputFile::fromPath()`. The package converts top-level files and nested media files to multipart form data:
+For uploads, use `InputFile::fromPath()`, `fromContents()`, `fromStream()`, or `fromResource()`. The package converts top-level files and nested media files to multipart form data:
 
 ```php
 use AlexItDev91\LaravelTelegramBot\InputFile;
@@ -531,6 +531,11 @@ $this->telegram->bot('support')->sendMediaGroup([
             'media' => InputFile::fromPath(storage_path('app/photo.jpg')),
         ],
     ],
+]);
+
+$this->telegram->bot('support')->sendDocument([
+    'chat_id' => env('TELEGRAM_INBOX_CHAT_ID'),
+    'document' => InputFile::fromContents('generated report', 'report.txt', 'text/plain'),
 ]);
 ```
 

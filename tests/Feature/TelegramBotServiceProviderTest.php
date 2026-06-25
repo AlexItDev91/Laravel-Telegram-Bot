@@ -192,6 +192,33 @@ class TelegramBotServiceProviderTest extends TestCase
         app(TelegramBotClient::class)->getMe();
     }
 
+    public function test_laravel_rate_limiter_scopes_attempts_by_bot_method_and_chat(): void
+    {
+        $history = [];
+
+        config()->set('telegram-bot.token', '123456:test-token');
+        config()->set('telegram-bot.api_url', 'https://api.telegram.test');
+        config()->set('telegram-bot.rate_limit.enabled', true);
+        config()->set('telegram-bot.rate_limit.max_attempts', 1);
+        config()->set('telegram-bot.rate_limit.decay_seconds', 60);
+        config()->set('telegram-bot.rate_limit.key_prefix', 'telegram-bot:test-context-rate-limit');
+
+        $this->app->bind(ClientInterface::class, function () use (&$history): ClientInterface {
+            return $this->fakeHttpClient([
+                new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+                new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+                new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+            ], $history);
+        });
+
+        app(TelegramBotClient::class)->sendMessage(['chat_id' => '100', 'text' => 'First chat']);
+        app(TelegramBotClient::class)->sendMessage(['chat_id' => '200', 'text' => 'Second chat']);
+
+        $this->expectException(TelegramBotRateLimitException::class);
+
+        app(TelegramBotClient::class)->sendMessage(['chat_id' => '100', 'text' => 'First chat again']);
+    }
+
     public function test_laravel_config_accessor_exposes_typed_config_and_validation_issues(): void
     {
         config()->set('telegram-bot.default', 'support');

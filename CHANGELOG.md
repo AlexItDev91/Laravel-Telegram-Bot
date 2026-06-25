@@ -8,6 +8,15 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.13.0] - 2026-06-25
+
+- Added rich-message DTO helpers for Bot API 10.1, including `InputRichMessage`, `RichText`, `RichBlock`, and typed accessors for returned `rich_message`, `supports_join_request_queries`, `guard_bot`, and chat join request `query_id` fields.
+- Added `InputFile::fromContents()`, `InputFile::fromStream()`, and `InputFile::fromResource()` so generated files and existing PSR-7 streams can be uploaded without writing temporary paths first.
+- Hardened generated request DTO validation for blank required parameters, edit/game/stop message-reference alternatives, and non-zero rich message draft IDs.
+- Scoped Laravel local rate limiting by sanitized bot, method, business connection, and chat context while keeping the existing rate limiter contract backward compatible.
+- Kept the core client installable without hard Laravel/Illuminate runtime requirements, moving Laravel integration packages to suggestions and conflicts for unsupported versions.
+- Added an official Telegram documentation guard to API schema generation so regenerated method schemas are checked against the current Bot API before code is rewritten.
+
 ## [2.12.5] - 2026-06-17
 
 - Fixed static documentation search to index individual Markdown sections, internal links, and API methods instead of whole pages.

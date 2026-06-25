@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\Tests\Unit;
 
 use Override;
+use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotContextualRateLimiter;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotObserver;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotRateLimiter;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestTelemetryData;
@@ -163,6 +164,28 @@ class TelegramBotClientTest extends TestCase
         } finally {
             unlink($path);
         }
+    }
+
+    public function test_input_file_can_be_created_from_contents_and_resources(): void
+    {
+        $contents = TelegramBotRequestData::fromArray([
+            'document' => InputFile::fromContents('generated report', 'report.txt', 'text/plain'),
+        ])->multipart();
+
+        $resource = fopen('php://temp', 'rb+');
+        $this->assertIsResource($resource);
+        fwrite($resource, 'streamed report');
+        rewind($resource);
+
+        $stream = TelegramBotRequestData::fromArray([
+            'document' => InputFile::fromResource($resource, 'stream.txt', 'text/plain'),
+        ])->multipart();
+
+        $this->assertSame('document', $contents[0]['name']);
+        $this->assertSame('generated report', (string) $contents[0]['contents']);
+        $this->assertSame('report.txt', $contents[0]['filename']);
+        $this->assertSame(['Content-Type' => 'text/plain'], $contents[0]['headers']);
+        $this->assertSame('streamed report', (string) $stream[0]['contents']);
     }
 
     public function test_sends_multipart_requests_for_nested_input_files(): void
@@ -465,6 +488,31 @@ class TelegramBotClientTest extends TestCase
         $client->getMe();
     }
 
+    public function test_client_passes_sanitized_context_to_contextual_rate_limiter(): void
+    {
+        $limiter = new TelegramBotRecordingRateLimiter();
+        $client = TelegramBotClient::make(
+            token: '123456:secret-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR)),
+            ]),
+            rateLimiter: $limiter,
+        );
+
+        $client->sendMessage([
+            'chat_id' => '-1001234567890',
+            'business_connection_id' => 'business-1',
+            'text' => 'Scoped alert',
+        ]);
+
+        $this->assertSame('sendMessage', $limiter->records[0]['method']);
+        $this->assertSame(hash('sha256', '123456:secret-token'), $limiter->records[0]['context']['bot']);
+        $this->assertSame('-1001234567890', $limiter->records[0]['context']['chat_id']);
+        $this->assertSame('business-1', $limiter->records[0]['context']['business_connection_id']);
+        $this->assertStringNotContainsString('123456:secret-token', json_encode($limiter->records, JSON_THROW_ON_ERROR));
+    }
+
     /**
      * @param  list<Response>  $responses
      * @param  array<int, array{request: RequestInterface}>  $history
@@ -537,5 +585,33 @@ final class TelegramBotBlockingRateLimiter implements TelegramBotRateLimiter
     public function throttle(string $method, Closure $_next): mixed
     {
         throw new TelegramBotRateLimitException("Blocked $method.", 1);
+    }
+}
+
+final class TelegramBotRecordingRateLimiter implements TelegramBotContextualRateLimiter
+{
+    /**
+     * @var list<array{method: string, context: array<string, string|int|null>}>
+     */
+    public array $records = [];
+
+    #[Override]
+    public function throttle(string $method, Closure $next): mixed
+    {
+        return $this->throttleWithContext($method, $next);
+    }
+
+    /**
+     * @param  array<string, string|int|null>  $context
+     */
+    #[Override]
+    public function throttleWithContext(string $method, Closure $next, array $context = []): mixed
+    {
+        $this->records[] = [
+            'method' => $method,
+            'context' => $context,
+        ];
+
+        return $next();
     }
 }

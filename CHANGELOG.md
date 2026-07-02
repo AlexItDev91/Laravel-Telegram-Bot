@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.14.0] - 2026-07-02
+
+- Added Telegram file download helpers: `fileUrl()`, `downloadFile()`, and `downloadFileTo()` for relative `file_path` values returned by `getFileData()`.
+- Added `telegram-bot:doctor --all` for multi-bot and channel inventory checks, including per-bot live `getMe` and `getWebhookInfo` checks when Telegram calls are not skipped.
+- Updated README, Markdown docs, Writerside docs, and Laravel Boost resources for file downloads and multi-bot doctor workflows.
+
 ## [2.13.0] - 2026-06-25
 
 - Added rich-message DTO helpers for Bot API 10.1, including `InputRichMessage`, `RichText`, `RichBlock`, and typed accessors for returned `rich_message`, `supports_join_request_queries`, `guard_bot`, and chat join request `query_id` fields.

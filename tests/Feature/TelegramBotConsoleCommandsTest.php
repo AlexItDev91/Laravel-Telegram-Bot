@@ -425,6 +425,32 @@ class TelegramBotConsoleCommandsTest extends TestCase
             ->assertFailed();
     }
 
+    public function test_doctor_command_can_check_all_configured_bots_and_channels_without_telegram_calls(): void
+    {
+        config()->set('telegram-bot.token', '123456:test-token');
+        config()->set('telegram-bot.api_url', 'https://api.telegram.test');
+        config()->set('telegram-bot.bots.support', [
+            'token' => '222:support-token',
+            'api_url' => 'https://api.telegram.test',
+            'timeout' => 10,
+        ]);
+        config()->set('telegram-bot.channels.alerts', [
+            'bot' => 'support',
+            'chat_id' => '-1001234567890',
+        ]);
+
+        $this->artisan('telegram-bot:doctor', [
+            '--all' => true,
+            '--skip-telegram' => true,
+        ])
+            ->expectsOutputToContain('Telegram Bot doctor for all configured bots and channels')
+            ->expectsOutputToContain('Bot [default] config')
+            ->expectsOutputToContain('Bot [support] config')
+            ->expectsOutputToContain('Channel [alerts]')
+            ->doesntExpectOutputToContain('-1001234567890')
+            ->assertSuccessful();
+    }
+
     private function deleteGeneratedHandler(string $path): void
     {
         if (is_file($path)) {

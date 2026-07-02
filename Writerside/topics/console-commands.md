@@ -97,6 +97,14 @@ For CI jobs or offline config checks, skip Telegram network calls:
 php artisan telegram-bot:doctor --bot=default --skip-telegram
 ```
 
+For multi-bot applications, check every configured bot and channel without printing tokens or channel IDs:
+
+```bash
+php artisan telegram-bot:doctor --all --skip-telegram
+```
+
+Without `--skip-telegram`, `--all` runs `getMe` and `getWebhookInfo` for each configured bot that has a token.
+
 ## Set Webhook
 
 Interactive:

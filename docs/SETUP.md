@@ -539,6 +539,8 @@ $this->telegram->bot('support')->sendDocument([
 ]);
 ```
 
+For downloads, call `getFileData()` first and pass the returned relative `file_path` to `downloadFile()` or `downloadFileTo()`. Avoid logging values returned by `fileUrl()` because Telegram temporary file URLs include the bot token.
+
 If the host app needs custom transport, bind `GuzzleHttp\ClientInterface` before resolving the bot client. Keep `http_errors` disabled so Telegram API error payloads remain available to the SDK:
 
 ```php

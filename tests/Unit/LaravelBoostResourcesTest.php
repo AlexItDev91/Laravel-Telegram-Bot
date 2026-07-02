@@ -33,6 +33,7 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('getMeData()', $guidelines);
         $this->assertStringContainsString('sendMessageData()', $guidelines);
         $this->assertStringContainsString('getWebhookInfoData()', $guidelines);
+        $this->assertStringContainsString('downloadFileTo()', $guidelines);
         $this->assertStringContainsString('TelegramBotResultData', $guidelines);
         $this->assertStringContainsString('TelegramBotRequestData::forMethod()', $guidelines);
         $this->assertStringContainsString('TelegramBotApiMethodSchema', $guidelines);
@@ -87,6 +88,7 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('vendor:publish --provider="AlexItDev91\\\\LaravelTelegramBot\\\\Laravel\\\\TelegramBotServiceProvider" --tag=telegram-bot-config', $skill);
         $this->assertStringContainsString('telegram-bot:install', $skill);
         $this->assertStringContainsString('telegram-bot:doctor', $skill);
+        $this->assertStringContainsString('telegram-bot:doctor --all --skip-telegram', $skill);
         $this->assertStringContainsString('telegram-bot:make-handler', $skill);
         $this->assertStringContainsString('telegram-bot:me', $skill);
         $this->assertStringContainsString('telegram-bot:updates', $skill);
@@ -117,6 +119,7 @@ class LaravelBoostResourcesTest extends TestCase
         $this->assertStringContainsString('TelegramMessage::photo', $skill);
         $this->assertStringContainsString('getUpdatesData()', $skill);
         $this->assertStringContainsString('sendMessageData()', $skill);
+        $this->assertStringContainsString('downloadFileTo()', $skill);
         $this->assertStringContainsString('SendMessageData', $skill);
         $this->assertStringContainsString('AnswerCallbackQueryData', $skill);
         $this->assertStringContainsString('TELEGRAM_INBOX_DIRECT_MESSAGES_TOPIC_ID', $skill);

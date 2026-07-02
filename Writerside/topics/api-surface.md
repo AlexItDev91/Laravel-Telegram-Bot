@@ -48,6 +48,7 @@ $result = TelegramBot::call('newTelegramMethod', [
 The raw `call(method, parameters)` API is intentionally retained so newly released Telegram methods can be used before the typed SDK surface is updated.
 Dynamic token calls create a short-lived client for the supplied token; they do not write to or mutate `config/telegram-bot.php`.
 For uploads, `InputFile` accepts local paths, in-memory contents, PSR-7 streams, and PHP stream resources.
+For downloads, call `getFileData()` and pass the returned relative `file_path` to `fileUrl()`, `downloadFile()`, or `downloadFileTo()`.
 
 ## Supported Methods
 

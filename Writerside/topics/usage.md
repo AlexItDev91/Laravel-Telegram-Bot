@@ -301,6 +301,8 @@ $telegram->channel('inbox')->sendDocument([
 ```
 
 Nested media arrays are converted to Telegram `attach://` multipart references automatically.
+For downloads, call `getFileData()` and pass the returned relative `file_path` to `downloadFile()` or `downloadFileTo()`.
+Do not log URLs returned by `fileUrl()` because Telegram includes the bot token in temporary file download URLs.
 See [Files and HTTP](files-and-http.md).
 
 ## Error Handling

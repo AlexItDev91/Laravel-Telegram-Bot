@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="2.13.0"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.14.0"/>', $config);
         $this->assertFileExists($root.'/Writerside/cfg/buildprofiles.xml');
         $this->assertFileExists($root.'/Writerside/cfg/static/custom.css');
         $this->assertFileExists($root.'/Writerside/cfg/static/local-search.js');
@@ -262,6 +262,7 @@ class WritersideDocumentationTest extends TestCase
             'TelegramBotResultData',
             'TelegramFileData',
             'TelegramWebhookInfoData',
+            'downloadFileTo',
             'TelegramBot::fake()',
         ] as $requiredTypedResponsesText) {
             $this->assertStringContainsString($requiredTypedResponsesText, $typedResponses);

@@ -188,6 +188,74 @@ class TelegramBotClientTest extends TestCase
         $this->assertSame('streamed report', (string) $stream[0]['contents']);
     }
 
+    public function test_builds_temporary_file_download_urls(): void
+    {
+        $client = TelegramBotClient::make(
+            token: '123456:test-token',
+            apiUrl: 'https://api.telegram.test',
+        );
+
+        $this->assertSame(
+            'https://api.telegram.test/file/bot123456:test-token/documents/report%201.pdf',
+            $client->fileUrl('documents/report 1.pdf'),
+        );
+    }
+
+    public function test_downloads_file_contents_from_telegram_file_endpoint(): void
+    {
+        $history = [];
+        $client = TelegramBotClient::make(
+            token: '123456:test-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new Response(200, [], 'report-bytes'),
+            ], $history),
+        );
+
+        $this->assertSame('report-bytes', $client->downloadFile('documents/report.pdf'));
+        $this->assertSame('GET', $history[0]['request']->getMethod());
+        $this->assertSame('/file/bot123456:test-token/documents/report.pdf', $history[0]['request']->getUri()->getPath());
+    }
+
+    public function test_downloads_file_to_destination_without_leaving_temporary_files(): void
+    {
+        $destination = tempnam(sys_get_temp_dir(), 'telegram-download-');
+        $this->assertIsString($destination);
+        unlink($destination);
+
+        $history = [];
+        $client = TelegramBotClient::make(
+            token: '123456:test-token',
+            apiUrl: 'https://api.telegram.test',
+            httpClient: $this->fakeHttpClient([
+                new Response(200, [], 'stored-report'),
+            ], $history),
+        );
+
+        try {
+            $this->assertSame($destination, $client->downloadFileTo('documents/report.pdf', $destination));
+            $this->assertSame('stored-report', file_get_contents($destination));
+            $this->assertSame('GET', $history[0]['request']->getMethod());
+        } finally {
+            if (is_file($destination)) {
+                unlink($destination);
+            }
+        }
+    }
+
+    public function test_file_download_helpers_reject_local_file_paths(): void
+    {
+        $client = TelegramBotClient::make(
+            token: '123456:test-token',
+            apiUrl: 'https://api.telegram.test',
+        );
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Telegram Bot file_path must be relative');
+
+        $client->fileUrl('/var/lib/telegram-bot-api/report.pdf');
+    }
+
     public function test_sends_multipart_requests_for_nested_input_files(): void
     {
         $history = [];

@@ -79,6 +79,26 @@ $telegram->bot('support')->sendPhoto([
 ]);
 ```
 
+## Download A File
+
+Use `getFileData()` to resolve Telegram's relative `file_path`, then download the bytes through the same configured bot client:
+
+```php
+$file = $telegram->bot('support')->getFileData([
+    'file_id' => 'telegram-file-id',
+]);
+
+if ($file->filePath() !== null) {
+    $telegram->bot('support')->downloadFileTo(
+        $file->filePath(),
+        storage_path('app/telegram/report.pdf'),
+    );
+}
+```
+
+Use `downloadFile($filePath)` when the application needs the file contents as a string, or `fileUrl($filePath)` when it must hand Telegram's temporary URL to another internal service.
+Temporary file URLs contain the bot token, so do not log or expose them.
+
 ## Custom HTTP Client In Laravel
 
 Bind `GuzzleHttp\ClientInterface` before the Telegram client is resolved:

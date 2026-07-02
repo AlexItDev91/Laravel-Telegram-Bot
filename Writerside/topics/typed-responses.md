@@ -100,10 +100,16 @@ File and webhook status responses expose typed accessors as well:
 $file = TelegramBot::getFileData(['file_id' => 'file-id']);
 $path = $file->filePath();
 
+if ($path !== null) {
+    TelegramBot::downloadFileTo($path, storage_path('app/telegram/file.bin'));
+}
+
 $webhook = TelegramBot::getWebhookInfoData();
 $pending = $webhook->pendingUpdateCount();
 $allowedUpdates = $webhook->allowedUpdates();
 ```
+
+Use `fileUrl($path)` only when you need Telegram's temporary download URL directly. The URL contains the bot token, so keep it out of logs and user-visible errors.
 
 `getUpdatesData()` returns the same `TelegramWebhookUpdate` DTO used by the webhook receiver:
 

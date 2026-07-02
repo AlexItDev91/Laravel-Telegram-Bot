@@ -13,7 +13,7 @@ Primary sources:
 
 - Every Telegram method is exposed as a native PHP method on the client, manager, and facade forwarding surface.
 - Every native method accepts `array|TelegramBotRequestData $parameters = []` and returns the decoded Telegram `result` value.
-- The package sends JSON for normal requests and multipart form data when `InputFile` values are present, including nested media arrays that need Telegram `attach://` file references. `InputFile` supports local paths, in-memory contents, PSR-7 streams, and PHP stream resources.
+- The package sends JSON for normal requests and multipart form data when `InputFile` values are present, including nested media arrays that need Telegram `attach://` file references. `InputFile` supports local paths, in-memory contents, PSR-7 streams, and PHP stream resources. For downloads, call `getFileData()` and pass the returned relative `file_path` to `fileUrl()`, `downloadFile()`, or `downloadFileTo()`.
 - The raw `call(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = [])` method is always available for newly released Telegram methods.
 - Telegram identifiers can exceed 32-bit integer range. Keep chat, user, message, and topic IDs as strings or 64-bit safe values.
 - Type-hint concrete `TelegramBot` or `TelegramBotClient` when you want IDE autocomplete for every native helper method. The contracts expose the stable core manager/client surface.

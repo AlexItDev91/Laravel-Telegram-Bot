@@ -270,6 +270,18 @@ When `callData()` does not have a dedicated result DTO yet, associative Telegram
 
 See [Typed Responses](https://alexitdev91.github.io/Laravel-Telegram-Bot/typed-responses.html) for `callData()`, `TelegramBotResultData`, `getUpdatesData()`, `getFileData()`, `getWebhookInfoData()`, message DTO helpers, and fake-based tests.
 
+Files returned by Telegram can be downloaded through the configured bot client after `getFileData()` returns a relative `file_path`:
+
+```php
+$file = TelegramBot::getFileData(['file_id' => 'telegram-file-id']);
+
+if ($file->filePath() !== null) {
+    TelegramBot::downloadFileTo($file->filePath(), storage_path('app/telegram/report.pdf'));
+}
+```
+
+Use `fileUrl($filePath)` only when you need Telegram's temporary download URL directly. The URL contains the bot token, so do not store it in logs, tickets, analytics, or user-visible errors.
+
 ## Mini Apps
 
 Validate `Telegram.WebApp.initData` on the server before trusting Mini App user, chat, or start payloads:
@@ -534,6 +546,19 @@ $telegram->bot('support')->sendDocument([
     'chat_id' => '-1001234567890',
     'document' => InputFile::fromContents('generated report', 'report.txt', 'text/plain'),
 ]);
+```
+
+For downloads, call `getFileData()` first and pass the returned relative `file_path` to `downloadFile()` or `downloadFileTo()`:
+
+```php
+$file = $telegram->bot('support')->getFileData(['file_id' => 'telegram-file-id']);
+
+if ($file->filePath() !== null) {
+    $telegram->bot('support')->downloadFileTo(
+        $file->filePath(),
+        storage_path('app/telegram/report.pdf'),
+    );
+}
 ```
 
 To customize transport in Laravel, bind `GuzzleHttp\ClientInterface` before the bot client is resolved:

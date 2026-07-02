@@ -27,6 +27,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 use JsonException;
 use Psr\Log\LoggerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
 class TelegramBotClient implements TelegramBotClientContract
@@ -217,6 +218,45 @@ class TelegramBotClient implements TelegramBotClientContract
         return TelegramBotResultFactory::from($method, $this->call($method, $parameters));
     }
 
+    public function fileUrl(string $filePath): string
+    {
+        $this->assertConfigured();
+
+        return sprintf(
+            '%s/file/bot%s/%s',
+            rtrim($this->config->apiUrl, '/'),
+            $this->config->token,
+            $this->encodedFilePath($filePath),
+        );
+    }
+
+    public function downloadFile(string $filePath): string
+    {
+        return (string) $this->requestFile($filePath)->getBody();
+    }
+
+    public function downloadFileTo(string $filePath, string $destination): string
+    {
+        $this->assertWritableDestination($destination);
+
+        $response = $this->requestFile($filePath);
+        $temporaryPath = $this->temporaryDestination($destination);
+
+        try {
+            $this->writeResponseBodyTo($response, $temporaryPath);
+
+            if (! @rename($temporaryPath, $destination)) {
+                throw new InvalidArgumentException("Telegram file download destination [$destination] cannot be written.");
+            }
+        } finally {
+            if (is_file($temporaryPath)) {
+                @unlink($temporaryPath);
+            }
+        }
+
+        return $destination;
+    }
+
     private function retryPolicy(): TelegramBotRetryPolicy
     {
         return $this->retryPolicy ?? new TelegramBotRetryPolicy();
@@ -305,10 +345,113 @@ class TelegramBotClient implements TelegramBotClientContract
         ]);
     }
 
+    private function requestFile(string $filePath): ResponseInterface
+    {
+        try {
+            $response = $this->httpClient()->request('GET', $this->fileUrl($filePath), [
+                'timeout' => $this->config->timeout,
+                'http_errors' => false,
+            ]);
+        } catch (GuzzleException $exception) {
+            $this->logger?->error('Telegram Bot file download transport request failed.', [
+                'exception' => $exception::class,
+            ]);
+
+            throw new TelegramBotTransportException($this->sanitizeTransportMessage($exception->getMessage()));
+        }
+
+        $statusCode = $response->getStatusCode();
+
+        if ($statusCode < 200 || $statusCode >= 300) {
+            $this->logger?->error('Telegram Bot file download failed.', [
+                'status_code' => $statusCode,
+            ]);
+
+            throw new TelegramBotTransportException("Telegram Bot file download failed with HTTP status [$statusCode].");
+        }
+
+        return $response;
+    }
+
     private function assertConfigured(): void
     {
         if ($this->config->token === null || trim($this->config->token) === '') {
             throw new TelegramBotConfigurationException('Telegram Bot token is not configured.');
+        }
+    }
+
+    private function encodedFilePath(string $filePath): string
+    {
+        $filePath = trim($filePath);
+
+        if ($filePath === '') {
+            throw new InvalidArgumentException('Telegram Bot file_path must not be empty.');
+        }
+
+        if (str_starts_with($filePath, '/') || preg_match('/^[A-Za-z]:[\\\\\/]/', $filePath) === 1) {
+            throw new InvalidArgumentException('Telegram Bot file_path must be relative when building a download URL.');
+        }
+
+        return implode('/', array_map(
+            static fn (string $segment): string => rawurlencode($segment),
+            explode('/', $filePath),
+        ));
+    }
+
+    private function assertWritableDestination(string $destination): void
+    {
+        if (trim($destination) === '') {
+            throw new InvalidArgumentException('Telegram file download destination must not be empty.');
+        }
+
+        $directory = dirname($destination);
+
+        if (! is_dir($directory)) {
+            throw new InvalidArgumentException("Telegram file download destination directory [$directory] does not exist.");
+        }
+
+        if (! is_writable($directory)) {
+            throw new InvalidArgumentException("Telegram file download destination directory [$directory] is not writable.");
+        }
+    }
+
+    private function temporaryDestination(string $destination): string
+    {
+        $temporaryPath = tempnam(dirname($destination), basename($destination).'.tmp.');
+
+        if ($temporaryPath === false) {
+            throw new InvalidArgumentException("Telegram file download destination [$destination] cannot be prepared.");
+        }
+
+        return $temporaryPath;
+    }
+
+    private function writeResponseBodyTo(ResponseInterface $response, string $destination): void
+    {
+        $target = @fopen($destination, 'wb');
+
+        if ($target === false) {
+            throw new InvalidArgumentException("Telegram file download destination [$destination] cannot be opened for writing.");
+        }
+
+        try {
+            $body = $response->getBody();
+
+            while (! $body->eof()) {
+                $chunk = $body->read(8192);
+
+                if ($chunk === '') {
+                    break;
+                }
+
+                $written = fwrite($target, $chunk);
+
+                if ($written === false || $written !== strlen($chunk)) {
+                    throw new InvalidArgumentException("Telegram file download destination [$destination] cannot be written.");
+                }
+            }
+        } finally {
+            fclose($target);
         }
     }
 

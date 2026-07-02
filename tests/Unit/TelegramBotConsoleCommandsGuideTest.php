@@ -40,6 +40,7 @@ class TelegramBotConsoleCommandsGuideTest extends TestCase
             '--delete-webhook',
             '--raw',
             '--skip-telegram',
+            '--all',
             '--command=start',
             '--update=callback_query',
             '--fallback',

@@ -65,6 +65,7 @@ Use `php artisan telegram-bot:updates --bot=default` after sending a test messag
 Use `php artisan telegram-bot:make-handler StartCommand --command=start`, `--update=message`, or `--fallback` to scaffold host app webhook handlers before hand-writing boilerplate.
 Use `php artisan telegram-bot:me --bot=default` to verify the configured bot identity.
 Use `php artisan telegram-bot:doctor --bot=default` before deploys to check config, webhook secret policy, route registration, and Telegram API reachability.
+Use `php artisan telegram-bot:doctor --all --skip-telegram` for offline multi-bot and channel inventory checks.
 Use `php artisan telegram-bot:send-test --channel=inbox` to verify delivery to a configured Laravel channel.
 
 ## Use
@@ -141,6 +142,7 @@ Use `to($chatId, token: $botToken)` when the bot token and destination are resol
 Use `text()`, `photo()`, and `document()` for the shortest common outbound sends. Use `Outbound\TelegramMessage` when the message needs reply markup, parse mode, notification flags, content protection, or extra Telegram fields. Use typed request DTOs or raw arrays when method-specific validation or the full Telegram surface is needed.
 
 Use `InputFile::fromPath()`, `fromContents()`, `fromStream()`, or `fromResource()` for top-level and nested file uploads. Nested media files are converted to Telegram `attach://` multipart references automatically.
+For downloads, resolve a relative Telegram `file_path` with `getFileData()` before calling `downloadFile()` or `downloadFileTo()`. Use `fileUrl()` only for internal handoff flows, and never log the returned URL because it contains the bot token.
 
 Use typed outbound DTOs for common payloads when validation helps: `AlexItDev91\LaravelTelegramBot\DTO\Messages\SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
 Prefer nested input DTOs over raw arrays for common structured payloads: `LinkPreviewOptions`, `ReplyParameters`, `SuggestedPostParameters`, `SuggestedPostPrice`, `InlineKeyboardButton`, and `InlineKeyboardMarkup`. Use `InlineKeyboardMarkup::make()->callback($text, TelegramCallbackData::action($action)->with($key, $value))` when callback buttons need compact, parseable action payloads.

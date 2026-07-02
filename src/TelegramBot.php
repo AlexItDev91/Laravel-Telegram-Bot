@@ -12,6 +12,7 @@ use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 use AlexItDev91\LaravelTelegramBot\Outbound\TelegramMessage;
 use AlexItDev91\LaravelTelegramBot\Support\TelegramBotResultFactory;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient as ConcreteTelegramBotClient;
+use BadMethodCallException;
 use InvalidArgumentException;
 use ReflectionMethod;
 
@@ -119,6 +120,39 @@ class TelegramBot implements TelegramBotManager
     public function callData(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
         return TelegramBotResultFactory::from($method, $this->call($method, $parameters));
+    }
+
+    public function fileUrl(string $filePath): string
+    {
+        $client = $this->bot();
+
+        if (method_exists($client, 'fileUrl')) {
+            return $client->{'fileUrl'}($filePath);
+        }
+
+        throw new BadMethodCallException('The selected Telegram Bot client does not support fileUrl().');
+    }
+
+    public function downloadFile(string $filePath): string
+    {
+        $client = $this->bot();
+
+        if (method_exists($client, 'downloadFile')) {
+            return $client->{'downloadFile'}($filePath);
+        }
+
+        throw new BadMethodCallException('The selected Telegram Bot client does not support downloadFile().');
+    }
+
+    public function downloadFileTo(string $filePath, string $destination): string
+    {
+        $client = $this->bot();
+
+        if (method_exists($client, 'downloadFileTo')) {
+            return $client->{'downloadFileTo'}($filePath, $destination);
+        }
+
+        throw new BadMethodCallException('The selected Telegram Bot client does not support downloadFileTo().');
     }
 
     public function send(TelegramMessage $message): mixed

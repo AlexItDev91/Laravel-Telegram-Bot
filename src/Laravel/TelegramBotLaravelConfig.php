@@ -83,6 +83,30 @@ final readonly class TelegramBotLaravelConfig
     /**
      * @return list<string>
      */
+    public function botNames(): array
+    {
+        $bots = $this->config['bots'] ?? [];
+        $names = is_array($bots) ? array_values(array_filter(array_keys($bots), 'is_string')) : [];
+        $default = $this->defaultBot();
+
+        if (! in_array($default, $names, true)) {
+            array_unshift($names, $default);
+        }
+
+        return array_values(array_unique($names));
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function channelNames(): array
+    {
+        return $this->configuredChannelNames();
+    }
+
+    /**
+     * @return list<string>
+     */
     public function validationIssues(): array
     {
         $issues = [];

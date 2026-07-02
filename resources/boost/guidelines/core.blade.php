@@ -34,6 +34,7 @@ php artisan telegram-bot:install
 - Use `AlexItDev91\LaravelTelegramBot\Laravel\Notifications\TelegramBotNotificationChannel` and `TelegramNotificationMessage` for Laravel notifications that should deliver through Telegram.
 - Route notification destinations with `routeNotificationForTelegram()` or `Notification::route('telegram', [...])`; return `channel`, `bot`, `token`, `chat_id`, `message_thread_id`, or `direct_messages_topic_id` values rather than hardcoding credentials in the notification class.
 - Use typed response helpers such as `getMeData()`, `sendMessageData()`, `getUpdatesData()`, `getFileData()`, and `getWebhookInfoData()` when application code needs DTO accessors. Use raw methods when it needs Telegram's unmodified `result`.
+- Use `getFileData()` plus `downloadFile()` or `downloadFileTo()` for Telegram file downloads. Use `fileUrl()` only for internal handoff flows, and never log the returned URL because it contains the bot token.
 - Use `callData()` for typed response mapping. When no dedicated result DTO exists, associative Telegram objects are returned as `TelegramBotResultData` and lists of objects as `list<TelegramBotResultData>`.
 - Use typed outbound DTOs for common payloads when validation helps: `SendMessageData`, `EditMessageTextData`, `SendPhotoData`, `SendDocumentData`, and `AnswerCallbackQueryData`.
 - Prefer nested input DTOs over raw arrays for common structured payloads: `LinkPreviewOptions`, `ReplyParameters`, `SuggestedPostParameters`, `SuggestedPostPrice`, `InlineKeyboardButton`, and `InlineKeyboardMarkup`. Use `InlineKeyboardMarkup::make()->callback($text, TelegramCallbackData::action($action)->with($key, $value))` when callback buttons need compact, parseable action payloads.
@@ -47,10 +48,12 @@ php artisan telegram-bot:install
 - Use `php artisan telegram-bot:make-handler StartCommand --command=start`, `--update=message`, or `--fallback` to scaffold host app webhook handlers before hand-writing boilerplate.
 - Use `php artisan telegram-bot:me --bot=default` to verify the configured bot token and Telegram identity.
 - Use `php artisan telegram-bot:doctor --bot=default` before deploys to check config, webhook secret policy, route registration, and Telegram API reachability.
+- Use `php artisan telegram-bot:doctor --all --skip-telegram` for offline multi-bot and channel inventory checks.
 - Use `php artisan telegram-bot:updates` to discover parsed `chat_id`, `message_thread_id`, and `direct_messages_topic_id` values from Telegram updates.
 - Use `php artisan telegram-bot:send-test --channel=name` to verify Laravel can send to the configured chat or topic.
 - Use `php artisan telegram-bot:webhook:set`, `telegram-bot:webhook:info`, and `telegram-bot:webhook:delete` for webhook management.
 - Use `InputFile::fromPath()`, `fromContents()`, `fromStream()`, or `fromResource()` for top-level and nested file uploads; nested media files are converted to Telegram `attach://` multipart references.
+- For downloads, resolve a relative Telegram `file_path` with `getFileData()` before calling `downloadFile()` or `downloadFileTo()`.
 - Bind `GuzzleHttp\ClientInterface` in the host app when custom transport, retries, proxy, tracing, or HTTP fakes are needed.
 - Use the built-in `POST /telegram-bot/webhook` Laravel receiver for incoming updates when `telegram-bot.webhook.route.enabled` is true.
 - Protect webhooks with `TELEGRAM_WEBHOOK_SECRET_TOKEN`; the package validates `X-Telegram-Bot-Api-Secret-Token` and fails closed when `TELEGRAM_WEBHOOK_REQUIRE_SECRET=true`.

@@ -4,6 +4,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Rich;
 
 use Override;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramRichBlockType;
 use InvalidArgumentException;
 
 /**
@@ -32,7 +33,7 @@ final readonly class RichBlock implements TelegramBotData
      */
     public static function paragraph(string|TelegramBotData|array $text): self
     {
-        return self::withText('paragraph', $text);
+        return self::withText(TelegramRichBlockType::Paragraph, $text);
     }
 
     /**
@@ -44,7 +45,7 @@ final readonly class RichBlock implements TelegramBotData
             throw new InvalidArgumentException('Telegram rich block heading size must be between 1 and 6.');
         }
 
-        return self::withText('heading', $text, ['size' => $size]);
+        return self::withText(TelegramRichBlockType::Heading, $text, ['size' => $size]);
     }
 
     /**
@@ -52,7 +53,7 @@ final readonly class RichBlock implements TelegramBotData
      */
     public static function pre(string|TelegramBotData|array $text, ?string $language = null): self
     {
-        return self::withText('pre', $text, array_filter([
+        return self::withText(TelegramRichBlockType::Preformatted, $text, array_filter([
             'language' => $language,
         ], static fn (mixed $value): bool => $value !== null));
     }
@@ -62,12 +63,12 @@ final readonly class RichBlock implements TelegramBotData
      */
     public static function footer(string|TelegramBotData|array $text): self
     {
-        return self::withText('footer', $text);
+        return self::withText(TelegramRichBlockType::Footer, $text);
     }
 
     public static function divider(): self
     {
-        return new self(['type' => 'divider']);
+        return new self(['type' => TelegramRichBlockType::Divider->value]);
     }
 
     public static function math(string $expression): self
@@ -75,7 +76,7 @@ final readonly class RichBlock implements TelegramBotData
         self::assertFilled('expression', $expression);
 
         return new self([
-            'type' => 'mathematical_expression',
+            'type' => TelegramRichBlockType::MathematicalExpression->value,
             'expression' => $expression,
         ]);
     }
@@ -85,7 +86,7 @@ final readonly class RichBlock implements TelegramBotData
         self::assertFilled('name', $name);
 
         return new self([
-            'type' => 'anchor',
+            'type' => TelegramRichBlockType::Anchor->value,
             'name' => $name,
         ]);
     }
@@ -99,7 +100,7 @@ final readonly class RichBlock implements TelegramBotData
         self::assertNonEmptyList('blocks', $blocks);
 
         return new self(array_filter([
-            'type' => 'blockquote',
+            'type' => TelegramRichBlockType::BlockQuotation->value,
             'blocks' => self::blockList($blocks),
             'credit' => $credit !== null ? self::richTextValue($credit) : null,
         ], static fn (mixed $value): bool => $value !== null));
@@ -111,7 +112,7 @@ final readonly class RichBlock implements TelegramBotData
      */
     public static function pullquote(string|TelegramBotData|array $text, string|TelegramBotData|array|null $credit = null): self
     {
-        return self::withText('pullquote', $text, array_filter([
+        return self::withText(TelegramRichBlockType::PullQuotation, $text, array_filter([
             'credit' => $credit !== null ? self::richTextValue($credit) : null,
         ], static fn (mixed $value): bool => $value !== null));
     }
@@ -125,7 +126,7 @@ final readonly class RichBlock implements TelegramBotData
         self::assertNonEmptyList('blocks', $blocks);
 
         return new self(array_filter([
-            'type' => 'details',
+            'type' => TelegramRichBlockType::Details->value,
             'summary' => self::richTextValue($summary),
             'blocks' => self::blockList($blocks),
             'is_open' => $isOpen,
@@ -137,7 +138,14 @@ final readonly class RichBlock implements TelegramBotData
      */
     public static function thinking(string|TelegramBotData|array $text): self
     {
-        return self::withText('thinking', $text);
+        return self::withText(TelegramRichBlockType::Thinking, $text);
+    }
+
+    public function typeEnum(): ?TelegramRichBlockType
+    {
+        $type = $this->payload['type'] ?? null;
+
+        return is_string($type) ? TelegramRichBlockType::tryFrom($type) : null;
     }
 
     /**
@@ -153,10 +161,10 @@ final readonly class RichBlock implements TelegramBotData
      * @param  RichTextValue  $text
      * @param  array<string, mixed>  $extra
      */
-    private static function withText(string $type, string|TelegramBotData|array $text, array $extra = []): self
+    private static function withText(TelegramRichBlockType $type, string|TelegramBotData|array $text, array $extra = []): self
     {
         return new self(array_merge([
-            'type' => $type,
+            'type' => $type->value,
             'text' => self::richTextValue($text),
         ], $extra));
     }

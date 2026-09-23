@@ -13,6 +13,7 @@ final readonly class SendStickerRequestData extends TelegramBotApiRequestData
     public const string METHOD = 'sendSticker';
 
     /**
+     * @param  TelegramBotData|array<string|int, mixed>|null  $ephemeralMessageParameters
      * @param  TelegramBotData|array<string|int, mixed>|null  $suggestedPostParameters
      * @param  TelegramBotData|array<string|int, mixed>|null  $replyParameters
      * @param  array<string, mixed>  $extra
@@ -32,6 +33,7 @@ final readonly class SendStickerRequestData extends TelegramBotApiRequestData
         TelegramBotData|array|null $replyParameters = null,
         mixed $replyMarkup = null,
         array $extra = [],
+        TelegramBotData|array|null $ephemeralMessageParameters = null,
     ): self {
         return new self(self::withoutNullValues(array_merge([
             'chat_id' => $chatId,
@@ -39,6 +41,7 @@ final readonly class SendStickerRequestData extends TelegramBotApiRequestData
             'business_connection_id' => $businessConnectionId,
             'message_thread_id' => $messageThreadId,
             'direct_messages_topic_id' => $directMessagesTopicId,
+            'ephemeral_message_parameters' => $ephemeralMessageParameters,
             'emoji' => $emoji,
             'disable_notification' => $disableNotification,
             'protect_content' => $protectContent,

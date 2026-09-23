@@ -64,6 +64,11 @@ final readonly class TelegramChatMemberData implements TelegramBotData
         return $this->boolAt('can_manage_chat');
     }
 
+    public function canSendWelcomeMessages(): ?bool
+    {
+        return $this->boolAt('can_send_welcome_messages');
+    }
+
     public function canDeleteMessages(): ?bool
     {
         return $this->boolAt('can_delete_messages');

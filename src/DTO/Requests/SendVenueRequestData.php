@@ -12,6 +12,7 @@ final readonly class SendVenueRequestData extends TelegramBotApiRequestData
     public const string METHOD = 'sendVenue';
 
     /**
+     * @param  TelegramBotData|array<string|int, mixed>|null  $ephemeralMessageParameters
      * @param  TelegramBotData|array<string|int, mixed>|null  $suggestedPostParameters
      * @param  TelegramBotData|array<string|int, mixed>|null  $replyParameters
      * @param  array<string, mixed>  $extra
@@ -37,6 +38,7 @@ final readonly class SendVenueRequestData extends TelegramBotApiRequestData
         TelegramBotData|array|null $replyParameters = null,
         mixed $replyMarkup = null,
         array $extra = [],
+        TelegramBotData|array|null $ephemeralMessageParameters = null,
     ): self {
         return new self(self::withoutNullValues(array_merge([
             'chat_id' => $chatId,
@@ -47,6 +49,7 @@ final readonly class SendVenueRequestData extends TelegramBotApiRequestData
             'business_connection_id' => $businessConnectionId,
             'message_thread_id' => $messageThreadId,
             'direct_messages_topic_id' => $directMessagesTopicId,
+            'ephemeral_message_parameters' => $ephemeralMessageParameters,
             'foursquare_id' => $foursquareId,
             'foursquare_type' => $foursquareType,
             'google_place_id' => $googlePlaceId,

@@ -13,4 +13,9 @@ final readonly class TelegramBotCommandData extends TelegramObjectData
     {
         return $this->string('description');
     }
+
+    public function isEphemeral(): ?bool
+    {
+        return $this->bool('is_ephemeral');
+    }
 }

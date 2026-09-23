@@ -3,8 +3,8 @@
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
 use AlexItDev91\LaravelTelegramBot\InputFile;
-use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 
 /**
  * Generated typed request builder for Telegram Bot API method `sendVideo`.
@@ -14,6 +14,7 @@ final readonly class SendVideoRequestData extends TelegramBotApiRequestData
     public const string METHOD = 'sendVideo';
 
     /**
+     * @param  TelegramBotData|array<string|int, mixed>|null  $ephemeralMessageParameters
      * @param  array<string|int, mixed>|null  $captionEntities
      * @param  TelegramBotData|array<string|int, mixed>|null  $suggestedPostParameters
      * @param  TelegramBotData|array<string|int, mixed>|null  $replyParameters
@@ -45,6 +46,7 @@ final readonly class SendVideoRequestData extends TelegramBotApiRequestData
         TelegramBotData|array|null $replyParameters = null,
         mixed $replyMarkup = null,
         array $extra = [],
+        TelegramBotData|array|null $ephemeralMessageParameters = null,
     ): self {
         return new self(self::withoutNullValues(array_merge([
             'chat_id' => $chatId,
@@ -52,6 +54,7 @@ final readonly class SendVideoRequestData extends TelegramBotApiRequestData
             'business_connection_id' => $businessConnectionId,
             'message_thread_id' => $messageThreadId,
             'direct_messages_topic_id' => $directMessagesTopicId,
+            'ephemeral_message_parameters' => $ephemeralMessageParameters,
             'duration' => $duration,
             'width' => $width,
             'height' => $height,

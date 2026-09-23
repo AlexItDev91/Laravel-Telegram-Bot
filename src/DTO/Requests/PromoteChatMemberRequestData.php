@@ -35,6 +35,7 @@ final readonly class PromoteChatMemberRequestData extends TelegramBotApiRequestD
         ?bool $canManageDirectMessages = null,
         ?bool $canManageTags = null,
         array $extra = [],
+        ?bool $canSendWelcomeMessages = null,
     ): self {
         return new self(self::withoutNullValues(array_merge([
             'chat_id' => $chatId,
@@ -56,6 +57,7 @@ final readonly class PromoteChatMemberRequestData extends TelegramBotApiRequestD
             'can_manage_topics' => $canManageTopics,
             'can_manage_direct_messages' => $canManageDirectMessages,
             'can_manage_tags' => $canManageTags,
+            'can_send_welcome_messages' => $canSendWelcomeMessages,
         ], $extra)));
     }
 }

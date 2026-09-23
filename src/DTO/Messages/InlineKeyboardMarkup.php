@@ -19,6 +19,7 @@ final readonly class InlineKeyboardMarkup implements TelegramBotData
     public function __construct(
         private array $inlineKeyboard,
         private array $extra = [],
+        private ?bool $forceReply = null,
     ) {
         //
     }
@@ -61,7 +62,7 @@ final readonly class InlineKeyboardMarkup implements TelegramBotData
         return new self([
             ...$this->inlineKeyboard,
             array_values($buttons),
-        ], $this->extra);
+        ], $this->extra, $this->forceReply);
     }
 
     /**
@@ -87,7 +88,12 @@ final readonly class InlineKeyboardMarkup implements TelegramBotData
      */
     public function extra(array $extra): self
     {
-        return new self($this->inlineKeyboard, array_merge($this->extra, $extra));
+        return new self($this->inlineKeyboard, array_merge($this->extra, $extra), $this->forceReply);
+    }
+
+    public function forceReply(bool $enabled = true): self
+    {
+        return new self($this->inlineKeyboard, $this->extra, $enabled);
     }
 
     /**
@@ -98,6 +104,7 @@ final readonly class InlineKeyboardMarkup implements TelegramBotData
     {
         return self::payload([
             'inline_keyboard' => $this->inlineKeyboard,
+            'force_reply' => $this->forceReply,
         ], $this->extra, ['inline_keyboard']);
     }
 

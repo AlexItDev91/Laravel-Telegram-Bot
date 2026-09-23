@@ -21,12 +21,16 @@ final readonly class SendRichMessageDraftRequestData extends TelegramBotApiReque
         TelegramBotData|array $richMessage,
         ?int $messageThreadId = null,
         array $extra = [],
+        ?bool $canStop = null,
+        ?bool $keepOnStop = null,
     ): self {
         return new self(self::withoutNullValues(array_merge([
             'chat_id' => $chatId,
             'draft_id' => $draftId,
             'rich_message' => $richMessage,
             'message_thread_id' => $messageThreadId,
+            'can_stop' => $canStop,
+            'keep_on_stop' => $keepOnStop,
         ], $extra)));
     }
 }

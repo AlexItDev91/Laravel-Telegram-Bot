@@ -20,7 +20,7 @@ class WritersideDocumentationTest extends TestCase
 
         $this->assertStringContainsString('<topics dir="topics"/>', $config);
         $this->assertStringContainsString('<images dir="images" web-path="Laravel-Telegram-Bot"/>', $config);
-        $this->assertStringContainsString('<instance src="tg.tree" version="2.14.0"/>', $config);
+        $this->assertStringContainsString('<instance src="tg.tree" version="2.15.0"/>', $config);
         $this->assertFileExists($root.'/Writerside/cfg/buildprofiles.xml');
         $this->assertFileExists($root.'/Writerside/cfg/static/custom.css');
         $this->assertFileExists($root.'/Writerside/cfg/static/local-search.js');
@@ -119,7 +119,7 @@ class WritersideDocumentationTest extends TestCase
         foreach ([
             'Laravel 13',
             'Version `v1.19.1` is the final 1.x release',
-            'Telegram Bot API 10.1',
+            'Telegram Bot API 10.3',
             'raw `call(method, parameters)` API',
             '![Laravel Telegram Bot package cover](package-cover.png){ width="700" }',
         ] as $requiredOverviewText) {

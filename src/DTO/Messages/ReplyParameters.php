@@ -6,6 +6,7 @@ use Override;
 use AlexItDev91\LaravelTelegramBot\DTO\Concerns\BuildsTelegramBotPayload;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
+use InvalidArgumentException;
 
 final readonly class ReplyParameters implements TelegramBotData
 {
@@ -16,7 +17,7 @@ final readonly class ReplyParameters implements TelegramBotData
      * @param  array<string, mixed>  $extra
      */
     public function __construct(
-        private int|string $messageId,
+        private int|string|null $messageId = null,
         private int|string|null $chatId = null,
         private ?bool $allowSendingWithoutReply = null,
         private ?string $quote = null,
@@ -25,8 +26,16 @@ final readonly class ReplyParameters implements TelegramBotData
         private ?int $quotePosition = null,
         private ?string $pollOptionId = null,
         private array $extra = [],
+        private int|string|null $ephemeralMessageId = null,
     ) {
-        //
+        if (($this->messageId === null) === ($this->ephemeralMessageId === null)) {
+            throw new InvalidArgumentException('Telegram reply requires exactly one of [message_id] or [ephemeral_message_id].');
+        }
+    }
+
+    public static function forEphemeralMessage(int|string $ephemeralMessageId): self
+    {
+        return new self(ephemeralMessageId: $ephemeralMessageId);
     }
 
     /**
@@ -37,6 +46,7 @@ final readonly class ReplyParameters implements TelegramBotData
     {
         return self::payload([
             'message_id' => $this->messageId,
+            'ephemeral_message_id' => $this->ephemeralMessageId,
             'chat_id' => $this->chatId,
             'allow_sending_without_reply' => $this->allowSendingWithoutReply,
             'quote' => $this->quote,
@@ -44,6 +54,6 @@ final readonly class ReplyParameters implements TelegramBotData
             'quote_entities' => $this->quoteEntities,
             'quote_position' => $this->quotePosition,
             'poll_option_id' => $this->pollOptionId,
-        ], $this->extra, ['message_id']);
+        ], $this->extra, [$this->messageId !== null ? 'message_id' : 'ephemeral_message_id']);
     }
 }

@@ -242,6 +242,14 @@ trait TelegramBotApiMethods
     /**
      * @param  array<string, mixed>  $parameters
      */
+    public function deleteEphemeralMessage(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::deleteEphemeralMessage, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
     public function deleteForumTopic(array|TelegramBotRequestData $parameters = []): mixed
     {
         return $this->call(TelegramBotApiMethod::deleteForumTopic, $parameters);
@@ -325,6 +333,38 @@ trait TelegramBotApiMethods
     public function editChatSubscriptionInviteLink(array|TelegramBotRequestData $parameters = []): mixed
     {
         return $this->call(TelegramBotApiMethod::editChatSubscriptionInviteLink, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function editEphemeralMessageCaption(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::editEphemeralMessageCaption, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function editEphemeralMessageMedia(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::editEphemeralMessageMedia, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function editEphemeralMessageReplyMarkup(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::editEphemeralMessageReplyMarkup, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function editEphemeralMessageText(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::editEphemeralMessageText, $parameters);
     }
 
     /**

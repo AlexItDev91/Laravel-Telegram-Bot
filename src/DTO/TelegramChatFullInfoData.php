@@ -77,4 +77,11 @@ final readonly class TelegramChatFullInfoData extends TelegramObjectData
 
         return $bot !== null ? TelegramUserData::fromPayload($bot) : null;
     }
+
+    public function community(): ?TelegramCommunityData
+    {
+        $community = $this->object('community');
+
+        return $community !== null ? TelegramCommunityData::fromPayload($community) : null;
+    }
 }

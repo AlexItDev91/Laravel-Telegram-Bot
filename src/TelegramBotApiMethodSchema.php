@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
  */
 final class TelegramBotApiMethodSchema
 {
-    public const string CHECKSUM = '260d46b8f3942c39a983c94c33ea8c92f785bdecad00030522bb476cff6e0c8c';
+    public const string CHECKSUM = 'ec521b830b5794dcd9ddf21b70c9111cf26c8cbeaacddbe0dee097b585b28108';
 
     /**
      * @var array<string, list<array{name: string, type: string, required: bool}>>
@@ -678,6 +678,23 @@ final class TelegramBotApiMethodSchema
                 'required' => true,
             ],
         ],
+        'deleteEphemeralMessage' => [
+            [
+                'name' => 'chat_id',
+                'type' => 'Integer or String',
+                'required' => true,
+            ],
+            [
+                'name' => 'receiver_user_id',
+                'type' => 'Integer',
+                'required' => true,
+            ],
+            [
+                'name' => 'ephemeral_message_id',
+                'type' => 'Integer',
+                'required' => true,
+            ],
+        ],
         'deleteForumTopic' => [
             [
                 'name' => 'chat_id',
@@ -827,6 +844,144 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'name',
                 'type' => 'String',
+                'required' => false,
+            ],
+        ],
+        'editEphemeralMessageCaption' => [
+            [
+                'name' => 'chat_id',
+                'type' => 'Integer or String',
+                'required' => true,
+            ],
+            [
+                'name' => 'receiver_user_id',
+                'type' => 'Integer',
+                'required' => true,
+            ],
+            [
+                'name' => 'ephemeral_message_id',
+                'type' => 'Integer',
+                'required' => true,
+            ],
+            [
+                'name' => 'caption',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'parse_mode',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'caption_entities',
+                'type' => 'Array of MessageEntity',
+                'required' => false,
+            ],
+            [
+                'name' => 'show_caption_above_media',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'reply_markup',
+                'type' => 'InlineKeyboardMarkup',
+                'required' => false,
+            ],
+        ],
+        'editEphemeralMessageMedia' => [
+            [
+                'name' => 'chat_id',
+                'type' => 'Integer or String',
+                'required' => true,
+            ],
+            [
+                'name' => 'receiver_user_id',
+                'type' => 'Integer',
+                'required' => true,
+            ],
+            [
+                'name' => 'ephemeral_message_id',
+                'type' => 'Integer',
+                'required' => true,
+            ],
+            [
+                'name' => 'media',
+                'type' => 'InputMedia',
+                'required' => true,
+            ],
+            [
+                'name' => 'reply_markup',
+                'type' => 'InlineKeyboardMarkup',
+                'required' => false,
+            ],
+        ],
+        'editEphemeralMessageReplyMarkup' => [
+            [
+                'name' => 'chat_id',
+                'type' => 'Integer or String',
+                'required' => true,
+            ],
+            [
+                'name' => 'receiver_user_id',
+                'type' => 'Integer',
+                'required' => true,
+            ],
+            [
+                'name' => 'ephemeral_message_id',
+                'type' => 'Integer',
+                'required' => true,
+            ],
+            [
+                'name' => 'reply_markup',
+                'type' => 'InlineKeyboardMarkup',
+                'required' => false,
+            ],
+        ],
+        'editEphemeralMessageText' => [
+            [
+                'name' => 'chat_id',
+                'type' => 'Integer or String',
+                'required' => true,
+            ],
+            [
+                'name' => 'receiver_user_id',
+                'type' => 'Integer',
+                'required' => true,
+            ],
+            [
+                'name' => 'ephemeral_message_id',
+                'type' => 'Integer',
+                'required' => true,
+            ],
+            [
+                'name' => 'text',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'parse_mode',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'entities',
+                'type' => 'Array of MessageEntity',
+                'required' => false,
+            ],
+            [
+                'name' => 'rich_message',
+                'type' => 'InputRichMessage',
+                'required' => false,
+            ],
+            [
+                'name' => 'link_preview_options',
+                'type' => 'LinkPreviewOptions',
+                'required' => false,
+            ],
+            [
+                'name' => 'reply_markup',
+                'type' => 'InlineKeyboardMarkup',
                 'required' => false,
             ],
         ],
@@ -1888,6 +2043,11 @@ final class TelegramBotApiMethodSchema
                 'type' => 'Boolean',
                 'required' => false,
             ],
+            [
+                'name' => 'can_send_welcome_messages',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
         ],
         'readBusinessMessage' => [
             [
@@ -2131,6 +2291,11 @@ final class TelegramBotApiMethodSchema
                 'required' => false,
             ],
             [
+                'name' => 'ephemeral_message_parameters',
+                'type' => 'EphemeralMessageParameters',
+                'required' => false,
+            ],
+            [
                 'name' => 'animation',
                 'type' => 'InputFile or String',
                 'required' => true,
@@ -2235,6 +2400,11 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'direct_messages_topic_id',
                 'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'ephemeral_message_parameters',
+                'type' => 'EphemeralMessageParameters',
                 'required' => false,
             ],
             [
@@ -2411,6 +2581,11 @@ final class TelegramBotApiMethodSchema
                 'required' => false,
             ],
             [
+                'name' => 'ephemeral_message_parameters',
+                'type' => 'EphemeralMessageParameters',
+                'required' => false,
+            ],
+            [
                 'name' => 'phone_number',
                 'type' => 'String',
                 'required' => true,
@@ -2547,6 +2722,11 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'direct_messages_topic_id',
                 'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'ephemeral_message_parameters',
+                'type' => 'EphemeralMessageParameters',
                 'required' => false,
             ],
             [
@@ -2883,6 +3063,11 @@ final class TelegramBotApiMethodSchema
                 'required' => false,
             ],
             [
+                'name' => 'ephemeral_message_parameters',
+                'type' => 'EphemeralMessageParameters',
+                'required' => false,
+            ],
+            [
                 'name' => 'live_photo',
                 'type' => 'InputFile or String',
                 'required' => true,
@@ -2972,6 +3157,11 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'direct_messages_topic_id',
                 'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'ephemeral_message_parameters',
+                'type' => 'EphemeralMessageParameters',
                 'required' => false,
             ],
             [
@@ -3114,6 +3304,11 @@ final class TelegramBotApiMethodSchema
                 'required' => false,
             ],
             [
+                'name' => 'ephemeral_message_parameters',
+                'type' => 'EphemeralMessageParameters',
+                'required' => false,
+            ],
+            [
                 'name' => 'text',
                 'type' => 'String',
                 'required' => true,
@@ -3198,6 +3393,16 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'entities',
                 'type' => 'Array of MessageEntity',
+                'required' => false,
+            ],
+            [
+                'name' => 'can_stop',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'keep_on_stop',
+                'type' => 'Boolean',
                 'required' => false,
             ],
         ],
@@ -3307,6 +3512,11 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'direct_messages_topic_id',
                 'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'ephemeral_message_parameters',
+                'type' => 'EphemeralMessageParameters',
                 'required' => false,
             ],
             [
@@ -3569,6 +3779,11 @@ final class TelegramBotApiMethodSchema
                 'required' => false,
             ],
             [
+                'name' => 'ephemeral_message_parameters',
+                'type' => 'EphemeralMessageParameters',
+                'required' => false,
+            ],
+            [
                 'name' => 'rich_message',
                 'type' => 'InputRichMessage',
                 'required' => true,
@@ -3630,6 +3845,16 @@ final class TelegramBotApiMethodSchema
                 'type' => 'InputRichMessage',
                 'required' => true,
             ],
+            [
+                'name' => 'can_stop',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'keep_on_stop',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
         ],
         'sendSticker' => [
             [
@@ -3650,6 +3875,11 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'direct_messages_topic_id',
                 'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'ephemeral_message_parameters',
+                'type' => 'EphemeralMessageParameters',
                 'required' => false,
             ],
             [
@@ -3717,6 +3947,11 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'direct_messages_topic_id',
                 'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'ephemeral_message_parameters',
+                'type' => 'EphemeralMessageParameters',
                 'required' => false,
             ],
             [
@@ -3814,6 +4049,11 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'direct_messages_topic_id',
                 'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'ephemeral_message_parameters',
+                'type' => 'EphemeralMessageParameters',
                 'required' => false,
             ],
             [
@@ -3939,6 +4179,11 @@ final class TelegramBotApiMethodSchema
                 'required' => false,
             ],
             [
+                'name' => 'ephemeral_message_parameters',
+                'type' => 'EphemeralMessageParameters',
+                'required' => false,
+            ],
+            [
                 'name' => 'video_note',
                 'type' => 'InputFile or String',
                 'required' => true,
@@ -4013,6 +4258,11 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'direct_messages_topic_id',
                 'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'ephemeral_message_parameters',
+                'type' => 'EphemeralMessageParameters',
                 'required' => false,
             ],
             [

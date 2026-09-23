@@ -1,6 +1,6 @@
 # API Method Support
 
-This package targets Telegram Bot API 10.1, released on 2026-06-11.
+This package targets Telegram Bot API 10.3, released on 2026-08-24.
 
 Primary sources:
 
@@ -83,6 +83,7 @@ For downloads, call `getFileData()` and pass the returned relative `file_path` t
 | `deleteBusinessMessages` | `deleteBusinessMessages(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#deletebusinessmessages) |
 | `deleteChatPhoto` | `deleteChatPhoto(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#deletechatphoto) |
 | `deleteChatStickerSet` | `deleteChatStickerSet(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#deletechatstickerset) |
+| `deleteEphemeralMessage` | `deleteEphemeralMessage(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#deleteephemeralmessage) |
 | `deleteForumTopic` | `deleteForumTopic(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#deleteforumtopic) |
 | `deleteMessage` | `deleteMessage(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#deletemessage) |
 | `deleteMessageReaction` | `deleteMessageReaction(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#deletemessagereaction) |
@@ -94,6 +95,10 @@ For downloads, call `getFileData()` and pass the returned relative `file_path` t
 | `deleteWebhook` | `deleteWebhook(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#deletewebhook) |
 | `editChatInviteLink` | `editChatInviteLink(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#editchatinvitelink) |
 | `editChatSubscriptionInviteLink` | `editChatSubscriptionInviteLink(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#editchatsubscriptioninvitelink) |
+| `editEphemeralMessageCaption` | `editEphemeralMessageCaption(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#editephemeralmessagecaption) |
+| `editEphemeralMessageMedia` | `editEphemeralMessageMedia(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#editephemeralmessagemedia) |
+| `editEphemeralMessageReplyMarkup` | `editEphemeralMessageReplyMarkup(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#editephemeralmessagereplymarkup) |
+| `editEphemeralMessageText` | `editEphemeralMessageText(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#editephemeralmessagetext) |
 | `editForumTopic` | `editForumTopic(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#editforumtopic) |
 | `editGeneralForumTopic` | `editGeneralForumTopic(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#editgeneralforumtopic) |
 | `editMessageCaption` | `editMessageCaption(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#editmessagecaption) |

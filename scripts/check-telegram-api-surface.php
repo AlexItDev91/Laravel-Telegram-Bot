@@ -285,18 +285,7 @@ function officialUpdateTypes(string $html): array
  */
 function localWebhookUpdateTypes(): array
 {
-    $reflection = new ReflectionClass(TelegramWebhookUpdate::class);
-    $constant = $reflection->getReflectionConstant('UPDATE_TYPES');
-
-    if ($constant === false) {
-        fwrite(STDERR, "Failed to read local Telegram webhook update types.\n");
-        exit(1);
-    }
-
-    /** @var list<string> $updateTypes */
-    $updateTypes = $constant->getValue();
-
-    return sortedUnique($updateTypes);
+    return sortedUnique(TelegramWebhookUpdate::updateTypes());
 }
 
 /**

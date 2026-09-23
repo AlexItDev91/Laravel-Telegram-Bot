@@ -33,6 +33,7 @@ final readonly class InlineKeyboardButton implements TelegramBotData
         private TelegramBotData|array|null $callbackGame = null,
         private ?bool $pay = null,
         private array $extra = [],
+        private ?DisabledButton $disabled = null,
     ) {
         self::assertFilledString('text', $text);
 
@@ -95,6 +96,11 @@ final readonly class InlineKeyboardButton implements TelegramBotData
         return new self($text, pay: true);
     }
 
+    public static function disabled(string $text): self
+    {
+        return new self($text, disabled: new DisabledButton());
+    }
+
     /**
      * @param  TelegramBotData|array<string, mixed>  $callbackGame
      */
@@ -121,6 +127,7 @@ final readonly class InlineKeyboardButton implements TelegramBotData
             'copy_text' => $this->copyText,
             'callback_game' => $this->callbackGame,
             'pay' => $this->pay,
+            'disabled' => $this->disabled,
         ], $this->extra, ['text']);
     }
 

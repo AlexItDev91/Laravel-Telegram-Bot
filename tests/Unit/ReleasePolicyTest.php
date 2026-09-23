@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.14.0', $version);
+        $this->assertSame('2.15.0', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -35,6 +35,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.15.0] - 2026-09-23', $changelog);
         $this->assertStringContainsString('## [2.14.0] - 2026-07-02', $changelog);
         $this->assertStringContainsString('## [2.13.0] - 2026-06-25', $changelog);
         $this->assertStringContainsString('## [2.12.5] - 2026-06-17', $changelog);
@@ -221,7 +222,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.14.0', $notes);
-        $this->assertStringContainsString('Added Telegram file download helpers', $notes);
+        $this->assertStringContainsString('# v2.15.0', $notes);
+        $this->assertStringContainsString('Updated the SDK target to Telegram Bot API 10.3', $notes);
     }
 }

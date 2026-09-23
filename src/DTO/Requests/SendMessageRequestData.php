@@ -2,8 +2,8 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
-use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 
 /**
  * Generated typed request builder for Telegram Bot API method `sendMessage`.
@@ -13,6 +13,7 @@ final readonly class SendMessageRequestData extends TelegramBotApiRequestData
     public const string METHOD = 'sendMessage';
 
     /**
+     * @param  TelegramBotData|array<string|int, mixed>|null  $ephemeralMessageParameters
      * @param  array<string|int, mixed>|null  $entities
      * @param  TelegramBotData|array<string|int, mixed>|null  $linkPreviewOptions
      * @param  TelegramBotData|array<string|int, mixed>|null  $suggestedPostParameters
@@ -36,6 +37,7 @@ final readonly class SendMessageRequestData extends TelegramBotApiRequestData
         TelegramBotData|array|null $replyParameters = null,
         mixed $replyMarkup = null,
         array $extra = [],
+        TelegramBotData|array|null $ephemeralMessageParameters = null,
     ): self {
         return new self(self::withoutNullValues(array_merge([
             'chat_id' => $chatId,
@@ -43,6 +45,7 @@ final readonly class SendMessageRequestData extends TelegramBotApiRequestData
             'business_connection_id' => $businessConnectionId,
             'message_thread_id' => $messageThreadId,
             'direct_messages_topic_id' => $directMessagesTopicId,
+            'ephemeral_message_parameters' => $ephemeralMessageParameters,
             'parse_mode' => $parseMode,
             'entities' => $entities,
             'link_preview_options' => $linkPreviewOptions,

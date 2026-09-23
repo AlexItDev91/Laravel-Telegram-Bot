@@ -23,6 +23,8 @@ final readonly class SendMessageDraftRequestData extends TelegramBotApiRequestDa
         string|TelegramParseMode|null $parseMode = null,
         ?array $entities = null,
         array $extra = [],
+        ?bool $canStop = null,
+        ?bool $keepOnStop = null,
     ): self {
         return new self(self::withoutNullValues(array_merge([
             'chat_id' => $chatId,
@@ -31,6 +33,8 @@ final readonly class SendMessageDraftRequestData extends TelegramBotApiRequestDa
             'text' => $text,
             'parse_mode' => $parseMode,
             'entities' => $entities,
+            'can_stop' => $canStop,
+            'keep_on_stop' => $keepOnStop,
         ], $extra)));
     }
 }

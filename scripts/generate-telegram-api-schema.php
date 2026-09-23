@@ -623,7 +623,11 @@ function requestClassContent(string $method, array $parameters, string $classNam
     $uses = [];
     $payloadLines = [];
     $signatureParameters = [];
+    $newOptionalSignatureParameters = [];
     $docblocks = [];
+
+    // Append parameters introduced after 10.1 after $extra to preserve existing positional calls.
+    $newOptionalParameters = ['ephemeral_message_parameters', 'can_stop', 'keep_on_stop', 'can_send_welcome_messages'];
 
     foreach (orderedParameters($parameters) as $parameter) {
         $parameterName = $parameter['name'];
@@ -647,15 +651,19 @@ function requestClassContent(string $method, array $parameters, string $classNam
         }
 
         $default = $parameter['required'] ? '' : ' = null';
-        $signatureParameters[] = sprintf('        %s $%s%s', $type['php'], $variable, $default);
+        $signatureParameter = sprintf('        %s $%s%s', $type['php'], $variable, $default);
+
+        if (in_array($parameterName, $newOptionalParameters, true)) {
+            $newOptionalSignatureParameters[] = $signatureParameter;
+        } else {
+            $signatureParameters[] = $signatureParameter;
+        }
         $payloadLines[] = sprintf("            '%s' => \$%s,", $parameterName, $variable);
     }
 
     $docblocks[] = '     * @param  array<string, mixed>  $extra';
 
-    $signature = $signatureParameters === []
-        ? '        array $extra = [],'
-        : implode(",\n", array_merge($signatureParameters, ['        array $extra = [],']));
+    $signature = implode(",\n", array_merge($signatureParameters, ['        array $extra = []'], $newOptionalSignatureParameters)).',';
 
     $payload = $payloadLines === []
         ? '[]'

@@ -31,6 +31,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteAllMessageReactionsRequest
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteBusinessMessagesRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteChatPhotoRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteChatStickerSetRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteEphemeralMessageRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteForumTopicRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteMessageReactionRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteMessageRequestData;
@@ -42,6 +43,10 @@ use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteStoryRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteWebhookRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditChatInviteLinkRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditChatSubscriptionInviteLinkRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditEphemeralMessageCaptionRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditEphemeralMessageMediaRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditEphemeralMessageReplyMarkupRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditEphemeralMessageTextRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditForumTopicRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditGeneralForumTopicRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditMessageCaptionRequestData;
@@ -223,6 +228,7 @@ final class TelegramBotApiRequestRegistry
         'deleteBusinessMessages' => DeleteBusinessMessagesRequestData::class,
         'deleteChatPhoto' => DeleteChatPhotoRequestData::class,
         'deleteChatStickerSet' => DeleteChatStickerSetRequestData::class,
+        'deleteEphemeralMessage' => DeleteEphemeralMessageRequestData::class,
         'deleteForumTopic' => DeleteForumTopicRequestData::class,
         'deleteMessage' => DeleteMessageRequestData::class,
         'deleteMessageReaction' => DeleteMessageReactionRequestData::class,
@@ -234,6 +240,10 @@ final class TelegramBotApiRequestRegistry
         'deleteWebhook' => DeleteWebhookRequestData::class,
         'editChatInviteLink' => EditChatInviteLinkRequestData::class,
         'editChatSubscriptionInviteLink' => EditChatSubscriptionInviteLinkRequestData::class,
+        'editEphemeralMessageCaption' => EditEphemeralMessageCaptionRequestData::class,
+        'editEphemeralMessageMedia' => EditEphemeralMessageMediaRequestData::class,
+        'editEphemeralMessageReplyMarkup' => EditEphemeralMessageReplyMarkupRequestData::class,
+        'editEphemeralMessageText' => EditEphemeralMessageTextRequestData::class,
         'editForumTopic' => EditForumTopicRequestData::class,
         'editGeneralForumTopic' => EditGeneralForumTopicRequestData::class,
         'editMessageCaption' => EditMessageCaptionRequestData::class,

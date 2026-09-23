@@ -13,9 +13,19 @@ final readonly class InputRichMessage implements TelegramBotData
         private ?string $markdown = null,
         private ?bool $isRtl = null,
         private ?bool $skipEntityDetection = null,
+        /** @var list<InputRichBlock|RichBlock> */
+        private array $blocks = [],
+        /** @var list<InputRichMessageMedia> */
+        private array $media = [],
     ) {
-        if (($this->html === null) === ($this->markdown === null)) {
-            throw new InvalidArgumentException('Telegram input rich messages require exactly one of [html] or [markdown].');
+        $formats = (int) ($this->html !== null) + (int) ($this->markdown !== null) + (int) ($this->blocks !== []);
+
+        if ($formats !== 1) {
+            throw new InvalidArgumentException('Telegram input rich messages require exactly one of [html], [markdown], or [blocks].');
+        }
+
+        if ($this->blocks !== [] && $this->media !== []) {
+            throw new InvalidArgumentException('Telegram rich message media references require HTML or Markdown content.');
         }
     }
 
@@ -33,14 +43,24 @@ final readonly class InputRichMessage implements TelegramBotData
         return new self(markdown: $markdown);
     }
 
+    public static function blocks(InputRichBlock|RichBlock ...$blocks): self
+    {
+        return new self(blocks: array_values($blocks));
+    }
+
+    public function withMedia(InputRichMessageMedia ...$media): self
+    {
+        return new self($this->html, $this->markdown, $this->isRtl, $this->skipEntityDetection, $this->blocks, array_values([...$this->media, ...$media]));
+    }
+
     public function rightToLeft(bool $isRtl = true): self
     {
-        return new self($this->html, $this->markdown, $isRtl, $this->skipEntityDetection);
+        return new self($this->html, $this->markdown, $isRtl, $this->skipEntityDetection, $this->blocks, $this->media);
     }
 
     public function skipEntityDetection(bool $skip = true): self
     {
-        return new self($this->html, $this->markdown, $this->isRtl, $skip);
+        return new self($this->html, $this->markdown, $this->isRtl, $skip, $this->blocks, $this->media);
     }
 
     /**
@@ -52,6 +72,8 @@ final readonly class InputRichMessage implements TelegramBotData
         return array_filter([
             'html' => $this->html,
             'markdown' => $this->markdown,
+            'blocks' => $this->blocks !== [] ? array_map(static fn (InputRichBlock|RichBlock $block): array => $block->toArray(), $this->blocks) : null,
+            'media' => $this->media !== [] ? array_map(static fn (InputRichMessageMedia $item): array => $item->toArray(), $this->media) : null,
             'is_rtl' => $this->isRtl,
             'skip_entity_detection' => $this->skipEntityDetection,
         ], static fn (mixed $value): bool => $value !== null);

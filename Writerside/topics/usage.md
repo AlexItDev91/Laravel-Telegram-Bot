@@ -272,6 +272,8 @@ $telegram->bot('support')->sendRichMessage(SendRichMessageRequestData::make(
 
 Use `InputRichMessage::markdown()` for Markdown input. Returned rich-message payloads are available through `richMessageData()`.
 
+For Bot API 10.3, use `InputRichMessage::blocks()` with `InputRichBlock` and `RichMessageButton` objects to send structured text and button rows. `InputRichMessage::html()` and `markdown()` can include `InputRichMessageMedia` objects through `withMedia()`. Pass `EphemeralMessageParameters::forUser()` by the named `ephemeralMessageParameters` argument of a generated request builder when a message must be visible to one user in a group.
+
 ## Enum Method Names
 
 ```php

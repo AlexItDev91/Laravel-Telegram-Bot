@@ -13,6 +13,7 @@ final readonly class SendRichMessageRequestData extends TelegramBotApiRequestDat
 
     /**
      * @param  TelegramBotData|array<string|int, mixed>  $richMessage
+     * @param  TelegramBotData|array<string|int, mixed>|null  $ephemeralMessageParameters
      * @param  TelegramBotData|array<string|int, mixed>|null  $suggestedPostParameters
      * @param  TelegramBotData|array<string|int, mixed>|null  $replyParameters
      * @param  array<string, mixed>  $extra
@@ -31,6 +32,7 @@ final readonly class SendRichMessageRequestData extends TelegramBotApiRequestDat
         TelegramBotData|array|null $replyParameters = null,
         mixed $replyMarkup = null,
         array $extra = [],
+        TelegramBotData|array|null $ephemeralMessageParameters = null,
     ): self {
         return new self(self::withoutNullValues(array_merge([
             'chat_id' => $chatId,
@@ -38,6 +40,7 @@ final readonly class SendRichMessageRequestData extends TelegramBotApiRequestDat
             'business_connection_id' => $businessConnectionId,
             'message_thread_id' => $messageThreadId,
             'direct_messages_topic_id' => $directMessagesTopicId,
+            'ephemeral_message_parameters' => $ephemeralMessageParameters,
             'disable_notification' => $disableNotification,
             'protect_content' => $protectContent,
             'allow_paid_broadcast' => $allowPaidBroadcast,

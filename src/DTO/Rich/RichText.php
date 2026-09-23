@@ -4,6 +4,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Rich;
 
 use Override;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramRichTextType;
 use InvalidArgumentException;
 
 /**
@@ -11,6 +12,8 @@ use InvalidArgumentException;
  */
 final readonly class RichText implements TelegramBotData
 {
+    public const string TYPE_BUTTON = 'button';
+
     /**
      * @param  array<string, mixed>  $payload
      */
@@ -32,7 +35,7 @@ final readonly class RichText implements TelegramBotData
      */
     public static function bold(string|TelegramBotData|array $text): self
     {
-        return self::withText('bold', $text);
+        return self::withText(TelegramRichTextType::Bold, $text);
     }
 
     /**
@@ -40,7 +43,7 @@ final readonly class RichText implements TelegramBotData
      */
     public static function italic(string|TelegramBotData|array $text): self
     {
-        return self::withText('italic', $text);
+        return self::withText(TelegramRichTextType::Italic, $text);
     }
 
     /**
@@ -48,7 +51,7 @@ final readonly class RichText implements TelegramBotData
      */
     public static function underline(string|TelegramBotData|array $text): self
     {
-        return self::withText('underline', $text);
+        return self::withText(TelegramRichTextType::Underline, $text);
     }
 
     /**
@@ -56,7 +59,7 @@ final readonly class RichText implements TelegramBotData
      */
     public static function strikethrough(string|TelegramBotData|array $text): self
     {
-        return self::withText('strikethrough', $text);
+        return self::withText(TelegramRichTextType::Strikethrough, $text);
     }
 
     /**
@@ -64,7 +67,7 @@ final readonly class RichText implements TelegramBotData
      */
     public static function spoiler(string|TelegramBotData|array $text): self
     {
-        return self::withText('spoiler', $text);
+        return self::withText(TelegramRichTextType::Spoiler, $text);
     }
 
     /**
@@ -72,7 +75,7 @@ final readonly class RichText implements TelegramBotData
      */
     public static function code(string|TelegramBotData|array $text): self
     {
-        return self::withText('code', $text);
+        return self::withText(TelegramRichTextType::Code, $text);
     }
 
     /**
@@ -80,7 +83,7 @@ final readonly class RichText implements TelegramBotData
      */
     public static function marked(string|TelegramBotData|array $text): self
     {
-        return self::withText('marked', $text);
+        return self::withText(TelegramRichTextType::Marked, $text);
     }
 
     /**
@@ -88,7 +91,7 @@ final readonly class RichText implements TelegramBotData
      */
     public static function subscript(string|TelegramBotData|array $text): self
     {
-        return self::withText('subscript', $text);
+        return self::withText(TelegramRichTextType::Subscript, $text);
     }
 
     /**
@@ -96,7 +99,7 @@ final readonly class RichText implements TelegramBotData
      */
     public static function superscript(string|TelegramBotData|array $text): self
     {
-        return self::withText('superscript', $text);
+        return self::withText(TelegramRichTextType::Superscript, $text);
     }
 
     /**
@@ -106,7 +109,7 @@ final readonly class RichText implements TelegramBotData
     {
         self::assertFilled('url', $url);
 
-        return self::withText('url', $text, ['url' => $url]);
+        return self::withText(TelegramRichTextType::Url, $text, ['url' => $url]);
     }
 
     /**
@@ -116,7 +119,7 @@ final readonly class RichText implements TelegramBotData
     {
         self::assertFilled('email_address', $emailAddress);
 
-        return self::withText('email_address', $text, ['email_address' => $emailAddress]);
+        return self::withText(TelegramRichTextType::EmailAddress, $text, ['email_address' => $emailAddress]);
     }
 
     /**
@@ -126,7 +129,7 @@ final readonly class RichText implements TelegramBotData
     {
         self::assertFilled('phone_number', $phoneNumber);
 
-        return self::withText('phone_number', $text, ['phone_number' => $phoneNumber]);
+        return self::withText(TelegramRichTextType::PhoneNumber, $text, ['phone_number' => $phoneNumber]);
     }
 
     /**
@@ -136,7 +139,7 @@ final readonly class RichText implements TelegramBotData
     {
         self::assertFilled('bank_card_number', $bankCardNumber);
 
-        return self::withText('bank_card_number', $text, ['bank_card_number' => $bankCardNumber]);
+        return self::withText(TelegramRichTextType::BankCardNumber, $text, ['bank_card_number' => $bankCardNumber]);
     }
 
     /**
@@ -146,7 +149,7 @@ final readonly class RichText implements TelegramBotData
     {
         self::assertFilled('username', $username);
 
-        return self::withText('mention', $text, ['username' => ltrim($username, '@')]);
+        return self::withText(TelegramRichTextType::Mention, $text, ['username' => ltrim($username, '@')]);
     }
 
     /**
@@ -156,7 +159,7 @@ final readonly class RichText implements TelegramBotData
     {
         self::assertFilled('hashtag', $hashtag);
 
-        return self::withText('hashtag', $text, ['hashtag' => ltrim($hashtag, '#')]);
+        return self::withText(TelegramRichTextType::Hashtag, $text, ['hashtag' => ltrim($hashtag, '#')]);
     }
 
     /**
@@ -166,7 +169,7 @@ final readonly class RichText implements TelegramBotData
     {
         self::assertFilled('cashtag', $cashtag);
 
-        return self::withText('cashtag', $text, ['cashtag' => ltrim($cashtag, '$')]);
+        return self::withText(TelegramRichTextType::Cashtag, $text, ['cashtag' => ltrim($cashtag, '$')]);
     }
 
     /**
@@ -176,7 +179,7 @@ final readonly class RichText implements TelegramBotData
     {
         self::assertFilled('bot_command', $botCommand);
 
-        return self::withText('bot_command', $text, ['bot_command' => ltrim($botCommand, '/')]);
+        return self::withText(TelegramRichTextType::BotCommand, $text, ['bot_command' => ltrim($botCommand, '/')]);
     }
 
     public static function customEmoji(string $customEmojiId, string $alternativeText): self
@@ -185,9 +188,17 @@ final readonly class RichText implements TelegramBotData
         self::assertFilled('alternative_text', $alternativeText);
 
         return new self([
-            'type' => 'custom_emoji',
+            'type' => TelegramRichTextType::CustomEmoji->value,
             'custom_emoji_id' => $customEmojiId,
             'alternative_text' => $alternativeText,
+        ]);
+    }
+
+    public static function button(RichMessageButton $button): self
+    {
+        return new self([
+            'type' => TelegramRichTextType::Button->value,
+            'button' => $button->toArray(),
         ]);
     }
 
@@ -196,7 +207,7 @@ final readonly class RichText implements TelegramBotData
         self::assertFilled('expression', $expression);
 
         return new self([
-            'type' => 'mathematical_expression',
+            'type' => TelegramRichTextType::MathematicalExpression->value,
             'expression' => $expression,
         ]);
     }
@@ -208,7 +219,7 @@ final readonly class RichText implements TelegramBotData
     {
         self::assertFilled('date_time_format', $format);
 
-        return self::withText('date_time', $text, [
+        return self::withText(TelegramRichTextType::DateTime, $text, [
             'unix_time' => $unixTime,
             'date_time_format' => $format,
         ]);
@@ -219,7 +230,7 @@ final readonly class RichText implements TelegramBotData
         self::assertFilled('name', $name);
 
         return new self([
-            'type' => 'anchor',
+            'type' => TelegramRichTextType::Anchor->value,
             'name' => $name,
         ]);
     }
@@ -229,7 +240,7 @@ final readonly class RichText implements TelegramBotData
      */
     public static function anchorLink(string|TelegramBotData|array $text, string $anchorName): self
     {
-        return self::withText('anchor_link', $text, ['anchor_name' => $anchorName]);
+        return self::withText(TelegramRichTextType::AnchorLink, $text, ['anchor_name' => $anchorName]);
     }
 
     /**
@@ -239,7 +250,7 @@ final readonly class RichText implements TelegramBotData
     {
         self::assertFilled('name', $name);
 
-        return self::withText('reference', $text, ['name' => $name]);
+        return self::withText(TelegramRichTextType::Reference, $text, ['name' => $name]);
     }
 
     /**
@@ -249,7 +260,14 @@ final readonly class RichText implements TelegramBotData
     {
         self::assertFilled('reference_name', $referenceName);
 
-        return self::withText('reference_link', $text, ['reference_name' => $referenceName]);
+        return self::withText(TelegramRichTextType::ReferenceLink, $text, ['reference_name' => $referenceName]);
+    }
+
+    public function typeEnum(): ?TelegramRichTextType
+    {
+        $type = $this->payload['type'] ?? null;
+
+        return is_string($type) ? TelegramRichTextType::tryFrom($type) : null;
     }
 
     /**
@@ -265,10 +283,10 @@ final readonly class RichText implements TelegramBotData
      * @param  RichTextValue  $text
      * @param  array<string, mixed>  $extra
      */
-    private static function withText(string $type, string|TelegramBotData|array $text, array $extra = []): self
+    private static function withText(TelegramRichTextType $type, string|TelegramBotData|array $text, array $extra = []): self
     {
         return new self(array_merge([
-            'type' => $type,
+            'type' => $type->value,
             'text' => self::richTextValue($text),
         ], $extra));
     }

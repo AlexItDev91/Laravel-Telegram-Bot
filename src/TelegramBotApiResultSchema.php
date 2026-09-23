@@ -222,6 +222,12 @@ final class TelegramBotApiResultSchema
             'list' => false,
             'allows_bool' => false,
         ],
+        'deleteEphemeralMessage' => [
+            'type' => 'Boolean',
+            'data_class' => NULL,
+            'list' => false,
+            'allows_bool' => false,
+        ],
         'deleteForumTopic' => [
             'type' => 'Boolean',
             'data_class' => NULL,
@@ -285,6 +291,30 @@ final class TelegramBotApiResultSchema
         'editChatSubscriptionInviteLink' => [
             'type' => 'ChatInviteLink',
             'data_class' => TelegramChatInviteLinkData::class,
+            'list' => false,
+            'allows_bool' => false,
+        ],
+        'editEphemeralMessageCaption' => [
+            'type' => 'Boolean',
+            'data_class' => NULL,
+            'list' => false,
+            'allows_bool' => false,
+        ],
+        'editEphemeralMessageMedia' => [
+            'type' => 'Boolean',
+            'data_class' => NULL,
+            'list' => false,
+            'allows_bool' => false,
+        ],
+        'editEphemeralMessageReplyMarkup' => [
+            'type' => 'Boolean',
+            'data_class' => NULL,
+            'list' => false,
+            'allows_bool' => false,
+        ],
+        'editEphemeralMessageText' => [
+            'type' => 'Boolean',
+            'data_class' => NULL,
             'list' => false,
             'allows_bool' => false,
         ],

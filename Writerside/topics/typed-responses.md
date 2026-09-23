@@ -69,7 +69,7 @@ $senderUsername = $message->from()?->username();
 $richBlocks = $message->richMessageData()?->blocks();
 ```
 
-Bot API 10.1 accessors are available for rich messages and join-request capabilities:
+Bot API 10.3 accessors are available for rich messages and join-request capabilities:
 
 ```php
 $richMessage = $message->richMessageData();

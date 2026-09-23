@@ -33,6 +33,7 @@ enum TelegramBotApiMethod: string
     case deleteBusinessMessages = 'deleteBusinessMessages';
     case deleteChatPhoto = 'deleteChatPhoto';
     case deleteChatStickerSet = 'deleteChatStickerSet';
+    case deleteEphemeralMessage = 'deleteEphemeralMessage';
     case deleteForumTopic = 'deleteForumTopic';
     case deleteMessage = 'deleteMessage';
     case deleteMessageReaction = 'deleteMessageReaction';
@@ -44,6 +45,10 @@ enum TelegramBotApiMethod: string
     case deleteWebhook = 'deleteWebhook';
     case editChatInviteLink = 'editChatInviteLink';
     case editChatSubscriptionInviteLink = 'editChatSubscriptionInviteLink';
+    case editEphemeralMessageCaption = 'editEphemeralMessageCaption';
+    case editEphemeralMessageMedia = 'editEphemeralMessageMedia';
+    case editEphemeralMessageReplyMarkup = 'editEphemeralMessageReplyMarkup';
+    case editEphemeralMessageText = 'editEphemeralMessageText';
     case editForumTopic = 'editForumTopic';
     case editGeneralForumTopic = 'editGeneralForumTopic';
     case editMessageCaption = 'editMessageCaption';

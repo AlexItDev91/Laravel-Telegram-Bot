@@ -58,4 +58,9 @@ final readonly class TelegramChatAdministratorRightsData extends TelegramObjectD
     {
         return $this->bool('can_delete_stories');
     }
+
+    public function canSendWelcomeMessages(): ?bool
+    {
+        return $this->bool('can_send_welcome_messages');
+    }
 }

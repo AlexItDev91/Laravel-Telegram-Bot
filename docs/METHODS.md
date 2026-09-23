@@ -2,7 +2,7 @@
 
 This document describes every Telegram Bot API method exposed by this package.
 
-Package target: Telegram Bot API `10.1`, released on `2026-06-11`.
+Package target: Telegram Bot API `10.3`, released on `2026-08-24`.
 
 Primary sources:
 
@@ -97,6 +97,7 @@ TelegramBot::call('newTelegramMethod', [
 | [`deleteBusinessMessages`](#deletebusinessmessages) | `deleteBusinessMessages(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#deletebusinessmessages) |
 | [`deleteChatPhoto`](#deletechatphoto) | `deleteChatPhoto(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#deletechatphoto) |
 | [`deleteChatStickerSet`](#deletechatstickerset) | `deleteChatStickerSet(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#deletechatstickerset) |
+| [`deleteEphemeralMessage`](#deleteephemeralmessage) | `deleteEphemeralMessage(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#deleteephemeralmessage) |
 | [`deleteForumTopic`](#deleteforumtopic) | `deleteForumTopic(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#deleteforumtopic) |
 | [`deleteMessage`](#deletemessage) | `deleteMessage(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#deletemessage) |
 | [`deleteMessageReaction`](#deletemessagereaction) | `deleteMessageReaction(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#deletemessagereaction) |
@@ -108,6 +109,10 @@ TelegramBot::call('newTelegramMethod', [
 | [`deleteWebhook`](#deletewebhook) | `deleteWebhook(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#deletewebhook) |
 | [`editChatInviteLink`](#editchatinvitelink) | `editChatInviteLink(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#editchatinvitelink) |
 | [`editChatSubscriptionInviteLink`](#editchatsubscriptioninvitelink) | `editChatSubscriptionInviteLink(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#editchatsubscriptioninvitelink) |
+| [`editEphemeralMessageCaption`](#editephemeralmessagecaption) | `editEphemeralMessageCaption(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#editephemeralmessagecaption) |
+| [`editEphemeralMessageMedia`](#editephemeralmessagemedia) | `editEphemeralMessageMedia(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#editephemeralmessagemedia) |
+| [`editEphemeralMessageReplyMarkup`](#editephemeralmessagereplymarkup) | `editEphemeralMessageReplyMarkup(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#editephemeralmessagereplymarkup) |
+| [`editEphemeralMessageText`](#editephemeralmessagetext) | `editEphemeralMessageText(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#editephemeralmessagetext) |
 | [`editForumTopic`](#editforumtopic) | `editForumTopic(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#editforumtopic) |
 | [`editGeneralForumTopic`](#editgeneralforumtopic) | `editGeneralForumTopic(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#editgeneralforumtopic) |
 | [`editMessageCaption`](#editmessagecaption) | `editMessageCaption(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#editmessagecaption) |
@@ -661,6 +666,19 @@ Parameters: none.
 | --- | --- | --- |
 | `chat_id` | `Integer or String` | `Yes` |
 
+### `deleteEphemeralMessage`
+
+- SDK call: `deleteEphemeralMessage(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('deleteEphemeralMessage', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/deleteEphemeralMessage`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#deleteephemeralmessage)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `chat_id` | `Integer or String` | `Yes` |
+| `receiver_user_id` | `Integer` | `Yes` |
+| `ephemeral_message_id` | `Integer` | `Yes` |
+
 ### `deleteForumTopic`
 
 - SDK call: `deleteForumTopic(array|TelegramBotRequestData $parameters = [])`
@@ -796,6 +814,72 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `invite_link` | `String` | `Yes` |
 | `name` | `String` | `Optional` |
+
+### `editEphemeralMessageCaption`
+
+- SDK call: `editEphemeralMessageCaption(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('editEphemeralMessageCaption', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/editEphemeralMessageCaption`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#editephemeralmessagecaption)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `chat_id` | `Integer or String` | `Yes` |
+| `receiver_user_id` | `Integer` | `Yes` |
+| `ephemeral_message_id` | `Integer` | `Yes` |
+| `caption` | `String` | `Optional` |
+| `parse_mode` | `String` | `Optional` |
+| `caption_entities` | `Array of MessageEntity` | `Optional` |
+| `show_caption_above_media` | `Boolean` | `Optional` |
+| `reply_markup` | `InlineKeyboardMarkup` | `Optional` |
+
+### `editEphemeralMessageMedia`
+
+- SDK call: `editEphemeralMessageMedia(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('editEphemeralMessageMedia', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/editEphemeralMessageMedia`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#editephemeralmessagemedia)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `chat_id` | `Integer or String` | `Yes` |
+| `receiver_user_id` | `Integer` | `Yes` |
+| `ephemeral_message_id` | `Integer` | `Yes` |
+| `media` | `InputMedia` | `Yes` |
+| `reply_markup` | `InlineKeyboardMarkup` | `Optional` |
+
+### `editEphemeralMessageReplyMarkup`
+
+- SDK call: `editEphemeralMessageReplyMarkup(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('editEphemeralMessageReplyMarkup', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/editEphemeralMessageReplyMarkup`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#editephemeralmessagereplymarkup)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `chat_id` | `Integer or String` | `Yes` |
+| `receiver_user_id` | `Integer` | `Yes` |
+| `ephemeral_message_id` | `Integer` | `Yes` |
+| `reply_markup` | `InlineKeyboardMarkup` | `Optional` |
+
+### `editEphemeralMessageText`
+
+- SDK call: `editEphemeralMessageText(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('editEphemeralMessageText', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/editEphemeralMessageText`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#editephemeralmessagetext)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `chat_id` | `Integer or String` | `Yes` |
+| `receiver_user_id` | `Integer` | `Yes` |
+| `ephemeral_message_id` | `Integer` | `Yes` |
+| `text` | `String` | `Optional` |
+| `parse_mode` | `String` | `Optional` |
+| `entities` | `Array of MessageEntity` | `Optional` |
+| `rich_message` | `InputRichMessage` | `Optional` |
+| `link_preview_options` | `LinkPreviewOptions` | `Optional` |
+| `reply_markup` | `InlineKeyboardMarkup` | `Optional` |
 
 ### `editForumTopic`
 
@@ -1501,6 +1585,7 @@ Parameters: none.
 | `can_manage_topics` | `Boolean` | `Optional` |
 | `can_manage_direct_messages` | `Boolean` | `Optional` |
 | `can_manage_tags` | `Boolean` | `Optional` |
+| `can_send_welcome_messages` | `Boolean` | `Optional` |
 
 ### `readBusinessMessage`
 
@@ -1702,6 +1787,7 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
+| `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
 | `animation` | `InputFile or String` | `Yes` |
 | `duration` | `Integer` | `Optional` |
 | `width` | `Integer` | `Optional` |
@@ -1733,6 +1819,7 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
+| `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
 | `audio` | `InputFile or String` | `Yes` |
 | `caption` | `String` | `Optional` |
 | `parse_mode` | `String` | `Optional` |
@@ -1806,6 +1893,7 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
+| `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
 | `phone_number` | `String` | `Yes` |
 | `first_name` | `String` | `Yes` |
 | `last_name` | `String` | `Optional` |
@@ -1853,6 +1941,7 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
+| `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
 | `document` | `InputFile or String` | `Yes` |
 | `thumbnail` | `InputFile or String` | `Optional` |
 | `caption` | `String` | `Optional` |
@@ -1958,6 +2047,7 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
+| `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
 | `live_photo` | `InputFile or String` | `Yes` |
 | `photo` | `InputFile or String` | `Yes` |
 | `caption` | `String` | `Optional` |
@@ -1986,6 +2076,7 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
+| `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
 | `latitude` | `Float` | `Yes` |
 | `longitude` | `Float` | `Yes` |
 | `horizontal_accuracy` | `Float` | `Optional` |
@@ -2033,6 +2124,7 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
+| `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
 | `text` | `String` | `Yes` |
 | `parse_mode` | `String` | `Optional` |
 | `entities` | `Array of MessageEntity` | `Optional` |
@@ -2060,6 +2152,8 @@ Parameters: none.
 | `text` | `String` | `Optional` |
 | `parse_mode` | `String` | `Optional` |
 | `entities` | `Array of MessageEntity` | `Optional` |
+| `can_stop` | `Boolean` | `Optional` |
+| `keep_on_stop` | `Boolean` | `Optional` |
 
 ### `sendPaidMedia`
 
@@ -2101,6 +2195,7 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
+| `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
 | `photo` | `InputFile or String` | `Yes` |
 | `caption` | `String` | `Optional` |
 | `parse_mode` | `String` | `Optional` |
@@ -2172,6 +2267,7 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
+| `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
 | `rich_message` | `InputRichMessage` | `Yes` |
 | `disable_notification` | `Boolean` | `Optional` |
 | `protect_content` | `Boolean` | `Optional` |
@@ -2194,6 +2290,8 @@ Parameters: none.
 | `message_thread_id` | `Integer` | `Optional` |
 | `draft_id` | `Integer` | `Yes` |
 | `rich_message` | `InputRichMessage` | `Yes` |
+| `can_stop` | `Boolean` | `Optional` |
+| `keep_on_stop` | `Boolean` | `Optional` |
 
 ### `sendSticker`
 
@@ -2208,6 +2306,7 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
+| `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
 | `sticker` | `InputFile or String` | `Yes` |
 | `emoji` | `String` | `Optional` |
 | `disable_notification` | `Boolean` | `Optional` |
@@ -2231,6 +2330,7 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
+| `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
 | `latitude` | `Float` | `Yes` |
 | `longitude` | `Float` | `Yes` |
 | `title` | `String` | `Yes` |
@@ -2260,6 +2360,7 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
+| `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
 | `video` | `InputFile or String` | `Yes` |
 | `duration` | `Integer` | `Optional` |
 | `width` | `Integer` | `Optional` |
@@ -2294,6 +2395,7 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
+| `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
 | `video_note` | `InputFile or String` | `Yes` |
 | `duration` | `Integer` | `Optional` |
 | `length` | `Integer` | `Optional` |
@@ -2319,6 +2421,7 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
+| `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
 | `voice` | `InputFile or String` | `Yes` |
 | `caption` | `String` | `Optional` |
 | `parse_mode` | `String` | `Optional` |

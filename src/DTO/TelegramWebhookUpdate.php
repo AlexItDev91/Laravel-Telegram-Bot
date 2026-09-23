@@ -2,37 +2,10 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO;
 
+use AlexItDev91\LaravelTelegramBot\Enums\TelegramUpdateType;
 use Override;
 final readonly class TelegramWebhookUpdate implements TelegramBotData
 {
-    private const array UPDATE_TYPES = [
-        'message',
-        'edited_message',
-        'channel_post',
-        'edited_channel_post',
-        'business_connection',
-        'business_message',
-        'edited_business_message',
-        'deleted_business_messages',
-        'guest_message',
-        'message_reaction',
-        'message_reaction_count',
-        'inline_query',
-        'chosen_inline_result',
-        'callback_query',
-        'shipping_query',
-        'pre_checkout_query',
-        'purchased_paid_media',
-        'poll',
-        'poll_answer',
-        'my_chat_member',
-        'chat_member',
-        'chat_join_request',
-        'chat_boost',
-        'removed_chat_boost',
-        'managed_bot',
-    ];
-
     /**
      * @param  array<string, mixed>  $payload
      */
@@ -55,7 +28,7 @@ final readonly class TelegramWebhookUpdate implements TelegramBotData
      */
     public static function updateTypes(): array
     {
-        return self::UPDATE_TYPES;
+        return array_map(static fn (TelegramUpdateType $type): string => $type->value, TelegramUpdateType::cases());
     }
 
     public function updateId(): ?int
@@ -66,7 +39,7 @@ final readonly class TelegramWebhookUpdate implements TelegramBotData
     public function type(): ?string
     {
         return array_find(
-            self::UPDATE_TYPES,
+            self::updateTypes(),
             fn (string $type): bool => array_key_exists($type, $this->payload),
         );
     }
@@ -138,6 +111,20 @@ final readonly class TelegramWebhookUpdate implements TelegramBotData
     public function guestMessage(): ?TelegramMessageData
     {
         return $this->messageAt('guest_message');
+    }
+
+    public function subscription(): ?TelegramBotSubscriptionUpdatedData
+    {
+        $subscription = $this->arrayAt('subscription');
+
+        return $subscription !== null ? TelegramBotSubscriptionUpdatedData::fromPayload($subscription) : null;
+    }
+
+    public function stoppedMessageGeneration(): ?TelegramMessageGenerationStoppedData
+    {
+        $stopped = $this->arrayAt('stopped_message_generation');
+
+        return $stopped !== null ? TelegramMessageGenerationStoppedData::fromPayload($stopped) : null;
     }
 
     public function businessConnection(): ?TelegramBusinessConnectionData

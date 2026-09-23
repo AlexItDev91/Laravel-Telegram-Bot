@@ -8,6 +8,13 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.15.0] - 2026-09-23
+
+- Updated the SDK target to Telegram Bot API 10.3, released on 2026-08-24, with 185 methods, 932 documented method parameters, 27 update types, five ephemeral-message methods, and regenerated request and result schemas.
+- Added typed input and response objects for rich message blocks, media, buttons, ephemeral messages, communities, subscriptions, stopped drafts, disabled buttons, reply keyboards, and new gift information. Added enums for rich discriminators and subscription state.
+- Added the new `ephemeral_message_parameters`, `can_stop`, `keep_on_stop`, and `can_send_welcome_messages` request fields while preserving existing positional generated-builder arguments.
+- Removed duplicate webhook update-type literals by deriving update detection from `TelegramUpdateType`; updated documentation and API-surface coverage.
+
 ## [2.14.0] - 2026-07-02
 
 - Added Telegram file download helpers: `fileUrl()`, `downloadFile()`, and `downloadFileTo()` for relative `file_path` values returned by `getFileData()`.

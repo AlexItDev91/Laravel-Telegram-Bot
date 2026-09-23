@@ -54,6 +54,42 @@ final readonly class TelegramMessageData implements TelegramBotData
         return $this->stringAt('guest_query_id');
     }
 
+    public function ephemeralMessageId(): ?int
+    {
+        return $this->intAt('ephemeral_message_id');
+    }
+
+    public function receiverUser(): ?TelegramUserData
+    {
+        $user = $this->arrayAt('receiver_user');
+
+        return $user !== null ? TelegramUserData::fromPayload($user) : null;
+    }
+
+    public function communityChatAdded(): ?TelegramCommunityChatEventData
+    {
+        return $this->communityChatEventAt('community_chat_added');
+    }
+
+    public function communityChatJoined(): ?TelegramCommunityChatEventData
+    {
+        return $this->communityChatEventAt('community_chat_joined');
+    }
+
+    public function communityChatRemoved(): ?TelegramCommunityChatRemovedData
+    {
+        $event = $this->arrayAt('community_chat_removed');
+
+        return $event !== null ? TelegramCommunityChatRemovedData::fromPayload($event) : null;
+    }
+
+    public function uniqueGiftInfo(): ?TelegramUniqueGiftInfoData
+    {
+        $gift = $this->arrayAt('unique_gift');
+
+        return $gift !== null ? TelegramUniqueGiftInfoData::fromPayload($gift) : null;
+    }
+
     public function chat(): ?TelegramChatData
     {
         $chat = $this->payload['chat'] ?? null;
@@ -255,6 +291,13 @@ final readonly class TelegramMessageData implements TelegramBotData
         $value = $this->payload[$key] ?? null;
 
         return is_bool($value) ? $value : null;
+    }
+
+    private function communityChatEventAt(string $key): ?TelegramCommunityChatEventData
+    {
+        $event = $this->arrayAt($key);
+
+        return $event !== null ? TelegramCommunityChatEventData::fromPayload($event) : null;
     }
 
     /**

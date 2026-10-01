@@ -21,7 +21,9 @@ The raw `call(method, parameters)` API is always available, so newly released Te
 | Main package namespace | `AlexItDev91\LaravelTelegramBot` |
 | Laravel namespaces | `AlexItDev91\LaravelTelegramBot\Laravel` and `AlexItDev91\LaravelTelegramBot\Facades` |
 
-Version `v1.19.1` is the final 1.x release for older host applications. Starting with `v2.0.0`, the package supports only PHP 8.4 and Laravel 13.
+PHP 8.4 and 8.5 are covered by required CI checks that fail on deprecations. PHP 8.6 development builds are checked without blocking releases until PHP 8.6 is stable.
+
+Version `v1.19.1` is the final 1.x release for older host applications. Starting with `v2.0.0`, the package requires PHP 8.4 or newer and Laravel 13 for Laravel integration.
 
 ## What The Package Provides
 

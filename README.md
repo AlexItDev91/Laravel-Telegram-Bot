@@ -19,6 +19,8 @@ Developed by Aptenova as an independent open-source package. The package is not 
 - Guzzle `^7.8`
 - Laravel integration: Laravel `^13.0` or matching Illuminate `^13.0` components in the host app
 
+PHP 8.4 and 8.5 are covered by required CI checks, including deprecation failures. PHP 8.6 is checked against a development build as a non-blocking compatibility preview until its stable release.
+
 ## Version Support Policy
 
 The first major version line is closed. Version `v1.19.1` is the final 1.x release for older host applications.

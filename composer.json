@@ -45,8 +45,8 @@
         "check:release-readiness": "php scripts/check-release-readiness.php",
         "generate:github-release-notes": "php scripts/generate-github-release-notes.php",
         "generate:telegram-api-schema": "php scripts/generate-telegram-api-schema.php",
-        "test": "vendor/bin/phpunit",
-        "test:coverage-surface": "vendor/bin/phpunit --filter=TelegramBotApiSurfaceTest",
+        "test": "vendor/bin/phpunit --fail-on-deprecation --fail-on-phpunit-deprecation",
+        "test:coverage-surface": "vendor/bin/phpunit --filter=TelegramBotApiSurfaceTest --fail-on-deprecation --fail-on-phpunit-deprecation",
         "verify:packagist-release": "php scripts/verify-packagist-release.php"
     },
     "extra": {

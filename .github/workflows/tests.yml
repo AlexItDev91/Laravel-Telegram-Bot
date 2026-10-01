@@ -32,7 +32,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ["8.4"]
+        include:
+          - php: "8.4"
+            experimental: false
+          - php: "8.5"
+            experimental: false
+          - php: "8.6"
+            experimental: true
+
+    continue-on-error: ${{ matrix.experimental }}
 
     name: PHP ${{ matrix.php }}
 
@@ -45,6 +53,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: none
+          ini-values: error_reporting=E_ALL
 
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --no-progress

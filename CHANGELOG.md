@@ -8,6 +8,12 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.15.1] - 2026-10-01
+
+- Verified the package and locked dependencies on PHP 8.5 while retaining PHP 8.4 as the minimum supported runtime; made the schema generator's CLI flag parsing independent of the global `$argv` variable.
+- Added required PHP 8.4 and 8.5 CI jobs with deprecation failures enabled, plus a non-blocking PHP 8.6 development-build job for early compatibility feedback.
+- Confirmed the official Telegram Bot API remains at 10.3 and the existing SDK surface is current.
+
 ## [2.15.0] - 2026-09-23
 
 - Updated the SDK target to Telegram Bot API 10.3, released on 2026-08-24, with 185 methods, 932 documented method parameters, 27 update types, five ephemeral-message methods, and regenerated request and result schemas.

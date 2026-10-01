@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.15.0', $version);
+        $this->assertSame('2.15.1', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -35,6 +35,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.15.1] - 2026-10-01', $changelog);
         $this->assertStringContainsString('## [2.15.0] - 2026-09-23', $changelog);
         $this->assertStringContainsString('## [2.14.0] - 2026-07-02', $changelog);
         $this->assertStringContainsString('## [2.13.0] - 2026-06-25', $changelog);
@@ -145,7 +146,11 @@ class ReleasePolicyTest extends TestCase
             'composer check:telegram-api-surface',
             'composer test',
             'composer test:coverage-surface',
-            'php: ["8.4"]',
+            '- php: "8.4"',
+            '- php: "8.5"',
+            '- php: "8.6"',
+            'continue-on-error: ${{ matrix.experimental }}',
+            'ini-values: error_reporting=E_ALL',
             'actions/checkout@v6',
         ] as $requiredWorkflowText) {
             $this->assertStringContainsString($requiredWorkflowText, $workflow);
@@ -193,6 +198,8 @@ class ReleasePolicyTest extends TestCase
         $this->assertIsArray($composer);
         $this->assertArrayNotHasKey('version', $composer);
         $this->assertSame('^8.4', $composer['require']['php'] ?? null);
+        $this->assertSame('vendor/bin/phpunit --fail-on-deprecation --fail-on-phpunit-deprecation', $composer['scripts']['test'] ?? null);
+        $this->assertSame('vendor/bin/phpunit --filter=TelegramBotApiSurfaceTest --fail-on-deprecation --fail-on-phpunit-deprecation', $composer['scripts']['test:coverage-surface'] ?? null);
         $this->assertArrayNotHasKey('illuminate/console', $composer['require']);
         $this->assertArrayNotHasKey('illuminate/notifications', $composer['require']);
         $this->assertArrayNotHasKey('illuminate/routing', $composer['require']);
@@ -222,7 +229,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.15.0', $notes);
-        $this->assertStringContainsString('Updated the SDK target to Telegram Bot API 10.3', $notes);
+        $this->assertStringContainsString('# v2.15.1', $notes);
+        $this->assertStringContainsString('Verified the package and locked dependencies on PHP 8.5', $notes);
     }
 }

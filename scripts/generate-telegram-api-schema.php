@@ -57,7 +57,8 @@ $requestRegistryPath = $root.'/src/TelegramBotApiRequestRegistry.php';
 $resultSchemaPath = $root.'/src/TelegramBotApiResultSchema.php';
 $requestBasePath = $root.'/src/DTO/Requests/TelegramBotApiRequestData.php';
 $requestDirectory = $root.'/src/DTO/Requests';
-$skipOfficialCheck = in_array('--skip-official-check', $argv, true);
+$options = getopt('', ['skip-official-check']);
+$skipOfficialCheck = is_array($options) && array_key_exists('skip-official-check', $options);
 
 $markdown = file_get_contents($methodsPath);
 

@@ -18,7 +18,9 @@ Laravel discovers the service provider and facade automatically through package 
 | Laravel Prompts | Required by interactive Laravel console commands |
 | PSR logger | `^3.0` |
 
-Version `v1.19.1` is the final 1.x release for older host applications. Starting with `v2.0.0`, the package supports only PHP 8.4 and Laravel 13.
+PHP 8.4 and 8.5 are covered by required CI checks that fail on deprecations. PHP 8.6 development builds are checked without blocking releases until PHP 8.6 is stable.
+
+Version `v1.19.1` is the final 1.x release for older host applications. Starting with `v2.0.0`, the package requires PHP 8.4 or newer and Laravel 13 for Laravel integration.
 
 ## Publish Configuration
 

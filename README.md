@@ -36,7 +36,7 @@ The `2.x` source uses PHP 8.4-era strictness, including typed class constants, i
 
 ## Documentation
 
-The package targets Telegram Bot API `10.3`, released on `2026-08-24`.
+The package targets Telegram Bot API `10.4`, released on `2026-11-09`.
 
 Read the published documentation:
 
@@ -432,7 +432,7 @@ final class DeployAlert
 
 Generated request builders also bind well-known Telegram string domains to enums, including `TelegramParseMode`, `TelegramChatAction`, `TelegramPollType`, `TelegramStickerType`, `TelegramStickerFormat`, and `TelegramUpdateType`.
 
-For less common methods, use `TelegramBotRequestData::forMethod()` to create a method-scoped DTO backed by the generated `TelegramBotApiMethodSchema`. The schema currently covers all 185 Bot API 10.3 methods and 932 documented parameters, validates required parameters, and prevents a request DTO for one method from being passed to another method. Pass `validateRequiredParameters: false` when a Laravel channel supplies required defaults such as `chat_id`.
+For less common methods, use `TelegramBotRequestData::forMethod()` to create a method-scoped DTO backed by the generated `TelegramBotApiMethodSchema`. The schema currently covers all 193 Bot API 10.4 methods and 982 documented parameters, validates required parameters, and prevents a request DTO for one method from being passed to another method. Pass `validateRequiredParameters: false` when a Laravel channel supplies required defaults such as `chat_id`.
 
 Rich messages use the generated Bot API request DTOs with `InputRichMessage` helpers. Exactly one of HTML, Markdown, or typed blocks is required:
 
@@ -448,7 +448,7 @@ TelegramBot::bot('support')->sendRichMessage(SendRichMessageRequestData::make(
 ));
 ```
 
-Bot API 10.3 also supports rich button rows and ephemeral messages. New parameters on generated request builders can be passed by name:
+Use rich button rows in an ephemeral message by passing the recipient with `EphemeralMessageParameters::forUser()`:
 
 ```php
 use AlexItDev91\LaravelTelegramBot\DTO\Messages\EphemeralMessageParameters;
@@ -466,6 +466,21 @@ TelegramBot::bot('support')->sendRichMessage(SendRichMessageRequestData::make(
     ephemeralMessageParameters: EphemeralMessageParameters::forUser('1234567890123'),
 ));
 ```
+
+For an ephemeral reply to a callback query, let Telegram resolve the chat and recipient from the callback ID. Answer the callback query separately to dismiss the loading indicator.
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\EphemeralMessageParameters;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
+
+TelegramBot::bot('support')->sendMessage(SendMessageRequestData::make(
+    text: 'Deployment details',
+    ephemeralMessageParameters: EphemeralMessageParameters::forCallbackQuery($callbackQueryId),
+));
+```
+
+`sendWidgetData()` sends an HTML widget and returns a `TelegramMessageData`. Telegram currently allows widget sends to private chats in production. Use `widgetQuery()` and `sharedWidgetQuery()` on `TelegramWebhookUpdate` to handle the related updates. See the [API Method Reference](docs/METHODS.md#sendwidget).
 
 Generated request DTOs, typed input objects, and enums are the preferred application API. Raw `call(method, parameters)` remains available for Telegram additions that have not yet been modeled.
 
@@ -608,6 +623,7 @@ composer test:coverage-surface
 
 `analyse` runs PHPStan over package source and release scripts.
 `check:telegram-api-surface` compares the local SDK method surface, documented method parameters, and update-type surface with the current official Telegram Bot API documentation and changelog.
+The Telegram API currency workflow runs this check weekly in GitHub Actions.
 `test:coverage-surface` verifies that every registered Telegram Bot API method is exposed as a native SDK method and calls the matching Telegram endpoint path.
 
 For Laravel application tests, use the facade fake instead of mocking HTTP transport:

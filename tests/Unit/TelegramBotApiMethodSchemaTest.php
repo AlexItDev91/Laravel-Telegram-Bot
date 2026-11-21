@@ -31,16 +31,16 @@ class TelegramBotApiMethodSchemaTest extends TestCase
     {
         $schema = TelegramBotApiMethodSchema::all();
 
-        $this->assertCount(185, $schema);
+        $this->assertCount(193, $schema);
 
         foreach (TelegramBotApiMethod::cases() as $method) {
             $this->assertArrayHasKey($method->value, $schema);
         }
 
-        $this->assertCount(932, array_merge(...array_values($schema)));
+        $this->assertCount(982, array_merge(...array_values($schema)));
         $this->assertSame(64, strlen(TelegramBotApiMethodSchema::checksum()));
-        $this->assertSame(['chat_id', 'text'], TelegramBotApiMethodSchema::requiredParameters(TelegramBotApiMethod::sendMessage));
-        $this->assertSame(['chat_id', 'rich_message'], TelegramBotApiMethodSchema::requiredParameters(TelegramBotApiMethod::sendRichMessage));
+        $this->assertSame(['text'], TelegramBotApiMethodSchema::requiredParameters(TelegramBotApiMethod::sendMessage));
+        $this->assertSame(['rich_message'], TelegramBotApiMethodSchema::requiredParameters(TelegramBotApiMethod::sendRichMessage));
         $this->assertSame([], TelegramBotApiMethodSchema::requiredParameters(TelegramBotApiMethod::editMessageText));
         $this->assertSame([], TelegramBotApiMethodSchema::parameters(TelegramBotApiMethod::getMe));
     }
@@ -49,7 +49,7 @@ class TelegramBotApiMethodSchemaTest extends TestCase
     {
         $requests = TelegramBotApiRequestRegistry::all();
 
-        $this->assertCount(185, $requests);
+        $this->assertCount(193, $requests);
 
         foreach (TelegramBotApiMethod::cases() as $method) {
             $requestClass = TelegramBotApiRequestRegistry::requestClass($method);
@@ -120,7 +120,7 @@ class TelegramBotApiMethodSchemaTest extends TestCase
     {
         $results = TelegramBotApiResultSchema::all();
 
-        $this->assertCount(185, $results);
+        $this->assertCount(193, $results);
 
         foreach (TelegramBotApiMethod::cases() as $method) {
             $this->assertArrayHasKey($method->value, $results);
@@ -155,7 +155,7 @@ class TelegramBotApiMethodSchemaTest extends TestCase
         $this->assertInstanceOf(TelegramBotMethodRequestData::class, $request);
         $this->assertSame('sendMessage', $request->method());
         $this->assertSame('kept', $request->toArray()['future_optional_field']);
-        $this->assertSame(['chat_id', 'text'], $request->requiredParameters());
+        $this->assertSame(['text'], $request->requiredParameters());
     }
 
     public function test_method_request_data_can_defer_required_validation_for_channel_defaults(): void

@@ -70,8 +70,8 @@ final class TelegramWebhookReply implements TelegramBotData
 
     public static function send(TelegramMessage $message): self
     {
-        if (! $message->hasChatId()) {
-            throw new InvalidArgumentException('Telegram webhook message replies must define a chat_id with to().');
+        if (! $message->hasDestination()) {
+            throw new InvalidArgumentException('Telegram webhook message replies must define a chat_id with to() or target a callback query.');
         }
 
         return self::method($message->method(), $message->payload());

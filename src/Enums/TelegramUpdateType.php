@@ -18,6 +18,8 @@ enum TelegramUpdateType: string
     case InlineQuery = 'inline_query';
     case ChosenInlineResult = 'chosen_inline_result';
     case CallbackQuery = 'callback_query';
+    case WidgetQuery = 'widget_query';
+    case SharedWidgetQuery = 'shared_widget_query';
     case ShippingQuery = 'shipping_query';
     case PreCheckoutQuery = 'pre_checkout_query';
     case PurchasedPaidMedia = 'purchased_paid_media';

@@ -3,6 +3,7 @@
 namespace AlexItDev91\LaravelTelegramBot\Outbound;
 
 use Override;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\EphemeralMessageParameters;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
@@ -138,6 +139,16 @@ final class TelegramMessage implements TelegramBotData
     }
 
     /**
+     * @param  TelegramBotData|array<string, mixed>|null  $ephemeralMessageParameters
+     */
+    public function ephemeralMessageParameters(TelegramBotData|array|null $ephemeralMessageParameters): self
+    {
+        $this->parameters['ephemeral_message_parameters'] = $ephemeralMessageParameters;
+
+        return $this;
+    }
+
+    /**
      * @param  TelegramBotData|array<string, mixed>|null  $replyMarkup
      */
     public function replyMarkup(TelegramBotData|array|null $replyMarkup): self
@@ -226,6 +237,13 @@ final class TelegramMessage implements TelegramBotData
         return array_key_exists('chat_id', $this->parameters)
             && $this->parameters['chat_id'] !== null
             && (! is_string($this->parameters['chat_id']) || trim($this->parameters['chat_id']) !== '');
+    }
+
+    /** @internal */
+    public function hasDestination(): bool
+    {
+        return $this->hasChatId()
+            || EphemeralMessageParameters::isCallbackReply($this->parameters['ephemeral_message_parameters'] ?? null);
     }
 
     /**

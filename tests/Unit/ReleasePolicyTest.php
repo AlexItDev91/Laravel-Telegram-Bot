@@ -14,7 +14,7 @@ class ReleasePolicyTest extends TestCase
         $agents = file_get_contents(__DIR__.'/../../AGENTS.md');
         $readme = file_get_contents(__DIR__.'/../../README.md');
 
-        $this->assertSame('2.15.1', $version);
+        $this->assertSame('2.16.0', $version);
         $this->assertIsString($changelog);
         $this->assertIsString($agents);
         $this->assertIsString($readme);
@@ -35,6 +35,7 @@ class ReleasePolicyTest extends TestCase
             $this->assertStringContainsString($requiredReleaseInstruction, $agents);
         }
 
+        $this->assertStringContainsString('## [2.16.0] - 2026-11-21', $changelog);
         $this->assertStringContainsString('## [2.15.1] - 2026-10-01', $changelog);
         $this->assertStringContainsString('## [2.15.0] - 2026-09-23', $changelog);
         $this->assertStringContainsString('## [2.14.0] - 2026-07-02', $changelog);
@@ -229,7 +230,7 @@ class ReleasePolicyTest extends TestCase
         $notes = implode("\n", $output);
 
         $this->assertSame(0, $exitCode, $notes);
-        $this->assertStringContainsString('# v2.15.1', $notes);
-        $this->assertStringContainsString('Verified the package and locked dependencies on PHP 8.5', $notes);
+        $this->assertStringContainsString('# v2.16.0', $notes);
+        $this->assertStringContainsString('Updated the SDK to Telegram Bot API 10.4', $notes);
     }
 }

@@ -9,7 +9,7 @@ use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
  */
 final class TelegramBotApiMethodSchema
 {
-    public const string CHECKSUM = 'ec521b830b5794dcd9ddf21b70c9111cf26c8cbeaacddbe0dee097b585b28108';
+    public const string CHECKSUM = '2a533831756571633f9f1b228b1d914eff21e32de63ab185702ac3f93df5ee2d';
 
     /**
      * @var array<string, list<array{name: string, type: string, required: bool}>>
@@ -164,6 +164,18 @@ final class TelegramBotApiMethodSchema
                 'name' => 'result',
                 'type' => 'InlineQueryResult',
                 'required' => true,
+            ],
+        ],
+        'answerWidgetQuery' => [
+            [
+                'name' => 'widget_query_id',
+                'type' => 'String',
+                'required' => true,
+            ],
+            [
+                'name' => 'data',
+                'type' => 'String',
+                'required' => false,
             ],
         ],
         'approveChatJoinRequest' => [
@@ -650,6 +662,18 @@ final class TelegramBotApiMethodSchema
                 'name' => 'actor_chat_id',
                 'type' => 'Integer',
                 'required' => false,
+            ],
+        ],
+        'deleteBusinessAccountGift' => [
+            [
+                'name' => 'business_connection_id',
+                'type' => 'String',
+                'required' => true,
+            ],
+            [
+                'name' => 'owned_gift_id',
+                'type' => 'String',
+                'required' => true,
             ],
         ],
         'deleteBusinessMessages' => [
@@ -1261,6 +1285,50 @@ final class TelegramBotApiMethodSchema
                 'required' => false,
             ],
         ],
+        'editMessageWidgetData' => [
+            [
+                'name' => 'chat_id',
+                'type' => 'Integer or String',
+                'required' => false,
+            ],
+            [
+                'name' => 'message_id',
+                'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'inline_message_id',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'public_data',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'chat_data',
+                'type' => 'String',
+                'required' => false,
+            ],
+        ],
+        'editSharedWidgetData' => [
+            [
+                'name' => 'widget_id',
+                'type' => 'String',
+                'required' => true,
+            ],
+            [
+                'name' => 'public_data',
+                'type' => 'String',
+                'required' => true,
+            ],
+            [
+                'name' => 'cache_time',
+                'type' => 'Integer',
+                'required' => false,
+            ],
+        ],
         'editStory' => [
             [
                 'name' => 'business_connection_id',
@@ -1586,6 +1654,8 @@ final class TelegramBotApiMethodSchema
                 'required' => false,
             ],
         ],
+        'getChatShareThemeBackdrops' => [
+        ],
         'getCustomEmojiStickers' => [
             [
                 'name' => 'custom_emoji_ids',
@@ -1695,6 +1765,13 @@ final class TelegramBotApiMethodSchema
             ],
         ],
         'getStickerSet' => [
+            [
+                'name' => 'name',
+                'type' => 'String',
+                'required' => true,
+            ],
+        ],
+        'getUniqueGift' => [
             [
                 'name' => 'name',
                 'type' => 'String',
@@ -2278,7 +2355,7 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'chat_id',
                 'type' => 'Integer or String',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'name' => 'message_thread_id',
@@ -2390,7 +2467,7 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'chat_id',
                 'type' => 'Integer or String',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'name' => 'message_thread_id',
@@ -2568,7 +2645,7 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'chat_id',
                 'type' => 'Integer or String',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'name' => 'message_thread_id',
@@ -2712,7 +2789,7 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'chat_id',
                 'type' => 'Integer or String',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'name' => 'message_thread_id',
@@ -3050,7 +3127,7 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'chat_id',
                 'type' => 'Integer or String',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'name' => 'message_thread_id',
@@ -3147,7 +3224,7 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'chat_id',
                 'type' => 'Integer or String',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'name' => 'message_thread_id',
@@ -3291,7 +3368,7 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'chat_id',
                 'type' => 'Integer or String',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'name' => 'message_thread_id',
@@ -3502,7 +3579,7 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'chat_id',
                 'type' => 'Integer or String',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'name' => 'message_thread_id',
@@ -3766,7 +3843,7 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'chat_id',
                 'type' => 'Integer or String',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'name' => 'message_thread_id',
@@ -3856,6 +3933,78 @@ final class TelegramBotApiMethodSchema
                 'required' => false,
             ],
         ],
+        'sendSharedWidget' => [
+            [
+                'name' => 'chat_id',
+                'type' => 'Integer or String',
+                'required' => true,
+            ],
+            [
+                'name' => 'message_thread_id',
+                'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'widget_id',
+                'type' => 'String',
+                'required' => true,
+            ],
+            [
+                'name' => 'chat_data',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'caption',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'parse_mode',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'caption_entities',
+                'type' => 'Array of MessageEntity',
+                'required' => false,
+            ],
+            [
+                'name' => 'show_caption_above_media',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'disable_notification',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'protect_content',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'allow_paid_broadcast',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'message_effect_id',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'reply_parameters',
+                'type' => 'ReplyParameters',
+                'required' => false,
+            ],
+            [
+                'name' => 'reply_markup',
+                'type' => 'InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply',
+                'required' => false,
+            ],
+        ],
         'sendSticker' => [
             [
                 'name' => 'business_connection_id',
@@ -3865,7 +4014,7 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'chat_id',
                 'type' => 'Integer or String',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'name' => 'message_thread_id',
@@ -3937,7 +4086,7 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'chat_id',
                 'type' => 'Integer or String',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'name' => 'message_thread_id',
@@ -4039,7 +4188,7 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'chat_id',
                 'type' => 'Integer or String',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'name' => 'message_thread_id',
@@ -4166,7 +4315,7 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'chat_id',
                 'type' => 'Integer or String',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'name' => 'message_thread_id',
@@ -4248,7 +4397,7 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'chat_id',
                 'type' => 'Integer or String',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'name' => 'message_thread_id',
@@ -4313,6 +4462,103 @@ final class TelegramBotApiMethodSchema
             [
                 'name' => 'suggested_post_parameters',
                 'type' => 'SuggestedPostParameters',
+                'required' => false,
+            ],
+            [
+                'name' => 'reply_parameters',
+                'type' => 'ReplyParameters',
+                'required' => false,
+            ],
+            [
+                'name' => 'reply_markup',
+                'type' => 'InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply',
+                'required' => false,
+            ],
+        ],
+        'sendWidget' => [
+            [
+                'name' => 'chat_id',
+                'type' => 'Integer or String',
+                'required' => true,
+            ],
+            [
+                'name' => 'message_thread_id',
+                'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'html',
+                'type' => 'String',
+                'required' => true,
+            ],
+            [
+                'name' => 'width',
+                'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'height',
+                'type' => 'Integer',
+                'required' => false,
+            ],
+            [
+                'name' => 'public_data',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'chat_data',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'caption',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'parse_mode',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'caption_entities',
+                'type' => 'Array of MessageEntity',
+                'required' => false,
+            ],
+            [
+                'name' => 'show_caption_above_media',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'allow_queries',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'is_shared',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'disable_notification',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'protect_content',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'allow_paid_broadcast',
+                'type' => 'Boolean',
+                'required' => false,
+            ],
+            [
+                'name' => 'message_effect_id',
+                'type' => 'String',
                 'required' => false,
             ],
             [
@@ -5032,6 +5278,16 @@ final class TelegramBotApiMethodSchema
                 'type' => 'String',
                 'required' => false,
             ],
+            [
+                'name' => 'custom_description_parse_mode',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'custom_description_entities',
+                'type' => 'Array of MessageEntity',
+                'required' => false,
+            ],
         ],
         'verifyUser' => [
             [
@@ -5044,12 +5300,31 @@ final class TelegramBotApiMethodSchema
                 'type' => 'String',
                 'required' => false,
             ],
+            [
+                'name' => 'custom_description_parse_mode',
+                'type' => 'String',
+                'required' => false,
+            ],
+            [
+                'name' => 'custom_description_entities',
+                'type' => 'Array of MessageEntity',
+                'required' => false,
+            ],
         ],
     ];
 
     public static function supports(string|TelegramBotApiMethod $method): bool
     {
         return array_key_exists(self::methodName($method), self::PARAMETERS);
+    }
+
+    /** @internal */
+    public static function supportsEphemeralMessages(string|TelegramBotApiMethod $method): bool
+    {
+        return array_any(
+            self::parameters($method),
+            static fn (array $parameter): bool => $parameter['name'] === 'ephemeral_message_parameters',
+        );
     }
 
     /**

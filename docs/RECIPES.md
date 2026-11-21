@@ -150,7 +150,9 @@ TelegramBot::bot('support')->sendMessage(
 );
 ```
 
-The generated `TelegramBotApiMethodSchema` covers all 185 Bot API 10.3 methods and 932 documented parameters. It validates required parameters and prevents a DTO scoped to one method from being sent through another method. For configured channels that merge `chat_id` or topic defaults after DTO creation, pass `validateRequiredParameters: false`.
+The generated `TelegramBotApiMethodSchema` covers all 193 Bot API 10.4 methods and 982 documented parameters. It validates required parameters and prevents a DTO scoped to one method from being sent through another method. For configured channels that merge `chat_id` or topic defaults after DTO creation, pass `validateRequiredParameters: false`.
+
+Set `quoteRichTexts` on `ReplyParameters` to quote rich text. Pass the original quote parts in order using strings and `RichText` objects.
 Generated request builders bind well-known Telegram string domains to enums, including `TelegramParseMode`, `TelegramChatAction`, `TelegramPollType`, `TelegramStickerType`, `TelegramStickerFormat`, and `TelegramUpdateType`.
 
 ## Rich Messages

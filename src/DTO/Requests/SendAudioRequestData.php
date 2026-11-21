@@ -21,8 +21,8 @@ final readonly class SendAudioRequestData extends TelegramBotApiRequestData
      * @param  array<string, mixed>  $extra
      */
     public static function make(
-        int|string $chatId,
-        InputFile|string $audio,
+        int|string|null $chatId = null,
+        InputFile|string|null $audio = null,
         ?string $businessConnectionId = null,
         ?int $messageThreadId = null,
         ?int $directMessagesTopicId = null,

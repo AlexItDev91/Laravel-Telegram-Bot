@@ -27,23 +27,18 @@ use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramRichButtonStyle;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramRichBlockType;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramRichTextType;
-use AlexItDev91\LaravelTelegramBot\TelegramBotApiMethodRegistry;
 use AlexItDev91\LaravelTelegramBot\InputFile;
 use PHPUnit\Framework\TestCase;
 
 class TelegramBotApi103Test extends TestCase
 {
-    public function test_official_methods_and_updates_are_registered(): void
+    public function test_bot_api_103_updates_are_registered(): void
     {
-        $this->assertSame('10.3', TelegramBotApiMethodRegistry::BOT_API_VERSION);
-        $this->assertSame('2026-08-24', TelegramBotApiMethodRegistry::BOT_API_RELEASE_DATE);
-        $this->assertCount(185, TelegramBotApiMethod::cases());
-        $this->assertCount(27, TelegramUpdateType::cases());
-        $this->assertSame('subscription', TelegramWebhookUpdate::fromPayload([
+        $this->assertSame(TelegramUpdateType::Subscription->value, TelegramWebhookUpdate::fromPayload([
             'update_id' => 1,
             'subscription' => ['invoice_payload' => 'order-1', 'state' => 'active', 'user' => ['id' => 123]],
         ])->type());
-        $this->assertSame('stopped_message_generation', TelegramWebhookUpdate::fromPayload([
+        $this->assertSame(TelegramUpdateType::StoppedMessageGeneration->value, TelegramWebhookUpdate::fromPayload([
             'update_id' => 2,
             'stopped_message_generation' => ['draft_id' => 7, 'chat' => ['id' => 123]],
         ])->type());

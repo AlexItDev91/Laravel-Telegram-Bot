@@ -11,6 +11,8 @@ enum TelegramMessageEntityType: string
     case Url = 'url';
     case Email = 'email';
     case PhoneNumber = 'phone_number';
+    case BankCardNumber = 'bank_card_number';
+    case TonAddress = 'ton_address';
     case Bold = 'bold';
     case Italic = 'italic';
     case Underline = 'underline';

@@ -272,7 +272,35 @@ $telegram->bot('support')->sendRichMessage(SendRichMessageRequestData::make(
 
 Use `InputRichMessage::markdown()` for Markdown input. Returned rich-message payloads are available through `richMessageData()`.
 
-For Bot API 10.3, use `InputRichMessage::blocks()` with `InputRichBlock` and `RichMessageButton` objects to send structured text and button rows. `InputRichMessage::html()` and `markdown()` can include `InputRichMessageMedia` objects through `withMedia()`. Pass `EphemeralMessageParameters::forUser()` by the named `ephemeralMessageParameters` argument of a generated request builder when a message must be visible to one user in a group.
+Use `InputRichMessage::blocks()` with `InputRichBlock` and `RichMessageButton` objects to send structured text and button rows. `InputRichMessage::html()` and `markdown()` can include `InputRichMessageMedia` objects through `withMedia()`.
+
+Pass `EphemeralMessageParameters::forUser()` as `ephemeralMessageParameters` when the message must be visible to one user in a group. To reply to a callback query, pass `EphemeralMessageParameters::forCallbackQuery()` and let Telegram resolve the chat and recipient from the callback ID. Answer the callback query separately to dismiss the loading indicator.
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\EphemeralMessageParameters;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMessageRequestData;
+
+$telegram->bot('support')->sendMessage(SendMessageRequestData::make(
+    text: 'Deployment details',
+    ephemeralMessageParameters: EphemeralMessageParameters::forCallbackQuery($callbackQueryId),
+));
+```
+
+## HTML Widgets
+
+Use `SendWidgetRequestData` with `sendWidgetData()` to send an HTML widget and receive the resulting `TelegramMessageData`. Telegram currently allows widget sends to private chats in production.
+
+```php
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendWidgetRequestData;
+
+$message = $telegram->bot('support')->sendWidgetData(SendWidgetRequestData::make(
+    chatId: $chatId,
+    html: '<p>Deployment finished</p>',
+));
+```
+
+See [Webhooks](webhooks.md) for the widget query update accessors.
+The inline-result DTOs `InputWidgetMessageContent` and `InputSharedWidgetMessageContent` model the Bot API payload. Telegram currently restricts widget delivery via inline queries to its test environment.
 
 ## Enum Method Names
 

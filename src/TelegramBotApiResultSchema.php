@@ -13,6 +13,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatAdministratorRightsData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatFullInfoData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatInviteLinkData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatMemberData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatShareThemeBackdropsData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramFileData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramForumTopicData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramGameHighScoreData;
@@ -31,6 +32,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramStarTransactionsData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramStickerData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramStickerSetData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramStoryData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramUniqueGiftData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserChatBoostsData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserProfileAudiosData;
@@ -93,6 +95,12 @@ final class TelegramBotApiResultSchema
         'answerWebAppQuery' => [
             'type' => 'SentWebAppMessage',
             'data_class' => TelegramSentWebAppMessageData::class,
+            'list' => false,
+            'allows_bool' => false,
+        ],
+        'answerWidgetQuery' => [
+            'type' => 'Boolean',
+            'data_class' => NULL,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -199,6 +207,12 @@ final class TelegramBotApiResultSchema
             'allows_bool' => false,
         ],
         'deleteAllMessageReactions' => [
+            'type' => 'Boolean',
+            'data_class' => NULL,
+            'list' => false,
+            'allows_bool' => false,
+        ],
+        'deleteBusinessAccountGift' => [
             'type' => 'Boolean',
             'data_class' => NULL,
             'list' => false,
@@ -366,6 +380,18 @@ final class TelegramBotApiResultSchema
             'list' => false,
             'allows_bool' => true,
         ],
+        'editMessageWidgetData' => [
+            'type' => 'Boolean',
+            'data_class' => NULL,
+            'list' => false,
+            'allows_bool' => false,
+        ],
+        'editSharedWidgetData' => [
+            'type' => 'Boolean',
+            'data_class' => NULL,
+            'list' => false,
+            'allows_bool' => false,
+        ],
         'editStory' => [
             'type' => 'Story',
             'data_class' => TelegramStoryData::class,
@@ -456,6 +482,12 @@ final class TelegramBotApiResultSchema
             'list' => false,
             'allows_bool' => false,
         ],
+        'getChatShareThemeBackdrops' => [
+            'type' => 'ChatShareThemeBackdrops',
+            'data_class' => TelegramChatShareThemeBackdropsData::class,
+            'list' => false,
+            'allows_bool' => false,
+        ],
         'getCustomEmojiStickers' => [
             'type' => 'Array<Sticker>',
             'data_class' => TelegramStickerData::class,
@@ -543,6 +575,12 @@ final class TelegramBotApiResultSchema
         'getStickerSet' => [
             'type' => 'StickerSet',
             'data_class' => TelegramStickerSetData::class,
+            'list' => false,
+            'allows_bool' => false,
+        ],
+        'getUniqueGift' => [
+            'type' => 'UniqueGift',
+            'data_class' => TelegramUniqueGiftData::class,
             'list' => false,
             'allows_bool' => false,
         ],
@@ -846,6 +884,12 @@ final class TelegramBotApiResultSchema
             'list' => false,
             'allows_bool' => false,
         ],
+        'sendSharedWidget' => [
+            'type' => 'Message',
+            'data_class' => TelegramMessageData::class,
+            'list' => false,
+            'allows_bool' => false,
+        ],
         'sendSticker' => [
             'type' => 'Message',
             'data_class' => TelegramMessageData::class,
@@ -871,6 +915,12 @@ final class TelegramBotApiResultSchema
             'allows_bool' => false,
         ],
         'sendVoice' => [
+            'type' => 'Message',
+            'data_class' => TelegramMessageData::class,
+            'list' => false,
+            'allows_bool' => false,
+        ],
+        'sendWidget' => [
             'type' => 'Message',
             'data_class' => TelegramMessageData::class,
             'list' => false,

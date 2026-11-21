@@ -8,6 +8,13 @@ This package follows semantic versioning for release tags:
 - Minor version for significant compatible changes, new features, new public SDK behavior, or Telegram Bot API surface expansions.
 - Major version for breaking changes.
 
+## [2.16.0] - 2026-11-21
+
+- Updated the SDK to Telegram Bot API 10.4 with 193 methods, 982 documented parameters, and 29 update types. Added request builders and typed results for widget, gift, and chat share backdrop methods, and added verification-description formatting options.
+- Added typed widget queries, chat sharing themes, TON wallet cards and transfers, rich-text quotes, and waived-payment service messages. Widget queries are available to Laravel webhook handlers.
+- Added callback-only ephemeral replies, preserving calls that provide a chat and recipient. Added `TelegramDeepLink::privateChatTopic()` for topics in private chats with the bot.
+- Added a weekly CI check that detects drift from the official Telegram Bot API during periods without repository activity.
+
 ## [2.15.1] - 2026-10-01
 
 - Verified the package and locked dependencies on PHP 8.5 while retaining PHP 8.4 as the minimum supported runtime; made the schema generator's CLI flag parsing independent of the global `$argv` variable.

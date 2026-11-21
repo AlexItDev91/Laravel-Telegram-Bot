@@ -19,8 +19,8 @@ final readonly class SendVideoNoteRequestData extends TelegramBotApiRequestData
      * @param  array<string, mixed>  $extra
      */
     public static function make(
-        int|string $chatId,
-        InputFile|string $videoNote,
+        int|string|null $chatId = null,
+        InputFile|string|null $videoNote = null,
         ?string $businessConnectionId = null,
         ?int $messageThreadId = null,
         ?int $directMessagesTopicId = null,

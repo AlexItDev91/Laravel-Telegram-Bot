@@ -46,6 +46,10 @@ The raw `call(method, parameters)` API remains available for newly released Tele
 | `sendDocumentData()` | `TelegramMessageData` |
 | `forwardMessageData()` | `TelegramMessageData` |
 | `editMessageTextData()` | `TelegramMessageData|bool` |
+| `sendWidgetData()` | `TelegramMessageData` |
+| `sendSharedWidgetData()` | `TelegramMessageData` |
+| `getChatShareThemeBackdropsData()` | `TelegramChatShareThemeBackdropsData` |
+| `getUniqueGiftData()` | `TelegramUniqueGiftData` |
 
 The helpers are available on the concrete client, the root Laravel service, the facade, configured channels, and the test fake:
 
@@ -69,7 +73,7 @@ $senderUsername = $message->from()?->username();
 $richBlocks = $message->richMessageData()?->blocks();
 ```
 
-Bot API 10.3 accessors are available for rich messages and join-request capabilities:
+Typed accessors cover rich messages and join-request capabilities:
 
 ```php
 $richMessage = $message->richMessageData();
@@ -81,6 +85,8 @@ $supportsJoinRequestQueries = $user->supportsJoinRequestQueries();
 $chat = TelegramBot::getChatData(['chat_id' => '-1001234567890']);
 $guardBot = $chat->guardBot();
 ```
+
+For Bot API 10.4, use `widget()`, `quote()?->richTexts()`, `tonWalletTransfer()`, and `paidMessagesWaived()` on `TelegramMessageData`. `TelegramChatFullInfoData` exposes `tonWalletCard()` and `shareTheme()`.
 
 Generic result DTOs expose the raw payload and typed accessors for unmapped Telegram objects:
 

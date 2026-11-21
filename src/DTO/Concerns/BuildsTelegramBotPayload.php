@@ -2,6 +2,8 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO\Concerns;
 
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\EphemeralMessageParameters;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use InvalidArgumentException;
 
@@ -30,6 +32,26 @@ trait BuildsTelegramBotPayload
         }
 
         return self::stringKeyedPayload($payload);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     * @param  array<string, mixed>  $extra
+     * @param  list<string>  $required
+     * @param  TelegramBotData|array<string, mixed>|null  $ephemeralMessageParameters
+     * @return array<string, mixed>
+     */
+    private static function messagePayload(array $parameters, array $extra, array $required, TelegramBotData|array|null $ephemeralMessageParameters): array
+    {
+        if ($ephemeralMessageParameters !== null) {
+            $parameters['ephemeral_message_parameters'] = $ephemeralMessageParameters;
+        }
+
+        if (! EphemeralMessageParameters::isCallbackReply($ephemeralMessageParameters ?? $extra['ephemeral_message_parameters'] ?? null)) {
+            array_unshift($required, 'chat_id');
+        }
+
+        return self::payload($parameters, $extra, $required);
     }
 
     /**

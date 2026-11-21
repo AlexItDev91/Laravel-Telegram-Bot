@@ -21,8 +21,8 @@ final readonly class SendMessageRequestData extends TelegramBotApiRequestData
      * @param  array<string, mixed>  $extra
      */
     public static function make(
-        int|string $chatId,
-        string $text,
+        int|string|null $chatId = null,
+        ?string $text = null,
         ?string $businessConnectionId = null,
         ?int $messageThreadId = null,
         ?int $directMessagesTopicId = null,

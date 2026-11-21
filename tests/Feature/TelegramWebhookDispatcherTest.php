@@ -103,6 +103,41 @@ class TelegramWebhookDispatcherTest extends TestCase
         $this->assertSame(2003, TelegramWebhookFallbackHandler::$update?->updateId());
     }
 
+    public function test_dispatches_widget_queries_to_configured_handlers(): void
+    {
+        config()->set('telegram-bot.webhook.handlers.widget_query', static fn (TelegramWebhookUpdate $update): array => [
+            'query_id' => $update->widgetQuery()?->id(),
+            'chat_id' => $update->effectiveChat()?->id(),
+        ]);
+        config()->set('telegram-bot.webhook.handlers.shared_widget_query', static fn (TelegramWebhookUpdate $update): array => [
+            'query_id' => $update->sharedWidgetQuery()?->id(),
+            'user_id' => $update->effectiveUser()?->id(),
+        ]);
+
+        $this->postJson('/telegram-bot/webhook', [
+            'update_id' => 2040,
+            'widget_query' => [
+                'id' => 'widget-query',
+                'chat' => ['id' => 4500000000000, 'type' => 'private'],
+                'message_id' => 15,
+                'from' => ['id' => 4500000000000],
+                'type' => ['type' => 'data'],
+                'data' => 'refresh',
+            ],
+        ])->assertOk()->assertExactJson(['query_id' => 'widget-query', 'chat_id' => 4500000000000]);
+
+        $this->postJson('/telegram-bot/webhook', [
+            'update_id' => 2041,
+            'shared_widget_query' => [
+                'id' => 'shared-widget-query',
+                'from' => ['id' => 4500000000000],
+                'widget_id' => 'shared',
+                'type' => ['type' => 'data'],
+                'data' => 'refresh',
+            ],
+        ])->assertOk()->assertExactJson(['query_id' => 'shared-widget-query', 'user_id' => 4500000000000]);
+    }
+
     public function test_logs_invalid_dispatcher_handlers_without_payload_values(): void
     {
         $logger = new TelegramWebhookDispatcherTestLogger();

@@ -152,8 +152,8 @@ class TelegramBotFake implements TelegramBotClient, TelegramBotManager
 
     public function send(TelegramMessage $message): mixed
     {
-        if (! $message->hasChatId()) {
-            throw new InvalidArgumentException('Telegram fluent messages sent through a bot fake must define a chat_id with to().');
+        if (! $message->hasDestination()) {
+            throw new InvalidArgumentException('Telegram fluent messages sent through a bot fake must define a chat_id with to() or target a callback query.');
         }
 
         return $this->call($message->method(), $message->payload());

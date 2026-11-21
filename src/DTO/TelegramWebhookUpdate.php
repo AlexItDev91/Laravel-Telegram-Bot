@@ -148,6 +148,20 @@ final readonly class TelegramWebhookUpdate implements TelegramBotData
         return $callbackQuery !== null ? TelegramCallbackQueryData::fromPayload($callbackQuery) : null;
     }
 
+    public function widgetQuery(): ?TelegramWidgetQueryData
+    {
+        $query = $this->arrayAt('widget_query');
+
+        return $query !== null ? TelegramWidgetQueryData::fromPayload($query) : null;
+    }
+
+    public function sharedWidgetQuery(): ?TelegramSharedWidgetQueryData
+    {
+        $query = $this->arrayAt('shared_widget_query');
+
+        return $query !== null ? TelegramSharedWidgetQueryData::fromPayload($query) : null;
+    }
+
     public function inlineQuery(): ?TelegramInlineQueryData
     {
         $inlineQuery = $this->arrayAt('inline_query');
@@ -276,6 +290,7 @@ final readonly class TelegramWebhookUpdate implements TelegramBotData
             'my_chat_member.chat',
             'chat_member.chat',
             'chat_join_request.chat',
+            'widget_query.chat',
             'deleted_business_messages.chat',
             'message_reaction.chat',
             'message_reaction.actor_chat',
@@ -304,6 +319,8 @@ final readonly class TelegramWebhookUpdate implements TelegramBotData
             'edited_business_message.from',
             'guest_message.from',
             'callback_query.from',
+            'widget_query.from',
+            'shared_widget_query.from',
             'inline_query.from',
             'chosen_inline_result.from',
             'shipping_query.from',

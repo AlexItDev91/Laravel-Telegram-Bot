@@ -12,6 +12,7 @@ enum TelegramBotApiMethod: string
     case answerPreCheckoutQuery = 'answerPreCheckoutQuery';
     case answerShippingQuery = 'answerShippingQuery';
     case answerWebAppQuery = 'answerWebAppQuery';
+    case answerWidgetQuery = 'answerWidgetQuery';
     case approveChatJoinRequest = 'approveChatJoinRequest';
     case approveSuggestedPost = 'approveSuggestedPost';
     case banChatMember = 'banChatMember';
@@ -30,6 +31,7 @@ enum TelegramBotApiMethod: string
     case declineChatJoinRequest = 'declineChatJoinRequest';
     case declineSuggestedPost = 'declineSuggestedPost';
     case deleteAllMessageReactions = 'deleteAllMessageReactions';
+    case deleteBusinessAccountGift = 'deleteBusinessAccountGift';
     case deleteBusinessMessages = 'deleteBusinessMessages';
     case deleteChatPhoto = 'deleteChatPhoto';
     case deleteChatStickerSet = 'deleteChatStickerSet';
@@ -57,6 +59,8 @@ enum TelegramBotApiMethod: string
     case editMessageMedia = 'editMessageMedia';
     case editMessageReplyMarkup = 'editMessageReplyMarkup';
     case editMessageText = 'editMessageText';
+    case editMessageWidgetData = 'editMessageWidgetData';
+    case editSharedWidgetData = 'editSharedWidgetData';
     case editStory = 'editStory';
     case editUserStarSubscription = 'editUserStarSubscription';
     case exportChatInviteLink = 'exportChatInviteLink';
@@ -72,6 +76,7 @@ enum TelegramBotApiMethod: string
     case getChatMember = 'getChatMember';
     case getChatMemberCount = 'getChatMemberCount';
     case getChatMenuButton = 'getChatMenuButton';
+    case getChatShareThemeBackdrops = 'getChatShareThemeBackdrops';
     case getCustomEmojiStickers = 'getCustomEmojiStickers';
     case getFile = 'getFile';
     case getForumTopicIconStickers = 'getForumTopicIconStickers';
@@ -87,6 +92,7 @@ enum TelegramBotApiMethod: string
     case getMyStarBalance = 'getMyStarBalance';
     case getStarTransactions = 'getStarTransactions';
     case getStickerSet = 'getStickerSet';
+    case getUniqueGift = 'getUniqueGift';
     case getUpdates = 'getUpdates';
     case getUserChatBoosts = 'getUserChatBoosts';
     case getUserGifts = 'getUserGifts';
@@ -137,11 +143,13 @@ enum TelegramBotApiMethod: string
     case sendPoll = 'sendPoll';
     case sendRichMessage = 'sendRichMessage';
     case sendRichMessageDraft = 'sendRichMessageDraft';
+    case sendSharedWidget = 'sendSharedWidget';
     case sendSticker = 'sendSticker';
     case sendVenue = 'sendVenue';
     case sendVideo = 'sendVideo';
     case sendVideoNote = 'sendVideoNote';
     case sendVoice = 'sendVoice';
+    case sendWidget = 'sendWidget';
     case setBusinessAccountBio = 'setBusinessAccountBio';
     case setBusinessAccountGiftSettings = 'setBusinessAccountGiftSettings';
     case setBusinessAccountName = 'setBusinessAccountName';

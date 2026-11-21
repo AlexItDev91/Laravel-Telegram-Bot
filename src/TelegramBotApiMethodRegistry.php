@@ -6,9 +6,9 @@ use AlexItDev91\LaravelTelegramBot\Enums\TelegramBotApiMethod;
 
 final class TelegramBotApiMethodRegistry
 {
-    public const string BOT_API_VERSION = '10.3';
+    public const string BOT_API_VERSION = '10.4';
 
-    public const string BOT_API_RELEASE_DATE = '2026-08-24';
+    public const string BOT_API_RELEASE_DATE = '2026-11-09';
 
     public static function supports(string $method): bool
     {

@@ -10,6 +10,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerInlineQueryRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerPreCheckoutQueryRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerShippingQueryRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerWebAppQueryRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\AnswerWidgetQueryRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\ApproveChatJoinRequestRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\ApproveSuggestedPostRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\BanChatMemberRequestData;
@@ -28,6 +29,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\Requests\CreateNewStickerSetRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeclineChatJoinRequestRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeclineSuggestedPostRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteAllMessageReactionsRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteBusinessAccountGiftRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteBusinessMessagesRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteChatPhotoRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\DeleteChatStickerSetRequestData;
@@ -55,6 +57,8 @@ use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditMessageLiveLocationRequestDa
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditMessageMediaRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditMessageReplyMarkupRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditMessageTextRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditMessageWidgetDataRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditSharedWidgetDataRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditStoryRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\EditUserStarSubscriptionRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\ExportChatInviteLinkRequestData;
@@ -70,6 +74,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetChatMemberCountRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetChatMemberRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetChatMenuButtonRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetChatRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetChatShareThemeBackdropsRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetCustomEmojiStickersRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetFileRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetForumTopicIconStickersRequestData;
@@ -85,6 +90,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetMyShortDescriptionRequestData
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetMyStarBalanceRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetStarTransactionsRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetStickerSetRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetUniqueGiftRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetUpdatesRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetUserChatBoostsRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\GetUserGiftsRequestData;
@@ -135,11 +141,13 @@ use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendPhotoRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendPollRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendRichMessageDraftRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendRichMessageRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendSharedWidgetRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendStickerRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendVenueRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendVideoNoteRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendVideoRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendVoiceRequestData;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendWidgetRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetBusinessAccountBioRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetBusinessAccountGiftSettingsRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SetBusinessAccountNameRequestData;
@@ -207,6 +215,7 @@ final class TelegramBotApiRequestRegistry
         'answerPreCheckoutQuery' => AnswerPreCheckoutQueryRequestData::class,
         'answerShippingQuery' => AnswerShippingQueryRequestData::class,
         'answerWebAppQuery' => AnswerWebAppQueryRequestData::class,
+        'answerWidgetQuery' => AnswerWidgetQueryRequestData::class,
         'approveChatJoinRequest' => ApproveChatJoinRequestRequestData::class,
         'approveSuggestedPost' => ApproveSuggestedPostRequestData::class,
         'banChatMember' => BanChatMemberRequestData::class,
@@ -225,6 +234,7 @@ final class TelegramBotApiRequestRegistry
         'declineChatJoinRequest' => DeclineChatJoinRequestRequestData::class,
         'declineSuggestedPost' => DeclineSuggestedPostRequestData::class,
         'deleteAllMessageReactions' => DeleteAllMessageReactionsRequestData::class,
+        'deleteBusinessAccountGift' => DeleteBusinessAccountGiftRequestData::class,
         'deleteBusinessMessages' => DeleteBusinessMessagesRequestData::class,
         'deleteChatPhoto' => DeleteChatPhotoRequestData::class,
         'deleteChatStickerSet' => DeleteChatStickerSetRequestData::class,
@@ -252,6 +262,8 @@ final class TelegramBotApiRequestRegistry
         'editMessageMedia' => EditMessageMediaRequestData::class,
         'editMessageReplyMarkup' => EditMessageReplyMarkupRequestData::class,
         'editMessageText' => EditMessageTextRequestData::class,
+        'editMessageWidgetData' => EditMessageWidgetDataRequestData::class,
+        'editSharedWidgetData' => EditSharedWidgetDataRequestData::class,
         'editStory' => EditStoryRequestData::class,
         'editUserStarSubscription' => EditUserStarSubscriptionRequestData::class,
         'exportChatInviteLink' => ExportChatInviteLinkRequestData::class,
@@ -267,6 +279,7 @@ final class TelegramBotApiRequestRegistry
         'getChatMember' => GetChatMemberRequestData::class,
         'getChatMemberCount' => GetChatMemberCountRequestData::class,
         'getChatMenuButton' => GetChatMenuButtonRequestData::class,
+        'getChatShareThemeBackdrops' => GetChatShareThemeBackdropsRequestData::class,
         'getCustomEmojiStickers' => GetCustomEmojiStickersRequestData::class,
         'getFile' => GetFileRequestData::class,
         'getForumTopicIconStickers' => GetForumTopicIconStickersRequestData::class,
@@ -282,6 +295,7 @@ final class TelegramBotApiRequestRegistry
         'getMyStarBalance' => GetMyStarBalanceRequestData::class,
         'getStarTransactions' => GetStarTransactionsRequestData::class,
         'getStickerSet' => GetStickerSetRequestData::class,
+        'getUniqueGift' => GetUniqueGiftRequestData::class,
         'getUpdates' => GetUpdatesRequestData::class,
         'getUserChatBoosts' => GetUserChatBoostsRequestData::class,
         'getUserGifts' => GetUserGiftsRequestData::class,
@@ -332,11 +346,13 @@ final class TelegramBotApiRequestRegistry
         'sendPoll' => SendPollRequestData::class,
         'sendRichMessage' => SendRichMessageRequestData::class,
         'sendRichMessageDraft' => SendRichMessageDraftRequestData::class,
+        'sendSharedWidget' => SendSharedWidgetRequestData::class,
         'sendSticker' => SendStickerRequestData::class,
         'sendVenue' => SendVenueRequestData::class,
         'sendVideo' => SendVideoRequestData::class,
         'sendVideoNote' => SendVideoNoteRequestData::class,
         'sendVoice' => SendVoiceRequestData::class,
+        'sendWidget' => SendWidgetRequestData::class,
         'setBusinessAccountBio' => SetBusinessAccountBioRequestData::class,
         'setBusinessAccountGiftSettings' => SetBusinessAccountGiftSettingsRequestData::class,
         'setBusinessAccountName' => SetBusinessAccountNameRequestData::class,

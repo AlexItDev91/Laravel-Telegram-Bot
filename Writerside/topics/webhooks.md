@@ -315,7 +315,7 @@ Use either a configured handler, events, or both. If both are enabled, the event
 
 ## TelegramWebhookUpdate
 
-`TelegramWebhookUpdate` keeps the raw payload and detects all Bot API 10.3 update fields:
+`TelegramWebhookUpdate` keeps the raw payload and detects all 29 Bot API 10.4 update types:
 
 ```php
 $update->updateId();          // 123456
@@ -343,6 +343,8 @@ $reaction = $update->messageReaction();
 $chatBoost = $update->chatBoost();
 $businessConnection = $update->businessConnection();
 $managedBot = $update->managedBot();
+$widgetQuery = $update->widgetQuery();
+$sharedWidgetQuery = $update->sharedWidgetQuery();
 
 $message?->messageId();       // int|null
 $message?->messageThreadId(); // int|null

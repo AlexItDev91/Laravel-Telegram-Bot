@@ -1,6 +1,6 @@
 # Telegram Bot API Method Support
 
-This package targets Telegram Bot API 10.3, released on 2026-08-24.
+This package targets Telegram Bot API 10.4, released on 2026-11-09.
 
 Primary sources:
 
@@ -79,6 +79,7 @@ For downloads, call `getFileData()` and pass the returned relative `file_path` t
 | `answerPreCheckoutQuery` | `answerPreCheckoutQuery(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#answerprecheckoutquery) |
 | `answerShippingQuery` | `answerShippingQuery(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#answershippingquery) |
 | `answerWebAppQuery` | `answerWebAppQuery(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#answerwebappquery) |
+| `answerWidgetQuery` | `answerWidgetQuery(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#answerwidgetquery) |
 | `approveChatJoinRequest` | `approveChatJoinRequest(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#approvechatjoinrequest) |
 | `approveSuggestedPost` | `approveSuggestedPost(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#approvesuggestedpost) |
 | `banChatMember` | `banChatMember(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#banchatmember) |
@@ -97,6 +98,7 @@ For downloads, call `getFileData()` and pass the returned relative `file_path` t
 | `declineChatJoinRequest` | `declineChatJoinRequest(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#declinechatjoinrequest) |
 | `declineSuggestedPost` | `declineSuggestedPost(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#declinesuggestedpost) |
 | `deleteAllMessageReactions` | `deleteAllMessageReactions(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#deleteallmessagereactions) |
+| `deleteBusinessAccountGift` | `deleteBusinessAccountGift(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#deletebusinessaccountgift) |
 | `deleteBusinessMessages` | `deleteBusinessMessages(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#deletebusinessmessages) |
 | `deleteChatPhoto` | `deleteChatPhoto(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#deletechatphoto) |
 | `deleteChatStickerSet` | `deleteChatStickerSet(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#deletechatstickerset) |
@@ -124,6 +126,8 @@ For downloads, call `getFileData()` and pass the returned relative `file_path` t
 | `editMessageMedia` | `editMessageMedia(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#editmessagemedia) |
 | `editMessageReplyMarkup` | `editMessageReplyMarkup(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#editmessagereplymarkup) |
 | `editMessageText` | `editMessageText(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#editmessagetext) |
+| `editMessageWidgetData` | `editMessageWidgetData(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#editmessagewidgetdata) |
+| `editSharedWidgetData` | `editSharedWidgetData(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#editsharedwidgetdata) |
 | `editStory` | `editStory(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#editstory) |
 | `editUserStarSubscription` | `editUserStarSubscription(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#edituserstarsubscription) |
 | `exportChatInviteLink` | `exportChatInviteLink(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#exportchatinvitelink) |
@@ -139,6 +143,7 @@ For downloads, call `getFileData()` and pass the returned relative `file_path` t
 | `getChatMember` | `getChatMember(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#getchatmember) |
 | `getChatMemberCount` | `getChatMemberCount(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#getchatmembercount) |
 | `getChatMenuButton` | `getChatMenuButton(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#getchatmenubutton) |
+| `getChatShareThemeBackdrops` | `getChatShareThemeBackdrops(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#getchatsharethemebackdrops) |
 | `getCustomEmojiStickers` | `getCustomEmojiStickers(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#getcustomemojistickers) |
 | `getFile` | `getFile(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#getfile) |
 | `getForumTopicIconStickers` | `getForumTopicIconStickers(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#getforumtopiciconstickers) |
@@ -154,6 +159,7 @@ For downloads, call `getFileData()` and pass the returned relative `file_path` t
 | `getMyStarBalance` | `getMyStarBalance(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#getmystarbalance) |
 | `getStarTransactions` | `getStarTransactions(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#getstartransactions) |
 | `getStickerSet` | `getStickerSet(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#getstickerset) |
+| `getUniqueGift` | `getUniqueGift(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#getuniquegift) |
 | `getUpdates` | `getUpdates(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#getupdates) |
 | `getUserChatBoosts` | `getUserChatBoosts(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#getuserchatboosts) |
 | `getUserGifts` | `getUserGifts(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#getusergifts) |
@@ -204,11 +210,13 @@ For downloads, call `getFileData()` and pass the returned relative `file_path` t
 | `sendPoll` | `sendPoll(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendpoll) |
 | `sendRichMessage` | `sendRichMessage(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendrichmessage) |
 | `sendRichMessageDraft` | `sendRichMessageDraft(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendrichmessagedraft) |
+| `sendSharedWidget` | `sendSharedWidget(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendsharedwidget) |
 | `sendSticker` | `sendSticker(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendsticker) |
 | `sendVenue` | `sendVenue(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendvenue) |
 | `sendVideo` | `sendVideo(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendvideo) |
 | `sendVideoNote` | `sendVideoNote(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendvideonote) |
 | `sendVoice` | `sendVoice(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendvoice) |
+| `sendWidget` | `sendWidget(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#sendwidget) |
 | `setBusinessAccountBio` | `setBusinessAccountBio(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#setbusinessaccountbio) |
 | `setBusinessAccountGiftSettings` | `setBusinessAccountGiftSettings(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#setbusinessaccountgiftsettings) |
 | `setBusinessAccountName` | `setBusinessAccountName(array $parameters = [])` | [Telegram docs](https://core.telegram.org/bots/api#setbusinessaccountname) |

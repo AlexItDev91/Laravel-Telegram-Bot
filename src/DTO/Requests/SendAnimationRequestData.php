@@ -21,8 +21,8 @@ final readonly class SendAnimationRequestData extends TelegramBotApiRequestData
      * @param  array<string, mixed>  $extra
      */
     public static function make(
-        int|string $chatId,
-        InputFile|string $animation,
+        int|string|null $chatId = null,
+        InputFile|string|null $animation = null,
         ?string $businessConnectionId = null,
         ?int $messageThreadId = null,
         ?int $directMessagesTopicId = null,

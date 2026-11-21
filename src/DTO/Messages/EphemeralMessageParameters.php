@@ -9,12 +9,16 @@ use Override;
 final readonly class EphemeralMessageParameters implements TelegramBotData
 {
     private function __construct(
-        private int|string $receiverUserId,
+        private int|string|null $receiverUserId,
         private ?string $callbackQueryId = null,
         private ?bool $replaceCallbackQueryMessage = null,
     ) {
         if ($receiverUserId === '' || $receiverUserId === 0) {
             throw new InvalidArgumentException('Telegram ephemeral receiver user ID must not be empty.');
+        }
+
+        if ($callbackQueryId !== null && trim($callbackQueryId) === '') {
+            throw new InvalidArgumentException('Telegram callback query ID must not be empty.');
         }
     }
 
@@ -23,13 +27,34 @@ final readonly class EphemeralMessageParameters implements TelegramBotData
         return new self($receiverUserId);
     }
 
+    public static function forCallbackQuery(string $callbackQueryId): self
+    {
+        return new self(null, $callbackQueryId);
+    }
+
     public function fromCallbackQuery(string $callbackQueryId): self
     {
-        if (trim($callbackQueryId) === '') {
-            throw new InvalidArgumentException('Telegram callback query ID must not be empty.');
+        return new self($this->receiverUserId, $callbackQueryId, $this->replaceCallbackQueryMessage);
+    }
+
+    /** @internal */
+    public static function isCallbackReply(mixed $parameters): bool
+    {
+        if ($parameters instanceof TelegramBotData) {
+            $parameters = $parameters->toArray();
         }
 
-        return new self($this->receiverUserId, $callbackQueryId, $this->replaceCallbackQueryMessage);
+        if (is_string($parameters)) {
+            $parameters = json_decode($parameters, true);
+        }
+
+        if (! is_array($parameters) || ($parameters['receiver_user_id'] ?? null) !== null) {
+            return false;
+        }
+
+        $callbackQueryId = $parameters['callback_query_id'] ?? null;
+
+        return is_string($callbackQueryId) && trim($callbackQueryId) !== '';
     }
 
     public function replaceCallbackQueryMessage(bool $replace = true): self

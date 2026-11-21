@@ -15,6 +15,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatAdministratorRightsData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatFullInfoData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatInviteLinkData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatMemberData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatShareThemeBackdropsData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramFileData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramForumTopicData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramGameHighScoreData;
@@ -33,6 +34,7 @@ use AlexItDev91\LaravelTelegramBot\DTO\TelegramStarTransactionsData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramStickerData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramStickerSetData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramStoryData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramUniqueGiftData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserChatBoostsData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserProfileAudiosData;
@@ -116,6 +118,15 @@ final class TelegramBotApiMethodSchema
     public static function supports(string|TelegramBotApiMethod \$method): bool
     {
         return array_key_exists(self::methodName(\$method), self::PARAMETERS);
+    }
+
+    /** @internal */
+    public static function supportsEphemeralMessages(string|TelegramBotApiMethod \$method): bool
+    {
+        return array_any(
+            self::parameters(\$method),
+            static fn (array \$parameter): bool => \$parameter['name'] === 'ephemeral_message_parameters',
+        );
     }
 
     /**
@@ -445,6 +456,7 @@ function writeRequestBase(string $path): void
 
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\EphemeralMessageParameters;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequest;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\TelegramBotApiMethodSchema;
@@ -526,8 +538,15 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
     {
         $missing = array_values(array_filter(
             $this->requiredParameters(),
-            fn (string $parameter): bool => ! array_key_exists($parameter, $parameters) || $this->isBlankParameterValue($parameters[$parameter]),
+            fn (string $parameter): bool => $this->isMissingRequiredParameter($parameter, $parameters[$parameter] ?? null),
         ));
+
+        if ($this->isBlankParameterValue($parameters['chat_id'] ?? null)
+            && TelegramBotApiMethodSchema::supportsEphemeralMessages($this->method())
+            && ! EphemeralMessageParameters::isCallbackReply($parameters['ephemeral_message_parameters'] ?? null)
+        ) {
+            array_unshift($missing, 'chat_id');
+        }
 
         if ($missing === []) {
             return;
@@ -567,6 +586,7 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
             'editMessageMedia',
             'editMessageReplyMarkup',
             'editMessageText',
+            'editMessageWidgetData',
             'getGameHighScores',
             'setGameScore',
             'stopMessageLiveLocation',
@@ -591,6 +611,15 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
             'Telegram Bot API method [%s] requires either [inline_message_id] or both [chat_id] and [message_id].',
             $this->method(),
         ));
+    }
+
+    private function isMissingRequiredParameter(string $parameter, mixed $value): bool
+    {
+        if ($this->method() === 'editSharedWidgetData' && $parameter === 'public_data' && is_string($value)) {
+            return false;
+        }
+
+        return $this->isBlankParameterValue($value);
     }
 
     private function isBlankParameterValue(mixed $value): bool
@@ -627,13 +656,24 @@ function requestClassContent(string $method, array $parameters, string $classNam
     $newOptionalSignatureParameters = [];
     $docblocks = [];
 
-    // Append parameters introduced after 10.1 after $extra to preserve existing positional calls.
-    $newOptionalParameters = ['ephemeral_message_parameters', 'can_stop', 'keep_on_stop', 'can_send_welcome_messages'];
+    // Keep existing positional calls compatible when adding these optional parameters.
+    $newOptionalParameters = [
+        'ephemeral_message_parameters',
+        'can_stop',
+        'keep_on_stop',
+        'can_send_welcome_messages',
+        'custom_description_parse_mode',
+        'custom_description_entities',
+    ];
 
-    foreach (orderedParameters($parameters) as $parameter) {
+    $hasEphemeralParameters = array_any($parameters, static fn (array $parameter): bool => $parameter['name'] === 'ephemeral_message_parameters');
+
+    foreach (orderedParameters($parameters, $hasEphemeralParameters) as $parameter) {
         $parameterName = $parameter['name'];
         $variable = parameterVariable($parameterName);
-        $type = phpParameterType($method, $parameterName, $parameter['type'], $parameter['required']);
+        // Keep required content after the optional chat ID for positional callers. The request validates that content.
+        $requiredInSignature = $parameter['required'] && ! $hasEphemeralParameters;
+        $type = phpParameterType($method, $parameterName, $parameter['type'], $requiredInSignature);
 
         if ($type['usesInputFile']) {
             $uses[] = InputFile::class;
@@ -651,7 +691,7 @@ function requestClassContent(string $method, array $parameters, string $classNam
             $docblocks[] = sprintf('     * @param  %s  $%s', $type['doc'], $variable);
         }
 
-        $default = $parameter['required'] ? '' : ' = null';
+        $default = $requiredInSignature ? '' : ' = null';
         $signatureParameter = sprintf('        %s $%s%s', $type['php'], $variable, $default);
 
         if (in_array($parameterName, $newOptionalParameters, true)) {
@@ -702,11 +742,14 @@ PHP;
  * @param  list<array{name: string, type: string, required: bool}>  $parameters
  * @return list<array{name: string, type: string, required: bool}>
  */
-function orderedParameters(array $parameters): array
+function orderedParameters(array $parameters, bool $keepChatIdFirst): array
 {
+    $usesOriginalRequiredPosition = static fn (array $parameter): bool => $parameter['required']
+        || ($keepChatIdFirst && $parameter['name'] === 'chat_id');
+
     usort(
         $parameters,
-        static fn (array $left, array $right): int => ((int) ! $left['required']) <=> ((int) ! $right['required']),
+        static fn (array $left, array $right): int => $usesOriginalRequiredPosition($right) <=> $usesOriginalRequiredPosition($left),
     );
 
     return $parameters;
@@ -940,6 +983,7 @@ function resultSchema(array $schema): array
         'getMe' => ['User', TelegramUserData::class],
         'getChat' => ['ChatFullInfo', TelegramChatFullInfoData::class],
         'getChatMember' => ['ChatMember', TelegramChatMemberData::class],
+        'getChatShareThemeBackdrops' => ['ChatShareThemeBackdrops', TelegramChatShareThemeBackdropsData::class],
         'getFile' => ['File', TelegramFileData::class],
         'getWebhookInfo' => ['WebhookInfo', TelegramWebhookInfoData::class],
         'getBusinessConnection' => ['BusinessConnection', TelegramBusinessConnectionData::class],
@@ -954,6 +998,7 @@ function resultSchema(array $schema): array
         'getAvailableGifts' => ['Gifts', TelegramGiftsData::class],
         'getBusinessAccountGifts' => ['OwnedGifts', TelegramOwnedGiftsData::class],
         'getChatGifts' => ['OwnedGifts', TelegramOwnedGiftsData::class],
+        'getUniqueGift' => ['UniqueGift', TelegramUniqueGiftData::class],
         'getUserGifts' => ['OwnedGifts', TelegramOwnedGiftsData::class],
         'getBusinessAccountStarBalance' => ['StarAmount', TelegramStarAmountData::class],
         'getMyStarBalance' => ['StarAmount', TelegramStarAmountData::class],
@@ -1064,11 +1109,13 @@ function messageMethods(): array
         'sendPhoto',
         'sendPoll',
         'sendRichMessage',
+        'sendSharedWidget',
         'sendSticker',
         'sendVenue',
         'sendVideo',
         'sendVideoNote',
         'sendVoice',
+        'sendWidget',
     ];
 }
 

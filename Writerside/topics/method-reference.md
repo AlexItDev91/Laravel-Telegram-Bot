@@ -2,7 +2,7 @@
 
 This document describes every Telegram Bot API method exposed by this package.
 
-Package target: Telegram Bot API `10.3`, released on `2026-08-24`.
+Package target: Telegram Bot API `10.4`, released on `2026-11-09`.
 
 Primary sources:
 
@@ -76,6 +76,7 @@ TelegramBot::call('newTelegramMethod', [
 | [`answerPreCheckoutQuery`](#answerprecheckoutquery) | `answerPreCheckoutQuery(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#answerprecheckoutquery) |
 | [`answerShippingQuery`](#answershippingquery) | `answerShippingQuery(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#answershippingquery) |
 | [`answerWebAppQuery`](#answerwebappquery) | `answerWebAppQuery(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#answerwebappquery) |
+| [`answerWidgetQuery`](#answerwidgetquery) | `answerWidgetQuery(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#answerwidgetquery) |
 | [`approveChatJoinRequest`](#approvechatjoinrequest) | `approveChatJoinRequest(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#approvechatjoinrequest) |
 | [`approveSuggestedPost`](#approvesuggestedpost) | `approveSuggestedPost(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#approvesuggestedpost) |
 | [`banChatMember`](#banchatmember) | `banChatMember(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#banchatmember) |
@@ -94,6 +95,7 @@ TelegramBot::call('newTelegramMethod', [
 | [`declineChatJoinRequest`](#declinechatjoinrequest) | `declineChatJoinRequest(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#declinechatjoinrequest) |
 | [`declineSuggestedPost`](#declinesuggestedpost) | `declineSuggestedPost(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#declinesuggestedpost) |
 | [`deleteAllMessageReactions`](#deleteallmessagereactions) | `deleteAllMessageReactions(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#deleteallmessagereactions) |
+| [`deleteBusinessAccountGift`](#deletebusinessaccountgift) | `deleteBusinessAccountGift(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#deletebusinessaccountgift) |
 | [`deleteBusinessMessages`](#deletebusinessmessages) | `deleteBusinessMessages(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#deletebusinessmessages) |
 | [`deleteChatPhoto`](#deletechatphoto) | `deleteChatPhoto(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#deletechatphoto) |
 | [`deleteChatStickerSet`](#deletechatstickerset) | `deleteChatStickerSet(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#deletechatstickerset) |
@@ -121,6 +123,8 @@ TelegramBot::call('newTelegramMethod', [
 | [`editMessageMedia`](#editmessagemedia) | `editMessageMedia(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#editmessagemedia) |
 | [`editMessageReplyMarkup`](#editmessagereplymarkup) | `editMessageReplyMarkup(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#editmessagereplymarkup) |
 | [`editMessageText`](#editmessagetext) | `editMessageText(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#editmessagetext) |
+| [`editMessageWidgetData`](#editmessagewidgetdata) | `editMessageWidgetData(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#editmessagewidgetdata) |
+| [`editSharedWidgetData`](#editsharedwidgetdata) | `editSharedWidgetData(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#editsharedwidgetdata) |
 | [`editStory`](#editstory) | `editStory(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#editstory) |
 | [`editUserStarSubscription`](#edituserstarsubscription) | `editUserStarSubscription(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#edituserstarsubscription) |
 | [`exportChatInviteLink`](#exportchatinvitelink) | `exportChatInviteLink(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#exportchatinvitelink) |
@@ -136,6 +140,7 @@ TelegramBot::call('newTelegramMethod', [
 | [`getChatMember`](#getchatmember) | `getChatMember(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#getchatmember) |
 | [`getChatMemberCount`](#getchatmembercount) | `getChatMemberCount(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#getchatmembercount) |
 | [`getChatMenuButton`](#getchatmenubutton) | `getChatMenuButton(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#getchatmenubutton) |
+| [`getChatShareThemeBackdrops`](#getchatsharethemebackdrops) | `getChatShareThemeBackdrops(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#getchatsharethemebackdrops) |
 | [`getCustomEmojiStickers`](#getcustomemojistickers) | `getCustomEmojiStickers(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#getcustomemojistickers) |
 | [`getFile`](#getfile) | `getFile(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#getfile) |
 | [`getForumTopicIconStickers`](#getforumtopiciconstickers) | `getForumTopicIconStickers(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#getforumtopiciconstickers) |
@@ -151,6 +156,7 @@ TelegramBot::call('newTelegramMethod', [
 | [`getMyStarBalance`](#getmystarbalance) | `getMyStarBalance(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#getmystarbalance) |
 | [`getStarTransactions`](#getstartransactions) | `getStarTransactions(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#getstartransactions) |
 | [`getStickerSet`](#getstickerset) | `getStickerSet(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#getstickerset) |
+| [`getUniqueGift`](#getuniquegift) | `getUniqueGift(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#getuniquegift) |
 | [`getUpdates`](#getupdates) | `getUpdates(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#getupdates) |
 | [`getUserChatBoosts`](#getuserchatboosts) | `getUserChatBoosts(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#getuserchatboosts) |
 | [`getUserGifts`](#getusergifts) | `getUserGifts(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#getusergifts) |
@@ -201,11 +207,13 @@ TelegramBot::call('newTelegramMethod', [
 | [`sendPoll`](#sendpoll) | `sendPoll(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendpoll) |
 | [`sendRichMessage`](#sendrichmessage) | `sendRichMessage(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendrichmessage) |
 | [`sendRichMessageDraft`](#sendrichmessagedraft) | `sendRichMessageDraft(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendrichmessagedraft) |
+| [`sendSharedWidget`](#sendsharedwidget) | `sendSharedWidget(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendsharedwidget) |
 | [`sendSticker`](#sendsticker) | `sendSticker(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendsticker) |
 | [`sendVenue`](#sendvenue) | `sendVenue(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendvenue) |
 | [`sendVideo`](#sendvideo) | `sendVideo(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendvideo) |
 | [`sendVideoNote`](#sendvideonote) | `sendVideoNote(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendvideonote) |
 | [`sendVoice`](#sendvoice) | `sendVoice(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendvoice) |
+| [`sendWidget`](#sendwidget) | `sendWidget(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#sendwidget) |
 | [`setBusinessAccountBio`](#setbusinessaccountbio) | `setBusinessAccountBio(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#setbusinessaccountbio) |
 | [`setBusinessAccountGiftSettings`](#setbusinessaccountgiftsettings) | `setBusinessAccountGiftSettings(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#setbusinessaccountgiftsettings) |
 | [`setBusinessAccountName`](#setbusinessaccountname) | `setBusinessAccountName(array\|TelegramBotRequestData $parameters = [])` | [API](https://core.telegram.org/bots/api#setbusinessaccountname) |
@@ -362,6 +370,18 @@ TelegramBot::call('newTelegramMethod', [
 | --- | --- | --- |
 | `web_app_query_id` | `String` | `Yes` |
 | `result` | `InlineQueryResult` | `Yes` |
+
+### `answerWidgetQuery`
+
+- SDK call: `answerWidgetQuery(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('answerWidgetQuery', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/answerWidgetQuery`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#answerwidgetquery)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `widget_query_id` | `String` | `Yes` |
+| `data` | `String` | `Optional` |
 
 ### `approveChatJoinRequest`
 
@@ -631,6 +651,18 @@ Parameters: none.
 | `chat_id` | `Integer or String` | `Yes` |
 | `user_id` | `Integer` | `Optional` |
 | `actor_chat_id` | `Integer` | `Optional` |
+
+### `deleteBusinessAccountGift`
+
+- SDK call: `deleteBusinessAccountGift(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('deleteBusinessAccountGift', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/deleteBusinessAccountGift`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#deletebusinessaccountgift)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `business_connection_id` | `String` | `Yes` |
+| `owned_gift_id` | `String` | `Yes` |
 
 ### `deleteBusinessMessages`
 
@@ -1013,6 +1045,34 @@ Parameters: none.
 | `rich_message` | `InputRichMessage` | `Optional` |
 | `reply_markup` | `InlineKeyboardMarkup` | `Optional` |
 
+### `editMessageWidgetData`
+
+- SDK call: `editMessageWidgetData(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('editMessageWidgetData', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/editMessageWidgetData`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#editmessagewidgetdata)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `chat_id` | `Integer or String` | `Optional` |
+| `message_id` | `Integer` | `Optional` |
+| `inline_message_id` | `String` | `Optional` |
+| `public_data` | `String` | `Optional` |
+| `chat_data` | `String` | `Optional` |
+
+### `editSharedWidgetData`
+
+- SDK call: `editSharedWidgetData(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('editSharedWidgetData', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/editSharedWidgetData`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#editsharedwidgetdata)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `widget_id` | `String` | `Yes` |
+| `public_data` | `String` | `Yes` |
+| `cache_time` | `Integer` | `Optional` |
+
 ### `editStory`
 
 - SDK call: `editStory(array|TelegramBotRequestData $parameters = [])`
@@ -1221,6 +1281,15 @@ Parameters: none.
 | --- | --- | --- |
 | `chat_id` | `Integer` | `Optional` |
 
+### `getChatShareThemeBackdrops`
+
+- SDK call: `getChatShareThemeBackdrops(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('getChatShareThemeBackdrops', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/getChatShareThemeBackdrops`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#getchatsharethemebackdrops)
+
+Parameters: none.
+
 ### `getCustomEmojiStickers`
 
 - SDK call: `getCustomEmojiStickers(array|TelegramBotRequestData $parameters = [])`
@@ -1380,6 +1449,17 @@ Parameters: none.
 - Raw call: `call('getStickerSet', $parameters)`
 - Endpoint: `POST /bot<TOKEN>/getStickerSet`
 - Official source: [Telegram docs](https://core.telegram.org/bots/api#getstickerset)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `name` | `String` | `Yes` |
+
+### `getUniqueGift`
+
+- SDK call: `getUniqueGift(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('getUniqueGift', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/getUniqueGift`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#getuniquegift)
 
 | Parameter | Type | Required |
 | --- | --- | --- |
@@ -1784,7 +1864,7 @@ Parameters: none.
 | Parameter | Type | Required |
 | --- | --- | --- |
 | `business_connection_id` | `String` | `Optional` |
-| `chat_id` | `Integer or String` | `Yes` |
+| `chat_id` | `Integer or String` | `Optional` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
 | `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
@@ -1816,7 +1896,7 @@ Parameters: none.
 | Parameter | Type | Required |
 | --- | --- | --- |
 | `business_connection_id` | `String` | `Optional` |
-| `chat_id` | `Integer or String` | `Yes` |
+| `chat_id` | `Integer or String` | `Optional` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
 | `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
@@ -1890,7 +1970,7 @@ Parameters: none.
 | Parameter | Type | Required |
 | --- | --- | --- |
 | `business_connection_id` | `String` | `Optional` |
-| `chat_id` | `Integer or String` | `Yes` |
+| `chat_id` | `Integer or String` | `Optional` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
 | `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
@@ -1938,7 +2018,7 @@ Parameters: none.
 | Parameter | Type | Required |
 | --- | --- | --- |
 | `business_connection_id` | `String` | `Optional` |
-| `chat_id` | `Integer or String` | `Yes` |
+| `chat_id` | `Integer or String` | `Optional` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
 | `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
@@ -2044,7 +2124,7 @@ Parameters: none.
 | Parameter | Type | Required |
 | --- | --- | --- |
 | `business_connection_id` | `String` | `Optional` |
-| `chat_id` | `Integer or String` | `Yes` |
+| `chat_id` | `Integer or String` | `Optional` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
 | `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
@@ -2073,7 +2153,7 @@ Parameters: none.
 | Parameter | Type | Required |
 | --- | --- | --- |
 | `business_connection_id` | `String` | `Optional` |
-| `chat_id` | `Integer or String` | `Yes` |
+| `chat_id` | `Integer or String` | `Optional` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
 | `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
@@ -2121,7 +2201,7 @@ Parameters: none.
 | Parameter | Type | Required |
 | --- | --- | --- |
 | `business_connection_id` | `String` | `Optional` |
-| `chat_id` | `Integer or String` | `Yes` |
+| `chat_id` | `Integer or String` | `Optional` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
 | `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
@@ -2192,7 +2272,7 @@ Parameters: none.
 | Parameter | Type | Required |
 | --- | --- | --- |
 | `business_connection_id` | `String` | `Optional` |
-| `chat_id` | `Integer or String` | `Yes` |
+| `chat_id` | `Integer or String` | `Optional` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
 | `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
@@ -2264,7 +2344,7 @@ Parameters: none.
 | Parameter | Type | Required |
 | --- | --- | --- |
 | `business_connection_id` | `String` | `Optional` |
-| `chat_id` | `Integer or String` | `Yes` |
+| `chat_id` | `Integer or String` | `Optional` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
 | `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
@@ -2293,6 +2373,30 @@ Parameters: none.
 | `can_stop` | `Boolean` | `Optional` |
 | `keep_on_stop` | `Boolean` | `Optional` |
 
+### `sendSharedWidget`
+
+- SDK call: `sendSharedWidget(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('sendSharedWidget', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/sendSharedWidget`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#sendsharedwidget)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `chat_id` | `Integer or String` | `Yes` |
+| `message_thread_id` | `Integer` | `Optional` |
+| `widget_id` | `String` | `Yes` |
+| `chat_data` | `String` | `Optional` |
+| `caption` | `String` | `Optional` |
+| `parse_mode` | `String` | `Optional` |
+| `caption_entities` | `Array of MessageEntity` | `Optional` |
+| `show_caption_above_media` | `Boolean` | `Optional` |
+| `disable_notification` | `Boolean` | `Optional` |
+| `protect_content` | `Boolean` | `Optional` |
+| `allow_paid_broadcast` | `Boolean` | `Optional` |
+| `message_effect_id` | `String` | `Optional` |
+| `reply_parameters` | `ReplyParameters` | `Optional` |
+| `reply_markup` | `InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply` | `Optional` |
+
 ### `sendSticker`
 
 - SDK call: `sendSticker(array|TelegramBotRequestData $parameters = [])`
@@ -2303,7 +2407,7 @@ Parameters: none.
 | Parameter | Type | Required |
 | --- | --- | --- |
 | `business_connection_id` | `String` | `Optional` |
-| `chat_id` | `Integer or String` | `Yes` |
+| `chat_id` | `Integer or String` | `Optional` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
 | `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
@@ -2327,7 +2431,7 @@ Parameters: none.
 | Parameter | Type | Required |
 | --- | --- | --- |
 | `business_connection_id` | `String` | `Optional` |
-| `chat_id` | `Integer or String` | `Yes` |
+| `chat_id` | `Integer or String` | `Optional` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
 | `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
@@ -2357,7 +2461,7 @@ Parameters: none.
 | Parameter | Type | Required |
 | --- | --- | --- |
 | `business_connection_id` | `String` | `Optional` |
-| `chat_id` | `Integer or String` | `Yes` |
+| `chat_id` | `Integer or String` | `Optional` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
 | `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
@@ -2392,7 +2496,7 @@ Parameters: none.
 | Parameter | Type | Required |
 | --- | --- | --- |
 | `business_connection_id` | `String` | `Optional` |
-| `chat_id` | `Integer or String` | `Yes` |
+| `chat_id` | `Integer or String` | `Optional` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
 | `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
@@ -2418,7 +2522,7 @@ Parameters: none.
 | Parameter | Type | Required |
 | --- | --- | --- |
 | `business_connection_id` | `String` | `Optional` |
-| `chat_id` | `Integer or String` | `Yes` |
+| `chat_id` | `Integer or String` | `Optional` |
 | `message_thread_id` | `Integer` | `Optional` |
 | `direct_messages_topic_id` | `Integer` | `Optional` |
 | `ephemeral_message_parameters` | `EphemeralMessageParameters` | `Optional` |
@@ -2432,6 +2536,35 @@ Parameters: none.
 | `allow_paid_broadcast` | `Boolean` | `Optional` |
 | `message_effect_id` | `String` | `Optional` |
 | `suggested_post_parameters` | `SuggestedPostParameters` | `Optional` |
+| `reply_parameters` | `ReplyParameters` | `Optional` |
+| `reply_markup` | `InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply` | `Optional` |
+
+### `sendWidget`
+
+- SDK call: `sendWidget(array|TelegramBotRequestData $parameters = [])`
+- Raw call: `call('sendWidget', $parameters)`
+- Endpoint: `POST /bot<TOKEN>/sendWidget`
+- Official source: [Telegram docs](https://core.telegram.org/bots/api#sendwidget)
+
+| Parameter | Type | Required |
+| --- | --- | --- |
+| `chat_id` | `Integer or String` | `Yes` |
+| `message_thread_id` | `Integer` | `Optional` |
+| `html` | `String` | `Yes` |
+| `width` | `Integer` | `Optional` |
+| `height` | `Integer` | `Optional` |
+| `public_data` | `String` | `Optional` |
+| `chat_data` | `String` | `Optional` |
+| `caption` | `String` | `Optional` |
+| `parse_mode` | `String` | `Optional` |
+| `caption_entities` | `Array of MessageEntity` | `Optional` |
+| `show_caption_above_media` | `Boolean` | `Optional` |
+| `allow_queries` | `Boolean` | `Optional` |
+| `is_shared` | `Boolean` | `Optional` |
+| `disable_notification` | `Boolean` | `Optional` |
+| `protect_content` | `Boolean` | `Optional` |
+| `allow_paid_broadcast` | `Boolean` | `Optional` |
+| `message_effect_id` | `String` | `Optional` |
 | `reply_parameters` | `ReplyParameters` | `Optional` |
 | `reply_markup` | `InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply` | `Optional` |
 
@@ -3017,6 +3150,8 @@ Parameters: none.
 | --- | --- | --- |
 | `chat_id` | `Integer or String` | `Yes` |
 | `custom_description` | `String` | `Optional` |
+| `custom_description_parse_mode` | `String` | `Optional` |
+| `custom_description_entities` | `Array of MessageEntity` | `Optional` |
 
 ### `verifyUser`
 
@@ -3029,3 +3164,5 @@ Parameters: none.
 | --- | --- | --- |
 | `user_id` | `Integer` | `Yes` |
 | `custom_description` | `String` | `Optional` |
+| `custom_description_parse_mode` | `String` | `Optional` |
+| `custom_description_entities` | `Array of MessageEntity` | `Optional` |

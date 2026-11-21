@@ -17,6 +17,7 @@ enum TelegramRichTextType: string
     case EmailAddress = 'email_address';
     case PhoneNumber = 'phone_number';
     case BankCardNumber = 'bank_card_number';
+    case TonAddress = 'ton_address';
     case Mention = 'mention';
     case Hashtag = 'hashtag';
     case Cashtag = 'cashtag';

@@ -18,9 +18,9 @@ class TelegramBotApiSurfaceTest extends TestCase
 {
     public function test_exposes_every_registered_bot_api_method_as_native_method(): void
     {
-        $this->assertSame('10.3', TelegramBotApiMethodRegistry::BOT_API_VERSION);
-        $this->assertSame('2026-08-24', TelegramBotApiMethodRegistry::BOT_API_RELEASE_DATE);
-        $this->assertCount(185, TelegramBotApiMethod::cases());
+        $this->assertSame('10.4', TelegramBotApiMethodRegistry::BOT_API_VERSION);
+        $this->assertSame('2026-11-09', TelegramBotApiMethodRegistry::BOT_API_RELEASE_DATE);
+        $this->assertCount(193, TelegramBotApiMethod::cases());
 
         foreach (TelegramBotApiMethod::cases() as $method) {
             $this->assertTrue(method_exists(TelegramBotClient::class, $method->value), "Missing method [{$method->value}].");

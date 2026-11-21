@@ -5,8 +5,10 @@ namespace AlexItDev91\LaravelTelegramBot;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatFullInfoData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatMemberData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramChatShareThemeBackdropsData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramFileData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramMessageData;
+use AlexItDev91\LaravelTelegramBot\DTO\TelegramUniqueGiftData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramUserData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookInfoData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramWebhookUpdate;
@@ -47,6 +49,19 @@ trait TelegramBotTypedApiMethods
     public function getChatAdministratorsData(array|TelegramBotRequestData $parameters = []): array
     {
         return $this->callData(TelegramBotApiMethod::getChatAdministrators, $parameters);
+    }
+
+    public function getChatShareThemeBackdropsData(): TelegramChatShareThemeBackdropsData
+    {
+        return $this->callData(TelegramBotApiMethod::getChatShareThemeBackdrops);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function getUniqueGiftData(array|TelegramBotRequestData $parameters = []): TelegramUniqueGiftData
+    {
+        return $this->callData(TelegramBotApiMethod::getUniqueGift, $parameters);
     }
 
     /**
@@ -93,6 +108,22 @@ trait TelegramBotTypedApiMethods
     public function sendDocumentData(array|TelegramBotRequestData $parameters = []): TelegramMessageData
     {
         return $this->callData(TelegramBotApiMethod::sendDocument, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function sendWidgetData(array|TelegramBotRequestData $parameters = []): TelegramMessageData
+    {
+        return $this->callData(TelegramBotApiMethod::sendWidget, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function sendSharedWidgetData(array|TelegramBotRequestData $parameters = []): TelegramMessageData
+    {
+        return $this->callData(TelegramBotApiMethod::sendSharedWidget, $parameters);
     }
 
     /**

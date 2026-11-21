@@ -16,6 +16,7 @@ Telegram start parameters may contain only `A-Z`, `a-z`, `0-9`, `_`, and `-`, an
 use AlexItDev91\LaravelTelegramBot\DeepLinks\TelegramDeepLink;
 
 $privateChat = TelegramDeepLink::start('CompanyBot', 'ref_42')->url();
+$privateTopic = TelegramDeepLink::privateChatTopic('CompanyBot', messageThreadId: 42)->url();
 $groupInstall = TelegramDeepLink::startGroup('CompanyBot', 'setup-42')->url();
 $mainMiniApp = TelegramDeepLink::startApp('CompanyBot', 'cart_42', compact: true)->url();
 $namedMiniApp = TelegramDeepLink::startApp('CompanyBot', 'cart_42', appName: 'shop')->url();
@@ -26,6 +27,7 @@ Generated examples:
 
 ```text
 https://t.me/CompanyBot?start=ref_42
+https://t.me/CompanyBot/42
 https://t.me/CompanyBot?startgroup=setup-42
 https://t.me/CompanyBot?startapp=cart_42&mode=compact
 https://t.me/CompanyBot/shop?startapp=cart_42
@@ -33,7 +35,7 @@ https://t.me/CompanyBot?startattach=upload_42&choose=users+bots
 ```
 
 `TelegramDeepLink::bot('CompanyBot')` returns the plain bot URL.
-The helper accepts bot usernames with or without the leading `@`.
+The helpers accept bot usernames with or without the leading `@`. A private topic link opens only for the user whose chat with the bot contains that topic.
 
 ## Signed Start Payloads
 

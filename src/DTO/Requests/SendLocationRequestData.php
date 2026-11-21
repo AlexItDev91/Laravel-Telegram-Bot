@@ -18,9 +18,9 @@ final readonly class SendLocationRequestData extends TelegramBotApiRequestData
      * @param  array<string, mixed>  $extra
      */
     public static function make(
-        int|string $chatId,
-        float $latitude,
-        float $longitude,
+        int|string|null $chatId = null,
+        ?float $latitude = null,
+        ?float $longitude = null,
         ?string $businessConnectionId = null,
         ?int $messageThreadId = null,
         ?int $directMessagesTopicId = null,

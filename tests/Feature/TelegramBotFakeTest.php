@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Tests\Feature;
 
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\EphemeralMessageParameters;
 use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMessageRequestData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use AlexItDev91\LaravelTelegramBot\Facades\TelegramBot;
@@ -84,6 +85,27 @@ class TelegramBotFakeTest extends TestCase
                 && $parameters['text'] === 'Dynamic hello';
         });
         $fake->assertNoTokenLeakage('222:secret-token');
+    }
+
+    public function test_fake_channel_uses_callback_routing_for_ephemeral_replies(): void
+    {
+        config()->set('telegram-bot.channels.alerts', [
+            'bot' => 'support',
+            'chat_id' => '-1001234567890',
+            'message_thread_id' => 42,
+        ]);
+
+        $fake = TelegramBot::fake();
+
+        TelegramBot::channel('alerts')->sendMessage(SendMessageRequestData::make(
+            text: 'Received',
+            ephemeralMessageParameters: EphemeralMessageParameters::forCallbackQuery('callback-1'),
+        ));
+
+        $fake->assertSentMessageToChannel('alerts', static fn (array $parameters): bool => $parameters === [
+            'text' => 'Received',
+            'ephemeral_message_parameters' => ['callback_query_id' => 'callback-1'],
+        ]);
     }
 
     public function test_fake_records_configured_channel_with_dynamic_token_override(): void

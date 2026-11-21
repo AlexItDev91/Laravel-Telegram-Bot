@@ -74,6 +74,14 @@ trait TelegramBotApiMethods
     /**
      * @param  array<string, mixed>  $parameters
      */
+    public function answerWidgetQuery(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::answerWidgetQuery, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
     public function approveChatJoinRequest(array|TelegramBotRequestData $parameters = []): mixed
     {
         return $this->call(TelegramBotApiMethod::approveChatJoinRequest, $parameters);
@@ -213,6 +221,14 @@ trait TelegramBotApiMethods
     public function deleteAllMessageReactions(array|TelegramBotRequestData $parameters = []): mixed
     {
         return $this->call(TelegramBotApiMethod::deleteAllMessageReactions, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function deleteBusinessAccountGift(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::deleteBusinessAccountGift, $parameters);
     }
 
     /**
@@ -434,6 +450,22 @@ trait TelegramBotApiMethods
     /**
      * @param  array<string, mixed>  $parameters
      */
+    public function editMessageWidgetData(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::editMessageWidgetData, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function editSharedWidgetData(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::editSharedWidgetData, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
     public function editStory(array|TelegramBotRequestData $parameters = []): mixed
     {
         return $this->call(TelegramBotApiMethod::editStory, $parameters);
@@ -554,6 +586,14 @@ trait TelegramBotApiMethods
     /**
      * @param  array<string, mixed>  $parameters
      */
+    public function getChatShareThemeBackdrops(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::getChatShareThemeBackdrops, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
     public function getCustomEmojiStickers(array|TelegramBotRequestData $parameters = []): mixed
     {
         return $this->call(TelegramBotApiMethod::getCustomEmojiStickers, $parameters);
@@ -669,6 +709,14 @@ trait TelegramBotApiMethods
     public function getStickerSet(array|TelegramBotRequestData $parameters = []): mixed
     {
         return $this->call(TelegramBotApiMethod::getStickerSet, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function getUniqueGift(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::getUniqueGift, $parameters);
     }
 
     /**
@@ -1074,6 +1122,14 @@ trait TelegramBotApiMethods
     /**
      * @param  array<string, mixed>  $parameters
      */
+    public function sendSharedWidget(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::sendSharedWidget, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
     public function sendSticker(array|TelegramBotRequestData $parameters = []): mixed
     {
         return $this->call(TelegramBotApiMethod::sendSticker, $parameters);
@@ -1109,6 +1165,14 @@ trait TelegramBotApiMethods
     public function sendVoice(array|TelegramBotRequestData $parameters = []): mixed
     {
         return $this->call(TelegramBotApiMethod::sendVoice, $parameters);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     */
+    public function sendWidget(array|TelegramBotRequestData $parameters = []): mixed
+    {
+        return $this->call(TelegramBotApiMethod::sendWidget, $parameters);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace AlexItDev91\LaravelTelegramBot;
 use Override;
 use AlexItDev91\LaravelTelegramBot\Concerns\SendsTelegramMessageShortcuts;
 use AlexItDev91\LaravelTelegramBot\Contracts\TelegramBotClient;
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\EphemeralMessageParameters;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequest;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramChannelConfigData;
@@ -44,12 +45,7 @@ class TelegramBotChannel implements TelegramBotClient
             }
         }
 
-        $callParameters = $parameters instanceof TelegramBotRequestData ? $parameters->parameters : $parameters;
-
-        return $this->bot->call($method, array_merge(
-            $this->config->chatDefaults(),
-            $callParameters,
-        ));
+        return $this->bot->call($method, $this->withDestinationDefaults($method, $parameters));
     }
 
     /**
@@ -63,5 +59,22 @@ class TelegramBotChannel implements TelegramBotClient
     public function send(TelegramMessage $message): mixed
     {
         return $this->call($message->method(), $message->payload());
+    }
+
+    /**
+     * @param  array<string, mixed>|TelegramBotRequestData  $parameters
+     * @return array<string, mixed>
+     */
+    protected function withDestinationDefaults(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters): array
+    {
+        $parameters = $parameters instanceof TelegramBotRequestData ? $parameters->parameters : $parameters;
+
+        if (TelegramBotApiMethodSchema::supportsEphemeralMessages($method)
+            && EphemeralMessageParameters::isCallbackReply($parameters['ephemeral_message_parameters'] ?? null)
+        ) {
+            return $parameters;
+        }
+
+        return array_merge($this->config->chatDefaults(), $parameters);
     }
 }

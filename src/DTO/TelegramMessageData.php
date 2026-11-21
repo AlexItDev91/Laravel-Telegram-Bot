@@ -118,6 +118,41 @@ final readonly class TelegramMessageData implements TelegramBotData
         return is_array($message) ? self::fromPayload($message) : null;
     }
 
+    public function externalReply(): ?TelegramExternalReplyInfoData
+    {
+        $reply = $this->arrayAt('external_reply');
+
+        return $reply !== null ? TelegramExternalReplyInfoData::fromPayload($reply) : null;
+    }
+
+    public function quote(): ?TelegramTextQuoteData
+    {
+        $quote = $this->arrayAt('quote');
+
+        return $quote !== null ? TelegramTextQuoteData::fromPayload($quote) : null;
+    }
+
+    public function widget(): ?TelegramWidgetData
+    {
+        $widget = $this->arrayAt('widget');
+
+        return $widget !== null ? TelegramWidgetData::fromPayload($widget) : null;
+    }
+
+    public function tonWalletTransfer(): ?TelegramTonWalletTransferData
+    {
+        $transfer = $this->arrayAt('ton_wallet_transfer');
+
+        return $transfer !== null ? TelegramTonWalletTransferData::fromPayload($transfer) : null;
+    }
+
+    public function paidMessagesWaived(): ?TelegramPaidMessagesWaivedData
+    {
+        $paidMessagesWaived = $this->arrayAt('paid_messages_waived');
+
+        return $paidMessagesWaived !== null ? TelegramPaidMessagesWaivedData::fromPayload($paidMessagesWaived) : null;
+    }
+
     public function guestBotCallerUser(): ?TelegramUserData
     {
         $user = $this->payload['guest_bot_caller_user'] ?? null;

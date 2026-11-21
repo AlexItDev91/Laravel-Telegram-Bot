@@ -264,8 +264,8 @@ class TelegramBotClient implements TelegramBotClientContract
 
     private function assertMessageHasDestination(TelegramMessage $message): void
     {
-        if (! $message->hasChatId()) {
-            throw new InvalidArgumentException('Telegram fluent messages sent through a bot client must define a chat_id with to().');
+        if (! $message->hasDestination()) {
+            throw new InvalidArgumentException('Telegram fluent messages sent through a bot client must define a chat_id with to() or target a callback query.');
         }
     }
 

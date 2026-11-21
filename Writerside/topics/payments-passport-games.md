@@ -1,6 +1,6 @@
 # Payments, Passport, And Games
 
-This guide documents the typed helper API for Telegram Bot API `10.3` Payments, Telegram Passport, paid media, and Games features.
+This guide documents the typed helper API for Telegram Bot API `10.4` Payments, Telegram Passport, paid media, and Games features.
 
 Official sources:
 
@@ -221,6 +221,8 @@ if (is_string($businessConnectionId) && $chatId !== null) {
 ```
 
 Use `readBusinessMessage`, `deleteBusinessMessages`, `setBusinessAccountName`, `setBusinessAccountBio`, `setBusinessAccountUsername`, `setBusinessAccountProfilePhoto`, `removeBusinessAccountProfilePhoto`, `getBusinessAccountStarBalance`, and `getBusinessAccountGifts` through generated request DTOs when the host app has the corresponding Business rights.
+
+Use `getUniqueGiftData()` with `GetUniqueGiftRequestData::make(name: $giftName)` to look up a collectible gift by its unique name. To remove a regular gift from a managed business account, use `deleteBusinessAccountGift()` with the Business connection ID and owned gift ID. Telegram awards zero Stars for this operation.
 
 ### Managed Bots
 

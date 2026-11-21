@@ -87,14 +87,14 @@ final class TelegramUpdateChatDiscovery
         $updateId = $this->stringValue($update['update_id'] ?? null);
         $rows = [];
 
-        foreach ($this->messagePaths() as $path) {
-            $message = $this->arrayAt($update, $path);
+        foreach ($this->messageReferencePaths() as $path) {
+            $reference = $this->arrayAt($update, $path);
 
-            if ($message === null) {
+            if ($reference === null) {
                 continue;
             }
 
-            $chat = $this->arrayAt($message, 'chat');
+            $chat = $this->arrayAt($reference, 'chat');
 
             if ($chat === null) {
                 continue;
@@ -105,9 +105,9 @@ final class TelegramUpdateChatDiscovery
                 updateType: $this->updateType($update),
                 source: $path,
                 chat: $chat,
-                messageId: $message['message_id'] ?? null,
-                messageThreadId: $message['message_thread_id'] ?? null,
-                directMessagesTopicId: $message['direct_messages_topic_id'] ?? null,
+                messageId: $reference['message_id'] ?? null,
+                messageThreadId: $reference['message_thread_id'] ?? null,
+                directMessagesTopicId: $reference['direct_messages_topic_id'] ?? null,
             );
         }
 
@@ -132,7 +132,7 @@ final class TelegramUpdateChatDiscovery
     /**
      * @return list<string>
      */
-    private function messagePaths(): array
+    private function messageReferencePaths(): array
     {
         return [
             'message',
@@ -143,6 +143,7 @@ final class TelegramUpdateChatDiscovery
             'edited_business_message',
             'guest_message',
             'callback_query.message',
+            'widget_query',
         ];
     }
 

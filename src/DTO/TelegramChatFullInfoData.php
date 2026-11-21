@@ -84,4 +84,18 @@ final readonly class TelegramChatFullInfoData extends TelegramObjectData
 
         return $community !== null ? TelegramCommunityData::fromPayload($community) : null;
     }
+
+    public function tonWalletCard(): ?TelegramTonWalletCardData
+    {
+        $walletCard = $this->object('ton_wallet_card');
+
+        return $walletCard !== null ? TelegramTonWalletCardData::fromPayload($walletCard) : null;
+    }
+
+    public function shareTheme(): ?TelegramChatShareThemeData
+    {
+        $theme = $this->object('share_theme');
+
+        return $theme !== null ? TelegramChatShareThemeData::fromPayload($theme) : null;
+    }
 }

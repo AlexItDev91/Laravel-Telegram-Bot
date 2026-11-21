@@ -17,7 +17,7 @@ final class TelegramBotFakeChannel extends TelegramBotChannel
         private readonly TelegramBotFake $fake,
         private readonly ?string $channel,
         private readonly string $bot,
-        private readonly TelegramChannelConfigData $config,
+        TelegramChannelConfigData $config,
     ) {
         parent::__construct($fake, $config);
     }
@@ -28,13 +28,11 @@ final class TelegramBotFakeChannel extends TelegramBotChannel
     #[Override]
     public function call(string|TelegramBotApiMethod $method, array|TelegramBotRequestData $parameters = []): mixed
     {
-        $parameters = $parameters instanceof TelegramBotRequestData ? $parameters->parameters : $parameters;
-
         return $this->fake->recordCall(
             bot: $this->bot,
             channel: $this->channel,
             method: $method,
-            parameters: array_merge($this->config->chatDefaults(), $parameters),
+            parameters: $this->withDestinationDefaults($method, $parameters),
         );
     }
 }

@@ -2,6 +2,7 @@
 
 namespace AlexItDev91\LaravelTelegramBot\DTO\Requests;
 
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\EphemeralMessageParameters;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotMethodRequest;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotRequestData;
 use AlexItDev91\LaravelTelegramBot\TelegramBotApiMethodSchema;
@@ -83,8 +84,15 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
     {
         $missing = array_values(array_filter(
             $this->requiredParameters(),
-            fn (string $parameter): bool => ! array_key_exists($parameter, $parameters) || $this->isBlankParameterValue($parameters[$parameter]),
+            fn (string $parameter): bool => $this->isMissingRequiredParameter($parameter, $parameters[$parameter] ?? null),
         ));
+
+        if ($this->isBlankParameterValue($parameters['chat_id'] ?? null)
+            && TelegramBotApiMethodSchema::supportsEphemeralMessages($this->method())
+            && ! EphemeralMessageParameters::isCallbackReply($parameters['ephemeral_message_parameters'] ?? null)
+        ) {
+            array_unshift($missing, 'chat_id');
+        }
 
         if ($missing === []) {
             return;
@@ -124,6 +132,7 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
             'editMessageMedia',
             'editMessageReplyMarkup',
             'editMessageText',
+            'editMessageWidgetData',
             'getGameHighScores',
             'setGameScore',
             'stopMessageLiveLocation',
@@ -148,6 +157,15 @@ abstract readonly class TelegramBotApiRequestData extends TelegramBotRequestData
             'Telegram Bot API method [%s] requires either [inline_message_id] or both [chat_id] and [message_id].',
             $this->method(),
         ));
+    }
+
+    private function isMissingRequiredParameter(string $parameter, mixed $value): bool
+    {
+        if ($this->method() === 'editSharedWidgetData' && $parameter === 'public_data' && is_string($value)) {
+            return false;
+        }
+
+        return $this->isBlankParameterValue($value);
     }
 
     private function isBlankParameterValue(mixed $value): bool

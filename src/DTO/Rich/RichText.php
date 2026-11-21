@@ -145,6 +145,16 @@ final readonly class RichText implements TelegramBotData
     /**
      * @param  RichTextValue  $text
      */
+    public static function tonAddress(string|TelegramBotData|array $text, string $address): self
+    {
+        self::assertFilled('address', $address);
+
+        return self::withText(TelegramRichTextType::TonAddress, $text, ['address' => $address]);
+    }
+
+    /**
+     * @param  RichTextValue  $text
+     */
     public static function mention(string|TelegramBotData|array $text, string $username): self
     {
         self::assertFilled('username', $username);

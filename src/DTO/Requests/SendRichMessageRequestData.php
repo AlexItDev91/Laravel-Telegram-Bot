@@ -12,15 +12,15 @@ final readonly class SendRichMessageRequestData extends TelegramBotApiRequestDat
     public const string METHOD = 'sendRichMessage';
 
     /**
-     * @param  TelegramBotData|array<string|int, mixed>  $richMessage
+     * @param  TelegramBotData|array<string|int, mixed>|null  $richMessage
      * @param  TelegramBotData|array<string|int, mixed>|null  $ephemeralMessageParameters
      * @param  TelegramBotData|array<string|int, mixed>|null  $suggestedPostParameters
      * @param  TelegramBotData|array<string|int, mixed>|null  $replyParameters
      * @param  array<string, mixed>  $extra
      */
     public static function make(
-        int|string $chatId,
-        TelegramBotData|array $richMessage,
+        int|string|null $chatId = null,
+        TelegramBotData|array|null $richMessage = null,
         ?string $businessConnectionId = null,
         ?int $messageThreadId = null,
         ?int $directMessagesTopicId = null,

@@ -148,6 +148,8 @@ Use typed outbound DTOs for common payloads when validation helps: `AlexItDev91\
 Prefer nested input DTOs over raw arrays for common structured payloads: `LinkPreviewOptions`, `ReplyParameters`, `SuggestedPostParameters`, `SuggestedPostPrice`, `InlineKeyboardButton`, and `InlineKeyboardMarkup`. Use `InlineKeyboardMarkup::make()->callback($text, TelegramCallbackData::action($action)->with($key, $value))` when callback buttons need compact, parseable action payloads.
 Prefer package enums over magic strings for known Telegram domains: `TelegramParseMode`, `TelegramChatAction`, `TelegramPollType`, `TelegramStickerType`, `TelegramStickerFormat`, and `TelegramUpdateType`.
 Use `InputRichMessage::html()` or `InputRichMessage::markdown()` with generated `SendRichMessageRequestData` and `SendRichMessageDraftRequestData` for Bot API rich messages.
+Use `EphemeralMessageParameters::forCallbackQuery()` as the `ephemeralMessageParameters` argument on a generated send request to let Telegram resolve the chat and recipient. Call `answerCallbackQuery()` separately.
+Use `SendWidgetRequestData` with `sendWidgetData()` for HTML widgets and access incoming widget updates through `widgetQuery()` or `sharedWidgetQuery()`.
 Inject `TelegramBotLaravelConfig` when a host app needs typed access to bot, channel, webhook route, or webhook secret configuration.
 
 Use typed response helpers when code needs DTO accessors for returned Telegram objects:

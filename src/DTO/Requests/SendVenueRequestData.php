@@ -18,11 +18,11 @@ final readonly class SendVenueRequestData extends TelegramBotApiRequestData
      * @param  array<string, mixed>  $extra
      */
     public static function make(
-        int|string $chatId,
-        float $latitude,
-        float $longitude,
-        string $title,
-        string $address,
+        int|string|null $chatId = null,
+        ?float $latitude = null,
+        ?float $longitude = null,
+        ?string $title = null,
+        ?string $address = null,
         ?string $businessConnectionId = null,
         ?int $messageThreadId = null,
         ?int $directMessagesTopicId = null,

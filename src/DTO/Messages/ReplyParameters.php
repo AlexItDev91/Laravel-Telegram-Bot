@@ -4,6 +4,7 @@ namespace AlexItDev91\LaravelTelegramBot\DTO\Messages;
 
 use Override;
 use AlexItDev91\LaravelTelegramBot\DTO\Concerns\BuildsTelegramBotPayload;
+use AlexItDev91\LaravelTelegramBot\DTO\Rich\RichText;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotData;
 use AlexItDev91\LaravelTelegramBot\Enums\TelegramParseMode;
 use InvalidArgumentException;
@@ -15,6 +16,7 @@ final readonly class ReplyParameters implements TelegramBotData
     /**
      * @param  array<int, array<string, mixed>>|null  $quoteEntities
      * @param  array<string, mixed>  $extra
+     * @param  list<string|RichText|array<int|string, mixed>>|null  $quoteRichTexts
      */
     public function __construct(
         private int|string|null $messageId = null,
@@ -27,6 +29,7 @@ final readonly class ReplyParameters implements TelegramBotData
         private ?string $pollOptionId = null,
         private array $extra = [],
         private int|string|null $ephemeralMessageId = null,
+        private ?array $quoteRichTexts = null,
     ) {
         if (($this->messageId === null) === ($this->ephemeralMessageId === null)) {
             throw new InvalidArgumentException('Telegram reply requires exactly one of [message_id] or [ephemeral_message_id].');
@@ -44,7 +47,7 @@ final readonly class ReplyParameters implements TelegramBotData
     #[Override]
     public function toArray(): array
     {
-        return self::payload([
+        $parameters = [
             'message_id' => $this->messageId,
             'ephemeral_message_id' => $this->ephemeralMessageId,
             'chat_id' => $this->chatId,
@@ -54,6 +57,12 @@ final readonly class ReplyParameters implements TelegramBotData
             'quote_entities' => $this->quoteEntities,
             'quote_position' => $this->quotePosition,
             'poll_option_id' => $this->pollOptionId,
-        ], $this->extra, [$this->messageId !== null ? 'message_id' : 'ephemeral_message_id']);
+        ];
+
+        if ($this->quoteRichTexts !== null) {
+            $parameters['quote_rich_texts'] = $this->quoteRichTexts;
+        }
+
+        return self::payload($parameters, $this->extra, [$this->messageId !== null ? 'message_id' : 'ephemeral_message_id']);
     }
 }

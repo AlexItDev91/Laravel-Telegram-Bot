@@ -2,6 +2,8 @@
 
 namespace AlexItDev91\LaravelTelegramBot\Tests\Unit;
 
+use AlexItDev91\LaravelTelegramBot\DTO\Messages\EphemeralMessageParameters;
+use AlexItDev91\LaravelTelegramBot\DTO\Requests\SendMessageRequestData;
 use AlexItDev91\LaravelTelegramBot\DTO\TelegramBotConfigData;
 use AlexItDev91\LaravelTelegramBot\TelegramBotClient;
 use AlexItDev91\LaravelTelegramBot\TelegramBotManager;
@@ -64,6 +66,40 @@ class TelegramBotManagerTest extends TestCase
         $manager->bot()->getMe();
 
         $this->assertSame('/bot111:shared/getMe', $history[0]['request']->getUri()->getPath());
+    }
+
+    public function test_channel_uses_callback_routing_for_ephemeral_replies(): void
+    {
+        $history = [];
+        $response = new Response(200, [], json_encode(['ok' => true, 'result' => true], JSON_THROW_ON_ERROR));
+        $http = $this->fakeHttpClient([$response, $response, $response], $history);
+        $client = TelegramBotClient::make(token: '111:support', httpClient: $http);
+        $channel = $client->to('1234567890123', messageThreadId: 42, directMessagesTopicId: 21);
+
+        $reply = EphemeralMessageParameters::forCallbackQuery('callback-1');
+        $channel->sendMessage(SendMessageRequestData::make(text: 'Received', ephemeralMessageParameters: $reply));
+        $channel->sendMessage([
+            'chat_id' => '1234567890124',
+            'message_thread_id' => 12,
+            'text' => 'Received',
+            'ephemeral_message_parameters' => ['callback_query_id' => 'callback-1'],
+        ]);
+        $channel->sendMessage([
+            'text' => 'Received',
+            'ephemeral_message_parameters' => EphemeralMessageParameters::forUser('1234567890125')->fromCallbackQuery('callback-1'),
+        ]);
+
+        $first = json_decode((string) $history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        $second = json_decode((string) $history[1]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        $third = json_decode((string) $history[2]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+
+        $this->assertSame(['text' => 'Received', 'ephemeral_message_parameters' => ['callback_query_id' => 'callback-1']], $first);
+        $this->assertSame('1234567890124', $second['chat_id']);
+        $this->assertSame(12, $second['message_thread_id']);
+        $this->assertArrayNotHasKey('direct_messages_topic_id', $second);
+        $this->assertSame('1234567890123', $third['chat_id']);
+        $this->assertSame(42, $third['message_thread_id']);
+        $this->assertSame(21, $third['direct_messages_topic_id']);
     }
 
     public function test_sends_to_dynamic_chat_with_dynamic_bot_token_without_configured_bot(): void

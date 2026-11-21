@@ -21,8 +21,8 @@ final readonly class SendPhotoRequestData extends TelegramBotApiRequestData
      * @param  array<string, mixed>  $extra
      */
     public static function make(
-        int|string $chatId,
-        InputFile|string $photo,
+        int|string|null $chatId = null,
+        InputFile|string|null $photo = null,
         ?string $businessConnectionId = null,
         ?int $messageThreadId = null,
         ?int $directMessagesTopicId = null,

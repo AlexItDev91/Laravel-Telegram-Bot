@@ -18,10 +18,11 @@ final readonly class SendMessageData extends TelegramBotRequestData
      * @param  TelegramBotData|array<string, mixed>|null  $replyParameters
      * @param  TelegramBotData|array<string, mixed>|null  $replyMarkup
      * @param  array<string, mixed>  $extra
+     * @param  TelegramBotData|array<string, mixed>|null  $ephemeralMessageParameters
      */
     public function __construct(
-        int|string $chatId,
-        string $text,
+        int|string|null $chatId = null,
+        ?string $text = null,
         ?string $businessConnectionId = null,
         int|string|null $messageThreadId = null,
         int|string|null $directMessagesTopicId = null,
@@ -36,8 +37,9 @@ final readonly class SendMessageData extends TelegramBotRequestData
         TelegramBotData|array|null $replyParameters = null,
         TelegramBotData|array|null $replyMarkup = null,
         array $extra = [],
+        TelegramBotData|array|null $ephemeralMessageParameters = null,
     ) {
-        parent::__construct(self::payload([
+        parent::__construct(self::messagePayload([
             'business_connection_id' => $businessConnectionId,
             'chat_id' => $chatId,
             'message_thread_id' => $messageThreadId,
@@ -53,6 +55,6 @@ final readonly class SendMessageData extends TelegramBotRequestData
             'suggested_post_parameters' => $suggestedPostParameters,
             'reply_parameters' => $replyParameters,
             'reply_markup' => $replyMarkup,
-        ], $extra, ['chat_id', 'text']));
+        ], $extra, ['text'], $ephemeralMessageParameters));
     }
 }

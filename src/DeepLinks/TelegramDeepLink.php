@@ -20,6 +20,15 @@ final readonly class TelegramDeepLink implements Stringable
         return new self('https://t.me/'.self::username($botUsername));
     }
 
+    public static function privateChatTopic(string $botUsername, int $messageThreadId): self
+    {
+        if ($messageThreadId < 1) {
+            throw new TelegramDeepLinkException('Message thread ID must be positive.');
+        }
+
+        return new self('https://t.me/'.self::username($botUsername).'/'.$messageThreadId);
+    }
+
     public static function start(string $botUsername, string $payload): self
     {
         self::assertPayload($payload);

@@ -29,6 +29,21 @@ class TelegramDeepLinkTest extends TestCase
         TelegramDeepLink::start('CompanyBot', str_repeat('a', 65));
     }
 
+    public function test_builds_a_private_chat_topic_link(): void
+    {
+        $link = TelegramDeepLink::privateChatTopic('@CompanyBot', messageThreadId: 42);
+
+        $this->assertSame('https://t.me/CompanyBot/42', $link->url());
+    }
+
+    public function test_rejects_a_non_positive_private_chat_topic_id(): void
+    {
+        $this->expectException(TelegramDeepLinkException::class);
+        $this->expectExceptionMessage('Message thread ID must be positive.');
+
+        TelegramDeepLink::privateChatTopic('CompanyBot', messageThreadId: 0);
+    }
+
     public function test_signs_and_verifies_short_start_payloads(): void
     {
         $signer = new TelegramStartPayloadSigner();
